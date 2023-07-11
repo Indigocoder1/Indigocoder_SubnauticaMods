@@ -1,0 +1,12 @@
+{
+  "Id": "GrappleItemPickup",
+  "DisplayName": "Prawn Grapple Item Pickup",
+  "Author": "Indigocoder",
+  "Version": "1.0.0",
+  "Enable": true,
+  "AssemblyName": "GrappleItemPickup.dll",
+  "VersionDependencies": {
+    "SMLHelper": "2.15.0"
+  },
+  "Game": "Subnautica"
+}
