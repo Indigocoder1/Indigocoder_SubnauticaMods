@@ -8,6 +8,8 @@ namespace StasisRifleFixMod_BepInEx
     [BepInPlugin(myGUID, pluginName, versionString)]
     public class StasisFreezeFixPlugin : BaseUnityPlugin
     {
+        public static ConfigEntry<bool> WriteLogs;
+
         private const string myGUID = "Indigocoder.StasisRifleFix";
         private const string pluginName = "Stasis Rifle Fix";
         private const string versionString = "1.2.0";
@@ -18,11 +20,14 @@ namespace StasisRifleFixMod_BepInEx
 
         private void Awake()
         {
-            new StasisRifleFixModOptions();
+            logger = Logger;
 
             harmony.PatchAll();
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
-            logger = Logger;
+
+            WriteLogs = Config.Bind("Stasis Rifle Fix Options", "Write Logs", false);
+
+            new StasisRifleFixModOptions();
         }
     }
 }

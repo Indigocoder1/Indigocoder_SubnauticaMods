@@ -22,10 +22,8 @@ namespace StasisRifleFixMod_BepInEx
 
             if (instanceRB != null && __instance.isInitialized && StasisRifle.sphere.energy > 0)
             {
-                if (StasisRifleFixModOptions.WriteLogs.Value)
-                {
+                if (StasisFreezeFixPlugin.WriteLogs.Value)
                     StasisFreezeFixPlugin.logger.Log(LogLevel.Info, $"Found frozen creature name: {__instance.name}. Current aggression is {creatureAggressions[__instance]}");
-                }
 
                 if (instanceRB.isKinematic)
                 {
@@ -41,10 +39,8 @@ namespace StasisRifleFixMod_BepInEx
                 }
             }
 
-            if (StasisRifleFixModOptions.WriteLogs.Value)
-            {
+            if (StasisFreezeFixPlugin.WriteLogs.Value)
                 StasisFreezeFixPlugin.logger.Log(LogLevel.Info, $"Creature's animator.enabled = {__instance.GetAnimator().enabled}");
-            }
         }
     }
 }
