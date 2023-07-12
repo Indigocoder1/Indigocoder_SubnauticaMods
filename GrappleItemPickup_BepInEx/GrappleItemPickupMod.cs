@@ -4,31 +4,16 @@ using UnityEngine;
 
 namespace GrappleItemPickup_BepInEx
 {
-    [HarmonyPatch(typeof(Exosuit))]
+    [HarmonyPatch(typeof(ExosuitGrapplingArm))]
     public static class GrappleItemPickupMod
     {
         private static bool WriteLogs = GrappleItemPickupModOptions.WriteLogs.Value;
         private static float PickupDistance = GrappleItemPickupModOptions.PickupDistance.Value;
 
-        [HarmonyPatch(nameof(Exosuit.Update)), HarmonyPostfix]
-        public static void ExosuitPatch(Exosuit __instance)
+        [HarmonyPatch(nameof(ExosuitGrapplingArm.FixedUpdate)), HarmonyPostfix]
+        public static void GrapplingArm_Patch(ExosuitGrapplingArm __instance)
         {
-            Exosuit instance = __instance;
-
-            if (instance.leftArm.GetType() == typeof(ExosuitGrapplingArm))
-            {
-                ArmLogic((ExosuitGrapplingArm)instance.leftArm);
-            }
-
-            if (instance.rightArm.GetType() == typeof(ExosuitGrapplingArm))
-            {
-                ArmLogic((ExosuitGrapplingArm)instance.rightArm);
-            }
-        }
-
-        public static void ArmLogic(ExosuitGrapplingArm arm)
-        {
-            if (arm.hook.staticAttached || !arm.hook.attached)
+            if (!__instance.hook.attached)
             {
                 return;
             }
@@ -36,33 +21,40 @@ namespace GrappleItemPickup_BepInEx
             if (WriteLogs)
                 GrappleItemPickupPlugin.logger.Log(LogLevel.Info, "Attach flag passed");
 
-            if (Vector2.Distance(arm.front.position, arm.hook.transform.position) > PickupDistance)
+            if (Vector2.Distance(__instance.front.position, __instance.hook.transform.position) > PickupDistance)
             {
                 return;
             }
 
             if (WriteLogs)
-                GrappleItemPickupPlugin.logger.Log(LogLevel.Info, "Distance flag passed");
+                GrappleItemPickupPlugin.logger.Log(LogLevel.Info, "Distance flag passed, searching for item within radius");
 
-            Collider[] colliders = Physics.OverlapSphere(arm.hook.transform.position, PickupDistance);
-
-            if (WriteLogs)
-                GrappleItemPickupPlugin.logger.Log(LogLevel.Debug, "Searching for item within radius");
+            Collider[] colliders = Physics.OverlapSphere(__instance.hook.transform.position, PickupDistance * 2f);
 
             for (int i = 0; i < colliders.Length; i++)
             {
-                Pickupable pickupable = colliders[i].gameObject.GetComponentInChildren<Pickupable>();
+                colliders[i].gameObject.TryGetComponent<Pickupable>(out Pickupable pickupable);
+
+                if (pickupable == null && colliders[i].transform.parent != null)
+                {
+                    pickupable = colliders[i].transform.gameObject.GetComponentInParent<Pickupable>();
+                }
 
                 if (pickupable == null)
                 {
-                    pickupable = colliders[i].transform.parent.gameObject.GetComponentInChildren<Pickupable>();
+                    if(WriteLogs)
+                        GrappleItemPickupPlugin.logger.Log(LogLevel.Info, $"Pickupable not found! | Collier[i].root = {colliders[i].transform.root}");
+                    continue;
                 }
+
+                if (WriteLogs)
+                    GrappleItemPickupPlugin.logger.Log(LogLevel.Info, $"Pickupable = {pickupable}");
 
                 if (pickupable)
                 {
-                    if (!arm.exosuit.storageContainer.container.HasRoomFor(pickupable))
+                    if (!__instance.exosuit.storageContainer.container.HasRoomFor(pickupable))
                     {
-                        if (Player.main.GetVehicle() == arm.exosuit)
+                        if (Player.main.GetVehicle() == __instance.exosuit)
                         {
                             ErrorMessage.AddMessage(Language.main.Get("ContainerCantFit"));
                         }
@@ -76,13 +68,13 @@ namespace GrappleItemPickup_BepInEx
                         uGUI_IconNotifier.main.Play(pickupable.GetTechType(), uGUI_IconNotifier.AnimationType.From, null);
                         pickupable.Initialize();
                         InventoryItem item = new InventoryItem(pickupable);
-                        arm.exosuit.storageContainer.container.UnsafeAdd(item);
+                        __instance.exosuit.storageContainer.container.UnsafeAdd(item);
                         pickupable.PlayPickupSound();
 
                         if (WriteLogs)
                             GrappleItemPickupPlugin.logger.Log(LogLevel.Debug, $"Adding item to container: {pickupable.name}");
 
-                        arm.ResetHook();
+                        __instance.ResetHook();
                         break;
                     }
                 }

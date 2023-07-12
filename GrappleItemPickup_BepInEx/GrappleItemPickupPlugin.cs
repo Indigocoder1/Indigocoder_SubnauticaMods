@@ -1,8 +1,6 @@
 ﻿using BepInEx;
-using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
-using UnityEngine;
 
 namespace GrappleItemPickup_BepInEx
 {
@@ -19,11 +17,12 @@ namespace GrappleItemPickup_BepInEx
 
         private void Awake()
         {
+            logger = Logger;
+
             new GrappleItemPickupModOptions();
 
             harmony.PatchAll();
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
-            logger = Logger;
         }
     }
 }
