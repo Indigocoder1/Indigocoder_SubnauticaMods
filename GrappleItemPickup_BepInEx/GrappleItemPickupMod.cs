@@ -7,8 +7,8 @@ namespace GrappleItemPickup_BepInEx
     [HarmonyPatch(typeof(ExosuitGrapplingArm))]
     public static class GrappleItemPickupMod
     {
-        private static bool WriteLogs = GrappleItemPickupModOptions.WriteLogs.Value;
-        private static float PickupDistance = GrappleItemPickupModOptions.PickupDistance.Value;
+        private static bool WriteLogs = GrappleItemPickupPlugin.WriteLogs.Value;
+        private static float PickupDistance = GrappleItemPickupPlugin.PickupDistance.Value;
 
         [HarmonyPatch(nameof(ExosuitGrapplingArm.FixedUpdate)), HarmonyPostfix]
         public static void GrapplingArm_Patch(ExosuitGrapplingArm __instance)
