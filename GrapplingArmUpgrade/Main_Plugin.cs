@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using HarmonyLib;
 using BepInEx.Logging;
+using System.Reflection;
 
 namespace GrapplingArmUpgrade_BepInEx
 {
@@ -15,14 +16,15 @@ namespace GrapplingArmUpgrade_BepInEx
         private const string pluginName = "Grappling Arm Upgrade";
         private const string versionString = "1.0.0";
 
-        private static readonly Harmony harmony = new Harmony(myGUID);
+        private static Assembly assembly { get; } = Assembly.GetExecutingAssembly();
 
         public static ManualLogSource logger;
 
         private void Awake()
         {
             logger = Logger;
-            harmony.PatchAll();
+
+            Harmony.CreateAndPatchAll(assembly, $"{myGUID}");
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
         }
     }

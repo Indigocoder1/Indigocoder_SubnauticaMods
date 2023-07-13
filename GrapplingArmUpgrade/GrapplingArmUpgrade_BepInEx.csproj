@@ -72,6 +72,8 @@
   <ItemGroup>
     <Compile Include="ExosuitGrapplingArm_Start_Patch.cs" />
     <Compile Include="Exosuit_GetArmPrefab_Patch.cs" />
+    <Compile Include="Exosuit_OnModuleChanged_Patch.cs" />
+    <Compile Include="Exosuit_SpawnArm_Patch.cs" />
     <Compile Include="GrapplingArmUpgraded.cs" />
     <Compile Include="GrapplingArmUpgradeModule.cs" />
     <Compile Include="GrapplingArm_FixedUpdate_Patch.cs" />
@@ -81,6 +83,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Player_Start_Patch.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\plugins\$(TargetName)"

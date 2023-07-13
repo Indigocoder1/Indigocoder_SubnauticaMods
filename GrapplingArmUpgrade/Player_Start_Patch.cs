@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using UnityEngine;
 
 namespace GrapplingArmUpgrade_BepInEx
 {

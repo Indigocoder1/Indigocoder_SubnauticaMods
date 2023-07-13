@@ -29,13 +29,13 @@ namespace GrapplingArmUpgrade_BepInEx
             float defaultHookSpeed = 25f;
             float enhancedHookSpeed = 50f;
 
-            if (arm.exosuit.modules.GetCount(GrapplingArmUpgradeModule.TechType) < 1)
+            if (arm.exosuit.modules.GetCount(GrapplingArmUpgradeModule.TechType) > 0)
             {
-                return defaultHookSpeed;
+                return enhancedHookSpeed;
             }
             else
             {
-                return enhancedHookSpeed;
+                return defaultHookSpeed;
             }
         }
     }

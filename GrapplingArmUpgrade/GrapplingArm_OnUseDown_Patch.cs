@@ -1,6 +1,7 @@
 ﻿using BepInEx.Logging;
 using HarmonyLib;
 using UnityEngine;
+using static Exosuit;
 
 namespace GrapplingArmUpgrade_BepInEx
 {

@@ -1,9 +1,6 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection.Emit;
-using BepInEx.Logging;
-using System.Linq;
-using static VFXParticlesPool;
 using System;
 
 namespace GrapplingArmUpgrade_BepInEx
@@ -38,13 +35,13 @@ namespace GrapplingArmUpgrade_BepInEx
             float defaultAcceleration = 15f;
             float enhancedAcceleration = 20f;
 
-            if (arm.exosuit.modules.GetCount(GrapplingArmUpgradeModule.TechType) < 1)
+            if (arm.exosuit.modules.GetCount(GrapplingArmUpgradeModule.TechType) > 0)
             {
-                return defaultAcceleration;
+                return enhancedAcceleration;
             }
             else
             {
-                return enhancedAcceleration;
+                return defaultAcceleration;
             }
         }
         public static float GetForce(ExosuitGrapplingArm arm)
@@ -52,28 +49,27 @@ namespace GrapplingArmUpgrade_BepInEx
             float defaultForce = 400f;
             float enhancedForce = 600f;
 
-            if (arm.exosuit.modules.GetCount(GrapplingArmUpgradeModule.TechType) < 1)
-            {
-                return defaultForce;
-            }
-            else
+            if (arm.exosuit.modules.GetCount(GrapplingArmUpgradeModule.TechType) > 0)
             {
                 return enhancedForce;
             }
+            else
+            {
+                return defaultForce;
+            }
         }
-
         public static float GetMaxDistance(ExosuitGrapplingArm arm)
         {
             float defaultMaxDistance = 35f;
             float enhancedMaxDistance = 50f;
 
-            if (arm.exosuit.modules.GetCount(GrapplingArmUpgradeModule.TechType) < 1)
+            if (arm.exosuit.modules.GetCount(GrapplingArmUpgradeModule.TechType) > 0)
             {
-                return defaultMaxDistance;
+                return enhancedMaxDistance;
             }
             else
             {
-                return enhancedMaxDistance;
+                return defaultMaxDistance;
             }
         }
     }

@@ -7,6 +7,9 @@ using Nautilus.Assets.Gadgets;
 using BepInEx.Logging;
 using Nautilus.Handlers;
 using Nautilus.Assets.PrefabTemplates;
+using Nautilus.Utility;
+using System.Reflection;
+using System.IO;
 
 namespace GrapplingArmUpgrade_BepInEx
 {
@@ -18,8 +21,9 @@ namespace GrapplingArmUpgrade_BepInEx
         {
             Main_Plugin.logger.Log(LogLevel.Info, "Registering module");
 
-            var prefabInfo = PrefabInfo.WithTechType("GrapplingArmUpgradeModule", "Prawn suit upgraded grappling arm", "With this upgrade module all grappling arms on your Prawn will have enhance capabilities!")
-                .WithIcon(SpriteManager.Get(TechType.ExosuitGrapplingArmModule));
+            string spriteFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets") + "/exosuitgrapplingarmmodule_Upgraded.png";
+            var prefabInfo = PrefabInfo.WithTechType("GrapplingArmUpgradeModule", "Prawn suit grappling arm upgrade module", "With this upgrade module all grappling arms on your Prawn will have enhanced capabilities!")
+                .WithIcon(ImageUtils.LoadSpriteFromFile(spriteFilePath));
 
             var customPrefab = new CustomPrefab(prefabInfo);
             customPrefab.SetRecipe(new RecipeData()
@@ -43,11 +47,10 @@ namespace GrapplingArmUpgrade_BepInEx
             customPrefab.SetUnlock(TechType.ExosuitGrapplingArmFragment, 2 + extraFragmentsToScan);
 
             CloneTemplate cloneTemplate = new CloneTemplate(prefabInfo, TechType.ExosuitGrapplingArmModule);
+            cloneTemplate.ModifyPrefab += (gameObject) => gameObject.AddComponent<GrapplingArmUpgraded>();
             customPrefab.SetGameObject(cloneTemplate);
             customPrefab.SetEquipment(EquipmentType.ExosuitModule);
             customPrefab.Register();
-
-            Main_Plugin.logger.Log(LogLevel.Info, $"Prefab module type = {customPrefab.GetType()}") ;
 
             TechType = prefabInfo.TechType;
         }

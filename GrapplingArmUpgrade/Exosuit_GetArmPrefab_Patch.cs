@@ -10,11 +10,6 @@ namespace GrapplingArmUpgrade_BepInEx
         [HarmonyPatch(nameof(Exosuit.GetArmPrefab)), HarmonyPostfix]
         private static void GetArmPrefab_Patch(TechType techType, Exosuit __instance, ref GameObject __result)
         {
-            if(techType == TechType.ExosuitGrapplingArmModule)
-            {
-                Main_Plugin.logger.Log(LogLevel.Info, $"Exosuit grappling arm prefab name = {__result.name}");
-            }
-
             if(techType != GrapplingArmUpgradeModule.TechType)
             {
                 return;
@@ -29,8 +24,6 @@ namespace GrapplingArmUpgrade_BepInEx
                     break;
                 }
             }
-
-            Main_Plugin.logger.Log(LogLevel.Info, $"Exosuit upgraded grappling arm prefab name = {result.name}");
 
             result.EnsureComponent<ExosuitGrapplingArm>();
             __result = result;
