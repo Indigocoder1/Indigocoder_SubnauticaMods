@@ -10,41 +10,69 @@ namespace StasisRifleFreezeMod_SN
         [HarmonyPatch(typeof(Creature))]
         public static class Creature_Patch
         {
-            private static Dictionary<Creature, float> creatureAggressions = new Dictionary<Creature, float>();
+            private static Dictionary<Creature, CreatureInfo> creaturesDictionary = new Dictionary<Creature, CreatureInfo>();
 
             [HarmonyPatch(nameof(Creature.ScheduledUpdate)), HarmonyPostfix]
             public static void ScheduledUpdate_Postfix(Creature __instance)
             {
-                Creature instance = __instance;
-
-                creatureAggressions.Add(instance, instance.Aggression.Value);
-                Rigidbody instanceRB = instance.gameObject.GetComponent<Rigidbody>();
-
-                if (instanceRB != null && instance.isInitialized)
+                if (!creaturesDictionary.ContainsKey(__instance))
                 {
-                    if (QMod.Config.writeLogs)
+                    creaturesDictionary.Add(__instance, new CreatureInfo(__instance.Aggression.Value, false));
+                }
+
+                Rigidbody instanceRB = __instance.gameObject.GetComponentInChildren<Rigidbody>();
+
+                if (instanceRB == null)
+                {
+                    return;
+                }
+
+                if (instanceRB != null && StasisRifle.sphere != null)
+                {
+                    if (QMod.Config.writeLogs && !creaturesDictionary[__instance].wasFrozenLastUpdate)
                     {
-                        Logger.Log(Logger.Level.Debug, $"Found frozen creature name: {instance.name}. Current aggression is {creatureAggressions[instance]}");
+                        Logger.Log(Logger.Level.Debug, $"Found frozen creature name: {__instance.name}. Current aggression is {creatureAggressions[__instance]}");
                     }
 
                     if (instanceRB.isKinematic)
                     {
-                        instance.Aggression.Value = 0;
-                        instance.GetAnimator().enabled = false;
+                        __instance.Aggression.Value = 0;
+                        __instance.GetAnimator().enabled = false;
+
+                        if (creaturesDictionary.ContainsKey(__instance))
+                        {
+                            creaturesDictionary[__instance] = new CreatureInfo(0, true);
+                        }
                     }
                     else
                     {
-                        instance.Aggression.Value = creatureAggressions[instance];
-                        creatureAggressions.Remove(instance);
-                        instance.GetAnimator().enabled = true;
-                        instance.UpdateBehaviour(Time.deltaTime);
+                        __instance.Aggression.Value = creaturesDictionary[__instance].aggression;
+                        __instance.GetAnimator().enabled = true;
+                        __instance.UpdateBehaviour(Time.time, Time.deltaTime);
+
+                        if (creaturesDictionary.ContainsKey(__instance))
+                        {
+                            creaturesDictionary.Remove(__instance);
+                        }
                     }
                 }
 
                 if (QMod.Config.writeLogs)
                 {
-                    Logger.Log(Logger.Level.Debug, $"Frozen creature animator.enabled = {instance.GetAnimator().enabled}");
+                    Logger.Log(Logger.Level.Debug, $"Frozen creature animator.enabled = {__instance.GetAnimator().enabled}");
                 }
+            }
+        }
+
+        private struct CreatureInfo
+        {
+            public float aggression;
+            public bool wasFrozenLastUpdate;
+
+            public CreatureInfo(float aggression, bool wasFrozenLastUpdate)
+            {
+                this.aggression = aggression;
+                this.wasFrozenLastUpdate = wasFrozenLastUpdate;
             }
         }
     }
