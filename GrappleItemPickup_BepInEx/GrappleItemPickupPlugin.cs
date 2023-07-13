@@ -8,6 +8,7 @@ namespace GrappleItemPickup_BepInEx
     [BepInPlugin(myGUID, pluginName, versionString)]
     public class GrappleItemPickupPlugin : BaseUnityPlugin
     {
+        public static ConfigEntry<bool> EnableMod;
         public static ConfigEntry<bool> WriteLogs;
         public static ConfigEntry<float> PickupDistance;
 
@@ -26,6 +27,7 @@ namespace GrappleItemPickup_BepInEx
             harmony.PatchAll();
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
 
+            EnableMod = Config.Bind("Grapple Item Pickup Options", "Enable", true);
             WriteLogs = Config.Bind("Grapple Item Pickup Options", "Write Logs", false);
 
             PickupDistance = Config.Bind("Grapple Item Pickup Options", "Pickup Distance", 1f,

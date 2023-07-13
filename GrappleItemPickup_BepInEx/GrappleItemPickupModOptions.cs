@@ -6,13 +6,17 @@ namespace GrappleItemPickup_BepInEx
 {
     public class GrappleItemPickupModOptions : ModOptions
     {
-        private ConfigFile configFile;
+        private ModToggleOption enableModOption;
         private ModToggleOption writeLogsOption;
         private ModSliderOption pickupDistanceOption;
 
         public GrappleItemPickupModOptions() : base("Grapple Item Pickup Options")
         {
             OptionsPanelHandler.RegisterModOptions(this);
+
+            enableModOption = GrappleItemPickupPlugin.EnableMod.ToModToggleOption();
+            enableModOption.OnChanged += OnEnableModChanged;
+            AddItem(enableModOption);
 
             writeLogsOption = GrappleItemPickupPlugin.WriteLogs.ToModToggleOption();
             writeLogsOption.OnChanged += OnWriteLogsChanged;
@@ -23,11 +27,15 @@ namespace GrappleItemPickup_BepInEx
             AddItem(pickupDistanceOption);
         }
 
-        private void OnWriteLogsChanged(object sender, OptionEventArgs e)
+        private void OnEnableModChanged(object sender, OptionEventArgs e)
         {
-            GrappleItemPickupPlugin.WriteLogs.Value = writeLogsOption.Value;;
+            GrappleItemPickupPlugin.EnableMod.Value = enableModOption.Value;
         }
 
+        private void OnWriteLogsChanged(object sender, OptionEventArgs e)
+        {
+            GrappleItemPickupPlugin.WriteLogs.Value = writeLogsOption.Value;
+        }
         private void OnPickupDistanceChanged(object sender, SliderChangedEventArgs e)
         {
             GrappleItemPickupPlugin.PickupDistance.Value = pickupDistanceOption.Value;

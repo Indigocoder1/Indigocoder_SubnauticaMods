@@ -13,6 +13,11 @@ namespace GrappleItemPickup_BepInEx
         [HarmonyPatch(nameof(ExosuitGrapplingArm.FixedUpdate)), HarmonyPostfix]
         public static void GrapplingArm_Patch(ExosuitGrapplingArm __instance)
         {
+            if(!GrappleItemPickupPlugin.EnableMod.Value)
+            {
+                return;
+            }
+
             if (!__instance.hook.attached)
             {
                 return;
@@ -29,7 +34,7 @@ namespace GrappleItemPickup_BepInEx
             if (WriteLogs)
                 GrappleItemPickupPlugin.logger.Log(LogLevel.Info, "Distance flag passed, searching for item within radius");
 
-            Collider[] colliders = Physics.OverlapSphere(__instance.hook.transform.position, PickupDistance * 2f);
+            Collider[] colliders = Physics.OverlapSphere(__instance.hook.transform.position, 1f);
 
             for (int i = 0; i < colliders.Length; i++)
             {
