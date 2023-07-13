@@ -29,6 +29,9 @@ namespace GrappleItemPickup
     public class Config : ConfigFile
     {
         [Toggle("Write QMod logs")]
+        public bool enableMod = false;
+
+        [Toggle("Write QMod logs")]
         public bool writeLogs = false;
 
         [Slider("Item Pickup Distance", Format = "{0:F2}", Min = 1.0f, Max = 2.0f, DefaultValue = 1.0f, Step = 0.1f)]
