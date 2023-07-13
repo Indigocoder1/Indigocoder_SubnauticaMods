@@ -8,39 +8,70 @@ namespace StasisRifleFixMod_BepInEx
     [HarmonyPatch(typeof(Creature))]
     public static class StasisRifleFixMod
     {
-        private static Dictionary<Creature, float> creatureAggressions = new Dictionary<Creature, float>();
+        private static Dictionary<Creature, CreatureInfo> creaturesDictionary = new Dictionary<Creature, CreatureInfo>();
 
         [HarmonyPatch(nameof(Creature.ScheduledUpdate)), HarmonyPostfix]
         public static void ScheduledUpdate_Postfix(Creature __instance)
         {
-            if(!creatureAggressions.ContainsKey(__instance))
+            if(!creaturesDictionary.ContainsKey(__instance))
             {
-                creatureAggressions.Add(__instance, __instance.Aggression.Value);
+                creaturesDictionary.Add(__instance, new CreatureInfo(__instance.Aggression.Value, false));
             }
 
-            __instance.gameObject.TryGetComponent<Rigidbody>(out Rigidbody instanceRB);
+            Rigidbody instanceRB = __instance.gameObject.GetComponentInChildren<Rigidbody>();
 
-            if (instanceRB != null && __instance.isInitialized && StasisRifle.sphere.energy > 0)
+            if(instanceRB == null)
             {
-                if (StasisFreezeFixPlugin.WriteLogs.Value)
-                    StasisFreezeFixPlugin.logger.Log(LogLevel.Info, $"Found frozen creature name: {__instance.name}. Current aggression is {creatureAggressions[__instance]}");
+                return;
+            }
+
+            if (instanceRB != null && StasisRifle.sphere != null)
+            {
+                if (StasisFreezeFixPlugin.WriteLogs.Value && !creaturesDictionary[__instance].wasFrozenLastUpdate)
+                    StasisFreezeFixPlugin.logger.Log(LogLevel.Info, $"Found frozen creature name: {__instance.name}. Current aggression is {creaturesDictionary[__instance].aggression}");
+
+                if(__instance.GetAnimator() == null)
+                {
+                    return;
+                }
+
+                if (StasisFreezeFixPlugin.WriteLogs.Value && !creaturesDictionary[__instance].wasFrozenLastUpdate)
+                    StasisFreezeFixPlugin.logger.Log(LogLevel.Info, $"Creature's animator.enabled = {__instance.GetAnimator().enabled}");
 
                 if (instanceRB.isKinematic)
                 {
                     __instance.Aggression.Value = 0;
                     __instance.GetAnimator().enabled = false;
+
+                    if(creaturesDictionary.ContainsKey(__instance))
+                    {
+                        creaturesDictionary[__instance] = new CreatureInfo(0, true);
+                    }
                 }
                 else
                 {
-                    __instance.Aggression.Value = creatureAggressions[__instance];
-                    creatureAggressions.Remove(__instance);
+                    __instance.Aggression.Value = creaturesDictionary[__instance].aggression;
                     __instance.GetAnimator().enabled = true;
                     __instance.UpdateBehaviour(Time.time, Time.deltaTime);
+
+                    if (creaturesDictionary.ContainsKey(__instance))
+                    {
+                        creaturesDictionary.Remove(__instance);
+                    }
                 }
             }
+        }
 
-            if (StasisFreezeFixPlugin.WriteLogs.Value)
-                StasisFreezeFixPlugin.logger.Log(LogLevel.Info, $"Creature's animator.enabled = {__instance.GetAnimator().enabled}");
+        private struct CreatureInfo
+        {
+            public float aggression;
+            public bool wasFrozenLastUpdate;
+
+            public CreatureInfo(float aggression, bool wasFrozenLastUpdate)
+            {
+                this.aggression = aggression;
+                this.wasFrozenLastUpdate = wasFrozenLastUpdate;
+            }
         }
     }
 }
