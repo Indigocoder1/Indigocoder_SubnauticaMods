@@ -22,7 +22,7 @@ namespace GrappleItemPickup_BepInEx
             writeLogsOption.OnChanged += OnWriteLogsChanged;
             AddItem(writeLogsOption);
 
-            pickupDistanceOption = GrappleItemPickupPlugin.PickupDistance.ToModSliderOption();
+            pickupDistanceOption = GrappleItemPickupPlugin.PickupDistance.ToModSliderOption(step: 0.1f, floatFormat: "{0:F1}");
             pickupDistanceOption.OnChanged += OnPickupDistanceChanged;
             AddItem(pickupDistanceOption);
         }

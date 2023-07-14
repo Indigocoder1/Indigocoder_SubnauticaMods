@@ -1,19 +1,20 @@
 ﻿using HarmonyLib;
-using BepInEx.Logging;
+using GrapplingArmUpgrade_BepInEx;
 using UnityEngine;
+using BepInEx.Logging;
 
 namespace GrappleItemPickup_BepInEx
 {
-    [HarmonyPatch(typeof(ExosuitGrapplingArm))]
-    public static class GrappleItemPickupMod
+    [HarmonyPatch(typeof(GrapplingArmUpgrade_Handler))]
+    internal static class GrapplingArmUpgrade_FixedUpdate_Patch
     {
         private static bool WriteLogs = GrappleItemPickupPlugin.WriteLogs.Value;
         private static float PickupDistance = GrappleItemPickupPlugin.PickupDistance.Value;
-        
-        [HarmonyPatch(nameof(ExosuitGrapplingArm.FixedUpdate)), HarmonyPostfix]
-        public static void GrapplingArm_Patch(ExosuitGrapplingArm __instance)
+
+        [HarmonyPatch(nameof(GrapplingArmUpgrade_Handler.FixedUpdate)), HarmonyPostfix]
+        public static void GrapplingArm_Patch(GrapplingArmUpgrade_Handler __instance)
         {
-            if(!GrappleItemPickupPlugin.EnableMod.Value)
+            if (!GrappleItemPickupPlugin.EnableMod.Value)
             {
                 return;
             }
@@ -47,7 +48,7 @@ namespace GrappleItemPickup_BepInEx
 
                 if (pickupable == null)
                 {
-                    if(WriteLogs)
+                    if (WriteLogs)
                         GrappleItemPickupPlugin.logger.Log(LogLevel.Info, $"Pickupable not found!");
                     continue;
                 }

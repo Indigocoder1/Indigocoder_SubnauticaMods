@@ -44,6 +44,12 @@
     <Reference Include="BepInEx">
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
+    <Reference Include="GrapplingArmUpgrade_BepInEx">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\plugins\GrapplingArmUpgrade_BepInEx\GrapplingArmUpgrade_BepInEx.dll</HintPath>
+    </Reference>
+    <Reference Include="ModdedArmsHelper">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\plugins\ModdedArmsHelper\ModdedArmsHelper.dll</HintPath>
+    </Reference>
     <Reference Include="Nautilus">
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\plugins\Nautilus\Nautilus.dll</HintPath>
     </Reference>
@@ -72,8 +78,10 @@
     <Compile Include="GrappleItemPickupPlugin.cs" />
     <Compile Include="GrappleItemPickupMod.cs" />
     <Compile Include="GrappleItemPickupModOptions.cs" />
+    <Compile Include="GrapplingArmUpgrade_FixedUpdate_Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <Import Project="..\IndigocoderLib\IndigocoderLib.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\plugins\$(TargetName)"

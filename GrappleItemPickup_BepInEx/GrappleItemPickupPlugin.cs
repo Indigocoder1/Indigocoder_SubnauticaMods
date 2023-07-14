@@ -1,11 +1,16 @@
 ﻿using BepInEx;
+using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using GrapplingArmUpgrade_BepInEx;
 using HarmonyLib;
+using IndigocoderLib;
+using System.Reflection;
 
 namespace GrappleItemPickup_BepInEx
 {
     [BepInPlugin(myGUID, pluginName, versionString)]
+    [BepInDependency("Indigocoder.GrapplingArmUpgrade", BepInDependency.DependencyFlags.SoftDependency)]
     public class GrappleItemPickupPlugin : BaseUnityPlugin
     {
         public static ConfigEntry<bool> EnableMod;
@@ -14,7 +19,7 @@ namespace GrappleItemPickup_BepInEx
 
         private const string myGUID = "Indigocoder.GrappleItemPickup";
         private const string pluginName = "Grapple Item Pickup";
-        private const string versionString = "1.1.0";
+        private const string versionString = "2.2.0";
 
         private static readonly Harmony harmony = new Harmony(myGUID);
 
@@ -24,7 +29,20 @@ namespace GrappleItemPickup_BepInEx
         {
             logger = Logger;
 
-            harmony.PatchAll();
+            harmony.Patch(AccessTools.Method(typeof(ExosuitGrapplingArm), "FixedUpdate"), 
+               new HarmonyMethod(AccessTools.Method(typeof(GrappleItemPickupMod), nameof(GrappleItemPickupMod.GrapplingArm_Patch))));
+
+            //Check for GrapplingArmUpgrade and patch that if it exists
+            if (Chainloader.PluginInfos.ContainsKey("Indigocoder.GrapplingArmUpgrade"))
+            {
+                IndigocoderLib.Utilities.PatchIfExists(harmony, "GrapplingArmUpgrade_BepInEx", "GrapplingArmUpgrade_BepInEx.GrapplingArmUpgrade_Handler", "FixedUpdate",
+                    null, new HarmonyMethod(AccessTools.Method(typeof(GrapplingArmUpgrade_FixedUpdate_Patch), nameof(GrapplingArmUpgrade_FixedUpdate_Patch.GrapplingArm_Patch))), null);
+            }
+            else
+            {
+                Logger.LogInfo($"Not able to patch {nameof(GrapplingArmUpgrade_FixedUpdate_Patch.GrapplingArm_Patch)} because the mod was not found");
+            }
+
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
 
             EnableMod = Config.Bind("Grapple Item Pickup Options", "Enable", true);
