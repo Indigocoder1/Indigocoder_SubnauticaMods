@@ -27,7 +27,7 @@ namespace GrapplingArmUpgrade_BepInEx
         public static float GetHookSpeed(ExosuitGrapplingArm arm)
         {
             float defaultHookSpeed = 25f;
-            float enhancedHookSpeed = 50f;
+            float enhancedHookSpeed = Main_Plugin.HookSpeed.Value;
 
             if (arm.exosuit.modules.GetCount(GrapplingArmUpgradeModule.TechType) > 0)
             {

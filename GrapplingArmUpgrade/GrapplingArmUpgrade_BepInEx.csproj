@@ -77,6 +77,7 @@
     <Compile Include="Exosuit_UpdateArms_Patch.cs" />
     <Compile Include="GrapplingArmUpgraded.cs" />
     <Compile Include="GrapplingArmUpgradeModule.cs" />
+    <Compile Include="GrapplingArmUpgrade_Options.cs" />
     <Compile Include="GrapplingArm_FixedUpdate_Patch.cs" />
     <Compile Include="GrapplingArm_OnHit_Patch.cs" />
     <Compile Include="GrapplingArm_OnUseDown_Patch.cs" />

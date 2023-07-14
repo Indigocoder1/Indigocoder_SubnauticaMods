@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-
 namespace GrapplingArmUpgrade_BepInEx
 {
     [HarmonyPatch(typeof(Exosuit))]

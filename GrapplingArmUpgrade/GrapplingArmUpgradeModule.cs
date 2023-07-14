@@ -41,7 +41,7 @@ namespace GrapplingArmUpgrade_BepInEx
                 .WithFabricatorType(CraftTree.Type.Workbench)
                 .WithCraftingTime(5f);
 
-            CraftDataHandler.SetBackgroundType(prefabInfo.TechType, CraftData.BackgroundType.ExosuitArm);
+            CraftDataHandler.SetBackgroundType(prefabInfo.TechType, CraftData.BackgroundType.Normal);
 
             int extraFragmentsToScan = 2;
             customPrefab.SetUnlock(TechType.ExosuitGrapplingArmFragment, 2 + extraFragmentsToScan);
@@ -50,7 +50,7 @@ namespace GrapplingArmUpgrade_BepInEx
             cloneTemplate.ModifyPrefab += (gameObject) => gameObject.AddComponent<GrapplingArmUpgraded>();
             cloneTemplate.ModifyPrefab += (gameObject) => gameObject.name = "UpgradedGrapplingArm";
             customPrefab.SetGameObject(cloneTemplate);
-            customPrefab.SetEquipment(EquipmentType.ExosuitArm);
+            customPrefab.SetEquipment(EquipmentType.ExosuitModule);
             customPrefab.Register();
 
             TechType = prefabInfo.TechType;

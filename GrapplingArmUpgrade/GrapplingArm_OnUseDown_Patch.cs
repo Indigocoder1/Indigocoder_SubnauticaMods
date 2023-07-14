@@ -16,7 +16,7 @@ namespace GrapplingArmUpgrade_BepInEx
                 return;
             }
 
-            cooldownDuration = 0.5f;
+            cooldownDuration = Main_Plugin.ArmCooldown.Value;
         }
     }
 }

@@ -33,7 +33,7 @@ namespace GrapplingArmUpgrade_BepInEx
         public static float GetAcceleration(ExosuitGrapplingArm arm)
         {
             float defaultAcceleration = 15f;
-            float enhancedAcceleration = 20f;
+            float enhancedAcceleration = Main_Plugin.ExosuitAcceleration.Value;
 
             if (arm.exosuit.modules.GetCount(GrapplingArmUpgradeModule.TechType) > 0)
             {
@@ -47,7 +47,7 @@ namespace GrapplingArmUpgrade_BepInEx
         public static float GetForce(ExosuitGrapplingArm arm)
         {
             float defaultForce = 400f;
-            float enhancedForce = 600f;
+            float enhancedForce = Main_Plugin.HookShootForce.Value;
 
             if (arm.exosuit.modules.GetCount(GrapplingArmUpgradeModule.TechType) > 0)
             {
@@ -61,7 +61,7 @@ namespace GrapplingArmUpgrade_BepInEx
         public static float GetMaxDistance(ExosuitGrapplingArm arm)
         {
             float defaultMaxDistance = 35f;
-            float enhancedMaxDistance = 50f;
+            float enhancedMaxDistance = Main_Plugin.HookMaxDistance.Value;
 
             if (arm.exosuit.modules.GetCount(GrapplingArmUpgradeModule.TechType) > 0)
             {
