@@ -12,6 +12,7 @@ namespace GrapplingArmUpgrade_BepInEx
         private static void Start_Patch(ExosuitGrapplingArm __instance)
         {
             ExosuitGrapplingArm instance = __instance;
+            Main_Plugin.logger.LogInfo($"Grappling arm instance = {instance}");
 
             if (instance.exosuit.modules.GetCount(GrapplingArmUpgradeModule.TechType) < 1)
             {

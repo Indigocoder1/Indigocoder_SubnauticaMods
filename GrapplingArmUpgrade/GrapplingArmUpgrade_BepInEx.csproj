@@ -74,6 +74,7 @@
     <Compile Include="Exosuit_GetArmPrefab_Patch.cs" />
     <Compile Include="Exosuit_OnModuleChanged_Patch.cs" />
     <Compile Include="Exosuit_SpawnArm_Patch.cs" />
+    <Compile Include="Exosuit_UpdateArms_Patch.cs" />
     <Compile Include="GrapplingArmUpgraded.cs" />
     <Compile Include="GrapplingArmUpgradeModule.cs" />
     <Compile Include="GrapplingArm_FixedUpdate_Patch.cs" />
