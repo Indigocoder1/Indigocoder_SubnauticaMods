@@ -3,6 +3,7 @@ using HarmonyLib;
 using BepInEx.Logging;
 using System.Reflection;
 using BepInEx.Configuration;
+using IndigocoderLib;
 
 namespace GrapplingArmUpgrade_BepInEx
 {
@@ -10,7 +11,9 @@ namespace GrapplingArmUpgrade_BepInEx
     //You can find his mod on NexusMods here: https://www.nexusmods.com/subnautica/mods/368
     //At time of writing the mod only works for Legacy which is the reason for this port
 
+    [BepInDependency("com.snmodding.nautilus")] //Thanks Ramune!
     [BepInPlugin(myGUID, pluginName, versionString)]
+    [BepInProcess("Subnautica.exe")]
     public class Main_Plugin : BaseUnityPlugin
     {
         public static ConfigEntry<bool> EnableMod;
@@ -30,6 +33,8 @@ namespace GrapplingArmUpgrade_BepInEx
 
         private void Awake()
         {
+            PiracyDetector.FindPiracy();
+
             logger = Logger;
 
             Harmony.CreateAndPatchAll(assembly, $"{myGUID}");

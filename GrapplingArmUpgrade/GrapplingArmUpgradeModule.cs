@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Nautilus.Crafting;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
