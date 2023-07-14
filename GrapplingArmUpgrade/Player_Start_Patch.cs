@@ -9,7 +9,7 @@ namespace GrapplingArmUpgrade_BepInEx
         [HarmonyPatch(nameof(Player.Start)), HarmonyPostfix]
         private static void Start_Patch()
         {
-            GrapplingArmUpgradeModule.RegisterModule();
+            
         }
     }
 }

@@ -45,8 +45,17 @@
     <Reference Include="BepInEx">
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
+    <Reference Include="FMODUnity">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\FMODUnity.dll</HintPath>
+    </Reference>
+    <Reference Include="ModdedArmsHelper">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\plugins\ModdedArmsHelper\ModdedArmsHelper.dll</HintPath>
+    </Reference>
     <Reference Include="Nautilus">
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\plugins\Nautilus\Nautilus.dll</HintPath>
+    </Reference>
+    <Reference Include="SMLHelper">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\plugins\Modding Helper\SMLHelper.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -58,6 +67,10 @@
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\StasisRifleFreezeMod_SN\bin\Debug\UnityEngine.AnimationModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
@@ -71,17 +84,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExosuitGrapplingArm_Start_Patch.cs" />
     <Compile Include="Exosuit_GetArmPrefab_Patch.cs" />
     <Compile Include="Exosuit_OnModuleChanged_Patch.cs" />
-    <Compile Include="Exosuit_SpawnArm_Patch.cs" />
-    <Compile Include="Exosuit_UpdateArms_Patch.cs" />
-    <Compile Include="GrapplingArmUpgraded.cs" />
     <Compile Include="GrapplingArmUpgradeModule.cs" />
+    <Compile Include="GrapplingArmUpgrade_Handler.cs" />
+    <Compile Include="GrapplingArmUpgrade_ModdingRequest.cs" />
     <Compile Include="GrapplingArmUpgrade_Options.cs" />
-    <Compile Include="GrapplingArm_FixedUpdate_Patch.cs" />
-    <Compile Include="GrapplingArm_OnHit_Patch.cs" />
-    <Compile Include="GrapplingArm_OnUseDown_Patch.cs" />
     <Compile Include="Main_Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Player_Start_Patch.cs" />

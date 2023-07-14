@@ -1,11 +1,5 @@
-﻿using BepInEx.Configuration;
-using Nautilus.Handlers;
+﻿using Nautilus.Handlers;
 using Nautilus.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GrapplingArmUpgrade_BepInEx
 {
@@ -27,7 +21,7 @@ namespace GrapplingArmUpgrade_BepInEx
             hookMaxDistanceOption.OnChanged += OnHookMaxDistanceChanged;
             AddItem(hookMaxDistanceOption);
 
-            var hookSpeedOption = Main_Plugin.HookSpeed.ToModSliderOption(step: 1f, floatFormat: "{0}");
+            var hookSpeedOption = Main_Plugin.InitialHookSpeed.ToModSliderOption(step: 1f, floatFormat: "{0}");
             hookSpeedOption.OnChanged += OnHookSpeedChanged;
             AddItem(hookSpeedOption);
 
@@ -35,9 +29,9 @@ namespace GrapplingArmUpgrade_BepInEx
             exosuitAccelerationOption.OnChanged += OnExosuitAccelerationChanged;
             AddItem(exosuitAccelerationOption);
 
-            var hookShootForceOption = Main_Plugin.HookShootForce.ToModSliderOption(step: 1f, floatFormat: "{0}");
-            hookShootForceOption.OnChanged += OnHookShootForceChanged;
-            AddItem(hookShootForceOption);
+            var attachedObjectAcceleration = Main_Plugin.AttachedObjectAcceleration.ToModSliderOption(step: 1f, floatFormat: "{0}");
+            attachedObjectAcceleration.OnChanged += OnAttachedObjectAccelerationChanged;
+            AddItem(attachedObjectAcceleration);
         }
 
         private void OnEnableModChanged(object sender, ToggleChangedEventArgs e)
@@ -54,15 +48,15 @@ namespace GrapplingArmUpgrade_BepInEx
         }
         private void OnHookSpeedChanged(object sender, SliderChangedEventArgs e)
         {
-            Main_Plugin.HookSpeed.Value = e.Value;
+            Main_Plugin.InitialHookSpeed.Value = e.Value;
         }
         private void OnExosuitAccelerationChanged(object sender, SliderChangedEventArgs e)
         {
             Main_Plugin.ExosuitAcceleration.Value = e.Value;
         }
-        private void OnHookShootForceChanged(object sender, SliderChangedEventArgs e)
+        private void OnAttachedObjectAccelerationChanged(object sender, SliderChangedEventArgs e)
         {
-            Main_Plugin.HookShootForce.Value = e.Value;
+            Main_Plugin.AttachedObjectAcceleration.Value = e.Value;
         }
     }
 }
