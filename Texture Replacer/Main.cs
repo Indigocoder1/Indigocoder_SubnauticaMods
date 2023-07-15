@@ -27,11 +27,35 @@ namespace TextureReplacer
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
 
             /*
-             * Default Config:
-            var config = new TextureConfig(new List<TextureConfigInfo>
+            //Default Config:
+            var config = new TextureConfigList(new List<TextureConfigItem>
             {
-                new TextureConfigInfo(0, "life_pod_exterior_exploded_01.png", IndexFromLifepod[LifepodNumber.Lifepod4]),
-                new TextureConfigInfo(1, "life_pod_exterior_exploded_02.png", IndexFromLifepod[LifepodNumber.Lifepod4])
+                new TextureConfigItem(0, "life_pod_exterior_exploded_01.png", IndexFromLifepod[LifepodNumber.Lifepod2], false, -1),
+                new TextureConfigItem(1, "life_pod_exterior_exploded_02.png", IndexFromLifepod[LifepodNumber.Lifepod2], false, -1),
+
+                new TextureConfigItem(0, "life_pod_exterior_exploded_01.png", IndexFromLifepod[LifepodNumber.Lifepod3], false, -1),
+                new TextureConfigItem(1, "life_pod_exterior_exploded_02.png", IndexFromLifepod[LifepodNumber.Lifepod3], false, -1),
+
+                new TextureConfigItem(0, "life_pod_exterior_exploded_01.png", IndexFromLifepod[LifepodNumber.Lifepod4], false, -1),
+                new TextureConfigItem(1, "life_pod_exterior_exploded_02.png", IndexFromLifepod[LifepodNumber.Lifepod4], false, -1),
+
+                new TextureConfigItem(0, "life_pod_exterior_exploded_01.png", IndexFromLifepod[LifepodNumber.Lifepod6], false, -1),
+                new TextureConfigItem(1, "life_pod_exterior_exploded_02.png", IndexFromLifepod[LifepodNumber.Lifepod6], false, -1),
+
+                new TextureConfigItem(0, "life_pod_exterior_exploded_01.png", IndexFromLifepod[LifepodNumber.Lifepod7], false, -1),
+                new TextureConfigItem(1, "life_pod_exterior_exploded_02.png", IndexFromLifepod[LifepodNumber.Lifepod7], false, -1),
+
+                new TextureConfigItem(0, "life_pod_exterior_exploded_01.png", IndexFromLifepod[LifepodNumber.Lifepod12], false, -1),
+                new TextureConfigItem(1, "life_pod_exterior_exploded_02.png", IndexFromLifepod[LifepodNumber.Lifepod12], false, -1),
+
+                new TextureConfigItem(0, "life_pod_exterior_exploded_01.png", IndexFromLifepod[LifepodNumber.Lifepod13], false, -1),
+                new TextureConfigItem(1, "life_pod_exterior_exploded_02.png", IndexFromLifepod[LifepodNumber.Lifepod13], false, -1),
+
+                new TextureConfigItem(0, "life_pod_exterior_exploded_01.png", IndexFromLifepod[LifepodNumber.Lifepod17], false, -1),
+                new TextureConfigItem(1, "life_pod_exterior_exploded_02.png", IndexFromLifepod[LifepodNumber.Lifepod17], false, -1),
+
+                new TextureConfigItem(0, "life_pod_exterior_exploded_01.png", IndexFromLifepod[LifepodNumber.Lifepod19], false, -1),
+                new TextureConfigItem(1, "life_pod_exterior_exploded_02.png", IndexFromLifepod[LifepodNumber.Lifepod19], false, -1),
             });
 
             SaveManager.SaveToJson(config);
@@ -48,8 +72,53 @@ namespace TextureReplacer
             for (int i = 0; i < textureConfig.textureConfigs.Count; i++)
             {
                 TextureConfigItem configItem = textureConfig.textureConfigs[i];
+                configItem.variationChance = Mathf.Clamp01(configItem.variationChance);
+                bool variationAccepted = false;
 
-                StartCoroutine(InitializeTexture(configItem.materialIndex, configItem.fileName, LifepodFromIndex[configItem.lifepodNumberIndex]));
+                if (configItem.isVariation)
+                {
+                    if(UnityEngine.Random.Range(0f, 1f) <= configItem.variationChance)
+                    {
+                        variationAccepted = true;
+                    }
+                }
+                
+                if(!variationAccepted)
+                {
+                    StartCoroutine(InitializeTexture(configItem.materialIndex, configItem.fileName, LifepodFromIndex[configItem.lifepodNumberIndex]));
+                }
+                else
+                {
+                    HandleAlternateTexture(configItem);
+                }
+            }
+        }
+
+        private void HandleAlternateTexture(TextureConfigItem alternateConfig)
+        {
+            logger.LogInfo($"Variation from {alternateConfig.fileName} accepted");
+
+            for (int i = 0; i < textureConfig.textureConfigs.Count; i++)
+            {
+                if(TargetingSameMaterial(alternateConfig, textureConfig.textureConfigs[i]))
+                {
+                    StartCoroutine(InitializeTexture(alternateConfig.materialIndex, alternateConfig.fileName, LifepodFromIndex[alternateConfig.lifepodNumberIndex]));
+                }
+            }
+        }
+
+        private bool TargetingSameMaterial(TextureConfigItem config1, TextureConfigItem config2)
+        {
+            bool check1 = config1.materialIndex == config2.materialIndex;
+            bool check2 = config1.lifepodNumberIndex == config2.lifepodNumberIndex;
+
+            if(check1 && check2)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
@@ -72,24 +141,6 @@ namespace TextureReplacer
                 }
 
                 replacer.ReplaceTexture(targetRenderer.materials[materialIndex], textureName);
-            }
-        }
-
-        /// <summary>
-        /// Use if you have a custom texture you want to be on only a certain lifepod type
-        /// </summary>
-        /// <param name="numberA"></param>
-        /// <param name="numberB"></param>
-        /// <returns></returns>
-        private static bool AreCompatible(LifepodNumber numberA, LifepodNumber numberB)
-        {
-            if (ExternalRendererHierchyPaths[numberA] == ExternalRendererHierchyPaths[numberB])
-            {
-                return true;
-            }
-            else
-            {
-                return false;
             }
         }
 
@@ -149,10 +200,10 @@ namespace TextureReplacer
             { LifepodNumber.Lifepod4, 2 },
             { LifepodNumber.Lifepod6, 3 },
             { LifepodNumber.Lifepod7, 4 },
-            { LifepodNumber.Lifepod12, 6 },
-            { LifepodNumber.Lifepod13, 7 },
-            { LifepodNumber.Lifepod17, 8 },
-            { LifepodNumber.Lifepod19, 9 }
+            { LifepodNumber.Lifepod12, 5 },
+            { LifepodNumber.Lifepod13, 6 },
+            { LifepodNumber.Lifepod17, 7 },
+            { LifepodNumber.Lifepod19, 8 }
         };
 
         public class TextureConfigList
@@ -172,12 +223,16 @@ namespace TextureReplacer
             public int materialIndex;
             public string fileName;
             public int lifepodNumberIndex;
+            public bool isVariation;
+            public float variationChance;
 
-            public TextureConfigItem(int materialIndex, string fileName, int lifepodNumberIndex)
+            public TextureConfigItem(int materialIndex, string fileName, int lifepodNumberIndex, bool isVariation, float variationChance)
             {
                 this.materialIndex = materialIndex;
                 this.fileName = fileName;
                 this.lifepodNumberIndex = lifepodNumberIndex;
+                this.isVariation = isVariation;
+                this.variationChance = variationChance;
             }
         }
     }
