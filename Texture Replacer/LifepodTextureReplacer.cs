@@ -39,7 +39,7 @@ namespace TextureReplacer
 
                 if (!variationAccepted)
                 {
-                    LifepodNumber lifepodNumber = IndexToLifepod[configData.lifepodIndex];
+                    LifepodNumber lifepodNumber = (LifepodNumber)configData.lifepodIndex;
                     CoroutineHost.StartCoroutine(InitializeTexture(configData.materialIndex, configData.fileName, lifepodNumber));
                 }
                 else
@@ -57,7 +57,7 @@ namespace TextureReplacer
             {
                 if (TargetingSameLifepodMaterial(alternateConfig, lifepodConfigs[i]))
                 {
-                    LifepodNumber lifepodNumber = IndexToLifepod[alternateConfig.lifepodIndex];
+                    LifepodNumber lifepodNumber = (LifepodNumber)alternateConfig.lifepodIndex;
                     CoroutineHost.StartCoroutine(InitializeTexture(alternateConfig.materialIndex, alternateConfig.fileName, lifepodNumber));
                 }
             }
@@ -112,7 +112,7 @@ namespace TextureReplacer
                 string fileName1 = "life_pod_exterior_exploded_01.png";
                 string fileName2 = "life_pod_exterior_exploded_02.png";
 
-                LifepodNumber num = IndexToLifepod[i];
+                LifepodNumber num = (LifepodNumber)i;
                 string classID = LifepodClassIDs[num];
                 string hierchy = ExternalRendererHierchyPaths[num];
 
@@ -146,18 +146,6 @@ namespace TextureReplacer
             { LifepodNumber.Lifepod13, "00037e80-3037-48cf-b769-dc97c761e5f6"},
             { LifepodNumber.Lifepod17, "56b5ed17-2bff-4f7e-aba0-275b6a2398f9"},
             { LifepodNumber.Lifepod19, "3894aeaf-e1f9-426a-9249-6a4968ac2d8b"},
-        };
-        private static readonly Dictionary<int, LifepodNumber> IndexToLifepod = new Dictionary<int, LifepodNumber>
-        {
-            { 0, LifepodNumber.Lifepod2},
-            { 1, LifepodNumber.Lifepod3},
-            { 2, LifepodNumber.Lifepod4},
-            { 3, LifepodNumber.Lifepod6},
-            { 4, LifepodNumber.Lifepod7},
-            { 5, LifepodNumber.Lifepod12},
-            { 6, LifepodNumber.Lifepod13},
-            { 7, LifepodNumber.Lifepod17},
-            { 8, LifepodNumber.Lifepod19},
         };
 
         public class LifepodConfigData : Main.TexturePatchConfigData
