@@ -5,46 +5,69 @@ This can be done by editing the Json file in the Configs folder
 
 To add a new item it will need to be formatted in a specefic way
 Here is an example of an item that could be added to the list:
-{"materialIndex":0,"fileName":"life_pod_exterior_exploded_01.png","lifepodNumberIndex":2,"isVariation":false,"variationChance":-1}
+{
+    "lifepodIndex": 0,
+    "materialIndex": 0,
+    "fileName": "life_pod_exterior_exploded_01.png",
+    "prefabClassID": "66cc5a83-142b-4d8d-8d16-2d6e960f59c3",
+    "rendererHierchyPath": "life_pod_exploded_02/life_pod",
+    "isVariation": false,
+    "variationChance": -1.0
+}
 
-The materialIndex is the index of the material on the renderer. To see the full list of index to texture conversion, check the bottom of the ReadMe. (0 Based indexing)
+lifepodIndex is the index of the lifepod. To see what index a lifepod is, view the enum in the LifepodTextureReplacer class on my github, here: https://github.com/Indigocoder1/Indogocoder_SubnauticaMods/tree/master/Texture%20Replacer
+materialIndex is the index of the material on the renderer. To see the full list of index to texture conversion, check the bottom of the ReadMe. (0 Based indexing)
 fileName is the name of the texture (Including extension) that is replacing the texture of the specefied materialIndex. This file will have to be placed in the Assets folder for it to work
-lifepodNumberIndex is the index of the lifepod. To see what index a lifepod is, view the dictionary in the Main class on my github, here: https://github.com/Indigocoder1/Indogocoder_SubnauticaMods/tree/master/Texture%20Replacer
-isVariation is if this texture is a variation of another texture. If this is set to true, variationChance must be greater than 1
-variaionChance is the chance (From 0 to 1) of this texture being chosen instead of another one. Note that this is only useful if isVariation is true
+prefabClassID is the classID of the prefab you're replacing. For lifepods a list can be found on my github in the LifepodTextureReplacer class
+rendererHierchyPath is the path in the hierchy to the child of the prefab that contains the renderer you're trying to replace
+isVariation is if this texture is a variation of another texture. If this is set to true, variationChance must be greater than 0 to do anything
+variaionChance is the chance (From 0 to 1) of this texture being chosen instead of another one. Note that this is only impactful if isVariation is true
 *Side note, I usually set variationChance to -1 when isVariation is false so I know it isn't set to true by accident
 
 
-Taking into account this explanation, the above line replaces the texture in materialIndex 0, with "life_pod_exterior_exploded_01.png" for lifepod 4
+Taking into account this explanation, the above line replaces the texture in materialIndex 0, with "life_pod_exterior_exploded_01.png" for lifepod 2
 
 To actually add this to the Json, you need to put it in like this:
-
-{
-	"textureConfigs":
-	[
-		*Item here*
-	]
-}
+[
+	*Item here*
+]
 
 So using our above example would look like this:
-
-{
-	"textureConfigs":
-	[
-		{"materialIndex":0,"fileName":"life_pod_exterior_exploded_01.png","lifepodNumberIndex":2,"isVariation":false,"variationChance":-1}
-	]
-}
+[
+	{
+        "lifepodIndex": 0,
+        "materialIndex": 0,
+        "fileName": "life_pod_exterior_exploded_01.png",
+        "prefabClassID": "66cc5a83-142b-4d8d-8d16-2d6e960f59c3",
+        "rendererHierchyPath": "life_pod_exploded_02/life_pod",
+        "isVariation": false,
+        "variationChance": -1.0
+    }
+]
 
 Keep in mind that when adding multiple textures, you have to put a comma after each texture you add.
 Here is an example of multiple textures:
 
-{
-	"textureConfigs":
-	[
-		{"materialIndex":0,"fileName":"life_pod_exterior_exploded_01.png","lifepodNumberIndex":2,"isVariation":false,"variationChance":0.75}, <-- Note the comma
-		{"materialIndex":0,"fileName":"life_pod_exterior_exploded_01.png","lifepodNumberIndex":2,"isVariation":false,"variationChance":0.75}
-	]
-}
+[
+    {
+        "lifepodIndex": 0,
+        "materialIndex": 0,
+        "fileName": "life_pod_exterior_exploded_01.png",
+        "prefabClassID": "66cc5a83-142b-4d8d-8d16-2d6e960f59c3",
+        "rendererHierchyPath": "life_pod_exploded_02/life_pod",
+        "isVariation": false,
+        "variationChance": -1.0
+    }, <-- Note the comma
+    {
+        "lifepodIndex": 0,
+        "materialIndex": 1,
+        "fileName": "life_pod_exterior_exploded_02.png",
+        "prefabClassID": "66cc5a83-142b-4d8d-8d16-2d6e960f59c3",
+        "rendererHierchyPath": "life_pod_exploded_02/life_pod",
+        "isVariation": false,
+        "variationChance": -1.0
+    }
+]
 
 Lifepod material index to texture conversion:
 

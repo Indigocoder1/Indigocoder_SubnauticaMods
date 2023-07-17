@@ -6,7 +6,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UWE;
-
 namespace TextureReplacer
 {
     [BepInPlugin(myGUID, pluginName, versionString)]
@@ -18,42 +17,32 @@ namespace TextureReplacer
 
         public static ManualLogSource logger;
 
-        public static LifepodTextureConfigList textureConfig;
-
         private void Awake()
         {
             logger = Logger;
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
 
-            textureConfig = SaveManager.LoadFromJson();
-
-            LifepodTextureReplacer.LoadAllTextures();
+            LifepodTextureReplacer.SaveInitialData();
+            LifepodTextureReplacer.Initialize();
         }
 
-        public class LifepodTextureConfigList
-        {
-            public List<LifepodConfigItem> textureConfigs;
-
-            public LifepodTextureConfigList(List<LifepodConfigItem> textureConfigs)
-            {
-                this.textureConfigs = textureConfigs;
-            }
-        }
-
-        public class LifepodConfigItem
+        public class TexturePatchConfigData
         {
             public int materialIndex;
             public string fileName;
-            public int lifepodNumberIndex;
+            public string prefabClassID;
+            public string rendererHierchyPath;
+
             public bool isVariation;
             public float variationChance;
 
-            public LifepodConfigItem(int materialIndex, string fileName, int lifepodNumberIndex, bool isVariation, float variationChance)
+            public TexturePatchConfigData(int materialIndex, string fileName, bool isVariation, float variationChance, string prefabClassID, string rendererHierchyPath)
             {
                 this.materialIndex = materialIndex;
                 this.fileName = fileName;
-                this.lifepodNumberIndex = lifepodNumberIndex;
+                this.prefabClassID = prefabClassID;
+                this.rendererHierchyPath = rendererHierchyPath;
                 this.isVariation = isVariation;
                 this.variationChance = variationChance;
             }

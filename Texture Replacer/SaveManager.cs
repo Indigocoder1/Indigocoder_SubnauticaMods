@@ -1,25 +1,26 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
 using Newtonsoft.Json;
+using BepInEx;
+using System.Collections.Generic;
 
 namespace TextureReplacer
 {
     internal static class SaveManager
     {
-        private static string filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Config/TextureConfig.json");
+        private static string filePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureConfig.json");
 
-        public static void SaveToJson(Main.LifepodTextureConfigList saveData)
+        public static void SaveToJson(List<LifepodTextureReplacer.LifepodConfigData> saveData)
         { 
-            var textureConfigJson = JsonConvert.SerializeObject(saveData);
+            var textureConfigJson = JsonConvert.SerializeObject(saveData, Formatting.Indented);
             File.WriteAllText(filePath, textureConfigJson);
             Console.WriteLine($"Data saved to JSON at {filePath}");
         }
 
-        public static Main.LifepodTextureConfigList LoadFromJson()
+        public static List<LifepodTextureReplacer.LifepodConfigData> LoadFromJson()
         {
             string data = File.ReadAllText(filePath);
-            return JsonConvert.DeserializeObject<Main.LifepodTextureConfigList>(data);
+            return JsonConvert.DeserializeObject<List<LifepodTextureReplacer.LifepodConfigData>>(data);
         }
     }
 }

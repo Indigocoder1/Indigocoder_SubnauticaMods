@@ -6,22 +6,32 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UWE;
+using static TextureReplacer.LifepodTextureReplacer;
 
 namespace TextureReplacer
 {
     internal static class LifepodTextureReplacer
     {
-        public static void LoadAllTextures()
+        private static List<LifepodConfigData> lifepodConfigs;
+
+        public static void Initialize()
         {
-            for (int i = 0; i < Main.textureConfig.textureConfigs.Count; i++)
+            lifepodConfigs = SaveManager.LoadFromJson();
+
+            LoadAllTextures();
+        }
+
+        private static void LoadAllTextures()
+        {
+            for (int i = 0; i < lifepodConfigs.Count; i++)
             {
-                Main.LifepodConfigItem configItem = Main.textureConfig.textureConfigs[i];
-                configItem.variationChance = Mathf.Clamp01(configItem.variationChance);
+                LifepodConfigData configData = lifepodConfigs[i];
+                configData.variationChance = Mathf.Clamp01(configData.variationChance);
                 bool variationAccepted = false;
 
-                if (configItem.isVariation)
+                if (configData.isVariation)
                 {
-                    if (UnityEngine.Random.Range(0f, 1f) <= configItem.variationChance)
+                    if (UnityEngine.Random.Range(0f, 1f) <= configData.variationChance)
                     {
                         variationAccepted = true;
                     }
@@ -29,32 +39,34 @@ namespace TextureReplacer
 
                 if (!variationAccepted)
                 {
-                    CoroutineHost.StartCoroutine(InitializeTexture(configItem.materialIndex, configItem.fileName, LifepodFromIndex[configItem.lifepodNumberIndex]));
+                    LifepodNumber lifepodNumber = IndexToLifepod[configData.lifepodIndex];
+                    CoroutineHost.StartCoroutine(InitializeTexture(configData.materialIndex, configData.fileName, lifepodNumber));
                 }
                 else
                 {
-                    HandleAlternateTexture(configItem);
+                    HandleAlternateTexture(configData);
                 }
             }
         }
 
-        private static void HandleAlternateTexture(Main.LifepodConfigItem alternateConfig)
+        private static void HandleAlternateTexture(LifepodConfigData alternateConfig)
         {
             Main.logger.LogInfo($"Variation from {alternateConfig.fileName} accepted");
 
-            for (int i = 0; i < Main.textureConfig.textureConfigs.Count; i++)
+            for (int i = 0; i < lifepodConfigs.Count; i++)
             {
-                if (TargetingSameMaterial(alternateConfig, Main.textureConfig.textureConfigs[i]))
+                if (TargetingSameLifepodMaterial(alternateConfig, lifepodConfigs[i]))
                 {
-                    CoroutineHost.StartCoroutine(InitializeTexture(alternateConfig.materialIndex, alternateConfig.fileName, LifepodFromIndex[alternateConfig.lifepodNumberIndex]));
+                    LifepodNumber lifepodNumber = IndexToLifepod[alternateConfig.lifepodIndex];
+                    CoroutineHost.StartCoroutine(InitializeTexture(alternateConfig.materialIndex, alternateConfig.fileName, lifepodNumber));
                 }
             }
         }
 
-        private static bool TargetingSameMaterial(Main.LifepodConfigItem config1, Main.LifepodConfigItem config2)
+        private static bool TargetingSameLifepodMaterial(LifepodConfigData config1, LifepodConfigData config2)
         {
             bool check1 = config1.materialIndex == config2.materialIndex;
-            bool check2 = config1.lifepodNumberIndex == config2.lifepodNumberIndex;
+            bool check2 = config1.lifepodIndex == config2.lifepodIndex;
 
             if (check1 && check2)
             {
@@ -88,17 +100,27 @@ namespace TextureReplacer
             }
         }
 
-        public enum LifepodNumber
+        public static void SaveInitialData()
         {
-            Lifepod2,
-            Lifepod3,
-            Lifepod4,
-            Lifepod6,
-            Lifepod7,
-            Lifepod12,
-            Lifepod13,
-            Lifepod17,
-            Lifepod19
+            List<LifepodConfigData> lifepodConfigDatas = new List<LifepodConfigData>();
+
+            for (int i = 0; i < ExternalRendererHierchyPaths.Count; i++)
+            {
+                int matIndex = 0;
+                int matIndex2 = 1;
+
+                string fileName1 = "life_pod_exterior_exploded_01.png";
+                string fileName2 = "life_pod_exterior_exploded_02.png";
+
+                LifepodNumber num = IndexToLifepod[i];
+                string classID = LifepodClassIDs[num];
+                string hierchy = ExternalRendererHierchyPaths[num];
+
+                lifepodConfigDatas.Add(new LifepodConfigData(matIndex, fileName1, false, -1f, i, classID, hierchy));
+                lifepodConfigDatas.Add(new LifepodConfigData(matIndex2, fileName2, false, -1f, i, classID, hierchy));
+            }
+
+            SaveManager.SaveToJson(lifepodConfigDatas);
         }
 
         private static readonly Dictionary<LifepodNumber, string> ExternalRendererHierchyPaths = new Dictionary<LifepodNumber, string>
@@ -125,29 +147,41 @@ namespace TextureReplacer
             { LifepodNumber.Lifepod17, "56b5ed17-2bff-4f7e-aba0-275b6a2398f9"},
             { LifepodNumber.Lifepod19, "3894aeaf-e1f9-426a-9249-6a4968ac2d8b"},
         };
-        private static readonly Dictionary<int, LifepodNumber> LifepodFromIndex = new Dictionary<int, LifepodNumber>
+        private static readonly Dictionary<int, LifepodNumber> IndexToLifepod = new Dictionary<int, LifepodNumber>
         {
-            { 0, LifepodNumber.Lifepod2 },
-            { 1, LifepodNumber.Lifepod3 },
-            { 2, LifepodNumber.Lifepod4 },
-            { 3, LifepodNumber.Lifepod6 },
-            { 4, LifepodNumber.Lifepod7 },
-            { 5, LifepodNumber.Lifepod12 },
-            { 6, LifepodNumber.Lifepod13 },
-            { 7, LifepodNumber.Lifepod17 },
-            { 8, LifepodNumber.Lifepod19 }
+            { 0, LifepodNumber.Lifepod2},
+            { 1, LifepodNumber.Lifepod3},
+            { 2, LifepodNumber.Lifepod4},
+            { 3, LifepodNumber.Lifepod6},
+            { 4, LifepodNumber.Lifepod7},
+            { 5, LifepodNumber.Lifepod12},
+            { 6, LifepodNumber.Lifepod13},
+            { 7, LifepodNumber.Lifepod17},
+            { 8, LifepodNumber.Lifepod19},
         };
-        private static readonly Dictionary<LifepodNumber, int> IndexFromLifepod = new Dictionary<LifepodNumber, int>
+
+        public class LifepodConfigData : Main.TexturePatchConfigData
         {
-            { LifepodNumber.Lifepod2, 0 },
-            { LifepodNumber.Lifepod3, 1 },
-            { LifepodNumber.Lifepod4, 2 },
-            { LifepodNumber.Lifepod6, 3 },
-            { LifepodNumber.Lifepod7, 4 },
-            { LifepodNumber.Lifepod12, 5 },
-            { LifepodNumber.Lifepod13, 6 },
-            { LifepodNumber.Lifepod17, 7 },
-            { LifepodNumber.Lifepod19, 8 }
-        };
+            public int lifepodIndex;
+
+            public LifepodConfigData(int materialIndex, string fileName, bool isVariation, float variationChance, int lifepodIndex, string prefabClassID, string rendererHierchyPath)
+                : base(materialIndex, fileName, isVariation, variationChance, prefabClassID, rendererHierchyPath)
+            {
+                this.lifepodIndex = lifepodIndex;
+            }
+        }
+
+        public enum LifepodNumber
+        {
+            Lifepod2,
+            Lifepod3,
+            Lifepod4,
+            Lifepod6,
+            Lifepod7,
+            Lifepod12,
+            Lifepod13,
+            Lifepod17,
+            Lifepod19
+        }
     }
 }
