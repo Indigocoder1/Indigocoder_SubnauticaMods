@@ -7,7 +7,7 @@ To add a new item it will need to be formatted in a specefic way
 Here is an example of an item that could be added to the list:
 {"materialIndex":0,"fileName":"life_pod_exterior_exploded_01.png","lifepodNumberIndex":2,"isVariation":false,"variationChance":-1}
 
-The materialIndex is the index of the material on the renderer. It is 0 for life_pod_exterior_exploded_01 and 1 for life_pod_exterior_exploded_02, etc. (0 Based indexing)
+The materialIndex is the index of the material on the renderer. To see the full list of index to texture conversion, check the bottom of the ReadMe. (0 Based indexing)
 fileName is the name of the texture (Including extension) that is replacing the texture of the specefied materialIndex. This file will have to be placed in the Assets folder for it to work
 lifepodNumberIndex is the index of the lifepod. To see what index a lifepod is, view the dictionary in the Main class on my github, here: https://github.com/Indigocoder1/Indogocoder_SubnauticaMods/tree/master/Texture%20Replacer
 isVariation is if this texture is a variation of another texture. If this is set to true, variationChance must be greater than 1
@@ -45,3 +45,14 @@ Here is an example of multiple textures:
 		{"materialIndex":0,"fileName":"life_pod_exterior_exploded_01.png","lifepodNumberIndex":2,"isVariation":false,"variationChance":0.75}
 	]
 }
+
+Lifepod material index to texture conversion:
+
+Index 0 - life_pod_exterior_exploded_01
+Index 1 - life_pod_exterior_exploded_02
+Index 2 - life_pod_exterior_exploded_06_decals_01
+Index 3 - starship_exploded_exterrior_hull_dirt_decals_03
+Index 4 - starship_exploded_exterrior_hull_dirt_decals
+Index 5 - starship_exploded_exterrior_damaged_tile_02_01
+Index 6 - life_pod_exterior_exploded_02_alpha
+Index 7 - life_pod_exterior_exploded_06_decals_02
