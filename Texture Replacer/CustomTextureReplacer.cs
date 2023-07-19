@@ -12,6 +12,7 @@ namespace TextureReplacer
 {
     internal static class CustomTextureReplacer
     {
+        private static string folderFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureReplacer");
         private static string configFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureReplacer/CustomTextureConfig.json");
         private static List<TexturePatchConfigData> textureConfigs;
 
@@ -28,22 +29,32 @@ namespace TextureReplacer
 
         private static void LoadAllTextures()
         {
-            if(textureConfigs.Count == 0)
-            {
-                return;
-            }
-
             for (int i = 0; i < textureConfigs.Count; i++)
             {
                 TexturePatchConfigData configData = textureConfigs[i];
+                if(configData == null)
+                {
+                    return;
+                }
+
+
+                bool flag1 = configData.prefabClassID == "Intentionally blank" || string.IsNullOrEmpty(configData.prefabClassID);
+                bool flag2 = configData.rendererHierchyPath == "Intentionally blank" || string.IsNullOrEmpty(configData.rendererHierchyPath);
+
+                logger.LogInfo($"Flag1 = {flag1} | Flag2 = {flag2}");
+
+                if (flag1 || flag2)
+                {
+                    return;
+                }
+
                 configData.variationChance = Mathf.Clamp01(configData.variationChance);
-                bool variationAccepted = false;
 
                 if (configData.isVariation)
                 {
                     if (UnityEngine.Random.Range(0f, 1f) <= configData.variationChance)
                     {
-                        variationAccepted = true;
+                        Main.logger.LogInfo($"Variation from {configData.fileName} accepted");
                     }
                     else
                     {
@@ -51,23 +62,12 @@ namespace TextureReplacer
                     }
                 }
 
-                Main.logger.LogInfo($"Variation from {configData.fileName} accepted");
-                string classID = configData.prefabClassID;
-                string hierchyPath = configData.rendererHierchyPath;
-                CoroutineHost.StartCoroutine(InitializeTexture(configData.materialIndex, configData.fileName, classID, hierchyPath));
+                CoroutineHost.StartCoroutine(InitializeTexture(configData.materialIndex, configData.fileName, configData.prefabClassID, configData.rendererHierchyPath));
             }
         }
 
         private static IEnumerator InitializeTexture(int materialIndex, string textureName, string classID, string hierchyPath)
         {
-            bool flag1 = classID == "Intentionally blank" || string.IsNullOrEmpty(classID);
-            bool flag2 = hierchyPath == "Intentionally blank" || string.IsNullOrEmpty(hierchyPath);
-
-            if (flag1 || flag2)
-            {
-                yield break;
-            }
-
             IPrefabRequest request = PrefabDatabase.GetPrefabAsync(classID);
 
             if (request == null)
@@ -106,7 +106,7 @@ namespace TextureReplacer
                 )
             };
 
-            SaveManager.SaveToJson(configDatas, configFilePath);
+            SaveManager.SaveToJson(configDatas, configFilePath, folderFilePath);
         }
     }
 }

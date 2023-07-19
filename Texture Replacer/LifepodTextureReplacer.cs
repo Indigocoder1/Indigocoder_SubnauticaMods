@@ -9,6 +9,7 @@ namespace TextureReplacer
 {
     internal static class LifepodTextureReplacer
     {
+        private static string folderFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureReplacer");
         private static string configFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureReplacer/LifepodTextureConfig.json");
 
         private static List<LifepodConfigData> lifepodConfigs;
@@ -16,10 +17,12 @@ namespace TextureReplacer
         public static void Initialize()
         {
             lifepodConfigs = SaveManager.LoadLifepodConfigFromJson(configFilePath);
-            if( lifepodConfigs == null ) 
+            if(lifepodConfigs == null) 
             {
                 SaveInitialData();
             }
+
+            Main.logger.LogInfo($"Lifepod configs = {lifepodConfigs}");
 
             LoadAllTextures();
         }
@@ -102,7 +105,7 @@ namespace TextureReplacer
                 lifepodConfigDatas.Add(new LifepodConfigData(matIndex2, fileName2, false, -1f, i, classID, hierchy));
             }
 
-            SaveManager.SaveLifepodConfigToJson(lifepodConfigDatas, configFilePath);
+            SaveManager.SaveLifepodConfigToJson(lifepodConfigDatas, configFilePath, folderFilePath);
         }
 
         private static readonly Dictionary<LifepodNumber, string> ExternalRendererHierchyPaths = new Dictionary<LifepodNumber, string>

@@ -18,8 +18,8 @@ namespace TextureReplacer
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
 
-            CustomTextureReplacer.Initialize();
             LifepodTextureReplacer.Initialize();
+            CustomTextureReplacer.Initialize();
         }
 
         public class TexturePatchConfigData

@@ -23,8 +23,8 @@ namespace TextureReplacer
                 Console.ForegroundColor = ConsoleColor.Gray;
             }
 
-            Main.logger.LogInfo("Material successfully replaced!");
             material.SetTexture("_MainTex", texture);
+            Main.logger.LogInfo("Texture successfully replaced!");
         }
     }
 }

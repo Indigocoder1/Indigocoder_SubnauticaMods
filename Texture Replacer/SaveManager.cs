@@ -7,8 +7,13 @@ namespace TextureReplacer
 {
     internal static class SaveManager
     {
-        public static void SaveToJson(List<Main.TexturePatchConfigData> saveData, string filePath)
+        public static void SaveToJson(List<Main.TexturePatchConfigData> saveData, string filePath, string folderFilePath)
         {
+            if (!Directory.Exists(folderFilePath))
+            {
+                Directory.CreateDirectory(folderFilePath);
+            }
+
             var textureConfigJson = JsonConvert.SerializeObject(saveData, Formatting.Indented);
             File.WriteAllText(filePath, textureConfigJson);
             Console.WriteLine($"Data saved to JSON at {filePath}");
@@ -25,8 +30,13 @@ namespace TextureReplacer
             return JsonConvert.DeserializeObject<List<Main.TexturePatchConfigData>>(data);
         }
 
-        public static void SaveLifepodConfigToJson(List<LifepodTextureReplacer.LifepodConfigData> saveData, string filePath)
-        { 
+        public static void SaveLifepodConfigToJson(List<LifepodTextureReplacer.LifepodConfigData> saveData, string filePath, string folderFilePath)
+        {
+            if (!Directory.Exists(folderFilePath))
+            {
+                Directory.CreateDirectory(folderFilePath);
+            }
+
             var textureConfigJson = JsonConvert.SerializeObject(saveData, Formatting.Indented);
             File.WriteAllText(filePath, textureConfigJson);
             Console.WriteLine($"Data saved to JSON at {filePath}");
