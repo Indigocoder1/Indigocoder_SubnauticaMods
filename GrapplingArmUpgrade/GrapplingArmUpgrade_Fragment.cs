@@ -26,10 +26,11 @@ namespace GrapplingArmUpgrade_BepInEx
         {
             return new List<LootDistributionData.BiomeData>()
             {
-                new LootDistributionData.BiomeData() { biome = BiomeType.BloodKelp_TechSite, count = 1, probability = 0.1f },
+                new LootDistributionData.BiomeData() { biome = BiomeType.BloodKelp_TechSite, count = 1, probability = 0.15f },
                 new LootDistributionData.BiomeData() { biome = BiomeType.Dunes_TechSite, count = 2, probability = 0.2f },
-                new LootDistributionData.BiomeData() { biome = BiomeType.GrandReef_TechSite, count = 1, probability = 0.25f },
-                new LootDistributionData.BiomeData() { biome = BiomeType.Mountains_TechSite, count = 2, probability = 0.2f }
+                new LootDistributionData.BiomeData() { biome = BiomeType.GrandReef_TechSite, count = 1, probability = 0.275f },
+                new LootDistributionData.BiomeData() { biome = BiomeType.Mountains_TechSite, count = 2, probability = 0.2f },
+                new LootDistributionData.BiomeData() { biome = BiomeType.SparseReef_Techsite, count = 2, probability = 0.2f }
             };
         }
 
