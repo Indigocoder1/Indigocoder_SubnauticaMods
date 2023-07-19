@@ -14,17 +14,17 @@ namespace GrapplingArmUpgrade_BepInEx
             hook.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         }
 
-        public GameObject GetGameObject()
+        GameObject IExosuitArm.GetGameObject()
         {
             return gameObject;
         }
 
-        public GameObject GetInteractableRoot(GameObject target)
+        GameObject IExosuitArm.GetInteractableRoot(GameObject target)
         {
             return null;
         }
 
-        public void SetSide(Exosuit.Arm arm)
+        void IExosuitArm.SetSide(Exosuit.Arm arm)
         {
             if (arm == Exosuit.Arm.Right)
             {
@@ -50,18 +50,18 @@ namespace GrapplingArmUpgrade_BepInEx
             return true;
         }
 
+        bool IExosuitArm.OnUseHeld(out float cooldownDuration)
+        {
+            cooldownDuration = 0f;
+            return false;
+        }
+
         bool IExosuitArm.OnUseUp(out float cooldownDuration)
         {
             animator.SetBool("use_tool", false);
             ResetHook();
             cooldownDuration = 0f;
             return true;
-        }
-
-        bool IExosuitArm.OnUseHeld(out float cooldownDuration)
-        {
-            cooldownDuration = 0f;
-            return false;
         }
 
         bool IExosuitArm.OnAltDown()
@@ -108,7 +108,7 @@ namespace GrapplingArmUpgrade_BepInEx
             hook.transform.position = front.transform.position;
             hook.SetFlying(true);
             GameObject x = null;
-            Vector3 a = default(Vector3);
+            Vector3 a = new Vector3();
 
             UWE.Utils.TraceFPSTargetPosition(exosuit.gameObject, 100f, ref x, ref a, false);
 
@@ -160,6 +160,16 @@ namespace GrapplingArmUpgrade_BepInEx
             {
                 grapplingLoopSound.Stop();
             }
+        }
+
+        private bool IsUnderwater()
+        {
+            return exosuit.transform.position.y < worldForces.waterDepth + 2f && !exosuit.precursorOutOfWater;
+        }
+
+        public bool GetIsGrappling()
+        {
+            return hook != null && hook.attached;
         }
     }
 }

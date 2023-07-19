@@ -4,6 +4,7 @@ using BepInEx.Logging;
 using System.Reflection;
 using BepInEx.Configuration;
 using IndigocoderLib;
+using SMLHelper.V2.Handlers;
 
 namespace GrapplingArmUpgrade_BepInEx
 {
@@ -30,8 +31,6 @@ namespace GrapplingArmUpgrade_BepInEx
         private const string pluginName = "Grappling Arm Upgrade";
         private const string versionString = "1.0.0";
 
-        private static Assembly assembly { get; } = Assembly.GetExecutingAssembly();
-
         public static ManualLogSource logger;
 
         private void Awake()
@@ -39,9 +38,6 @@ namespace GrapplingArmUpgrade_BepInEx
             PiracyDetector.FindPiracy();
 
             logger = Logger;
-
-            Harmony.CreateAndPatchAll(assembly, $"{myGUID}");
-            Logger.LogInfo($"{pluginName} {versionString} Loaded.");
 
             EnableMod = Config.Bind("Grappling Arm Upgrade Options", "Enable", true);
 
@@ -58,7 +54,16 @@ namespace GrapplingArmUpgrade_BepInEx
 
             new GrapplingArmUpgrade_Options();
 
+            logger.LogInfo("Patching module class");
             new GrapplingArmUpgradeModule().Patch();
+
+            Invoke(nameof(LogData), 10f);
+        }
+
+        private void LogData()
+        {
+            //logger.LogInfo($"Module tech type = {GrapplingArmUpgradeModule.moduleTechType}");
+            //logger.LogInfo($"Module tech data = {CraftDataHandler.Main.GetModdedTechData(GrapplingArmUpgradeModule.moduleTechType).ingredientCount}");
         }
     }
 }
