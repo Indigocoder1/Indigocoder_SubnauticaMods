@@ -2,10 +2,8 @@
 using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
-using GrapplingArmUpgrade_BepInEx;
 using HarmonyLib;
 using IndigocoderLib;
-using System.Reflection;
 
 namespace GrappleItemPickup_BepInEx
 {
@@ -40,7 +38,7 @@ namespace GrappleItemPickup_BepInEx
             }
             else
             {
-                Logger.LogInfo($"Not able to patch {nameof(GrapplingArmUpgrade_FixedUpdate_Patch.GrapplingArm_Patch)} because the mod was not found");
+                Logger.LogInfo($"Not able to patch GrapplingArmUpgrade because the mod was not found");
             }
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
