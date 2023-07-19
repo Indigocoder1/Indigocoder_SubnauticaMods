@@ -55,15 +55,10 @@ namespace GrapplingArmUpgrade_BepInEx
             new GrapplingArmUpgrade_Options();
 
             logger.LogInfo("Patching module class");
-            new GrapplingArmUpgradeModule().Patch();
 
-            Invoke(nameof(LogData), 10f);
-        }
-
-        private void LogData()
-        {
-            //logger.LogInfo($"Module tech type = {GrapplingArmUpgradeModule.moduleTechType}");
-            //logger.LogInfo($"Module tech data = {CraftDataHandler.Main.GetModdedTechData(GrapplingArmUpgradeModule.moduleTechType).ingredientCount}");
+            GrapplingArmUpgrade_Fragment fragment = new GrapplingArmUpgrade_Fragment();
+            fragment.Patch();
+            new GrapplingArmUpgradeModule(fragment).Patch();
         }
     }
 }

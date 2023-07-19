@@ -14,15 +14,15 @@ namespace GrapplingArmUpgrade_BepInEx
     {
         public static TechType moduleTechType { get; private set; }
 
-        internal GrapplingArmUpgradeModule()
+        internal GrapplingArmUpgradeModule(SpawnableArmFragment fragment)
             : base(
                 techTypeName: "UpgradedGrapplingArm",
                 friendlyName: "Upgraded Prawn Suit grappling arm",
                 description: "This upgraded grappling arm will enhance your swinging capabilities",
                 armType: ArmType.ExosuitArm,
                 armTemplate: ArmTemplate.GrapplingArm,
-                requiredForUnlock: TechType.ExosuitGrapplingArmModule,
-                fragment: null
+                requiredForUnlock: TechType.None,
+                fragment: fragment
             )
         { }
 

@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GrapplingArmUpgradeModule.cs" />
+    <Compile Include="GrapplingArmUpgrade_Fragment.cs" />
     <Compile Include="GrapplingArmUpgrade_Handler.cs" />
     <Compile Include="GrapplingArmUpgrade_ModdingRequest.cs" />
     <Compile Include="GrapplingArmUpgrade_Options.cs" />
