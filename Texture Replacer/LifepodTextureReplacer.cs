@@ -1,22 +1,25 @@
-﻿using System;
+﻿using BepInEx;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using UnityEngine;
 using UWE;
-using static TextureReplacer.LifepodTextureReplacer;
 
 namespace TextureReplacer
 {
     internal static class LifepodTextureReplacer
     {
+        private static string configFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureReplacer/LifepodTextureConfig.json");
+
         private static List<LifepodConfigData> lifepodConfigs;
 
         public static void Initialize()
         {
-            lifepodConfigs = SaveManager.LoadFromJson();
+            lifepodConfigs = SaveManager.LoadLifepodConfigFromJson(configFilePath);
+            if( lifepodConfigs == null ) 
+            {
+                SaveInitialData();
+            }
 
             LoadAllTextures();
         }
@@ -31,7 +34,7 @@ namespace TextureReplacer
 
                 if (configData.isVariation)
                 {
-                    if (UnityEngine.Random.Range(0f, 1f) <= configData.variationChance)
+                    if (Random.Range(0f, 1f) <= configData.variationChance)
                     {
                         variationAccepted = true;
                     }
@@ -53,29 +56,8 @@ namespace TextureReplacer
         {
             Main.logger.LogInfo($"Variation from {alternateConfig.fileName} accepted");
 
-            for (int i = 0; i < lifepodConfigs.Count; i++)
-            {
-                if (TargetingSameLifepodMaterial(alternateConfig, lifepodConfigs[i]))
-                {
-                    LifepodNumber lifepodNumber = (LifepodNumber)alternateConfig.lifepodIndex;
-                    CoroutineHost.StartCoroutine(InitializeTexture(alternateConfig.materialIndex, alternateConfig.fileName, lifepodNumber));
-                }
-            }
-        }
-
-        private static bool TargetingSameLifepodMaterial(LifepodConfigData config1, LifepodConfigData config2)
-        {
-            bool check1 = config1.materialIndex == config2.materialIndex;
-            bool check2 = config1.lifepodIndex == config2.lifepodIndex;
-
-            if (check1 && check2)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            LifepodNumber lifepodNumber = (LifepodNumber)alternateConfig.lifepodIndex;
+            CoroutineHost.StartCoroutine(InitializeTexture(alternateConfig.materialIndex, alternateConfig.fileName, lifepodNumber));
         }
 
         private static IEnumerator InitializeTexture(int materialIndex, string textureName, LifepodNumber lifepodNumber)
@@ -86,7 +68,7 @@ namespace TextureReplacer
 
             if (request.TryGetPrefab(out GameObject prefab))
             {
-                Texture_Replacer replacer = prefab.AddComponent<Texture_Replacer>();
+                TextureReplacerHelper replacer = prefab.AddComponent<TextureReplacerHelper>();
 
                 Renderer targetRenderer = prefab.transform.Find(ExternalRendererHierchyPaths[lifepodNumber]).GetComponent<Renderer>();
 
@@ -120,7 +102,7 @@ namespace TextureReplacer
                 lifepodConfigDatas.Add(new LifepodConfigData(matIndex2, fileName2, false, -1f, i, classID, hierchy));
             }
 
-            SaveManager.SaveToJson(lifepodConfigDatas);
+            SaveManager.SaveLifepodConfigToJson(lifepodConfigDatas, configFilePath);
         }
 
         private static readonly Dictionary<LifepodNumber, string> ExternalRendererHierchyPaths = new Dictionary<LifepodNumber, string>

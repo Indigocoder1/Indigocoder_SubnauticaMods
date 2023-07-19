@@ -1,24 +1,44 @@
 ﻿using System;
 using System.IO;
 using Newtonsoft.Json;
-using BepInEx;
 using System.Collections.Generic;
 
 namespace TextureReplacer
 {
     internal static class SaveManager
     {
-        private static string filePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureConfig.json");
+        public static void SaveToJson(List<Main.TexturePatchConfigData> saveData, string filePath)
+        {
+            var textureConfigJson = JsonConvert.SerializeObject(saveData, Formatting.Indented);
+            File.WriteAllText(filePath, textureConfigJson);
+            Console.WriteLine($"Data saved to JSON at {filePath}");
+        }
 
-        public static void SaveToJson(List<LifepodTextureReplacer.LifepodConfigData> saveData)
+        public static List<Main.TexturePatchConfigData> LoadFromJson(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                return null;
+            }
+
+            string data = File.ReadAllText(filePath);
+            return JsonConvert.DeserializeObject<List<Main.TexturePatchConfigData>>(data);
+        }
+
+        public static void SaveLifepodConfigToJson(List<LifepodTextureReplacer.LifepodConfigData> saveData, string filePath)
         { 
             var textureConfigJson = JsonConvert.SerializeObject(saveData, Formatting.Indented);
             File.WriteAllText(filePath, textureConfigJson);
             Console.WriteLine($"Data saved to JSON at {filePath}");
         }
 
-        public static List<LifepodTextureReplacer.LifepodConfigData> LoadFromJson()
+        public static List<LifepodTextureReplacer.LifepodConfigData> LoadLifepodConfigFromJson(string filePath)
         {
+            if(!File.Exists(filePath))
+            {
+                return null;
+            }
+
             string data = File.ReadAllText(filePath);
             return JsonConvert.DeserializeObject<List<LifepodTextureReplacer.LifepodConfigData>>(data);
         }

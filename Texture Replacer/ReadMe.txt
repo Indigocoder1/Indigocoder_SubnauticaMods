@@ -1,7 +1,7 @@
-On adding custom textures:
+----On adding lifepod textures----
 
 You will need to add a new TextureConfigItem to the TextureConfigList
-This can be done by editing the Json file in the Configs folder
+This can be done by editing the Json file in the BepInEx/Configs/TextureReplacer folder
 
 To add a new item it will need to be formatted in a specefic way
 Here is an example of an item that could be added to the list:
@@ -18,8 +18,9 @@ Here is an example of an item that could be added to the list:
 lifepodIndex is the index of the lifepod. To see what index a lifepod is, view the enum in the LifepodTextureReplacer class on my github, here: https://github.com/Indigocoder1/Indogocoder_SubnauticaMods/tree/master/Texture%20Replacer
 materialIndex is the index of the material on the renderer. To see the full list of index to texture conversion, check the bottom of the ReadMe. (0 Based indexing)
 fileName is the name of the texture (Including extension) that is replacing the texture of the specefied materialIndex. This file will have to be placed in the Assets folder for it to work
-prefabClassID is the classID of the prefab you're replacing. For lifepods a list can be found on my github in the LifepodTextureReplacer class
-rendererHierchyPath is the path in the hierchy to the child of the prefab that contains the renderer you're trying to replace
+prefabClassID is the classID of the prefab you're replacing. For lifepods a list can be found on my github in the LifepodTextureReplacer class. For other prefabs use Lee23's runtime editor mod to locate the prefab.
+Once you've located the prefab click on the PrefabIdentifier script and copy the ClassID
+rendererHierchyPath is the path in the hierchy to the child from the prefab that contains the renderer you're trying to replace
 isVariation is if this texture is a variation of another texture. If this is set to true, variationChance must be greater than 0 to do anything
 variaionChance is the chance (From 0 to 1) of this texture being chosen instead of another one. Note that this is only impactful if isVariation is true
 *Side note, I usually set variationChance to -1 when isVariation is false so I know it isn't set to true by accident
@@ -79,3 +80,7 @@ Index 4 - starship_exploded_exterrior_hull_dirt_decals
 Index 5 - starship_exploded_exterrior_damaged_tile_02_01
 Index 6 - life_pod_exterior_exploded_02_alpha
 Index 7 - life_pod_exterior_exploded_06_decals_02
+
+----On adding custom prefab textures----
+
+The process is the same as replacing lifepod textures, except that you don't need a lifepod index

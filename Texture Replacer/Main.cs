@@ -1,11 +1,6 @@
 ﻿using BepInEx;
-using BepInEx.Configuration;
 using BepInEx.Logging;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UWE;
+
 namespace TextureReplacer
 {
     [BepInPlugin(myGUID, pluginName, versionString)]
@@ -23,7 +18,7 @@ namespace TextureReplacer
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
 
-            LifepodTextureReplacer.SaveInitialData();
+            CustomTextureReplacer.Initialize();
             LifepodTextureReplacer.Initialize();
         }
 
