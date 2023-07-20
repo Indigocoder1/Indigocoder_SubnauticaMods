@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UWE;
+using static TextureReplacer.Main;
 
 namespace TextureReplacer
 {
@@ -20,6 +21,7 @@ namespace TextureReplacer
             if(lifepodConfigs == null) 
             {
                 SaveInitialData();
+                lifepodConfigs = SaveManager.LoadLifepodConfigFromJson(configFilePath);
             }
 
             Main.logger.LogInfo($"Lifepod configs = {lifepodConfigs}");
@@ -101,8 +103,8 @@ namespace TextureReplacer
                 string classID = LifepodClassIDs[num];
                 string hierchy = ExternalRendererHierchyPaths[num];
 
-                lifepodConfigDatas.Add(new LifepodConfigData(matIndex, fileName1, false, -1f, i, classID, hierchy));
-                lifepodConfigDatas.Add(new LifepodConfigData(matIndex2, fileName2, false, -1f, i, classID, hierchy));
+                lifepodConfigDatas.Add(new LifepodConfigData(new Main.ConfigInfo(matIndex, fileName1, classID, hierchy, false, -1f), i));
+                lifepodConfigDatas.Add(new LifepodConfigData(new Main.ConfigInfo(matIndex2, fileName2, classID, hierchy, false, -1f), i));
             }
 
             SaveManager.SaveLifepodConfigToJson(lifepodConfigDatas, configFilePath, folderFilePath);
@@ -137,8 +139,7 @@ namespace TextureReplacer
         {
             public int lifepodIndex;
 
-            public LifepodConfigData(int materialIndex, string fileName, bool isVariation, float variationChance, int lifepodIndex, string prefabClassID, string rendererHierchyPath)
-                : base(materialIndex, fileName, isVariation, variationChance, prefabClassID, rendererHierchyPath)
+            public LifepodConfigData(ConfigInfo configInfo, int lifepodIndex) : base(configInfo)
             {
                 this.lifepodIndex = lifepodIndex;
             }

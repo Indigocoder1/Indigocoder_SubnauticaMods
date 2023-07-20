@@ -22,6 +22,7 @@ namespace TextureReplacer
             if (textureConfigs == null)
             {
                 SaveExampleData();
+                textureConfigs = SaveManager.LoadFromJson(configFilePath);
             }
 
             LoadAllTextures();
@@ -29,6 +30,8 @@ namespace TextureReplacer
 
         private static void LoadAllTextures()
         {
+            List<TexturePatchConfigData> linkedTextureConfigs = new List<TexturePatchConfigData>();
+
             for (int i = 0; i < textureConfigs.Count; i++)
             {
                 TexturePatchConfigData configData = textureConfigs[i];
@@ -37,11 +40,10 @@ namespace TextureReplacer
                     return;
                 }
 
-
                 bool flag1 = configData.prefabClassID == "Intentionally blank" || string.IsNullOrEmpty(configData.prefabClassID);
-                bool flag2 = configData.rendererHierchyPath == "Intentionally blank" || string.IsNullOrEmpty(configData.rendererHierchyPath);
+                bool flag2 = configData.rendererHierarchyPath == "Intentionally blank" || string.IsNullOrEmpty(configData.rendererHierarchyPath);
 
-                logger.LogInfo($"Flag1 = {flag1} | Flag2 = {flag2}");
+                logger.LogInfo($"Is blank flag 1 = {flag1} | Is blank flag 2 = {flag2}");
 
                 if (flag1 || flag2)
                 {
@@ -52,9 +54,14 @@ namespace TextureReplacer
 
                 if (configData.isVariation)
                 {
-                    if (UnityEngine.Random.Range(0f, 1f) <= configData.variationChance)
+                    if (UnityEngine.Random.Range(0f, 1f) <= configData.variationChance || configData.variationAccepted)
                     {
                         Main.logger.LogInfo($"Variation from {configData.fileName} accepted");
+
+                        if(configData.linkedConfigNames.Count > 0)
+                        {
+                            EnsureLinkedConfigs(configData);
+                        }
                     }
                     else
                     {
@@ -62,7 +69,28 @@ namespace TextureReplacer
                     }
                 }
 
-                CoroutineHost.StartCoroutine(InitializeTexture(configData.materialIndex, configData.fileName, configData.prefabClassID, configData.rendererHierchyPath));
+                CoroutineHost.StartCoroutine(InitializeTexture(configData.materialIndex, configData.fileName, configData.prefabClassID, configData.rendererHierarchyPath));
+            }
+        }
+
+        private static void EnsureLinkedConfigs(TexturePatchConfigData configData)
+        {
+            foreach (TexturePatchConfigData item in textureConfigs)
+            {
+                if(!item.isVariation || item.variationChance == 1)
+                {
+                    continue;
+                }
+                
+                if(item.linkedConfigNames.Count == 0)
+                {
+                    continue;
+                }
+
+                if(item.linkedConfigNames.Contains(configData.configName))
+                {
+                    item.variationAccepted = true;
+                }
             }
         }
 
@@ -70,10 +98,7 @@ namespace TextureReplacer
         {
             IPrefabRequest request = PrefabDatabase.GetPrefabAsync(classID);
 
-            if (request == null)
-            {
-                yield break;
-            }
+            yield return request;
 
             if (request.TryGetPrefab(out GameObject prefab))
             {
@@ -84,7 +109,7 @@ namespace TextureReplacer
                 if (targetRenderer == null)
                 {
                     Main.logger.LogError($"Target renderer was null!");
-                    yield return null;
+                    yield break;
                 }
 
                 replacer.ReplaceTexture(targetRenderer.materials[materialIndex], textureName);
@@ -97,12 +122,18 @@ namespace TextureReplacer
             {
                 new TexturePatchConfigData
                 (
+                    configName: "Example Config Name",
                     materialIndex: 0,
                     fileName: "Replacement texture file name goes here",
                     isVariation: false,
                     variationChance: -1f,
                     prefabClassID: "Intentionally blank",
-                    rendererHierchyPath: "Intentionally blank"
+                    rendererHierarchyPath: "Intentionally blank",
+                    linkedConfigNames: new List<string>
+                    {
+                        "Example name 1",
+                        "Example name 2"
+                    }
                 )
             };
 

@@ -2,6 +2,7 @@
 
 You will need to add a new TextureConfigItem to the TextureConfigList
 This can be done by editing the Json file in the BepInEx/Configs/TextureReplacer folder
+To generate the config folder you have to run the game first
 
 To add a new item it will need to be formatted in a specefic way
 Here is an example of an item that could be added to the list:

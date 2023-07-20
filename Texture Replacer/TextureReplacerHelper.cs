@@ -24,7 +24,7 @@ namespace TextureReplacer
             }
 
             material.SetTexture("_MainTex", texture);
-            Main.logger.LogInfo("Texture successfully replaced!");
+            Main.logger.LogInfo($"Texture successfully replaced for {material.name}");
         }
     }
 }
