@@ -30,7 +30,7 @@ namespace GrapplingArmUpgrade_BepInEx
                 new LootDistributionData.BiomeData() { biome = BiomeType.Dunes_TechSite, count = 2, probability = 0.2f },
                 new LootDistributionData.BiomeData() { biome = BiomeType.GrandReef_TechSite, count = 1, probability = 0.275f },
                 new LootDistributionData.BiomeData() { biome = BiomeType.Mountains_TechSite, count = 2, probability = 0.2f },
-                new LootDistributionData.BiomeData() { biome = BiomeType.SparseReef_Techsite, count = 2, probability = 0.2f }
+                new LootDistributionData.BiomeData() { biome = BiomeType.SparseReef_Techsite, count = 2, probability = 0.1f }
             };
         }
 

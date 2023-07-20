@@ -48,7 +48,7 @@ namespace GrapplingArmUpgrade_BepInEx
             InitialHookSpeed = Config.Bind("Grappling Arm Upgrade Options", "Initial Grappling Hook Speed", 50f,
                 new ConfigDescription("The amount of force with which the grappling travels is shot through the air", acceptableValues: new AcceptableValueRange<float>(25f, 70f)));
             ExosuitAcceleration = Config.Bind("Grappling Arm Upgrade Options", "Prawn Grappling Acceleration", 20f,
-                new ConfigDescription("How much acceleration is given to the Prawn while grappling", acceptableValues: new AcceptableValueRange<float>(15f, 50f)));
+                new ConfigDescription("How much acceleration is given to the Prawn while grappling", acceptableValues: new AcceptableValueRange<float>(15f, 30f)));
             AttachedObjectAcceleration = Config.Bind("Grappling Arm Upgrade Options", "Attached Object Acceleration", 600f,
                 new ConfigDescription("How much accleration is given to the object your hook is attached to", acceptableValues: new AcceptableValueRange<float>(400f, 1000f)));
 

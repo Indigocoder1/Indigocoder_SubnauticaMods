@@ -39,6 +39,7 @@ namespace GrapplingArmUpgrade_BepInEx
 
         protected override void SetCustomLanguageText()
         {
+
         }
 
         protected override Atlas.Sprite GetItemSprite()

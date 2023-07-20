@@ -12,6 +12,7 @@ namespace GrapplingArmUpgrade_BepInEx
 
             hook.GetComponent<SphereCollider>().radius = 0.25f;
             hook.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            ResetHook();
         }
 
         GameObject IExosuitArm.GetGameObject()
