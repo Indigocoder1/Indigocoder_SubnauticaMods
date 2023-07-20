@@ -25,7 +25,7 @@ namespace UpgradedJumpJetModule
             string spriteFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets") + "/upgradedJumpJets.png";
             Atlas.Sprite sprite = ImageUtils.LoadSpriteFromFile(spriteFilePath);
 
-            var prefabInfo = PrefabInfo.WithTechType("UpgradedJumpJetModule", "Upgraded Prawn jump jet module", "With this upgrade module you can jump even more!")
+            var prefabInfo = PrefabInfo.WithTechType("UpgradedJumpJetModule", "Upgraded Prawn jump jet module", "With this upgrade module you can jump even more! Effects do not stack")
                 .WithIcon(sprite);
 
             var customPrefab = new CustomPrefab(prefabInfo);

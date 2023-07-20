@@ -29,10 +29,10 @@ namespace UpgradedJumpJetModule
 
             UpgradedJetForce = Config.Bind("Upgraded Jump Jet Module", "Jet force", 10f,
                 new ConfigDescription("How much force you have while holding the jump button", acceptableValues: new AcceptableValueRange<float>(8f, 20f)));
-            UpgradedJetAcceleration = Config.Bind("Upgraded Jump Jet Module", "Jet acceleration", 0.5f,
-                new ConfigDescription("How much you accelerate while holding the jump button", acceptableValues: new AcceptableValueRange<float>(0.3f, 1f)));
+            UpgradedJetAcceleration = Config.Bind("Upgraded Jump Jet Module", "Prawn acceleration", 0.5f,
+                new ConfigDescription("How much you accelerate while in the air", acceptableValues: new AcceptableValueRange<float>(0.3f, 2f)));
             UpgradedJumpForce = Config.Bind("Upgraded Jump Jet Module", "Jump force", 10f,
-                new ConfigDescription("How much force you push off from the ground with", acceptableValues: new AcceptableValueRange<float>(7f, 20f)));
+                new ConfigDescription("How much force you push off from the ground with", acceptableValues: new AcceptableValueRange<float>(5f, 20f)));
 
             new UpgradedJumpJet_ModOptions();
 
