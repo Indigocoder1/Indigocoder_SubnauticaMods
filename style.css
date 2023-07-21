@@ -1,0 +1,17 @@
+body
+{
+    background-color: rgb(28, 27, 34);
+    color: white;
+    font-family: sans-serif;
+}
+h1 {
+    color: white;
+}
+p
+{
+    color: white;
+}
+a
+{
+    color: lightblue;
+}
