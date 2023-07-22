@@ -7,6 +7,8 @@ body
     font-family: sans-serif;
     margin-left: 160px; /* Same as the width of the sidebar */
     padding: 0px 10px;
+    width: 75%;
+    padding-bottom: 50px;
 }
 h1 {
     font-family: 'Roboto', sans-serif;
@@ -90,4 +92,9 @@ img
   @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}
     .sidenav a {font-size: 18px;}
+  }
+
+/* Three image containers (use 25% for four, and 50% for two, etc) */
+.inline {
+    display: inline;
   }

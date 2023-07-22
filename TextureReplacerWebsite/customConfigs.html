@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Configs</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Sidebar navigation -->
+    <div class="sidenav">
+        <a href="index.html">Getting started</a>
+        <a href=customConfigs.html>Custom Config Tutorial</a>
+        <a href=lifepodConfigs.html>Lifepod Config Tutorial</a>
+        <a href=runtimeEditor.html>Runtime Editor Tutorial</a>
+    </div>
+
+    <h2 class="bottom-border">Adding custom texture configs</h2>
+    <div>You will need to add a new TextureConfigItem to the TextureConfigList</div>
+    <div>This can be done by editing the Json file in the BepInEx/Configs/TextureReplacer folder</div>
+    <div>To generate the config folder you have to run the game first</div>
+    <p>
+        To add a new item it will need to be formatted in a specific way.
+        Here is an example of an item that could be added to the list:
+    </p>    
+    <pre>
+{
+    "<font color="red">configName</font>": "Example name",
+    "<font color="lightgreen">materialIndex</font>": 0,
+    "<font color="yellow">fileName</font>": "Intentionally blank",
+    "<font color="#61cfe8">prefabClassID</font>": "Intentionally blank",
+    "<font color="green">rendererHierarchyPath</font>": "Intentionally blank",
+    "<font color="purple">isVariation</font>": false,
+    "<font color=#ed8aea>variationChance</font>": -1.0,
+    "<font color="#1988bf">linkedConfigNames</font>": [
+      "Example name 1"
+    ]
+}
+    </pre>
+    <div class="bottom-border">Explanation of these items:</div>
+    <pre>
+<font color="red">configName</font> - This is used in the linkedConfigNames list.
+It can be whatever value you want and doesn't need to relate to the texture.
+
+<font color="lightgreen">materialIndex</font> - Relates to the list of materials on the renderer of the prefab you're replacing.
+Is uses 0 based indexing, so the first item would be index 0, 2nd would be index 1, etc.
+
+<font color="yellow">fileName</font> - The name of the image you're replacing the texture with.
+The file will need to be in the Assets folder of the mod, and include the file extension.
+
+<font color="#61cfe8">prefabClassID</font> - The classID of the prefab that's the parent of the texture you're trying to replace.
+The easiest way to find this is to use the runtime editor by Lee23. On the sidebar you can view the runtime editor tutorial.
+
+<font color="green">rendererHierarchyPath</font> - The path to the child containing the renderer for the prefab.
+Like the classID this is easiest to find with the runtime editor. As with the classID you can use the runtime editor tutorial.
+
+<font color="purple">isVariation</font> - Use this if you want there to be a chance for your texture to be replaced.
+By default all textures are always loaded. This value is only useful if variationChance is greater than 0.
+
+<font color=#ed8aea>variationChance</font> - The chance from 0 to 1 that the texture will be loaded.
+This is only useful if <font color="purple">isVariation</font> is true
+
+<font color="#1988bf">linkedConfigNames</font> - A list of <font color="red">configNames</font> that can link 2 variant configs together.
+Example: If you have 2 variants, config 1 and config 2, and you want both to be loaded together,
+you have to put each other's <font color="red">configName</font> in the <font color="#1988bf">linkedConfigNames</font> list
+    </pre>
+<div class="top-border">
+    All parts of the config follow Json formatting, so when adding new items to a list you must add a comma at the end of the previous item
+</div>
+<pre>
+An example of this is:
+
+"<font color="#1988bf">linkedConfigNames</font>": [
+  "Example name 1", <-- Comma
+  "Example name 2"
+]
+
+Or
+
+{
+    *Texture config here*
+}, <font color="Red">&lt;--</font> Comma
+{
+    *Texture config 2 here*
+}
+</pre>
+</body>
+</html>
