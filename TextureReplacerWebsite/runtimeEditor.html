@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Runtime Editor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Side navigation -->
+    <div class="sidenav">
+        <a href=index.html>Json Tutorial</a>
+        <a href=runtimeEditor.html>Runtime Editor Tutorial</a>
+    </div>
+    <div>
+        <h2 class="bottom-border">Using the runtime editor</h2>
+        The first thing you'll need to do is download and install Lee23's runtime editor from Submodica.
+        Here is the link: <a href="https://submodica.xyz/mods/sn1/109" target="_blank">https://submodica.xyz/mods/sn1/109</a>
+    </div>
+    <div>
+        Once you have it installed, open Subnautica and press F7 to open the runtime editor. It should look something like this:
+        <br>
+        <img src="img/runtimeEditor1.png" width="480" height="270" alt="Screenshot of the runtime editor inside Subnautica, showing the object browser and inspector">
+    </div>
+    <div>
+        To find, for example, a peeper prefab, click on the search bar in the top right and type in "Peeper", then click "Search Scene". <br>
+        When prefabs are instantiated (Spawned in the scene) they get "(Clone)" added to their name. <br>
+        Knowing this, we're looking for "Peeper (Clone)". <br>
+        Once you've found a Peeper, if you wanted to replace a texture on the Peeper you'd click on the PrefabIdentifier component to view the ClassId <br>
+        <img src="img/runtimeEditor2.png" width="278" height="1032" alt="Image Placeholder">
+    </pre>
+</body>
+</html>

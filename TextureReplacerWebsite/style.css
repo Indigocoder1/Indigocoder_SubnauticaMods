@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap');
+
+body
+{
+    background-color: rgb(28, 27, 34);
+    color: white;
+    font-family: sans-serif;
+    margin-left: 160px; /* Same as the width of the sidebar */
+    padding: 0px 10px;
+}
+h1 {
+    font-family: 'Roboto', sans-serif;
+    color: white;
+}
+p
+{
+    color: white;
+}
+a
+{
+    color: lightblue;
+}
+.bottom-border {
+    border-bottom: 1px solid #ffffff;
+    padding-bottom: 15px;
+}
+.top-border
+{
+    border-top: 1px solid #ffffff;
+    padding-top: 15px;
+}
+div
+{
+    margin: 5px 0;
+}
+ul {
+    list-style: none;
+    margin: 10px 0 10px 0;
+    padding: 0;
+}
+li {
+    display: inline;
+}
+pre
+{
+    font-family: sans-serif;
+}
+div.color-red
+{
+    color: red;
+}
+img
+{
+    margin-top: 15px;
+}
+.large-font
+{
+    font-size: 20px;
+}
+
+/* The sidebar menu */
+.sidenav {
+    height: 100%; /* Full-height: remove this if you want "auto" height */
+    width: 160px; /* Set the width of the sidebar */
+    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+    z-index: 1; /* Stay on top */
+    top: 0; /* Stay at the top */
+    left: 0;
+    background-color: #29262e;
+    ;
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 20px;
+  }
+  
+  /* The navigation menu links */
+  .sidenav a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 20px;
+    color: #f1f1f1;
+    display: block;
+  }
+  
+  /* When you mouse over the navigation links, change their color */
+  .sidenav a:hover {
+    color: #bababa;
+  }
+  
+  /* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
+  @media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+  }
