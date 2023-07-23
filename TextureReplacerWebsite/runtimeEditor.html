@@ -10,9 +10,10 @@
     <!-- Sidebar navigation -->
     <div class="sidenav">
         <a href="index.html">Getting started</a>
+        <a href=runtimeEditor.html>Runtime Editor Tutorial</a>
+        <a href="assetStudio.html">Asset Studio</a>
         <a href=customConfigs.html>Custom Config Tutorial</a>
         <a href=lifepodConfigs.html>Lifepod Config Tutorial</a>
-        <a href=runtimeEditor.html>Runtime Editor Tutorial</a>
     </div>
     <div>
         <h2 class="bottom-border">Using the runtime editor</h2>
@@ -22,7 +23,7 @@
     <div>
         Once you have it installed, open Subnautica and press F7 to open the runtime editor. It should look something like this:
         <br>
-        <img src="img/runtimeEditor1.png" width="480" height="270" alt="Screenshot of the runtime editor inside Subnautica, showing the object browser and inspector">
+        <img src="img/runtimeEditor/runtimeEditor1.png" width="480" height="270" alt="Screenshot of the runtime editor inside Subnautica, showing the object browser and inspector">
     </div>
     <div>
         To find, for example, a peeper prefab, click on the search bar in the top right and type in "Peeper", then click "Search Scene". <br>
@@ -33,10 +34,10 @@
     </div>
     <div>
         <div class="inline">
-            <img align="top" src="img/runtimeEditor2.png" width="139" height="516" alt="Screenshot highlighting the prefab identifier script in the object browser">
+            <img align="top" src="img/runtimeEditor/runtimeEditor2.png" width="139" height="516" alt="Screenshot highlighting the prefab identifier script in the object browser">
         </div>
         <div class="inline">
-            <img align="top" src="img/runtimeEditor3.png" width="632" height="426" alt="Screenshot highlighting the classID in the prefab identifier component">
+            <img align="top" src="img/runtimeEditor/runtimeEditor3.png" width="632" height="426" alt="Screenshot highlighting the classID in the prefab identifier component">
         </div>
     </div>
     <div>
@@ -47,16 +48,16 @@
         I'll navigate to "peeper". The path to this gameobject is "model/peeper/aqua_bird/peeper". <br>
         This is the same path you'd use for the <font color="green">rendererHierarchyPath</font> <br>
         <div class="inline">
-            <img align="top" src="img/runtimeEditor4.png" width="261" height="646" alt="Screenshot showing the hierarchy path to the child containing the skinned mesh renderer">
+            <img align="top" src="img/runtimeEditor/runtimeEditor4.png" width="261" height="646" alt="Screenshot showing the hierarchy path to the child containing the skinned mesh renderer">
         </div>
         <div class="inline">
-            <img align="top" src="img/runtimeEditor5.png" width="420" height="570" alt="Screenshot highlighting the materials property of the skinned mesh renderer">
+            <img align="top" src="img/runtimeEditor/runtimeEditor5.png" width="420" height="570" alt="Screenshot highlighting the materials property of the skinned mesh renderer">
         </div>
     </div>
     <div>
         If you click on the SkinnedMeshRenderer component you can view the properties of the renderer. <br>
         If you scroll down you can click on the materials property to view the materials on the renderer. <br>
-        <img src="img/runtimeEditor6.png" width="620" height="159" alt="Screenshot showing the materials on the renderer, with their indexes">
+        <img src="img/runtimeEditor/runtimeEditor6.png" width="620" height="159" alt="Screenshot showing the materials on the renderer, with their indexes">
     </div>
     <div>
         This is where you find what <font color="lightgreen">materialIndex</font> you need for the texture you're replacing

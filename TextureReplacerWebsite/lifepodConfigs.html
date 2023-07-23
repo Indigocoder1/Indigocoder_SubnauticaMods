@@ -10,14 +10,35 @@
     <!-- Sidebar navigation -->
     <div class="sidenav">
         <a href="index.html">Getting started</a>
+        <a href=runtimeEditor.html>Runtime Editor Tutorial</a>
+        <a href="assetStudio.html">Asset Studio</a>
         <a href=customConfigs.html>Custom Config Tutorial</a>
         <a href=lifepodConfigs.html>Lifepod Config Tutorial</a>
-        <a href=runtimeEditor.html>Runtime Editor Tutorial</a>
     </div>
 
     <h2 class="bottom-border">Adding lifepod texture configs</h2>
-    <div>
-        Most of the config is the same layout as custom configs, but there are some differences. <br>
-    </div>
+    <h3><font color="#1988bf">It is highly recommended that you view the custom config tutorial before this one.</font></h3>
+
+    <div>Most of the config is the same layout as custom configs, but there are some differences.</div>
+    <div>The main diferrence is that you don't need the classID or rendererHierarchyPath.</div>
+    <div>Instead you need to put in a lifepodIndex.</div>
+    <div>The lifepod index goes from 0 to 8, where index 0 is lifepod 2, index 1 is lifepod 3, etc.</div>
+    <h3 class="top-border">Keep in mind that the lifepod numbers don't go straight from 2 to 10.</h3>
+
+    <div>Here is a list of the lifepod numbers in order with their indexes: <br></div>
+    <pre class="medium-spacing">
+Lifepod 2 - Index 0
+Lifepod3 - Index 1
+Lifepod4 - Index 2
+Lifepod6 - Index 3
+Lifepod7 - Index 4
+Lifepod12 - Index 5
+Lifepod13 - Index 6
+Lifepod17 - Index 7
+Lifepod19 - Index 8
+    </pre>
+<div>Here are all the materials you can replace using the current setup:</div>
+<img src="img/lifepodMats.png" alt="Screenshot showing the list of materials on the lifepod renderer, along with their indexes">
+
 </body>
 </html>
