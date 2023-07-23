@@ -1,22 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap');
-
 body
 {
     background-color: rgb(28, 27, 34);
     color: white;
-    font-family: sans-serif;
+    font-family: 'Calibri', sans-serif;
     margin-left: 160px; /* Same as the width of the sidebar */
     padding: 0px 10px;
     width: 75%;
     padding-bottom: 50px;
-}
-h1 {
-    font-family: 'Roboto', sans-serif;
-    color: white;
-}
-p
-{
-    color: white;
 }
 a
 {
@@ -35,17 +25,13 @@ div
 {
     margin: 5px 0;
 }
-ul
-{
-    list-style-type: disc;
-}
 li
 {
     padding: 10px 0;
 }
 pre
 {
-    font-family: sans-serif;
+    font-family: 'Calibri', sans-serif;
 }
 div.color-red
 {
@@ -99,7 +85,6 @@ img
     .sidenav a {font-size: 18px;}
   }
 
-/* Three image containers (use 25% for four, and 50% for two, etc) */
 .inline {
     display: inline;
   }

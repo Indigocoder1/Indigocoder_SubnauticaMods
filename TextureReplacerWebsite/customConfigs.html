@@ -26,44 +26,44 @@
     </p>    
     <pre>
 {
-    "<font color="red">configName</font>": "Example name",
-    "<font color="lightgreen">materialIndex</font>": 0,
-    "<font color="yellow">fileName</font>": "Intentionally blank",
-    "<font color="#61cfe8">prefabClassID</font>": "Intentionally blank",
-    "<font color="green">rendererHierarchyPath</font>": "Intentionally blank",
-    "<font color="purple">isVariation</font>": false,
-    "<font color=#ed8aea>variationChance</font>": -1.0,
-    "<font color="#1988bf">linkedConfigNames</font>": [
+    "<font color=#1988bf>configName</font>": "Example name",
+    "<font color=#1988bf>materialIndex</font>": 0,
+    "<font color=#1988bf>fileName</font>": "Intentionally blank",
+    "<font color=#1988bf>prefabClassID</font>": "Intentionally blank",
+    "<font color=#1988bf>rendererHierarchyPath</font>": "Intentionally blank",
+    "<font color=#1988bf>isVariation</font>": false,
+    "<font color=#1988bf>variationChance</font>": -1.0,
+    "<font color=#1988bf>linkedConfigNames</font>": [
       "Example name 1"
     ]
 }
     </pre>
     <div class="bottom-border">Explanation of these items:</div>
     <pre>
-<font color="red">configName</font> - This is used in the linkedConfigNames list.
+<font color=#1988bf>configName</font> - This is used in the linkedConfigNames list.
 It can be whatever value you want and doesn't need to relate to the texture.
 
-<font color="lightgreen">materialIndex</font> - Relates to the list of materials on the renderer of the prefab you're replacing.
+<font color=#1988bf>materialIndex</font> - Relates to the list of materials on the renderer of the prefab you're replacing.
 Is uses 0 based indexing, so the first item would be index 0, 2nd would be index 1, etc.
 
-<font color="yellow">fileName</font> - The name of the image you're replacing the texture with.
+<font color=#1988bf>fileName</font> - The name of the image you're replacing the texture with.
 The file will need to be in the Assets folder of the mod, and include the file extension.
 
-<font color="#61cfe8">prefabClassID</font> - The classID of the prefab that's the parent of the texture you're trying to replace.
+<font color=#1988bf>prefabClassID</font> - The classID of the prefab that's the parent of the texture you're trying to replace.
 The easiest way to find this is to use the runtime editor by Lee23. On the sidebar you can view the runtime editor tutorial.
 
-<font color="green">rendererHierarchyPath</font> - The path to the child containing the renderer for the prefab.
+<font color=#1988bf>rendererHierarchyPath</font> - The path to the child containing the renderer for the prefab.
 Like the classID this is easiest to find with the runtime editor. As with the classID you can use the runtime editor tutorial.
 
-<font color="purple">isVariation</font> - Use this if you want there to be a chance for your texture to be replaced.
+<font color=#1988bf>isVariation</font> - Use this if you want there to be a chance for your texture to be replaced.
 By default all textures are always loaded. This value is only useful if variationChance is greater than 0.
 
-<font color=#ed8aea>variationChance</font> - The chance from 0 to 1 that the texture will be loaded.
-This is only useful if <font color="purple">isVariation</font> is true
+<font color=#1988bf>variationChance</font> - The chance from 0 to 1 that the texture will be loaded.
+This is only useful if <font color=#1988bf>isVariation</font> is true
 
-<font color="#1988bf">linkedConfigNames</font> - A list of <font color="red">configNames</font> that can link 2 variant configs together.
+<font color=#1988bf>linkedConfigNames</font> - A list of <font color=#1988bf>configNames</font> that can link 2 variant configs together.
 Example: If you have 2 variants, config 1 and config 2, and you want both to be loaded together,
-you have to put each other's <font color="red">configName</font> in the <font color="#1988bf">linkedConfigNames</font> list
+you have to put each other's <font color=#1988bf>configName</font> in the <font color="#1988bf">linkedConfigNames</font> list
     </pre>
 <div class="top-border">
     All parts of the config follow Json formatting, so when adding new items to a list you must add a comma at the end of the previous item
@@ -76,7 +76,7 @@ An example of this is:
   "Example name 2"
 ]
 
-Or
+<strong>Or</strong>
 
 {
     *Texture config here*
