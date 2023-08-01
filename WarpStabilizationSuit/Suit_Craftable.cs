@@ -1,30 +1,27 @@
-﻿using IndigocoderLib.SpriteHelper;
-using Nautilus.Assets;
+﻿using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
 using Nautilus.Crafting;
-using Nautilus.Utility;
-using System.IO;
-using System.Reflection;
 using UnityEngine;
 using Ingredient = CraftData.Ingredient;
+using IndigocoderLib;
+using Oculus.Platform;
 
 namespace WarpStabilizationSuit
 {
     internal static class Suit_Craftable
     {
-        public static TechType itemTechType { get; private set; }
+        public static TechType suitTechType { get; private set; }
 
         public static void Patch()
         {
-            string spriteFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets") + "/warpStabilizationSuit.png";
-            Atlas.Sprite sprite = ImageUtils.LoadSpriteFromFile(spriteFilePath);
+            Atlas.Sprite sprite = SpriteHelper.GetSpriteFromAssetsFolder("warpStabilizationSuit.png");
 
             PrefabInfo prefabInfo = PrefabInfo.WithTechType("WarpStabilizationSuit", "Warp Stabilization Suit", "Protects you from being displaced by teleportation technology")
                 .WithIcon(sprite)
                 .WithSizeInInventory(new Vector2int(2, 2));
 
-            itemTechType = prefabInfo.TechType;
+            suitTechType = prefabInfo.TechType;
 
             var prefab = new CustomPrefab(prefabInfo);
 
@@ -32,6 +29,7 @@ namespace WarpStabilizationSuit
             cloneTemplate.ModifyPrefab += gameObject =>
             {
                 var renderer = gameObject.GetComponentInChildren<Renderer>();
+                //The dividing by 255 is needed to normalize the color values
                 renderer.materials[0].color = new Color(176 / 255f, 99 / 255f, 213 / 255f);
                 renderer.materials[1].color = new Color(176 / 255f, 99 / 255f, 213 / 255f);
             };
@@ -42,12 +40,15 @@ namespace WarpStabilizationSuit
                 Ingredients =
                 {
                     new Ingredient(TechType.ReinforcedDiveSuit, 1),
+                    new Ingredient(TechType.ReinforcedGloves, 1),
                     new Ingredient(TechType.Polyaniline, 2),
                     new Ingredient(TechType.AdvancedWiringKit, 1),
                     new Ingredient(TechType.ComputerChip, 1),
                     new Ingredient(TechType.Aerogel, 2)
                 }
             };
+
+            recipe.LinkedItems.Add(Gloves_Craftable.glovesTechType);
 
             prefab.SetGameObject(cloneTemplate);
             prefab.SetUnlock(TechType.PrecursorPrisonIonGenerator);

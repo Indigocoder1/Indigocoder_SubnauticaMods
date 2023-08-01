@@ -20,6 +20,7 @@ namespace WarpStabilizationSuit
             logger = Logger;
 
             harmony.PatchAll();
+            Gloves_Craftable.Patch();
             Suit_Craftable.Patch();
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
