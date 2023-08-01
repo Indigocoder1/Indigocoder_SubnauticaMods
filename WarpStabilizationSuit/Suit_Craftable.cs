@@ -42,7 +42,7 @@ namespace WarpStabilizationSuit
                 Ingredients =
                 {
                     new Ingredient(TechType.ReinforcedDiveSuit, 1),
-                    //new Ingredient(TechType.ReinforcedGloves, 1),
+                    new Ingredient(TechType.ReinforcedGloves, 1),
                     new Ingredient(TechType.Polyaniline, 2),
                     new Ingredient(TechType.AdvancedWiringKit, 1),
                     new Ingredient(TechType.ComputerChip, 1),

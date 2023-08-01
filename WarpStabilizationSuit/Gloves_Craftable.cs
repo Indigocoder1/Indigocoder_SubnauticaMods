@@ -29,7 +29,16 @@ namespace WarpStabilizationSuit
 
             var prefab = new CustomPrefab(prefabInfo);
 
+            Texture armsDiffuse = ImageUtils.LoadTextureFromFile(Main_Plugin.AssetsFolderPath + "/Textures/player_02_reinforced_suit_01_arms_WARP.png");
+            Texture armsSpecular = ImageUtils.LoadTextureFromFile(Main_Plugin.AssetsFolderPath + "/Textures/player_02_reinforced_suit_01_arms_spec_WARP.png");
+
             var cloneTemplate = new CloneTemplate(prefabInfo, TechType.ReinforcedGloves);
+            cloneTemplate.ModifyPrefab += gameObject =>
+            {
+                Renderer renderer = gameObject.GetComponentInChildren<Renderer>();
+                renderer.material.SetTexture("_MainTex", armsDiffuse);
+                renderer.material.SetTexture(ShaderPropertyID._SpecTex, armsSpecular);
+            };
 
             prefab.SetGameObject(cloneTemplate);
             prefab.SetUnlock(TechType.PrecursorPrisonIonGenerator);

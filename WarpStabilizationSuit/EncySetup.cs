@@ -30,8 +30,6 @@ namespace WarpStabilizationSuit
                 popupImage,
                 PDAHandler.UnlockImportant
                 );
-
-            PDAHandler.AddCustomScannerEntry(TechType.Warper, 6f, false, "WarpStabilizationSuit");
         }
     }
 }

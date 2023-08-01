@@ -16,6 +16,9 @@ namespace WarpStabilizationSuit
             if (!KnownTech.Contains(Suit_Craftable.suitTechType))
             {
                 KnownTech.Add(Suit_Craftable.suitTechType);
+
+                PDAEncyclopedia.Add("WarpStabilizationSuit", true);
+                PDAEncyclopedia.Add("Warper", true);
             }
         }
     }
