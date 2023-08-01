@@ -11,6 +11,8 @@ namespace WarpStabilizationSuit
 {
     internal static class Suit_Craftable
     {
+        public static Color WarpColor = new Color(176 / 255f, 99 / 255f, 213 / 255f);
+
         public static TechType suitTechType { get; private set; }
 
         public static void Patch()
@@ -29,9 +31,9 @@ namespace WarpStabilizationSuit
             cloneTemplate.ModifyPrefab += gameObject =>
             {
                 var renderer = gameObject.GetComponentInChildren<Renderer>();
-                //The dividing by 255 is needed to normalize the color values
-                renderer.materials[0].color = new Color(176 / 255f, 99 / 255f, 213 / 255f);
-                renderer.materials[1].color = new Color(176 / 255f, 99 / 255f, 213 / 255f);
+
+                renderer.materials[0].color = WarpColor;
+                renderer.materials[1].color = WarpColor;
             };
 
             RecipeData recipe = new RecipeData
@@ -40,7 +42,7 @@ namespace WarpStabilizationSuit
                 Ingredients =
                 {
                     new Ingredient(TechType.ReinforcedDiveSuit, 1),
-                    new Ingredient(TechType.ReinforcedGloves, 1),
+                    //new Ingredient(TechType.ReinforcedGloves, 1),
                     new Ingredient(TechType.Polyaniline, 2),
                     new Ingredient(TechType.AdvancedWiringKit, 1),
                     new Ingredient(TechType.ComputerChip, 1),

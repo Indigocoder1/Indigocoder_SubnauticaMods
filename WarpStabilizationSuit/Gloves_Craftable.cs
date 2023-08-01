@@ -30,15 +30,6 @@ namespace WarpStabilizationSuit
             var prefab = new CustomPrefab(prefabInfo);
 
             var cloneTemplate = new CloneTemplate(prefabInfo, TechType.ReinforcedGloves);
-            cloneTemplate.ModifyPrefab += gameObject =>
-            {
-                /*
-                var renderer = gameObject.GetComponentInChildren<Renderer>();
-                //The dividing by 255 is needed to normalize the color values
-                renderer.materials[0].color = new Color(176 / 255f, 99 / 255f, 213 / 255f);
-                renderer.materials[1].color = new Color(176 / 255f, 99 / 255f, 213 / 255f);
-                */
-            };
 
             prefab.SetGameObject(cloneTemplate);
             prefab.SetUnlock(TechType.PrecursorPrisonIonGenerator);

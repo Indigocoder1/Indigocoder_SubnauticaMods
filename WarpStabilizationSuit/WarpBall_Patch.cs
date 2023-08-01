@@ -20,7 +20,7 @@ namespace WarpStabilizationSuit
             bool hasSuit = Inventory.main.equipment.GetCount(Suit_Craftable.suitTechType) > 0;
             bool hasGloves = Inventory.main.equipment.GetCount(Gloves_Craftable.glovesTechType) > 0;
 
-            if (hasSuit && hasGloves)
+            if (hasSuit)
             {
                 GameObject.Destroy(__instance.gameObject);
                 return false;

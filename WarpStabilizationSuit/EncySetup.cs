@@ -2,8 +2,6 @@
 using IndigocoderLib;
 using Nautilus.Handlers;
 using Nautilus.Utility;
-using System.IO;
-using System.Reflection;
 using UnityEngine;
 
 namespace WarpStabilizationSuit
@@ -14,10 +12,10 @@ namespace WarpStabilizationSuit
         [HarmonyPatch(nameof(Player.Start)), HarmonyPostfix]
         private static void Patch()
         {
-            string bannerFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets") + "/warpStabilizationEncyBanner.png";
+            string bannerFilePath = Main_Plugin.AssetsFolderPath + "/warpStabilizationEncyBanner.png";
             Texture2D bannerImage = ImageUtils.LoadTextureFromFile(bannerFilePath);
 
-            string popupFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets") + "/warpStabilizationPopup.png";
+            string popupFilePath = Main_Plugin.AssetsFolderPath + "/warpStabilizationPopup.png";
             Sprite popupImage = SpriteHelper.SpriteFromAtlasSprite(ImageUtils.LoadSpriteFromFile(popupFilePath));
 
             LanguageHandler.SetLanguageLine("Tech/Equipment", "Warp Stabilization Suit");
