@@ -64,8 +64,8 @@ namespace WarpStabilizationSuit
                         defaultArmsSpec = equipmentModel.model.GetComponent<Renderer>().materials[1].GetTexture(ShaderPropertyID._SpecTex);
                     }
  
-                    bool hasWarpSuit = equipmentModel.techType == TechType.ReinforcedDiveSuit && techTypeInSlot == Suit_Craftable.suitTechType;
-                    bool hasWarpGloves = equipmentModel.techType == TechType.ReinforcedGloves && techTypeInSlot == Gloves_Craftable.glovesTechType;
+                    bool hasWarpSuit = equipmentModel.techType == TechType.ReinforcedDiveSuit && techTypeInSlot == Suit_Craftable.techType;
+                    bool hasWarpGloves = equipmentModel.techType == TechType.ReinforcedGloves && techTypeInSlot == Gloves_Craftable.techType;
 
                     if (hasWarpSuit) hasSuit = true;
                     if (hasWarpGloves) hasGloves = true;
@@ -161,7 +161,7 @@ namespace WarpStabilizationSuit
         [HarmonyPatch(nameof(Player.HasReinforcedSuit)), HarmonyPostfix]
         private static void Suit_Patch(ref bool __result)
         {
-            if(Inventory.main.equipment.GetTechTypeInSlot("Body") == Suit_Craftable.suitTechType)
+            if(Inventory.main.equipment.GetTechTypeInSlot("Body") == Suit_Craftable.techType)
             {
                 __result = true;
             }
@@ -170,7 +170,7 @@ namespace WarpStabilizationSuit
         [HarmonyPatch(nameof(Player.HasReinforcedGloves)), HarmonyPostfix]
         private static void Gloves_Patch(ref bool __result)
         {
-            if(Inventory.main.equipment.GetTechTypeInSlot("Gloves") == Gloves_Craftable.glovesTechType)
+            if(Inventory.main.equipment.GetTechTypeInSlot("Gloves") == Gloves_Craftable.techType)
             {
                 __result = true;
             }

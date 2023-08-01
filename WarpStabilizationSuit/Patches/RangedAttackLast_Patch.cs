@@ -15,13 +15,22 @@ namespace WarpStabilizationSuit
                 return;
             }
 
-            bool hasSuit = Inventory.main.equipment.GetCount(Suit_Craftable.suitTechType) > 0;
-            bool hasGloves = Inventory.main.equipment.GetCount(Gloves_Craftable.glovesTechType) > 0;
+            bool hasSuit = Inventory.main.equipment.GetTechTypeInSlot("Body") == Suit_Craftable.techType;
+            bool hasGloves = Inventory.main.equipment.GetTechTypeInSlot("Gloves") == Gloves_Craftable.techType;
 
-            if (hasSuit && hasGloves)
+            float weightedResult = 1f;
+
+            if (hasSuit)
             {
-                __result = 0.2f;
+                weightedResult -= 0.6f;
             }
+
+            if(hasGloves)
+            {
+                weightedResult -= 0.2f;
+            }
+
+            __result = weightedResult;
         }
     }
 }

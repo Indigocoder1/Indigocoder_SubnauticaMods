@@ -13,7 +13,7 @@ namespace WarpStabilizationSuit
     {
         public static Color WarpColor = new Color(176 / 255f, 99 / 255f, 213 / 255f);
 
-        public static TechType suitTechType { get; private set; }
+        public static TechType techType { get; private set; }
 
         public static void Patch()
         {
@@ -23,7 +23,7 @@ namespace WarpStabilizationSuit
                 .WithIcon(sprite)
                 .WithSizeInInventory(new Vector2int(2, 2));
 
-            suitTechType = prefabInfo.TechType;
+            techType = prefabInfo.TechType;
 
             var prefab = new CustomPrefab(prefabInfo);
 
@@ -50,7 +50,7 @@ namespace WarpStabilizationSuit
                 }
             };
 
-            recipe.LinkedItems.Add(Gloves_Craftable.glovesTechType);
+            recipe.LinkedItems.Add(Gloves_Craftable.techType);
 
             prefab.SetGameObject(cloneTemplate);
             prefab.SetUnlock(TechType.PrecursorPrisonIonGenerator);

@@ -15,7 +15,7 @@ namespace WarpStabilizationSuit
 {
     internal static class Gloves_Craftable
     {
-        public static TechType glovesTechType { get; private set; }
+        public static TechType techType { get; private set; }
 
         public static void Patch()
         {
@@ -25,7 +25,7 @@ namespace WarpStabilizationSuit
                 .WithIcon(sprite)
                 .WithSizeInInventory(new Vector2int(2, 2));
 
-            glovesTechType = prefabInfo.TechType;
+            techType = prefabInfo.TechType;
 
             var prefab = new CustomPrefab(prefabInfo);
 
