@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System.Net;
 using UnityEngine;
+using WarpStabilizationSuit.Items;
 
 namespace WarpStabilizationSuit
 {

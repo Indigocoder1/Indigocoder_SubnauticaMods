@@ -3,6 +3,7 @@ using BepInEx;
 using BepInEx.Logging;
 using System.Reflection;
 using System.IO;
+using WarpStabilizationSuit.Items;
 
 namespace WarpStabilizationSuit
 {
@@ -24,6 +25,7 @@ namespace WarpStabilizationSuit
             logger = Logger;
 
             harmony.PatchAll();
+
             Gloves_Craftable.Patch();
             Suit_Craftable.Patch();
 

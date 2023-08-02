@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using Nautilus.Handlers;
+using WarpStabilizationSuit.Items;
 
 namespace WarpStabilizationSuit
 {

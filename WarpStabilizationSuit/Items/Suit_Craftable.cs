@@ -5,9 +5,8 @@ using Nautilus.Crafting;
 using UnityEngine;
 using Ingredient = CraftData.Ingredient;
 using IndigocoderLib;
-using Oculus.Platform;
 
-namespace WarpStabilizationSuit
+namespace WarpStabilizationSuit.Items
 {
     internal static class Suit_Craftable
     {
@@ -46,7 +45,7 @@ namespace WarpStabilizationSuit
                     new Ingredient(TechType.Polyaniline, 2),
                     new Ingredient(TechType.AdvancedWiringKit, 1),
                     new Ingredient(TechType.ComputerChip, 1),
-                    new Ingredient(TechType.Aerogel, 2)
+                    new Ingredient(TechType.PrecursorIonCrystal, 2)
                 }
             };
 

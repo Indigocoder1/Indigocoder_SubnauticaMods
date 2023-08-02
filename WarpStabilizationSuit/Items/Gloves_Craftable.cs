@@ -1,17 +1,11 @@
 ﻿using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
-using Nautilus.Crafting;
 using UnityEngine;
-using Ingredient = CraftData.Ingredient;
 using IndigocoderLib;
-using static VFXParticlesPool;
-using Nautilus.Extensions;
-using static GameObjectPoolPrefabMap;
 using Nautilus.Utility;
-using System.Collections;
 
-namespace WarpStabilizationSuit
+namespace WarpStabilizationSuit.Items
 {
     internal static class Gloves_Craftable
     {

@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
-using static VFXParticlesPool;
-using UnityEngine;
+using WarpStabilizationSuit.Items;
 
 namespace WarpStabilizationSuit
 {

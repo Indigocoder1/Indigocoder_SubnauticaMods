@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using Nautilus.Utility;
 using UnityEngine;
+using WarpStabilizationSuit.Items;
 using static Player;
 
 namespace WarpStabilizationSuit
@@ -97,7 +98,7 @@ namespace WarpStabilizationSuit
                         glovesModel = equipmentModel.model;
                     }
 
-                    if (techTypeInSlot == TechType.ReinforcedDiveSuit || techTypeInSlot == TechType.ReinforcedGloves)
+                    if (techTypeInSlot != Suit_Craftable.techType & techTypeInSlot != Gloves_Craftable.techType)
                     {
                         flag = true;
                     }
@@ -109,6 +110,11 @@ namespace WarpStabilizationSuit
                 }
 
                 SetWarpColors(suitModel, glovesModel, hasSuit, hasGloves);
+            }
+
+            for (int i = 0; i < Player.main.oxygenMgr.sources.Count; i++)
+            {
+                Main_Plugin.logger.LogInfo($"Oxygen source {i} = {Player.main.oxygenMgr.sources[i].gameObject}");
             }
         }
 

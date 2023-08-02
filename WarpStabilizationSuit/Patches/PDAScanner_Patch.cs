@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using WarpStabilizationSuit.Items;
 
 namespace WarpStabilizationSuit
 {
