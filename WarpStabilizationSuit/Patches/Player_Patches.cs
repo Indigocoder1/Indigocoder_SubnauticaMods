@@ -45,7 +45,7 @@ namespace WarpStabilizationSuit
             {
                 Player.EquipmentType equipmentType = player.equipmentModels[i];
                 TechType techTypeInSlot = equipment.GetTechTypeInSlot(equipmentType.slot);
-                bool flag = false;
+                bool noSuitFlag = false;
 
                 bool hasSuit = false;
                 bool hasGloves = false;
@@ -73,10 +73,10 @@ namespace WarpStabilizationSuit
                     if (hasWarpSuit) hasSuit = true;
                     if (hasWarpGloves) hasGloves = true;
 
-                    flag = (flag || hasWarpSuit || hasWarpGloves);
+                    noSuitFlag = (noSuitFlag || hasWarpSuit || hasWarpGloves);
 
-                    bool flag2 = equipmentModel.techType == techTypeInSlot;
-                    flag = (flag || flag2);
+                    bool normalSuitFlag = equipmentModel.techType == techTypeInSlot;
+                    noSuitFlag = (noSuitFlag || normalSuitFlag);
 
                     if (equipmentModel.model)
                     {
@@ -100,14 +100,14 @@ namespace WarpStabilizationSuit
                         }
                         else
                         {
-                            equipmentModel.model.SetActive(flag2);
+                            equipmentModel.model.SetActive(normalSuitFlag);
                         }
                     }
                 }
 
                 if (equipmentType.defaultModel)
                 {
-                    equipmentType.defaultModel.SetActive(!flag);
+                    equipmentType.defaultModel.SetActive(!noSuitFlag);
                 }
 
                 SetWarpColors(suitModel, glovesModel, hasSuit, hasGloves);
