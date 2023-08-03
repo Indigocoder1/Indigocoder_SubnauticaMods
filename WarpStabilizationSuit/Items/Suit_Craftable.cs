@@ -5,6 +5,7 @@ using Nautilus.Crafting;
 using UnityEngine;
 using Ingredient = CraftData.Ingredient;
 using IndigocoderLib;
+using Nautilus.Handlers;
 
 namespace WarpStabilizationSuit.Items
 {
@@ -46,10 +47,14 @@ namespace WarpStabilizationSuit.Items
                     new Ingredient(TechType.AdvancedWiringKit, 1),
                     new Ingredient(TechType.ComputerChip, 1),
                     new Ingredient(TechType.PrecursorIonCrystal, 2)
+                },
+                LinkedItems =
+                {
+                    Gloves_Craftable.techType
                 }
             };
 
-            recipe.LinkedItems.Add(Gloves_Craftable.techType);
+            //CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, "UpgradedSuits", "Upgraded Suits", sprite);
 
             prefab.SetGameObject(cloneTemplate);
             prefab.SetUnlock(TechType.PrecursorPrisonIonGenerator);
@@ -57,7 +62,8 @@ namespace WarpStabilizationSuit.Items
 
             prefab.SetRecipe(recipe)
                 .WithFabricatorType(CraftTree.Type.Workbench)
-                .WithCraftingTime(6f);
+                .WithCraftingTime(6f)
+                .WithStepsToFabricatorTab("UpgradedSuits");
 
             prefab.Register();
         }

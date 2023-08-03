@@ -65,6 +65,8 @@ namespace WarpStabilizationSuit
                         defaultArmsSpec = equipmentModel.model.GetComponent<Renderer>().materials[1].GetTexture(ShaderPropertyID._SpecTex);
                     }
  
+                    //Only one of these can be true per iteration of the for loop
+                    //Check if the model is for the reinforced items, and if it is and we are wearing the warp stuff, set it true
                     bool hasWarpSuit = equipmentModel.techType == TechType.ReinforcedDiveSuit && techTypeInSlot == Suit_Craftable.techType;
                     bool hasWarpGloves = equipmentModel.techType == TechType.ReinforcedGloves && techTypeInSlot == Gloves_Craftable.techType;
 
@@ -72,35 +74,34 @@ namespace WarpStabilizationSuit
                     if (hasWarpGloves) hasGloves = true;
 
                     flag = (flag || hasWarpSuit || hasWarpGloves);
-                    if (hasWarpSuit)
+
+                    bool flag2 = equipmentModel.techType == techTypeInSlot;
+                    flag = (flag || flag2);
+
+                    if (equipmentModel.model)
                     {
-                        if (equipmentModel.model)
+                        if(hasWarpSuit)
                         {
                             suitModel = equipmentModel.model;
                             equipmentModel.model.SetActive(hasWarpSuit);
                         }
-                    }
-                    else if(equipmentModel.techType == TechType.ReinforcedDiveSuit)
-                    {
-                        suitModel = equipmentModel.model;
-                    }
-
-                    if(hasWarpGloves)
-                    {
-                        if (equipmentModel.model)
+                        else if(hasGloves)
                         {
                             glovesModel = equipmentModel.model;
                             equipmentModel.model.SetActive(hasWarpGloves);
                         }
-                    }
-                    else if (equipmentModel.techType == TechType.ReinforcedGloves)
-                    {
-                        glovesModel = equipmentModel.model;
-                    }
-
-                    if (techTypeInSlot != Suit_Craftable.techType & techTypeInSlot != Gloves_Craftable.techType)
-                    {
-                        flag = true;
+                        else if (equipmentModel.techType == TechType.ReinforcedDiveSuit)
+                        {
+                            suitModel = equipmentModel.model;
+                        }
+                        else if (equipmentModel.techType == TechType.ReinforcedGloves)
+                        {
+                            glovesModel = equipmentModel.model;
+                        }
+                        else
+                        {
+                            equipmentModel.model.SetActive(flag2);
+                        }
                     }
                 }
 
@@ -110,11 +111,6 @@ namespace WarpStabilizationSuit
                 }
 
                 SetWarpColors(suitModel, glovesModel, hasSuit, hasGloves);
-            }
-
-            for (int i = 0; i < Player.main.oxygenMgr.sources.Count; i++)
-            {
-                Main_Plugin.logger.LogInfo($"Oxygen source {i} = {Player.main.oxygenMgr.sources[i].gameObject}");
             }
         }
 
