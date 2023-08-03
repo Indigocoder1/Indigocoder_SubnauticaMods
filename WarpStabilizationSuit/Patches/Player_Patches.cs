@@ -19,8 +19,43 @@ namespace WarpStabilizationSuit
         private static Texture warpArmsTexture;
         private static Texture warpArmsSpec;
 
+        private static GameObject reinforcedSuitBodyGO;
+        private static GameObject reinforcedSuitGlovesGO;
+
+        private static GameObject diveSuitBodyGO;
+        private static GameObject diveSuitGlovesGO;
+
         [HarmonyPatch(nameof(Player.Start)), HarmonyPostfix]
         private static void Start_Patch()
+        {
+            InitializeCustomTextures();
+            InitializeSuitModels();
+        }
+
+        [HarmonyPatch(nameof(Player.EquipmentChanged)), HarmonyPostfix]
+        private static void EquiupmentChanged_Patch()
+        {
+            bool wearingWarpSuit = Inventory.main.equipment.GetTechTypeInSlot("Body") == Suit_Craftable.techType;
+            bool wearingWarpGloves = Inventory.main.equipment.GetTechTypeInSlot("Gloves") == Gloves_Craftable.techType;
+
+            bool wearingReinforcedSuit = Inventory.main.equipment.GetTechTypeInSlot("Body") == TechType.ReinforcedDiveSuit;
+            bool wearingReinforcedGloves = Inventory.main.equipment.GetTechTypeInSlot("Gloves") == TechType.ReinforcedGloves;
+
+            if (!wearingWarpSuit && !wearingWarpGloves)
+            {
+                return;
+            }
+
+            diveSuitBodyGO.SetActive(!wearingWarpSuit);
+            reinforcedSuitBodyGO.SetActive(wearingWarpSuit || wearingReinforcedSuit);
+
+            diveSuitGlovesGO.SetActive(!wearingWarpGloves);
+            reinforcedSuitGlovesGO.SetActive(wearingWarpGloves || wearingReinforcedGloves);
+
+            SetWarpColors(wearingWarpSuit, wearingWarpGloves);
+        }
+
+        private static void InitializeCustomTextures()
         {
             string suitFilePath = Main_Plugin.AssetsFolderPath + "/Textures/player_02_reinforced_suit_01_body_WARP.png";
             warpSuitTexture = ImageUtils.LoadTextureFromFile(suitFilePath);
@@ -35,136 +70,60 @@ namespace WarpStabilizationSuit
             warpArmsSpec = ImageUtils.LoadTextureFromFile(armsSpecFilePath);
         }
 
-        [HarmonyPatch(nameof(Player.EquipmentChanged)), HarmonyPostfix]
-        private static void EquiupmentChanged_Patch()
+        private static void InitializeSuitModels()
         {
-            Player player = main;
-            Equipment equipment = Inventory.main.equipment;
+            Transform geo = Player.main.transform.Find("body/player_view/male_geo");
+            Transform reinforcedSuit = geo.Find("reinforcedSuit"); ;
 
-            for (int i = 0; i < player.equipmentModels.Length; i++)
-            {
-                Player.EquipmentType equipmentType = player.equipmentModels[i];
-                TechType techTypeInSlot = equipment.GetTechTypeInSlot(equipmentType.slot);
-                bool noSuitFlag = false;
+            reinforcedSuitBodyGO = reinforcedSuit.Find("reinforced_suit_01_body_geo").gameObject;
+            reinforcedSuitGlovesGO = reinforcedSuit.Find("reinforced_suit_01_glove_geo").gameObject;
 
-                bool hasSuit = false;
-                bool hasGloves = false;
-                GameObject suitModel = null;
-                GameObject glovesModel = null;
+            Transform diveSuit = geo.Find("diveSuit");
 
-                for (int j = 0; j < equipmentType.equipment.Length; j++)
-                {
-                    EquipmentModel equipmentModel = equipmentType.equipment[j];
+            diveSuitBodyGO = diveSuit.Find("diveSuit_body_geo").gameObject;
+            diveSuitGlovesGO = diveSuit.Find("diveSuit_hands_geo").gameObject;
 
-                    if (equipmentModel.techType == TechType.ReinforcedDiveSuit)
-                    {
-                        defaultSuitTexture = equipmentModel.model.GetComponent<Renderer>().materials[0].GetTexture("_MainTex");
-                        defaultSuitSpec = equipmentModel.model.GetComponent<Renderer>().materials[0].GetTexture(ShaderPropertyID._SpecTex);
+            defaultSuitTexture = reinforcedSuitBodyGO.GetComponent<Renderer>().materials[0].GetTexture("_MainTex");
+            defaultSuitSpec = reinforcedSuitBodyGO.GetComponent<Renderer>().materials[0].GetTexture(ShaderPropertyID._SpecTex);
 
-                        defaultArmsTexture = equipmentModel.model.GetComponent<Renderer>().materials[1].GetTexture("_MainTex");
-                        defaultArmsSpec = equipmentModel.model.GetComponent<Renderer>().materials[1].GetTexture(ShaderPropertyID._SpecTex);
-                    }
- 
-                    //Only one of these can be true per iteration of the for loop
-                    //Check if the model is for the reinforced items, and if it is and we are wearing the warp stuff, set it true
-                    bool hasWarpSuit = equipmentModel.techType == TechType.ReinforcedDiveSuit && techTypeInSlot == Suit_Craftable.techType;
-                    bool hasWarpGloves = equipmentModel.techType == TechType.ReinforcedGloves && techTypeInSlot == Gloves_Craftable.techType;
-
-                    if (hasWarpSuit) hasSuit = true;
-                    if (hasWarpGloves) hasGloves = true;
-
-                    noSuitFlag = (noSuitFlag || hasWarpSuit || hasWarpGloves);
-
-                    bool normalSuitFlag = equipmentModel.techType == techTypeInSlot;
-                    noSuitFlag = (noSuitFlag || normalSuitFlag);
-
-                    bool hasModdedSuit = (techTypeInSlot != TechType.ReinforcedDiveSuit && techTypeInSlot != TechType.RadiationSuit
-                        && techTypeInSlot != TechType.WaterFiltrationSuit && techTypeInSlot != TechType.None);
-
-                    bool hasModdedGloves = (techTypeInSlot != TechType.ReinforcedGloves &&
-                        techTypeInSlot != TechType.RadiationGloves && techTypeInSlot != TechType.None);
-
-                    if (equipmentModel.model)
-                    {
-                        if(hasWarpSuit)
-                        {
-                            suitModel = equipmentModel.model;
-                            equipmentModel.model.SetActive(hasWarpSuit);
-                        }
-                        else if(hasGloves)
-                        {
-                            glovesModel = equipmentModel.model;
-                            equipmentModel.model.SetActive(hasWarpGloves);
-                        }
-                        else if (equipmentModel.techType == TechType.ReinforcedDiveSuit)
-                        {
-                            suitModel = equipmentModel.model;
-                        }
-                        else if (equipmentModel.techType == TechType.ReinforcedGloves)
-                        {
-                            glovesModel = equipmentModel.model;
-                        }
-                        else if(!hasModdedSuit && !hasModdedGloves)
-                        {
-                            equipmentModel.model.SetActive(normalSuitFlag);
-                        }
-                    }
-
-                    noSuitFlag = noSuitFlag || hasModdedSuit || hasModdedGloves;
-                }
-
-                if (equipmentType.defaultModel)
-                {
-                    equipmentType.defaultModel.SetActive(!noSuitFlag);
-                }
-
-                SetWarpColors(suitModel, glovesModel, hasSuit, hasGloves);
-            }
+            defaultArmsTexture = reinforcedSuitBodyGO.GetComponent<Renderer>().materials[1].GetTexture("_MainTex");
+            defaultArmsSpec = reinforcedSuitBodyGO.GetComponent<Renderer>().materials[1].GetTexture(ShaderPropertyID._SpecTex);
         }
 
-        private static void SetWarpColors(GameObject suitModel, GameObject glovesModel, bool hasWarpSuit, bool hasWarpGloves)
+        private static void SetWarpColors(bool hasWarpSuit, bool hasWarpGloves)
         {
-            if (!hasWarpSuit && !hasWarpGloves)
+            Renderer suitRenderer = reinforcedSuitBodyGO.GetComponent<Renderer>();
+
+            Main_Plugin.logger.LogInfo($"Wearing suit = {hasWarpSuit} | Wearing gloves = {hasWarpGloves}");
+
+            if (hasWarpSuit)
             {
-                return;
+                suitRenderer.materials[0].SetTexture("_MainTex", warpSuitTexture);
+                suitRenderer.materials[0].SetTexture(ShaderPropertyID._SpecTex, warpSuitSpec);
+
+                suitRenderer.materials[1].SetTexture("_MainTex", warpArmsTexture);
+                suitRenderer.materials[1].SetTexture(ShaderPropertyID._SpecTex, warpArmsSpec);
+            }
+            else
+            {
+                suitRenderer.materials[0].SetTexture("_MainTex", defaultSuitTexture);
+                suitRenderer.materials[0].SetTexture(ShaderPropertyID._SpecTex, defaultSuitSpec);
+
+                suitRenderer.materials[1].SetTexture("_MainTex", defaultArmsTexture);
+                suitRenderer.materials[1].SetTexture(ShaderPropertyID._SpecTex, defaultArmsSpec);
             }
 
-            if (suitModel != null)
+            Renderer glovesRenderer = reinforcedSuitGlovesGO.GetComponent<Renderer>();
+
+            if (hasWarpGloves)
             {
-                Renderer suitRenderer = suitModel.GetComponent<Renderer>();
-
-                if (hasWarpSuit)
-                {
-                    suitRenderer.materials[0].SetTexture("_MainTex", warpSuitTexture);
-                    suitRenderer.materials[0].SetTexture(ShaderPropertyID._SpecTex, warpSuitSpec);
-
-                    suitRenderer.materials[1].SetTexture("_MainTex", warpArmsTexture);
-                    suitRenderer.materials[1].SetTexture(ShaderPropertyID._SpecTex, warpArmsSpec);
-                }
-                else
-                {
-                    suitRenderer.materials[0].SetTexture("_MainTex", defaultSuitTexture);
-                    suitRenderer.materials[0].SetTexture(ShaderPropertyID._SpecTex, defaultSuitSpec);
-
-                    suitRenderer.materials[1].SetTexture("_MainTex", defaultArmsTexture);
-                    suitRenderer.materials[1].SetTexture(ShaderPropertyID._SpecTex, defaultArmsSpec);
-                }
+                glovesRenderer.material.SetTexture("_MainTex", warpArmsTexture);
+                glovesRenderer.materials[0].SetTexture(ShaderPropertyID._SpecTex, warpArmsSpec);
             }
-
-            if (glovesModel != null)
+            else
             {
-                Renderer glovesRenderer = glovesModel.GetComponent<Renderer>();
-
-                if (hasWarpGloves)
-                {
-                    glovesRenderer.material.SetTexture("_MainTex", warpArmsTexture);
-                    glovesRenderer.materials[0].SetTexture(ShaderPropertyID._SpecTex, warpArmsSpec);
-                }
-                else
-                {
-                    glovesRenderer.material.SetTexture("_MainTex", defaultArmsTexture);
-                    glovesRenderer.materials[0].SetTexture(ShaderPropertyID._SpecTex, defaultArmsSpec);
-                }
+                glovesRenderer.material.SetTexture("_MainTex", defaultArmsTexture);
+                glovesRenderer.materials[0].SetTexture(ShaderPropertyID._SpecTex, defaultArmsSpec);
             }
         }
 
