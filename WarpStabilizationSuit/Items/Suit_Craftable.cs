@@ -54,16 +54,13 @@ namespace WarpStabilizationSuit.Items
                 }
             };
 
-            //CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, "UpgradedSuits", "Upgraded Suits", sprite);
-
             prefab.SetGameObject(cloneTemplate);
             prefab.SetUnlock(TechType.PrecursorPrisonIonGenerator);
             prefab.SetEquipment(EquipmentType.Body);
 
             prefab.SetRecipe(recipe)
                 .WithFabricatorType(CraftTree.Type.Workbench)
-                .WithCraftingTime(6f)
-                .WithStepsToFabricatorTab("UpgradedSuits");
+                .WithCraftingTime(6f);
 
             prefab.Register();
         }

@@ -78,6 +78,12 @@ namespace WarpStabilizationSuit
                     bool normalSuitFlag = equipmentModel.techType == techTypeInSlot;
                     noSuitFlag = (noSuitFlag || normalSuitFlag);
 
+                    bool hasModdedSuit = (techTypeInSlot != TechType.ReinforcedDiveSuit && techTypeInSlot != TechType.RadiationSuit
+                        && techTypeInSlot != TechType.WaterFiltrationSuit && techTypeInSlot != TechType.None);
+
+                    bool hasModdedGloves = (techTypeInSlot != TechType.ReinforcedGloves &&
+                        techTypeInSlot != TechType.RadiationGloves && techTypeInSlot != TechType.None);
+
                     if (equipmentModel.model)
                     {
                         if(hasWarpSuit)
@@ -98,11 +104,13 @@ namespace WarpStabilizationSuit
                         {
                             glovesModel = equipmentModel.model;
                         }
-                        else
+                        else if(!hasModdedSuit && !hasModdedGloves)
                         {
                             equipmentModel.model.SetActive(normalSuitFlag);
                         }
                     }
+
+                    noSuitFlag = noSuitFlag || hasModdedSuit || hasModdedGloves;
                 }
 
                 if (equipmentType.defaultModel)
