@@ -1,0 +1,58 @@
+ManifestFileVersion: 0
+CRC: 1699090605
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 0f079137b8caa6021b8c9cc29cf6aa4d
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 781ce6bd49bc85deed549b1ed9ced9f0
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 20
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 64
+  Script: {instanceID: 0}
+- Class: 65
+  Script: {instanceID: 0}
+- Class: 84
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 2085637444, guid: 06dd3d5416bf43ea368cc39ff96e6d5a, type: 3}
+- Class: 114
+  Script: {fileID: 876881657, guid: 645fea2382ec6064f9ab384046283047, type: 3}
+- Class: 114
+  Script: {fileID: 278355094, guid: 645fea2382ec6064f9ab384046283047, type: 3}
+- Class: 114
+  Script: {fileID: 2019803715, guid: 645fea2382ec6064f9ab384046283047, type: 3}
+- Class: 114
+  Script: {fileID: 226781618, guid: 645fea2382ec6064f9ab384046283047, type: 3}
+- Class: 114
+  Script: {fileID: -564385056, guid: 645fea2382ec6064f9ab384046283047, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Imported/AlterraColors.png
+- Assets/Imported/Mirror.prefab
+- Assets/Imported/MirrorMat.mat
+- Assets/Imported/RenderTexture.renderTexture
+- Assets/Imported/MirrorOutline.fbx
+- Assets/Imported/MirrorOutlineMat.mat
+Dependencies: []
