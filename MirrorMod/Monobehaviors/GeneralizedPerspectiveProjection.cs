@@ -21,7 +21,7 @@ public class GeneralizedPerspectiveProjection : MonoBehaviour
         _pe = _camera.transform;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         UpdateFrustrum();
     }

@@ -26,6 +26,8 @@ namespace MirrorMod
 
         public static ConfigEntry<int> MirrorTextureSize;
 
+        public static AssetBundle assetBundle { get; private set; }
+
         private IEnumerator Start()
         {
             logger = Logger;
@@ -38,9 +40,12 @@ namespace MirrorMod
                 new ConfigDescription("How high quality the texture is (Requires restart | Higher = Worse performance)",
                 acceptableValues: new AcceptableValueRange<int>(500, 1500)));
 
+            assetBundle = AssetBundle.LoadFromFile(Path.Combine(AssetsFolderPath, "mirrorassetbundle"));
+
             yield return new WaitUntil(() => MaterialUtils.IsReady);
 
-            Mirror_Craftable.Patch();
+            Mirror_Variant1.Patch();
+            Mirror_Variant2.Patch();
         }
     }
 }

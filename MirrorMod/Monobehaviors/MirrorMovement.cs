@@ -13,7 +13,7 @@ public class MirrorMovement : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         Vector3 localPlayerPos = mirror.InverseTransformPoint(mirrorTarget.position);
         transform.position = mirror.TransformPoint(new Vector3(localPlayerPos.x, localPlayerPos.y, -localPlayerPos.z));
