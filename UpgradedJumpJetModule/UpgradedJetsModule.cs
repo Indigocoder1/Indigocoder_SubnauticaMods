@@ -4,19 +4,15 @@ using Nautilus.Assets.PrefabTemplates;
 using Nautilus.Crafting;
 using Nautilus.Handlers;
 using Nautilus.Utility;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace UpgradedJumpJetModule
 {
     internal static class UpgradedJetsModule
     {
-        public static TechType moduleTechType { get; private set; }
+        public static TechType techType { get; private set; }
 
         public static void RegisterModule()
         {
@@ -27,6 +23,8 @@ namespace UpgradedJumpJetModule
 
             var prefabInfo = PrefabInfo.WithTechType("UpgradedJumpJetModule", "Upgraded Prawn jump jet module", "With this upgrade module you can jump even more! Effects do not stack")
                 .WithIcon(sprite);
+
+            techType = prefabInfo.TechType;
 
             var customPrefab = new CustomPrefab(prefabInfo);
             customPrefab.SetRecipe(new RecipeData()
@@ -45,15 +43,17 @@ namespace UpgradedJumpJetModule
 
             CraftDataHandler.SetBackgroundType(prefabInfo.TechType, CraftData.BackgroundType.Normal);
 
-            int extraFragmentsToScan = 2;
-            customPrefab.SetUnlock(TechType.ExosuitJetUpgradeModule, 2 + extraFragmentsToScan);
+            customPrefab.SetUnlock(TechType.Exosuit);
 
             CloneTemplate cloneTemplate = new CloneTemplate(prefabInfo, TechType.ExosuitJetUpgradeModule);
             customPrefab.SetGameObject(cloneTemplate);
             customPrefab.SetEquipment(EquipmentType.ExosuitModule);
+
+
             customPrefab.Register();
 
-            moduleTechType = prefabInfo.TechType;
+            CraftDataHandler.RemoveFromGroup(TechGroup.Resources, TechCategory.BasicMaterials, techType);
+            CraftDataHandler.AddToGroup(TechGroup.Workbench, TechCategory.Workbench, techType);
         }
     }
 }

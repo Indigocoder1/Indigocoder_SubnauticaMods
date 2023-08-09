@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
 
@@ -25,15 +26,20 @@ namespace UpgradedJumpJetModule
         
         public static float GetJetForce(Exosuit exosuit)
         {
-            float normalForce = 8.5f;
+            float noJetsForce = 6.5f;
+            float normalJetsForce = 8.5f;
             float upgradedForce = Main_Plugin.UpgradedJetForce.Value;
 
-            if (exosuit.modules.GetCount(UpgradedJetsModule.moduleTechType) > 0)
+            if (exosuit.modules.GetCount(UpgradedJetsModule.techType) > 0)
             {
                 return upgradedForce;
             }
+            else if(exosuit.modules.GetCount(TechType.ExosuitJetUpgradeModule) > 0 && exosuit.modules.GetCount(UpgradedJetsModule.techType) == 0)
+            {
+                return normalJetsForce;
+            }
 
-            return normalForce;
+            return noJetsForce;
         }
     }
 }

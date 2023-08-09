@@ -9,9 +9,9 @@ namespace UpgradedJumpJetModule
         [HarmonyPatch(nameof(Exosuit.OnUpgradeModuleChange)), HarmonyPostfix]
         private static void Patch(Exosuit __instance, TechType techType)
         {
-            bool currentlyHasModule = __instance.modules.GetCount(UpgradedJetsModule.moduleTechType) > 0;
+            bool currentlyHasModule = __instance.modules.GetCount(UpgradedJetsModule.techType) > 0;
             Main_Plugin.logger.LogInfo($"Jump jets upgraded = {__instance.jumpJetsUpgraded}");
-            if (techType == UpgradedJetsModule.moduleTechType && currentlyHasModule)
+            if (techType == UpgradedJetsModule.techType && currentlyHasModule)
             {
                 __instance.jumpJetsUpgraded = true;
             }

@@ -25,15 +25,20 @@ namespace UpgradedJumpJetModule
 
         public static float GetJumpForce(Exosuit exosuit)
         {
-            float normalForce = 7f;
+            float noJetsForce = 5f;
+            float normalJetsForce = 7f;
             float upgradedForce = Main_Plugin.UpgradedJumpForce.Value;
 
-            if (exosuit.modules.GetCount(UpgradedJetsModule.moduleTechType) > 0)
+            if (exosuit.modules.GetCount(UpgradedJetsModule.techType) > 0)
             {
                 return upgradedForce;
             }
+            else if (exosuit.modules.GetCount(TechType.ExosuitJetUpgradeModule) > 0 && exosuit.modules.GetCount(UpgradedJetsModule.techType) == 0)
+            {
+                return normalJetsForce;
+            }
 
-            return normalForce;
+            return noJetsForce;
         }
     }
 }

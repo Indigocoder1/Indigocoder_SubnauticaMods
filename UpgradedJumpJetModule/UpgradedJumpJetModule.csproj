@@ -36,10 +36,10 @@
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\core\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass_publicized">
-      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\publicized_assemblies\Legacy\Assembly-CSharp-firstpass_publicized.dll</HintPath>
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\publicized_assemblies\Assembly-CSharp-firstpass_publicized.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp_publicized">
-      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\publicized_assemblies\Legacy\Assembly-CSharp_publicized.dll</HintPath>
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\publicized_assemblies\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx">
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\core\BepInEx.dll</HintPath>
@@ -65,6 +65,8 @@
   <ItemGroup>
     <Compile Include="Exosuit_ApplyJumpForce_Patch.cs" />
     <Compile Include="Exosuit_FixedUpdate_Patch.cs" />
+    <Compile Include="Exosuit_IsUnderwater_Patch.cs" />
+    <Compile Include="Exosuit_Update_Patch.cs" />
     <Compile Include="Exosuit_OnUpgradeModuleChange_Patch.cs" />
     <Compile Include="Exosuit_OverrideAcceleration_Patch.cs" />
     <Compile Include="Main_Plugin.cs" />
