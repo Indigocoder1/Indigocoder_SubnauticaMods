@@ -64,10 +64,17 @@ namespace MirrorMod.Craftables
                 shininess: 5
                 );
 
+            Transform renderPlaneParent = mirrorPrefab.transform.Find("IgnoreOnOtherMirrors/TargetPlane");
+            MaterialUtils.ApplySNShaders(renderPlaneParent.gameObject,
+                specularIntensity: 0f,
+                shininess: 2
+                );
+
             mirrorCamera.gameObject.AddComponent<CameraComponentCopier>();
 
             GameObject model = mirrorPrefab.transform.Find("IgnoreOnOtherMirrors").gameObject;
 
+            //Constructable
             Constructable constructable = mirrorPrefab.AddComponent<Constructable>();
             constructable.techType = techType;
             constructable.model = model;
@@ -83,6 +90,23 @@ namespace MirrorMod.Craftables
             ConstructableFlags.Submarine;
 
             PrefabUtils.AddConstructable(mirrorPrefab, techType, flags, model);
+
+            //Constructable Bounds
+            Transform colliderParent = mirrorPrefab.transform.Find("Collision");
+
+            ConstructableBounds constructableBounds = mirrorPrefab.AddComponent<ConstructableBounds>();
+            Bounds bounds = new Bounds(outlineParent.position, Vector3.one);
+            OrientedBounds oBounds = new OrientedBounds();
+            oBounds.position = outlineParent.position;
+            oBounds.rotation = outlineParent.rotation;
+            Renderer[] renderers = colliderParent.GetComponentsInChildren<Renderer>();
+            foreach (Renderer renderer in renderers)
+            {
+                bounds.Encapsulate(renderer.bounds.extents);
+            }
+            oBounds.extents = bounds.extents;
+            oBounds.size = bounds.size;
+            constructableBounds.bounds = oBounds;
 
             return mirrorPrefab;
         }

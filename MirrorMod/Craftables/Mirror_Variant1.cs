@@ -3,9 +3,9 @@ using Nautilus.Crafting;
 using static CraftData;
 using UnityEngine;
 using Nautilus.Assets.Gadgets;
-using System.IO;
 using Nautilus.Utility;
 using MirrorMod.Monobehaviors;
+using Bounds = UnityEngine.Bounds;
 
 namespace MirrorMod.Craftables
 {
@@ -65,11 +65,18 @@ namespace MirrorMod.Craftables
 
             mirrorCamera.gameObject.AddComponent<CameraComponentCopier>();
 
-            GameObject model = mirrorPrefab.transform.Find("IgnoreOnOtherMirrors").gameObject;
+            Transform renderPlaneParent = mirrorPrefab.transform.Find("IgnoreOnOtherMirrors/TargetPlane");
+            MaterialUtils.ApplySNShaders(renderPlaneParent.gameObject,
+                specularIntensity: 0f,
+                shininess: 2
+                );
+
+            //Constructable
+            GameObject constructableModel = mirrorPrefab.transform.Find("IgnoreOnOtherMirrors").gameObject;
 
             Constructable constructable = mirrorPrefab.AddComponent<Constructable>();
             constructable.techType = techType;
-            constructable.model = model;
+            constructable.model = constructableModel;
             constructable.allowedOnWall = true;
             constructable.allowedOnGround = false;
             constructable.allowedInBase = true;
@@ -81,7 +88,24 @@ namespace MirrorMod.Craftables
             ConstructableFlags flags = ConstructableFlags.Wall | ConstructableFlags.Base | ConstructableFlags.Inside |
             ConstructableFlags.Submarine;
 
-            PrefabUtils.AddConstructable(mirrorPrefab, techType, flags, model);
+            PrefabUtils.AddConstructable(mirrorPrefab, techType, flags, constructableModel);
+
+            //Constructable Bounds
+            Transform colliderParent = mirrorPrefab.transform.Find("Collision");
+
+            ConstructableBounds constructableBounds = mirrorPrefab.AddComponent<ConstructableBounds>();
+            Bounds bounds = new Bounds(outlineParent.position, Vector3.one);
+            OrientedBounds oBounds = new OrientedBounds();
+            oBounds.position = outlineParent.position;
+            oBounds.rotation = outlineParent.rotation;
+            Renderer[] renderers = colliderParent.GetComponentsInChildren<Renderer>();
+            foreach (Renderer renderer in renderers)
+            {
+                bounds.Encapsulate(renderer.bounds.extents);
+            }
+            oBounds.extents = bounds.extents;
+            oBounds.size = bounds.size;
+            constructableBounds.bounds = oBounds;
 
             return mirrorPrefab;
         }
