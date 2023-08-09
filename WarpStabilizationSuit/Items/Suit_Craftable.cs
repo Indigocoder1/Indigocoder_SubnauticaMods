@@ -45,7 +45,7 @@ namespace WarpStabilizationSuit.Items
                     new Ingredient(TechType.ReinforcedGloves, 1),
                     new Ingredient(TechType.Polyaniline, 2),
                     new Ingredient(TechType.AdvancedWiringKit, 1),
-                    new Ingredient(TechType.ComputerChip, 1),
+                    new Ingredient(TechType.Nickel, 2),
                     new Ingredient(TechType.PrecursorIonCrystal, 2)
                 },
                 LinkedItems =
@@ -63,6 +63,9 @@ namespace WarpStabilizationSuit.Items
                 .WithCraftingTime(6f);
 
             prefab.Register();
+
+            CraftDataHandler.RemoveFromGroup(TechGroup.Resources, TechCategory.BasicMaterials, techType);
+            CraftDataHandler.AddToGroup(TechGroup.Workbench, TechCategory.Workbench, techType);
         }
     }
 }

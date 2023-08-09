@@ -4,6 +4,7 @@ using Nautilus.Assets.PrefabTemplates;
 using UnityEngine;
 using IndigocoderLib;
 using Nautilus.Utility;
+using Nautilus.Handlers;
 
 namespace WarpStabilizationSuit.Items
 {
@@ -39,6 +40,8 @@ namespace WarpStabilizationSuit.Items
             prefab.SetEquipment(EquipmentType.Gloves);
 
             prefab.Register();
+
+            CraftDataHandler.RemoveFromGroup(TechGroup.Resources, TechCategory.BasicMaterials, techType);
         }
     }
 }
