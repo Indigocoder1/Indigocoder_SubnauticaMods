@@ -2,6 +2,7 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
+using IndigocoderLib;
 using MirrorMod.Craftables;
 using Nautilus.Utility;
 using System.Collections;
@@ -24,7 +25,7 @@ namespace MirrorMod
 
         public static string AssetsFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
 
-        public static ConfigEntry<int> MirrorTextureSize;
+        public static ConfigEntry<int> MirrorResolution;
 
         public static AssetBundle assetBundle { get; private set; }
 
@@ -32,20 +33,29 @@ namespace MirrorMod
         {
             logger = Logger;
 
+            PiracyDetector.TryFindPiracy();
+
             harmony.PatchAll();
 
-            logger.LogInfo($"{pluginName} {versionString} Loaded.");
-
-            MirrorTextureSize = Config.Bind("Mirror Mod", "Mirror texture size", 800,
-                new ConfigDescription("How high quality the texture is (Requires restart | Higher = Worse performance)",
-                acceptableValues: new AcceptableValueRange<int>(500, 1500)));
+            SetUpConfigs();
 
             assetBundle = AssetBundle.LoadFromFile(Path.Combine(AssetsFolderPath, "mirrorassetbundle"));
+
+            new Mirror_ModOptions();
 
             yield return new WaitUntil(() => MaterialUtils.IsReady);
 
             Mirror_Variant1.Patch();
             Mirror_Variant2.Patch();
+
+            logger.LogInfo($"{pluginName} {versionString} Loaded.");
+        }
+
+        private void SetUpConfigs()
+        {
+            MirrorResolution = Config.Bind("Mirror Mod", "Mirror resolution", 800,
+                new ConfigDescription("How high quality the mirror resolution is (Requires restart | Higher = Worse performance)",
+                acceptableValues: new AcceptableValueRange<int>(500, 1500)));
         }
     }
 }

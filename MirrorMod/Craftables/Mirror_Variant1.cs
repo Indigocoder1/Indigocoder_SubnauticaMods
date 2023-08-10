@@ -6,6 +6,7 @@ using Nautilus.Assets.Gadgets;
 using Nautilus.Utility;
 using MirrorMod.Monobehaviors;
 using Bounds = UnityEngine.Bounds;
+using IndigocoderLib;
 
 namespace MirrorMod.Craftables
 {
@@ -15,8 +16,10 @@ namespace MirrorMod.Craftables
 
         public static void Patch()
         {
+            Atlas.Sprite sprite = ImageHelper.GetSpriteFromAssetsFolder("MirrorVariant1.png");
+
             PrefabInfo prefabInfo = PrefabInfo.WithTechType("MirrorVariant1", "Mirror (Variant 1)", "It's a Mirror")
-                .WithIcon(SpriteManager.Get(TechType.PictureFrame));
+                .WithIcon(sprite);
 
             techType = prefabInfo.TechType;
 
@@ -27,8 +30,8 @@ namespace MirrorMod.Craftables
                 craftAmount = 1,
                 Ingredients =
                 {
-                    new Ingredient(TechType.CopperWire, 1),
-                    new Ingredient(TechType.Glass, 3),
+                    new Ingredient(TechType.Titanium, 1),
+                    new Ingredient(TechType.Glass, 2),
                 },
             };
 

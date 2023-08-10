@@ -20,7 +20,7 @@ public class DisableWhenNotInView : MonoBehaviour
     private void Start()
     {
         mainCamera = Camera.main;
-        renderTexture = new RenderTexture(Main_Plugin.MirrorTextureSize.Value, Main_Plugin.MirrorTextureSize.Value, 1);
+        renderTexture = new RenderTexture(Main_Plugin.MirrorResolution.Value, Main_Plugin.MirrorResolution.Value, 1);
         mirrorCamera.targetTexture = renderTexture;
 
         Transform targetPlane = transform.Find("IgnoreOnOtherMirrors/TargetPlane");
