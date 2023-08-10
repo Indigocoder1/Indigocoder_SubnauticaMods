@@ -25,7 +25,7 @@ namespace WarpStabilizationSuit
         private static GameObject diveSuitBodyGO;
         private static GameObject diveSuitGlovesGO;
 
-        [HarmonyPatch(nameof(Player.Start)), HarmonyPostfix]
+        [HarmonyPatch(nameof(Player.Start)), HarmonyPrefix]
         private static void Start_Patch()
         {
             InitializeCustomTextures();
@@ -35,21 +35,22 @@ namespace WarpStabilizationSuit
         [HarmonyPatch(nameof(Player.EquipmentChanged)), HarmonyPostfix]
         private static void EquiupmentChanged_Patch()
         {
-            bool wearingWarpSuit = Inventory.main.equipment.GetTechTypeInSlot("Body") == Suit_Craftable.techType;
-            bool wearingWarpGloves = Inventory.main.equipment.GetTechTypeInSlot("Gloves") == Gloves_Craftable.techType;
+            Equipment equipment = Inventory.main.equipment;
+            TechType typeInBodySlot = equipment.GetTechTypeInSlot("Body");
+            TechType typeInGovesSlot = equipment.GetTechTypeInSlot("Gloves");
 
-            bool wearingReinforcedSuit = Inventory.main.equipment.GetTechTypeInSlot("Body") == TechType.ReinforcedDiveSuit;
-            bool wearingReinforcedGloves = Inventory.main.equipment.GetTechTypeInSlot("Gloves") == TechType.ReinforcedGloves;
+            Main_Plugin.logger.LogInfo($"Body slot type = {typeInBodySlot} | Gloves slot type = {typeInGovesSlot}");
 
-            if (!wearingWarpSuit && !wearingWarpGloves)
-            {
-                return;
-            }
+            bool wearingWarpSuit = typeInBodySlot.Equals(Suit_Craftable.techType);
+            bool wearingWarpGloves = typeInGovesSlot.Equals(Gloves_Craftable.techType);
 
-            diveSuitBodyGO.SetActive(!wearingWarpSuit);
+            bool wearingReinforcedSuit = typeInBodySlot.Equals(TechType.ReinforcedDiveSuit);
+            bool wearingReinforcedGloves = typeInGovesSlot.Equals(TechType.ReinforcedGloves);
+
+            diveSuitBodyGO.SetActive(!(wearingWarpSuit || wearingReinforcedSuit));
             reinforcedSuitBodyGO.SetActive(wearingWarpSuit || wearingReinforcedSuit);
 
-            diveSuitGlovesGO.SetActive(!wearingWarpGloves);
+            diveSuitGlovesGO.SetActive(!(wearingWarpGloves || wearingReinforcedGloves));
             reinforcedSuitGlovesGO.SetActive(wearingWarpGloves || wearingReinforcedGloves);
 
             SetWarpColors(wearingWarpSuit, wearingWarpGloves);
@@ -93,8 +94,6 @@ namespace WarpStabilizationSuit
         private static void SetWarpColors(bool hasWarpSuit, bool hasWarpGloves)
         {
             Renderer suitRenderer = reinforcedSuitBodyGO.GetComponent<Renderer>();
-
-            Main_Plugin.logger.LogInfo($"Wearing suit = {hasWarpSuit} | Wearing gloves = {hasWarpGloves}");
 
             if (hasWarpSuit)
             {

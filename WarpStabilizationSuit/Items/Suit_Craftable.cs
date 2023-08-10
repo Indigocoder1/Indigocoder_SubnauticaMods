@@ -17,7 +17,7 @@ namespace WarpStabilizationSuit.Items
 
         public static void Patch()
         {
-            Atlas.Sprite sprite = SpriteHelper.GetSpriteFromAssetsFolder("warpStabilizationSuit.png");
+            Atlas.Sprite sprite = ImageHelper.GetSpriteFromAssetsFolder("warpStabilizationSuit.png");
 
             PrefabInfo prefabInfo = PrefabInfo.WithTechType("WarpStabilizationSuit", "Warp Stabilization Suit", "Protects you from being displaced by teleportation technology")
                 .WithIcon(sprite)

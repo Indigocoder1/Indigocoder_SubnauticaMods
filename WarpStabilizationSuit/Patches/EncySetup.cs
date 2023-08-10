@@ -16,7 +16,7 @@ namespace WarpStabilizationSuit
             Texture2D bannerImage = ImageUtils.LoadTextureFromFile(bannerFilePath);
 
             string popupFilePath = Main_Plugin.AssetsFolderPath + "/warpStabilizationPopup.png";
-            Sprite popupImage = SpriteHelper.SpriteFromAtlasSprite(ImageUtils.LoadSpriteFromFile(popupFilePath));
+            Sprite popupImage = ImageHelper.SpriteFromAtlasSprite(ImageUtils.LoadSpriteFromFile(popupFilePath));
 
             LanguageHandler.SetLanguageLine("Tech/Equipment", "Warp Stabilization Suit");
 

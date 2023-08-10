@@ -12,7 +12,7 @@ namespace WarpStabilizationSuit
     {
         private const string myGUID = "Indigocoder.WarpStabilizationSuit";
         private const string pluginName = "Warp Stabilization Suit";
-        private const string versionString = "1.2.0";
+        private const string versionString = "1.2.2";
 
         public static ManualLogSource logger;
 
