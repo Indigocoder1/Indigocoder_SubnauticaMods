@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class DisableWhenNotInView : MonoBehaviour
 {
+    //CURRENTLY DEPRECATED
     public GameObject mirrorRoot;
     public Camera mirrorCamera;
 

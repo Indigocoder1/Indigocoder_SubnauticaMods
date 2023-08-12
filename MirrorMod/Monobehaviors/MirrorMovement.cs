@@ -2,6 +2,7 @@
 
 public class MirrorMovement : MonoBehaviour
 {
+    //CURRENTLY DEPRECATED
     public Transform mirrorTarget;
     public Transform mirror;
 

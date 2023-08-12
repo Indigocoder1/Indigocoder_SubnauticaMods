@@ -95,7 +95,7 @@ namespace MirrorMod.Craftables
             PrefabUtils.AddConstructable(mirrorPrefab, techType, flags, model);
 
             //Constructable Bounds
-            Transform colliderParent = mirrorPrefab.transform.Find("Collision");
+            Transform colliderParent = mirrorPrefab.transform.Find("IgnoreOnOtherMirrors/MirrorOutline");
 
             ConstructableBounds constructableBounds = mirrorPrefab.AddComponent<ConstructableBounds>();
             Bounds bounds = new Bounds(outlineParent.position, Vector3.one);

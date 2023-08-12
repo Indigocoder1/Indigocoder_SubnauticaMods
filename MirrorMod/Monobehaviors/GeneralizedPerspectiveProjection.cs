@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 
 public class GeneralizedPerspectiveProjection : MonoBehaviour
-{    
+{
+    //CURRENTLY DEPRECATED
     public Transform _pa = null;
 
     public Transform _pb = null;
