@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Mirror : MonoBehaviour
 {
-    public static event EventHandler OnMirrorSwitchedState;
     public static Dictionary<Mirror, MirrorInfo> mirrorInfos = new Dictionary<Mirror, MirrorInfo>();
     public static List<Mirror> mirrorList = new List<Mirror>();
 
@@ -14,6 +12,7 @@ public class Mirror : MonoBehaviour
     public GameObject mirrorRenderersParent;
 
     private RenderTexture renderTexture;
+    private Camera mainCamera;
 
     private Transform _pa;
     private Transform _pb;
@@ -22,12 +21,15 @@ public class Mirror : MonoBehaviour
     private float frustumScale = 1f;
 
     private Bounds mirrorBounds;
+    private bool isVisible = true;
 
     private void Start()
     {
+        mainCamera = Camera.main;
+
         if (mirrorTarget == null)
         {
-            mirrorTarget = Camera.main.transform;
+            mirrorTarget = mainCamera.transform;
         }
 
         InitializeMirrorBounds();
@@ -38,9 +40,15 @@ public class Mirror : MonoBehaviour
 
     private void LateUpdate()
     {
+        CheckIfVisible();
+
+        if(isVisible == false)
+        {
+            return;
+        }
+
         MirrorMovementAndRotation();
         SetNearPlane();
-        CheckIfVisible();
     }
 
     private void MirrorMovementAndRotation()
@@ -119,47 +127,92 @@ public class Mirror : MonoBehaviour
             if(VisibleFromCamera(mirrorInfo.mirrorCam, mirrorBounds))
             {
                 visibleFromMirror = true;
-                mirrorsVisibleFrom.Add(mirror);
+                if(mirror != this)
+                {
+                    mirrorsVisibleFrom.Add(mirror);
+                }
             }
         }
 
         //Check if visible from main camera if it's not visible from other mirrors
-        bool visibleFromMainCamera = VisibleFromCamera(Camera.main, mirrorBounds);
+        bool visibleFromMainCamera = VisibleFromCamera(mainCamera, mirrorBounds);
 
         MirrorInfo info = mirrorInfos[this];
-        info.visibleInfo.visibleFromMirrorCamera = visibleFromMirror;
-        info.visibleInfo.visibleFromMainCamera = visibleFromMainCamera;
+        if(isVisible)
+        {
+            info.visibleInfo.visibleFromMirrorCamera = visibleFromMirror;
+            info.visibleInfo.visibleFromMainCamera = visibleFromMainCamera;
+            info.visibleInfo.mirrorsVisibleFrom = mirrorsVisibleFrom;
+        }
+        else
+        {
+            info.visibleInfo.visibleFromMirrorCamera = false;
+            info.visibleInfo.visibleFromMainCamera = false;
+            info.visibleInfo.mirrorsVisibleFrom = null;
+        }
         mirrorInfos[this] = info;
 
         //Merge the 2 visibleFroms
         visibleFromCamera = visibleFromMirror || visibleFromMainCamera;
 
-        Debug.Log($"Visible from main = {visibleFromMainCamera}");
-        if (visibleFromMainCamera == false)
+        if (visibleFromMainCamera == false && visibleFromCamera)
         {
             bool otherMirrorIsVisible = true;
+            int numMirrorsNotInView = 0;
 
             for (int i = 0; i < mirrorsVisibleFrom.Count; i++)
             {
                 //Check if the mirrors this is visible from are in the main camera
                 //This makes it so the mirrors are actually disabled when looking away
                 VisibleInfo visibleInfo = mirrorInfos[mirrorsVisibleFrom[i]].visibleInfo;
+
                 if(visibleInfo.visibleFromMainCamera == false)
                 {
-                    otherMirrorIsVisible = false;
+                    /*
+                    if(visibleInfo.visibleFromMirrorCamera == false)
+                    {
+                        otherMirrorIsVisible = false;
+                    }
+                    */
+                    numMirrorsNotInView++;
                 }
+
+                if (visibleInfo.mirrorsVisibleFrom == null)
+                {
+                    continue;
+                }
+                for (int x = 0; x < visibleInfo.mirrorsVisibleFrom.Count; x++)
+                {
+                    VisibleInfo otherInfo = mirrorInfos[visibleInfo.mirrorsVisibleFrom[x]].visibleInfo;
+                    if (otherInfo.visibleFromMainCamera)
+                    {
+                        numMirrorsNotInView--;
+                    }
+                }
+            }
+
+            if(numMirrorsNotInView == mirrorsVisibleFrom.Count)
+            {
+                otherMirrorIsVisible = false;
             }
 
             if(otherMirrorIsVisible == false)
             {
+                //If you can't be seen from the other mirror, disable
                 visibleFromCamera = false;
             }
-
-            Debug.Log($"Other mirror is visible = {otherMirrorIsVisible}");
         }
 
+        isVisible = visibleFromCamera;
         mirrorRenderersParent.SetActive(visibleFromCamera);
     }
+
+    private bool VisibleFromCamera(Camera camera, Bounds bounds)
+    {
+        Plane[] planes = GeometryUtility.CalculateFrustumPlanes(camera);
+        return GeometryUtility.TestPlanesAABB(planes, bounds);
+    }
+
 
     private void InitializeMirrorBounds()
     {
@@ -180,15 +233,6 @@ public class Mirror : MonoBehaviour
         }
         mirrorBounds = tempBounds;
     }
-
-#if UNITY_EDITOR
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.matrix = Matrix4x4.identity;
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube(mirrorBounds.center, mirrorBounds.extents * 2);
-    }
-#endif
 
     private void InitializeRenderTexture()
     {
@@ -237,19 +281,22 @@ public class Mirror : MonoBehaviour
 
         mirrorInfo.mirrorsInView = mirrorsInView;
         mirrorInfos[this] = mirrorInfo;
-
-        Debug.Log(mirrorInfos);
-        Debug.Log(mirrorList);
     }
 
-    private bool VisibleFromCamera(Camera camera, Bounds bounds)
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
     {
-        Plane[] planes = GeometryUtility.CalculateFrustumPlanes(camera);
-        return GeometryUtility.TestPlanesAABB(planes, bounds);
+        Gizmos.matrix = Matrix4x4.identity;
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(mirrorBounds.center, mirrorBounds.extents * 2);
     }
+#endif
 
     private void OnDestroy()
     {
+        mirrorInfos.Remove(this);
+        mirrorList.Remove(this);
+
         Renderer planeRend = renderPlane.GetComponent<Renderer>();
         planeRend.material.SetTexture("_MainTex", null);
         renderTexture.Release();
@@ -275,5 +322,6 @@ public class Mirror : MonoBehaviour
     {
         public bool visibleFromMirrorCamera;
         public bool visibleFromMainCamera;
+        public List<Mirror> mirrorsVisibleFrom;
     }
 }

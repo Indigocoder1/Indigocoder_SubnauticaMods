@@ -66,14 +66,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Craftables\Mirror_Variant2.cs" />
-    <Compile Include="Craftables\Mirror_Variant1.cs" />
+    <Compile Include="Craftables\Basic_Mirror.cs" />
     <Compile Include="Main_Plugin.cs" />
     <Compile Include="Mirror_ModOptions.cs" />
     <Compile Include="Monobehaviors\CameraComponentCopier.cs" />
     <Compile Include="Monobehaviors\DisableWhenNotInView.cs" />
     <Compile Include="Monobehaviors\GeneralizedPerspectiveProjection.cs" />
     <Compile Include="Monobehaviors\HideOnThisCamera.cs" />
+    <Compile Include="Monobehaviors\Mirror.cs" />
     <Compile Include="Monobehaviors\MirrorMovement.cs" />
     <Compile Include="Monobehaviors\ShowOnThisCamera.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

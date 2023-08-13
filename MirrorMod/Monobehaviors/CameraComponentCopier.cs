@@ -21,6 +21,10 @@ namespace MirrorMod.Monobehaviors
             gameObject.AddComponent<LensWaterController>().CopyComponent(mainCamera.GetComponent<LensWaterController>());
             gameObject.AddComponent<WaterscapeVolumeOnCamera>().CopyComponent(mainCamera.GetComponent<WaterscapeVolumeOnCamera>());
 
+            ShowOnThisCamera showOnCamera = gameObject.GetComponent<ShowOnThisCamera>();
+            showOnCamera.preCullActions.Add(() => Player.main.SetHeadVisible(true));
+            showOnCamera.postCullActions.Add(() => Player.main.SetHeadVisible(false));
+
             //Causes memory leak ->
             //gameObject.EnsureComponent<WaterSurfaceOnCamera>().CopyComponent(mainCamera.GetComponent<WaterSurfaceOnCamera>());
         }

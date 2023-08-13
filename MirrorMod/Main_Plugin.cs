@@ -32,23 +32,31 @@ namespace MirrorMod
         private IEnumerator Start()
         {
             logger = Logger;
+            new Mirror_ModOptions();
 
             PiracyDetector.TryFindPiracy();
 
             harmony.PatchAll();
+            assetBundle = AssetBundle.LoadFromFile(Path.Combine(AssetsFolderPath, "mirrorassetbundle"));
 
             SetUpConfigs();
 
-            assetBundle = AssetBundle.LoadFromFile(Path.Combine(AssetsFolderPath, "mirrorassetbundle"));
-
-            new Mirror_ModOptions();
-
             yield return new WaitUntil(() => MaterialUtils.IsReady);
 
-            Mirror_Variant1.Patch();
-            Mirror_Variant2.Patch();
+            SetUpMirrors();
 
             logger.LogInfo($"{pluginName} {versionString} Loaded.");
+        }
+
+        private void SetUpMirrors()
+        {
+            Atlas.Sprite variant1Sprite = ImageHelper.GetSpriteFromAssetsFolder("MirrorVariant1.png");
+            GameObject variant1Prefab = assetBundle.LoadAsset<GameObject>("Mirror_Variant1");
+            Basic_Mirror.Patch("MirrorVariant1", "Mirror (Variant 1)", variant1Sprite, variant1Prefab);
+
+            Atlas.Sprite variant2Sprite = ImageHelper.GetSpriteFromAssetsFolder("MirrorVariant2.png");
+            GameObject variant2Prefab = assetBundle.LoadAsset<GameObject>("Mirror_Variant2");
+            Basic_Mirror.Patch("MirrorVariant2", "Mirror (Variant 2)", variant2Sprite, variant2Prefab);
         }
 
         private void SetUpConfigs()
