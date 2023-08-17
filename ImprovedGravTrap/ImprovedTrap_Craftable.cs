@@ -2,20 +2,22 @@
 using Nautilus.Assets;
 using Nautilus.Crafting;
 using Ingredient = CraftData.Ingredient;
-using UnityEngine;
 using Nautilus.Assets.Gadgets;
-using ImprovedGravTrap;
+using UnityEngine;
+using IndigocoderLib;
 
 namespace ImprovedGravTrap
 {
-    internal static class Trap_Craftable
+    internal static class ImprovedTrap_Craftable
     {
         public static TechType techType;
 
         public static void Patch()
         {
+            Atlas.Sprite sprite = ImageHelper.GetSpriteFromAssetsFolder("EnhancedGravTrap.png");
+
             PrefabInfo prefabInfo = PrefabInfo.WithTechType("EnhancedGravSphere", "Enhanced Grav Trap", "It's a better grav trap!")
-                .WithIcon(SpriteManager.Get(TechType.Gravsphere))
+                .WithIcon(sprite)
                 .WithSizeInInventory(new Vector2int(2, 2));
 
             techType = prefabInfo.TechType;
@@ -26,6 +28,11 @@ namespace ImprovedGravTrap
 
             cloneTemplate.ModifyPrefab += (gameObject) =>
             {
+                Renderer[] renderers = gameObject.GetComponentsInChildren<Renderer>();
+                foreach (Renderer rend in renderers)
+                {
+                    rend.material.color = new Color(55 / 255f, 178 / 255f, 212 / 255f);
+                }
                 gameObject.EnsureComponent<EnhancedGravSphere>();
             };
 
@@ -48,6 +55,8 @@ namespace ImprovedGravTrap
             prefab.SetRecipe(recipe)
                 .WithFabricatorType(CraftTree.Type.Workbench)
                 .WithCraftingTime(5f);
+
+            prefab.SetPdaGroupCategory(TechGroup.Workbench, TechCategory.Workbench);
 
             prefab.Register();
         }

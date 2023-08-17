@@ -24,6 +24,11 @@ namespace ImprovedGravTrap.Monobehaviours
             Pickupable component = obj.GetComponent<Pickupable>();
             List<TechType> allowedTypes = Main_Plugin.AllowedTypes[techTypeListIndex].techTypes;
 
+            if(techType == TechType.EscapePod)
+            {
+                return false;
+            }
+
             if (!component || !component.attached)
             {
                 for (int i = 0; i < allowedTypes.Count; i++)

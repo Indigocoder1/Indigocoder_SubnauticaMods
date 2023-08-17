@@ -97,7 +97,7 @@ namespace ImprovedGravTrap.Patches
         [HarmonyPrefix, HarmonyPatch(typeof(QuickSlots), "SetAnimationState")]
         static bool patchAnimation(QuickSlots __instance, string toolName)
         {
-            if (toolName != Trap_Craftable.techType.ToString().ToLower())
+            if (toolName != ImprovedTrap_Craftable.techType.ToString().ToLower())
                 return true;
 
             __instance.SetAnimationState("gravsphere");

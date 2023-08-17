@@ -15,7 +15,7 @@ namespace ImprovedGravTrap
         private const string pluginName = "Improved Grav Trap";
         private const string versionString = "1.0.0";
 
-        private static string ConfigFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "EnhancedGravTrap.json");
+        private static string ConfigFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "ImprovedGravTrap.json");
 
         public static ConfigEntry<bool> UseScrollWheel;
         public static ConfigEntry<KeyCode> AdvanceKey;
@@ -37,7 +37,7 @@ namespace ImprovedGravTrap
             SetUpConfigs();
             new GravTrap_ModOptions();
 
-            Trap_Craftable.Patch();
+            ImprovedTrap_Craftable.Patch();
 
             harmony.PatchAll();
 
@@ -207,7 +207,8 @@ namespace ImprovedGravTrap
                     TechType.CutefishEggUndiscovered,
                     TechType.LavaLizardEgg,
                     TechType.LavaLizardEggUndiscovered,
-                    TechType.GenericEgg
+                    TechType.GenericEgg,
+                    TechType.SeaTreaderPoop
                 }),
                 new TechTypeList("Creatures", techTypes:
                 new TechType[]
@@ -280,7 +281,7 @@ namespace ImprovedGravTrap
                     TechType.Titanium,
                     TechType.TitaniumIngot,
                     TechType.UraniniteCrystal,
-                    TechType.AcidMushroom
+                    TechType.SeaTreaderPoop
                 }),
                 new TechTypeList("Eggs", techTypes:
                 new TechType[]

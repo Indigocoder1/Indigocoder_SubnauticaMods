@@ -38,7 +38,7 @@ namespace ImprovedGravTrap.Patches
             }
         }
 
-        private static bool IsGravTrap(this TechType techType) => techType == TechType.Gravsphere || techType == Trap_Craftable.techType;
+        private static bool IsGravTrap(this TechType techType) => techType == TechType.Gravsphere || techType == ImprovedTrap_Craftable.techType;
 
         [HarmonyPatch(typeof(TooltipFactory), nameof(TooltipFactory.ItemCommons))]
         static class TooltipFactory_ItemCommons_Patch
