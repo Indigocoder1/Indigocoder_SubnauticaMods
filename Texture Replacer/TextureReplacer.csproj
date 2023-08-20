@@ -88,6 +88,7 @@
   <ItemGroup>
     <Content Include="ReadMe.txt" />
   </ItemGroup>
+  <Import Project="..\IndigocoderLib\IndigocoderLib.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\plugins\$(TargetName)"

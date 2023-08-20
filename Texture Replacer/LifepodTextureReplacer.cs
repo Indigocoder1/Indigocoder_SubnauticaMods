@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -18,7 +19,7 @@ namespace TextureReplacer
         public static void Initialize()
         {
             lifepodConfigs = SaveManager.LoadLifepodConfigFromJson(configFilePath);
-            if(lifepodConfigs == null) 
+            if (lifepodConfigs == null) 
             {
                 SaveInitialData();
                 lifepodConfigs = SaveManager.LoadLifepodConfigFromJson(configFilePath);
@@ -34,38 +35,57 @@ namespace TextureReplacer
             for (int i = 0; i < lifepodConfigs.Count; i++)
             {
                 LifepodConfigData configData = lifepodConfigs[i];
+                if (configData == null)
+                {
+                    return;
+                }
+
                 configData.variationChance = Mathf.Clamp01(configData.variationChance);
-                bool variationAccepted = false;
 
                 if (configData.isVariation)
                 {
-                    if (Random.Range(0f, 1f) <= configData.variationChance)
+                    if (UnityEngine.Random.Range(0f, 1f) <= configData.variationChance || configData.variationAccepted)
                     {
-                        variationAccepted = true;
+                        Main.logger.LogInfo($"Variation from {configData.fileName} accepted");
+
+                        if (configData.linkedConfigNames.Count > 0)
+                        {
+                            EnsureLinkedConfigs(configData);
+                        }
+                    }
+                    else
+                    {
+                        continue;
                     }
                 }
 
-                if (!variationAccepted)
+                CoroutineHost.StartCoroutine(InitializeTexture(configData.materialIndex, configData.fileName, 
+                    (LifepodNumber)configData.lifepodIndex, configData.variationChance));
+            }
+        }
+
+        private static void EnsureLinkedConfigs(LifepodConfigData configData)
+        {
+            foreach (LifepodConfigData item in lifepodConfigs)
+            {
+                if (!item.isVariation || item.variationChance == 1)
                 {
-                    LifepodNumber lifepodNumber = (LifepodNumber)configData.lifepodIndex;
-                    CoroutineHost.StartCoroutine(InitializeTexture(configData.materialIndex, configData.fileName, lifepodNumber));
+                    continue;
                 }
-                else
+
+                if (item.linkedConfigNames.Count == 0)
                 {
-                    HandleAlternateTexture(configData);
+                    continue;
+                }
+
+                if (item.linkedConfigNames.Contains(configData.configName))
+                {
+                    item.variationAccepted = true;
                 }
             }
         }
 
-        private static void HandleAlternateTexture(LifepodConfigData alternateConfig)
-        {
-            Main.logger.LogInfo($"Variation from {alternateConfig.fileName} accepted");
-
-            LifepodNumber lifepodNumber = (LifepodNumber)alternateConfig.lifepodIndex;
-            CoroutineHost.StartCoroutine(InitializeTexture(alternateConfig.materialIndex, alternateConfig.fileName, lifepodNumber));
-        }
-
-        private static IEnumerator InitializeTexture(int materialIndex, string textureName, LifepodNumber lifepodNumber)
+        private static IEnumerator InitializeTexture(int materialIndex, string textureName, LifepodNumber lifepodNumber, float variationChance)
         {
             IPrefabRequest request = PrefabDatabase.GetPrefabAsync(LifepodClassIDs[lifepodNumber]);
 
@@ -83,7 +103,7 @@ namespace TextureReplacer
                     yield return null;
                 }
 
-                replacer.ReplaceTexture(targetRenderer.materials[materialIndex], textureName);
+                //replacer.AddTextureData(targetRenderer.materials[materialIndex], textureName, ShaderPropertyID._MainTex, variationChance);
             }
         }
 
@@ -103,8 +123,8 @@ namespace TextureReplacer
                 string classID = LifepodClassIDs[num];
                 string hierchy = ExternalRendererHierchyPaths[num];
 
-                lifepodConfigDatas.Add(new LifepodConfigData(new Main.ConfigInfo(matIndex, fileName1, classID, hierchy, false, -1f), i));
-                lifepodConfigDatas.Add(new LifepodConfigData(new Main.ConfigInfo(matIndex2, fileName2, classID, hierchy, false, -1f), i));
+                lifepodConfigDatas.Add(new LifepodConfigData(new Main.ConfigInfo(matIndex, fileName1, classID, hierchy, false, -1f, new List<string>()), i));
+                lifepodConfigDatas.Add(new LifepodConfigData(new Main.ConfigInfo(matIndex2, fileName2, classID, hierchy, false, -1f, new List<string>()), i));
             }
 
             SaveManager.SaveLifepodConfigToJson(lifepodConfigDatas, configFilePath, folderFilePath);
@@ -135,13 +155,39 @@ namespace TextureReplacer
             { LifepodNumber.Lifepod19, "3894aeaf-e1f9-426a-9249-6a4968ac2d8b"},
         };
 
-        public class LifepodConfigData : Main.TexturePatchConfigData
+        public class LifepodConfigData
         {
             public int lifepodIndex;
+            public string configName;
+            public int materialIndex;
+            public string fileName;
 
-            public LifepodConfigData(ConfigInfo configInfo, int lifepodIndex) : base(configInfo)
+            public bool isVariation;
+            public float variationChance;
+            public List<string> linkedConfigNames;
+            [JsonIgnore]
+            public bool variationAccepted;
+
+            [JsonConstructor]
+            public LifepodConfigData(int lifepodIndex, string configName, int materialIndex, string fileName, bool isVariation, float variationChance, List<string> linkedConfigNames)
             {
                 this.lifepodIndex = lifepodIndex;
+                this.configName = configName;
+                this.materialIndex = materialIndex;
+                this.fileName = fileName;
+                this.isVariation = isVariation;
+                this.variationChance = variationChance;
+                this.linkedConfigNames = linkedConfigNames;
+            }
+
+            public LifepodConfigData(ConfigInfo configInfo, int lifepodIndex)
+            {
+                this.lifepodIndex = lifepodIndex;
+                this.materialIndex = configInfo.materialIndex;
+                this.fileName = configInfo.fileName;
+                this.isVariation = configInfo.isVariation;
+                this.variationChance = configInfo.variationChance;
+                this.linkedConfigNames = configInfo.linkedConfigNames;
             }
         }
 

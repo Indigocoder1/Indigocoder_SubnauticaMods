@@ -2,6 +2,8 @@
 using BepInEx.Logging;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 
 namespace TextureReplacer
 {
@@ -13,6 +15,7 @@ namespace TextureReplacer
         private const string versionString = "1.0.0";
 
         public static ManualLogSource logger;
+        public static string AssetFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
 
         private void Awake()
         {
@@ -20,7 +23,7 @@ namespace TextureReplacer
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
 
-            LifepodTextureReplacer.Initialize();
+            //LifepodTextureReplacer.Initialize();
             CustomTextureReplacer.Initialize();
         }
 
@@ -31,6 +34,7 @@ namespace TextureReplacer
             public string fileName;
             public string prefabClassID;
             public string rendererHierarchyPath;
+            public string textureName;
 
             public bool isVariation;
             public float variationChance;
@@ -39,13 +43,15 @@ namespace TextureReplacer
             public bool variationAccepted;
 
             [JsonConstructor]
-            public TexturePatchConfigData(string configName, int materialIndex, string fileName, bool isVariation, float variationChance, string prefabClassID, string rendererHierarchyPath, List<string> linkedConfigNames)
+            public TexturePatchConfigData(string configName, int materialIndex, string fileName, bool isVariation, float variationChance,
+                string prefabClassID, string rendererHierarchyPath, string textureName, List<string> linkedConfigNames)
             {
                 this.configName = configName;
                 this.materialIndex = materialIndex;
                 this.fileName = fileName;
                 this.prefabClassID = prefabClassID;
                 this.rendererHierarchyPath = rendererHierarchyPath;
+                this.textureName = textureName;
                 this.isVariation = isVariation;
                 this.variationChance = variationChance;
                 this.linkedConfigNames = linkedConfigNames;
@@ -59,6 +65,7 @@ namespace TextureReplacer
                 this.rendererHierarchyPath = configInfo.rendererHierchyPath;
                 this.isVariation = configInfo.isVariation;
                 this.variationChance = configInfo.variationChance;
+                this.linkedConfigNames = configInfo.linkedConfigNames;
             }
         }
 
@@ -71,8 +78,9 @@ namespace TextureReplacer
 
             public bool isVariation;
             public float variationChance;
+            public List<string> linkedConfigNames;
 
-            public ConfigInfo(int materialIndex, string fileName, string prefabClassID, string rendererHierchyPath, bool isVariation, float variationChance)
+            public ConfigInfo(int materialIndex, string fileName, string prefabClassID, string rendererHierchyPath, bool isVariation, float variationChance, List<string> linkedConfigNames)
             {
                 this.materialIndex = materialIndex;
                 this.fileName = fileName;
@@ -80,6 +88,7 @@ namespace TextureReplacer
                 this.rendererHierchyPath = rendererHierchyPath;
                 this.isVariation = isVariation;
                 this.variationChance = variationChance;
+                this.linkedConfigNames = linkedConfigNames;
             }
         }
     }
