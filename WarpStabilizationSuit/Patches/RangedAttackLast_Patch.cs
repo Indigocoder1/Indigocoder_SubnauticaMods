@@ -9,7 +9,7 @@ namespace WarpStabilizationSuit
         [HarmonyPatch(nameof(RangedAttackLastTarget.Evaluate)), HarmonyPostfix]
         private static void Patch(Creature creature, ref float __result)
         {
-            if(IndigocoderLib.Utilities.GetNameWithCloneRemoved(creature.name) == "Warper")
+            if (creature.GetType() != typeof(Warper))
             {
                 return;
             }

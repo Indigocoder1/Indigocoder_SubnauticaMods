@@ -76,6 +76,7 @@
     <Compile Include="Items\Suit_Craftable.cs" />
     <Compile Include="Patches\WarpBall_Patch.cs" />
     <Compile Include="Patches\Warper_Patch.cs" />
+    <Compile Include="Suit_ModOptions.cs" />
   </ItemGroup>
   <Import Project="..\IndigocoderLib\IndigocoderLib.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

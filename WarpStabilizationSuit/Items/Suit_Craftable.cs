@@ -6,6 +6,7 @@ using UnityEngine;
 using Ingredient = CraftData.Ingredient;
 using IndigocoderLib;
 using Nautilus.Handlers;
+using System.Collections.Generic;
 
 namespace WarpStabilizationSuit.Items
 {
@@ -36,10 +37,18 @@ namespace WarpStabilizationSuit.Items
                 renderer.materials[1].color = WarpColor;
             };
 
-            RecipeData recipe = new RecipeData
+            RecipeData recipe = new RecipeData()
             {
                 craftAmount = 1,
-                Ingredients =
+                LinkedItems =
+                {
+                    Gloves_Craftable.techType
+                }
+            };
+
+            if(!Main_Plugin.UseHardRecipe.Value)
+            {
+                recipe.Ingredients = new List<Ingredient>
                 {
                     new Ingredient(TechType.ReinforcedDiveSuit, 1),
                     new Ingredient(TechType.ReinforcedGloves, 1),
@@ -47,12 +56,22 @@ namespace WarpStabilizationSuit.Items
                     new Ingredient(TechType.AdvancedWiringKit, 1),
                     new Ingredient(TechType.Nickel, 2),
                     new Ingredient(TechType.PrecursorIonCrystal, 2)
-                },
-                LinkedItems =
+                };
+            }
+            else
+            {
+                recipe.Ingredients = new List<Ingredient>
                 {
-                    Gloves_Craftable.techType
-                }
-            };
+                    new Ingredient(TechType.ReinforcedDiveSuit, 1),
+                    new Ingredient(TechType.ReinforcedGloves, 1),
+                    new Ingredient(TechType.AramidFibers, 4),
+                    new Ingredient(TechType.Lithium, 4),
+                    new Ingredient(TechType.AdvancedWiringKit, 2),
+                    new Ingredient(TechType.Kyanite, 1),
+                    new Ingredient(TechType.PrecursorIonCrystal, 3)
+                };
+            }
+            
 
             prefab.SetGameObject(cloneTemplate);
             prefab.SetUnlock(TechType.PrecursorPrisonIonGenerator);

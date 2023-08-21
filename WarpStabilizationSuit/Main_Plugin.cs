@@ -4,6 +4,7 @@ using BepInEx.Logging;
 using System.Reflection;
 using System.IO;
 using WarpStabilizationSuit.Items;
+using BepInEx.Configuration;
 
 namespace WarpStabilizationSuit
 {
@@ -20,11 +21,16 @@ namespace WarpStabilizationSuit
 
         private static readonly Harmony harmony = new Harmony(myGUID);
 
+        public static ConfigEntry<bool> UseHardRecipe;
+
         private void Awake()
         {
             logger = Logger;
 
             harmony.PatchAll();
+            UseHardRecipe = Config.Bind("Warp Stabilization Suit", "Use harder recipe", false, new ConfigDescription("Requires restart"));
+
+            new Suit_ModOptions();
 
             Gloves_Craftable.Patch();
             Suit_Craftable.Patch();
