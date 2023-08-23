@@ -15,14 +15,19 @@ namespace ImprovedGravTrap
         private const string pluginName = "Improved Grav Trap";
         private const string versionString = "1.0.0";
 
-        private static string ConfigFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "ImprovedGravTrap.json");
+        private static readonly string ConfigFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "ImprovedGravTrap.json");
 
         public static ConfigEntry<bool> UseScrollWheel;
         public static ConfigEntry<KeyCode> AdvanceKey;
+        public static ConfigEntry<KeyCode> OpenStorageKey;
         public static ConfigEntry<int> EnhancedRange;
         public static ConfigEntry<float> EnhancedMaxForce;
         public static ConfigEntry<float> EnhancedMaxMassStable;
         public static ConfigEntry<int> EnhancedMaxObjects;
+        public static ConfigEntry<int> GravTrapStorageWidth;
+        public static ConfigEntry<int> GravTrapStorageHeight;
+        public static ConfigEntry<float> GravStoragePickupDistance;
+        public static ConfigEntry<float> GravStorageOpenDistance;
 
         public static List<TechTypeList> AllowedTypes;
 
@@ -50,21 +55,39 @@ namespace ImprovedGravTrap
 
             AdvanceKey = Config.Bind("Improved Grav Trap", "Key used to advance the type", KeyCode.Mouse2);
 
+            OpenStorageKey = Config.Bind("Improved Grav Trap", "Key used to open the grav trap storage", KeyCode.LeftAlt);
+
             EnhancedRange = Config.Bind("Improved Grav Trap", "Enhanced grav trap range", 30,
                 new ConfigDescription("The range of the improved grav trap",
                 acceptableValues: new AcceptableValueRange<int>(17, 40)));
 
-            EnhancedMaxForce = Config.Bind("Improved Grav Trap", "Enhanced grav trap force", 20f,
+            EnhancedMaxForce = Config.Bind("Improved Grav Trap", "Attraction force", 20f,
                 new ConfigDescription("The force of the improved grav trap",
                 acceptableValues: new AcceptableValueRange<float>(15f, 30f)));
 
-            EnhancedMaxMassStable = Config.Bind("Improved Grav Trap", "Enhanced max mass stable", 150f,
+            EnhancedMaxMassStable = Config.Bind("Improved Grav Trap", "Max mass stable", 150f,
                 new ConfigDescription("The max stable mass of the improved grav trap",
                 acceptableValues: new AcceptableValueRange<float>(15f, 200f)));
 
             EnhancedMaxObjects = Config.Bind("Improved Grav Trap", "Enhanced grav trap max objects", 20,
                 new ConfigDescription("The max attracted objects of the improved grav trap",
                 acceptableValues: new AcceptableValueRange<int>(12, 30)));
+
+            GravTrapStorageWidth = Config.Bind("Improved Grav Trap", "Enhanced grav trap storage width", 4,
+                new ConfigDescription("How many units wide the storage is (Requires restart)", 
+                acceptableValues: new AcceptableValueRange<int>(2, 7)));
+
+            GravTrapStorageHeight = Config.Bind("Improved Grav Trap", "Enhanced grav trap storage height", 4,
+                new ConfigDescription("How many units tall the storage is (Requires restart)", 
+                acceptableValues: new AcceptableValueRange<int>(2, 7)));
+
+            GravStorageOpenDistance = Config.Bind("Improved Grav Trap", "Storage open distance", 4f, 
+                new ConfigDescription("How far you need to be before you can open the storage",
+                acceptableValues: new AcceptableValueRange<float>(2f, 6f)));
+
+            GravStoragePickupDistance = Config.Bind("Improved Grav Trap", "Enhanced grav trap pickup distance", 5f, 
+                new ConfigDescription("How far an item needs to be from the grav trap before it's picked up",
+                acceptableValues: new AcceptableValueRange<float>(2f, 10f)));
 
             InitializeAllowedTypes();
         }

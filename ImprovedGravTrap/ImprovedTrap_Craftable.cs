@@ -5,6 +5,7 @@ using Ingredient = CraftData.Ingredient;
 using Nautilus.Assets.Gadgets;
 using UnityEngine;
 using IndigocoderLib;
+using BepInEx.Logging;
 
 namespace ImprovedGravTrap
 {
@@ -34,6 +35,33 @@ namespace ImprovedGravTrap
                     rend.material.color = new Color(55 / 255f, 178 / 255f, 212 / 255f);
                 }
                 gameObject.EnsureComponent<EnhancedGravSphere>();
+
+                GameObject child = new GameObject("StorageContainer");
+                child.transform.parent = gameObject.transform;
+
+                Main_Plugin.logger.LogInfo("Ensuring COI");
+
+                var coi = child.EnsureComponent<ChildObjectIdentifier>();
+                if (coi)
+                {
+                    Main_Plugin.logger.LogInfo("Attaching Storage");
+                    coi.classId = "EnhancedGravTrapStorage";
+                    var storageContainer = coi.gameObject.EnsureComponent<StorageContainer>();
+                    storageContainer.prefabRoot = gameObject;
+                    storageContainer.storageRoot = coi;
+
+                    storageContainer.width = Main_Plugin.GravTrapStorageWidth.Value;
+                    storageContainer.height = Main_Plugin.GravTrapStorageHeight.Value;
+                    storageContainer.storageLabel = "Grav trap";
+                }
+                else
+                {
+                    Main_Plugin.logger.LogInfo("Failed to add COI. Unable to attach storage!");
+                }
+
+                PickupableStorage pickupableStorage = coi.gameObject.EnsureComponent<PickupableStorage>();
+                pickupableStorage.pickupable = gameObject.GetComponent<Pickupable>();
+                pickupableStorage.storageContainer = coi.GetComponent<StorageContainer>();
             };
 
             RecipeData recipe = new RecipeData

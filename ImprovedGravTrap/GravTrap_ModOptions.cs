@@ -18,9 +18,13 @@ namespace ImprovedGravTrap
             useScrollWheelOption.OnChanged += OnUseScrollWheelOptionChanged;
             AddItem(useScrollWheelOption);
 
-            var keycodeOption = Main_Plugin.AdvanceKey.ToModKeybindOption();
-            keycodeOption.OnChanged += OnKeycodeOptionChanged;
-            AddItem(keycodeOption);
+            var advanceKeyOption = Main_Plugin.AdvanceKey.ToModKeybindOption();
+            advanceKeyOption.OnChanged += OnAdvanceKeyOptionChanged;
+            AddItem(advanceKeyOption);
+
+            var openStorageKey = Main_Plugin.OpenStorageKey.ToModKeybindOption();
+            openStorageKey.OnChanged += OnOpenStorageKeyChanged;
+            AddItem(openStorageKey);
 
             var rangeOption = Main_Plugin.EnhancedRange.ToModSliderOption(minValue: 17, maxValue: 40, step: 1);
             rangeOption.OnChanged += OnRangeOptionChanged;
@@ -37,15 +41,35 @@ namespace ImprovedGravTrap
             var maxAmountOption = Main_Plugin.EnhancedMaxObjects.ToModSliderOption(minValue: 12, maxValue: 30, step: 1);
             maxAmountOption.OnChanged += OnMaxAmountOptionChanged;
             AddItem(maxAmountOption);
+
+            var storageWidthOption = Main_Plugin.GravTrapStorageWidth.ToModSliderOption();
+            storageWidthOption.OnChanged += OnStorageWidthOptionChanged;
+            AddItem(storageWidthOption);
+
+            var storageHeightOption = Main_Plugin.GravTrapStorageHeight.ToModSliderOption();
+            storageHeightOption.OnChanged += OnStorageHeightOptionChanged;
+            AddItem(storageHeightOption);
+
+            var storageOpenDistOption = Main_Plugin.GravStorageOpenDistance.ToModSliderOption(minValue: 2f, maxValue: 6f, step: 0.5f, floatFormat: "{0:F1}");
+            storageOpenDistOption.OnChanged += OnStorageOpenDistOptionChanged;
+            AddItem(storageOpenDistOption);
+
+            var storagePickupDistance = Main_Plugin.GravStoragePickupDistance.ToModSliderOption(minValue: 2f, maxValue: 10f, step: 1f, floatFormat: "{0}");
+            storagePickupDistance.OnChanged += OnStoragePickupDistanceChanged;
+            AddItem(storagePickupDistance);
         }
 
         private void OnUseScrollWheelOptionChanged(object sender, ToggleChangedEventArgs e)
         {
             Main_Plugin.UseScrollWheel.Value = e.Value;
         }
-        private void OnKeycodeOptionChanged(object sender, KeybindChangedEventArgs e)
+        private void OnAdvanceKeyOptionChanged(object sender, KeybindChangedEventArgs e)
         {
             Main_Plugin.AdvanceKey.Value = e.Value;
+        }
+        private void OnOpenStorageKeyChanged(object sender, KeybindChangedEventArgs e)
+        {
+            Main_Plugin.OpenStorageKey.Value = e.Value;
         }
         private void OnRangeOptionChanged(object sender, SliderChangedEventArgs e)
         {
@@ -62,6 +86,22 @@ namespace ImprovedGravTrap
         private void OnMaxAmountOptionChanged(object sender, SliderChangedEventArgs e)
         {
             Main_Plugin.EnhancedMaxObjects.Value = (int)e.Value;
+        }
+        private void OnStorageWidthOptionChanged(object sender, SliderChangedEventArgs e)
+        {
+            Main_Plugin.GravTrapStorageWidth.Value = (int)e.Value;
+        }
+        private void OnStorageHeightOptionChanged(object sender, SliderChangedEventArgs e)
+        {
+            Main_Plugin.GravTrapStorageHeight.Value = (int)e.Value;
+        }
+        private void OnStorageOpenDistOptionChanged(object sender, SliderChangedEventArgs e)
+        {
+            Main_Plugin.GravStorageOpenDistance.Value = e.Value;
+        }
+        private void OnStoragePickupDistanceChanged(object sender, SliderChangedEventArgs e)
+        {
+            Main_Plugin.GravStoragePickupDistance.Value = e.Value;
         }
     }
 }

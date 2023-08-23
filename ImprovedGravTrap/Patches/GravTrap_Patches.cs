@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
-using ImprovedGravTrap;
 using UnityEngine;
 
 namespace ImprovedGravTrap.Patches
@@ -25,13 +24,53 @@ namespace ImprovedGravTrap.Patches
         }
 
         [HarmonyPatch(nameof(Gravsphere.Start)), HarmonyPostfix]
-        private static void Start(Gravsphere __instance)
+        private static void Start_Patch(Gravsphere __instance)
         {
             UpdateRange(__instance);
         }
 
+        [HarmonyPatch(nameof(Gravsphere.Update)), HarmonyPostfix]
+        private static void Update_Patch(Gravsphere __instance)
+        {
+            if(__instance.GetComponent<EnhancedGravSphere>() == null)
+            {
+                return;
+            }
+
+            bool inRange = Vector3.Distance(__instance.transform.position, Player.main.transform.position) <= Main_Plugin.GravStorageOpenDistance.Value;
+            StorageContainer container = __instance.GetComponentInChildren<StorageContainer>();
+            if (inRange && Input.GetKeyDown(Main_Plugin.OpenStorageKey.Value))
+            {
+                if(!__instance.GetComponent<Pickupable>()._attached)
+                {
+                    container.Open();
+                }
+            }
+
+            for (int i = 0; i < __instance.attractableList.Count; i++)
+            {
+                Rigidbody rb = __instance.attractableList[i];
+
+                if (Vector3.Distance(rb.position, __instance.transform.position) > Main_Plugin.GravStoragePickupDistance.Value)
+                {
+                    continue;
+                }
+
+                if (rb.TryGetComponent<Pickupable>(out Pickupable pickupable))
+                {
+                    pickupable.Initialize();
+                    container.container.AddItem(pickupable);
+                }
+
+                if (rb.TryGetComponent<BreakableResource>(out BreakableResource resource))
+                {
+                    resource.BreakIntoResources();
+                }
+            }
+        }
+
         [HarmonyPatch(nameof(Gravsphere.OnTriggerEnter)), HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> OnTriggerEnter(IEnumerable<CodeInstruction> instructions)
+        private static IEnumerable<CodeInstruction> OnTriggerEnter_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             CodeMatch match = new CodeMatch(i => i.opcode == OpCodes.Ldc_I4_S);
 
@@ -44,19 +83,35 @@ namespace ImprovedGravTrap.Patches
         }
 
         [HarmonyPatch(nameof(Gravsphere.ApplyGravitation)), HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> ApplyGravitation(IEnumerable<CodeInstruction> instructions)
+        private static IEnumerable<CodeInstruction> ApplyGravitation_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             CodeMatch match = new CodeMatch(i => i.opcode == OpCodes.Ldc_R4 && ((float)i.operand == 15f));
 
             var newInstructions = new CodeMatcher(instructions)
-                            .MatchForward(false, match)
-                            .SetInstructionAndAdvance(new CodeInstruction(OpCodes.Ldarg_0))
-                            .Insert(Transpilers.EmitDelegate<Func<Gravsphere, float>>(GetMaxForce))
-                            .MatchForward(false, match)
-                            .SetInstructionAndAdvance(new CodeInstruction(OpCodes.Ldarg_0))
-                            .Insert(Transpilers.EmitDelegate<Func<Gravsphere, float>>(GetMaxMassStable));
+                .MatchForward(false, match)
+                .SetInstructionAndAdvance(new CodeInstruction(OpCodes.Ldarg_0))
+                .Insert(Transpilers.EmitDelegate<Func<Gravsphere, float>>(GetMaxForce))
+                .MatchForward(false, match)
+                .SetInstructionAndAdvance(new CodeInstruction(OpCodes.Ldarg_0))
+                .Insert(Transpilers.EmitDelegate<Func<Gravsphere, float>>(GetMaxMassStable));
 
             return newInstructions.InstructionEnumeration();
+        }
+
+        [HarmonyPatch(nameof(Gravsphere.ApplyGravitation)), HarmonyPrefix]
+        private static bool ApplyGravitation_Prefix(Gravsphere __instance)
+        {
+            Pickupable pickupable = __instance.GetComponent<Pickupable>();
+
+            return pickupable._attached ? false : true;
+        }
+
+        [HarmonyPatch(nameof(Gravsphere.OnTriggerEnter)), HarmonyPrefix]
+        private static bool OnTriggerEnter_Prefix(Gravsphere __instance)
+        {
+            Pickupable pickupable = __instance.GetComponent<Pickupable>();
+
+            return pickupable._attached ? false : true;
         }
 
         private static float GetMaxForce(Gravsphere sphere)
@@ -95,7 +150,7 @@ namespace ImprovedGravTrap.Patches
 
         //Use animation from vanilla gravtrap
         [HarmonyPrefix, HarmonyPatch(typeof(QuickSlots), "SetAnimationState")]
-        static bool patchAnimation(QuickSlots __instance, string toolName)
+        static bool Animation_Patch(QuickSlots __instance, string toolName)
         {
             if (toolName != ImprovedTrap_Craftable.techType.ToString().ToLower())
                 return true;
