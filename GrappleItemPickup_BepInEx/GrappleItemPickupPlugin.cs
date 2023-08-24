@@ -30,17 +30,6 @@ namespace GrappleItemPickup_BepInEx
             harmony.Patch(AccessTools.Method(typeof(ExosuitGrapplingArm), "FixedUpdate"), 
                new HarmonyMethod(AccessTools.Method(typeof(GrappleItemPickupMod), nameof(GrappleItemPickupMod.GrapplingArm_Patch))));
 
-            //Check for GrapplingArmUpgrade and patch that if it exists
-            if (Chainloader.PluginInfos.ContainsKey("Indigocoder.GrapplingArmUpgrade"))
-            {
-                IndigocoderLib.Utilities.PatchIfExists(harmony, "GrapplingArmUpgrade_BepInEx", "GrapplingArmUpgrade_BepInEx.GrapplingArmUpgrade_Handler", "FixedUpdate",
-                    null, new HarmonyMethod(AccessTools.Method(typeof(GrapplingArmUpgrade_FixedUpdate_Patch), nameof(GrapplingArmUpgrade_FixedUpdate_Patch.GrapplingArm_Patch))), null);
-            }
-            else
-            {
-                Logger.LogInfo($"Not able to patch GrapplingArmUpgrade because the mod was not found");
-            }
-
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
 
             EnableMod = Config.Bind("Grapple Item Pickup Options", "Enable", true);

@@ -5,14 +5,14 @@ using BepInEx.Logging;
 
 namespace GrappleItemPickup_BepInEx
 {
-    [HarmonyPatch(typeof(GrapplingArmUpgrade_Handler))]
+    [HarmonyPatch(typeof(ExosuitGrapplingArm))]
     internal static class GrapplingArmUpgrade_FixedUpdate_Patch
     {
         private static bool WriteLogs = GrappleItemPickupPlugin.WriteLogs.Value;
         private static float PickupDistance = GrappleItemPickupPlugin.PickupDistance.Value;
 
-        [HarmonyPatch(nameof(GrapplingArmUpgrade_Handler.FixedUpdate)), HarmonyPostfix]
-        public static void GrapplingArm_Patch(GrapplingArmUpgrade_Handler __instance)
+        [HarmonyPatch(nameof(ExosuitGrapplingArm.FixedUpdate)), HarmonyPostfix]
+        public static void GrapplingArm_Patch(ExosuitGrapplingArm __instance)
         {
             if (!GrappleItemPickupPlugin.EnableMod.Value)
             {
