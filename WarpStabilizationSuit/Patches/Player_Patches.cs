@@ -39,18 +39,19 @@ namespace WarpStabilizationSuit
             TechType typeInBodySlot = equipment.GetTechTypeInSlot("Body");
             TechType typeInGovesSlot = equipment.GetTechTypeInSlot("Gloves");
 
-            Main_Plugin.logger.LogInfo($"Body slot type = {typeInBodySlot} | Gloves slot type = {typeInGovesSlot}");
-
             bool wearingWarpSuit = typeInBodySlot.Equals(Suit_Craftable.techType);
             bool wearingWarpGloves = typeInGovesSlot.Equals(Gloves_Craftable.techType);
 
             bool wearingReinforcedSuit = typeInBodySlot.Equals(TechType.ReinforcedDiveSuit);
             bool wearingReinforcedGloves = typeInGovesSlot.Equals(TechType.ReinforcedGloves);
 
-            diveSuitBodyGO.SetActive(!(wearingWarpSuit || wearingReinforcedSuit));
+            bool wearingSuit = !typeInBodySlot.Equals(TechType.None);
+            bool wearingGloves = !typeInGovesSlot.Equals(TechType.None);
+
+            diveSuitBodyGO.SetActive(!(wearingWarpSuit || wearingReinforcedSuit || wearingSuit));
             reinforcedSuitBodyGO.SetActive(wearingWarpSuit || wearingReinforcedSuit);
 
-            diveSuitGlovesGO.SetActive(!(wearingWarpGloves || wearingReinforcedGloves));
+            diveSuitGlovesGO.SetActive(!(wearingWarpGloves || wearingReinforcedGloves || wearingGloves));
             reinforcedSuitGlovesGO.SetActive(wearingWarpGloves || wearingReinforcedGloves);
 
             SetWarpColors(wearingWarpSuit, wearingWarpGloves);

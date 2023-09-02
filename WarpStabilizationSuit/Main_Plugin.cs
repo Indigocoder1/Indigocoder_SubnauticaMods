@@ -5,15 +5,17 @@ using System.Reflection;
 using System.IO;
 using WarpStabilizationSuit.Items;
 using BepInEx.Configuration;
+using IndigocoderLib;
 
 namespace WarpStabilizationSuit
 {
     [BepInPlugin(myGUID, pluginName, versionString)]
+    [BepInDependency("com.snmodding.nautilus", BepInDependency.DependencyFlags.HardDependency)]
     public class Main_Plugin : BaseUnityPlugin
     {
         private const string myGUID = "Indigocoder.WarpStabilizationSuit";
         private const string pluginName = "Warp Stabilization Suit";
-        private const string versionString = "1.2.2";
+        private const string versionString = "1.2.6";
 
         public static ManualLogSource logger;
 
@@ -26,6 +28,11 @@ namespace WarpStabilizationSuit
         private void Awake()
         {
             logger = Logger;
+
+            if (PiracyDetector.TryFindPiracy())
+            {
+                return;
+            }
 
             harmony.PatchAll();
             UseHardRecipe = Config.Bind("Warp Stabilization Suit", "Use harder recipe", false, new ConfigDescription("Requires restart"));
