@@ -6,7 +6,7 @@ using HarmonyLib;
 namespace StasisRifleFixMod_BepInEx
 {
     [BepInPlugin(myGUID, pluginName, versionString)]
-    public class StasisFreezeFixPlugin : BaseUnityPlugin
+    public class Main_Plugin : BaseUnityPlugin
     {
         public static ConfigEntry<bool> WriteLogs;
 

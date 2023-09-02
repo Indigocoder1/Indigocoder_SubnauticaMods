@@ -5,20 +5,18 @@ namespace StasisRifleFixMod_BepInEx
 {
     public class StasisRifleFixModOptions : ModOptions
     {
-        private ModToggleOption writeLogsOption;
-
         public StasisRifleFixModOptions() : base("Stasis Rifle Fix Options")
         {
-            OptionsPanelHandler.RegisterModOptions(this);
-
-            writeLogsOption = StasisFreezeFixPlugin.WriteLogs.ToModToggleOption();
+            var writeLogsOption = Main_Plugin.WriteLogs.ToModToggleOption();
             writeLogsOption.OnChanged += OnWriteLogsChanged;
             AddItem(writeLogsOption);
+
+            OptionsPanelHandler.RegisterModOptions(this);
         }
 
-        private void OnWriteLogsChanged(object sender, OptionEventArgs e)
+        private void OnWriteLogsChanged(object sender, ToggleChangedEventArgs e)
         {
-            StasisFreezeFixPlugin.WriteLogs.Value = writeLogsOption.Value; ;
+            Main_Plugin.WriteLogs.Value = e.Value;
         }
     }
 }
