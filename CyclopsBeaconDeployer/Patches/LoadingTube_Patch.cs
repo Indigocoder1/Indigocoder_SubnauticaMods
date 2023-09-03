@@ -9,6 +9,12 @@ namespace CyclopsBeaconDeployer.Patches
         private static void Initialize_Patch(CyclopsDecoyLoadingTube __instance)
         {
             //__instance.subRoot.upgradeConsole.modules
+            __instance.decoySlots.isAllowedToRemove = AllowedToRemove;
+        }
+
+        private static bool AllowedToRemove(Pickupable pickupable, bool verbose)
+        {
+            return true;
         }
     }
 }
