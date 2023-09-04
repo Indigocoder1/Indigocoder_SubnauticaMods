@@ -8,7 +8,6 @@ namespace CyclopsBeaconDeployer.Patches
         [HarmonyPatch(nameof(CyclopsDecoyLoadingTube.Initialize)), HarmonyPostfix]
         private static void Initialize_Patch(CyclopsDecoyLoadingTube __instance)
         {
-            //__instance.subRoot.upgradeConsole.modules
             __instance.decoySlots.isAllowedToRemove = AllowedToRemove;
         }
 
