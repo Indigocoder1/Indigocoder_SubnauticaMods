@@ -5,6 +5,7 @@ namespace CyclopsBeaconDeployer.Patches
     [HarmonyPatch(typeof(uGUI_Equipment))]
     internal static class uGUI_Equipment_Patch
     {
+        /*
         [HarmonyPatch(nameof(uGUI_Equipment.HighlightSlots)), HarmonyPostfix]
         private static void HighlightSlots(EquipmentType itemType, uGUI_Equipment __instance)
         {
@@ -31,5 +32,6 @@ namespace CyclopsBeaconDeployer.Patches
             }
             uGUI_Equipment.sSlotIDs.Clear();
         }
+        */
     }
 }

@@ -54,18 +54,6 @@ namespace CyclopsBeaconDeployer.Patches
                     __result = false;
                 }
             }
-
-            if(itemA.techType == TechType.CyclopsDecoy)
-            {
-                if (Equipment_Patches.HasModule(equipment))
-                {
-                    __result = false;
-                }
-                else
-                {
-                    __result = true;
-                }
-            }
         }
     }
 }

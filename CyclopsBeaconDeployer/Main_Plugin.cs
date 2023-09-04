@@ -21,6 +21,7 @@ namespace CyclopsBeaconDeployer
         private static readonly Harmony harmony = new Harmony(myGUID);
         public static ManualLogSource logger;
 
+        public static string AssetFolderPath { get; private set; } = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
         public static AssetBundle assetBundle { get; private set; }
 
         public static GameObject nameInputFieldGO { get; private set; }
@@ -42,8 +43,7 @@ namespace CyclopsBeaconDeployer
             CoroutineTask<GameObject> beaconTask = CraftData.GetPrefabForTechTypeAsync(TechType.Beacon);
             yield return beaconTask;
 
-            string assetFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
-            assetBundle = AssetBundle.LoadFromFile(Path.Combine(assetFolderPath, "beacondeployer"));
+            assetBundle = AssetBundle.LoadFromFile(Path.Combine(AssetFolderPath, "beacondeployer"));
             nameInputFieldGO = assetBundle.LoadAsset<GameObject>("BeaconNameInput");
 
             decoyTask.result.value.AddComponent<PlaceTool>();

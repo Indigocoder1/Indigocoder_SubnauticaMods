@@ -1,4 +1,4 @@
-﻿
+﻿using IndigocoderLib;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
@@ -13,9 +13,11 @@ namespace CyclopsBeaconDeployer.Items
 
         public static void Patch()
         {
-            PrefabInfo prefabInfo = PrefabInfo.WithTechType("BeaconDeployModule", "Beacon Deploy Module", "Allows beacons to be deoployed " +
+            Atlas.Sprite sprite = ImageHelper.GetSpriteFromAssetsFolder("DeployableBeaconModule.png");
+
+            PrefabInfo prefabInfo = PrefabInfo.WithTechType("DeployableBeaconModule", "Deployable Beacon Module", "Allows beacons to be deployed " +
                 "from the cyclops decoy tube")
-                .WithIcon(SpriteManager.Get(TechType.CyclopsDecoyModule));
+                .WithIcon(sprite);
 
             techType = prefabInfo.TechType;
 
@@ -28,9 +30,9 @@ namespace CyclopsBeaconDeployer.Items
                 craftAmount = 1,
                 Ingredients =
                 {
-                    new Ingredient(TechType.Gravsphere, 1),
-                    new Ingredient(TechType.Polyaniline, 2),
-                    new Ingredient(TechType.AdvancedWiringKit, 2),
+                    new Ingredient(TechType.Benzene, 1),
+                    new Ingredient(TechType.Titanium, 2),
+                    new Ingredient(TechType.Lithium, 2),
                     new Ingredient(TechType.ComputerChip, 1),
                 },
             };
@@ -43,7 +45,7 @@ namespace CyclopsBeaconDeployer.Items
                 .WithFabricatorType(CraftTree.Type.CyclopsFabricator)
                 .WithCraftingTime(5f);
 
-            prefab.SetPdaGroupCategory(TechGroup.VehicleUpgrades, TechCategory.VehicleUpgrades);
+            prefab.SetPdaGroupCategory(TechGroup.Cyclops, TechCategory.CyclopsUpgrades);
 
             prefab.Register();
         }

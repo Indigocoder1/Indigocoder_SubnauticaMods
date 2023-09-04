@@ -1,7 +1,9 @@
 ﻿using CyclopsBeaconDeployer.Items;
 using HarmonyLib;
+using IndigocoderLib;
 using System;
 using System.Net;
+using UnityEngine;
 
 namespace CyclopsBeaconDeployer.Patches
 {
@@ -135,6 +137,8 @@ namespace CyclopsBeaconDeployer.Patches
                 {
                     CyclopsDecoyLauncher launcher = subRoot.transform.Find("DecoyLauncher").GetComponent<CyclopsDecoyLauncher>();
                     launcher.decoyPrefab = Main_Plugin.beaconPrefab;
+                    GameObject nameInput = subRoot.transform.Find("HelmHUD/HelmHUDVisuals/Canvas_RightHUD/Abilities/BeaconNameInput(Clone)").gameObject;
+                    nameInput.SetActive(true);
                 }
             }
         }
@@ -153,6 +157,8 @@ namespace CyclopsBeaconDeployer.Patches
                 {
                     CyclopsDecoyLauncher launcher = subRoot.transform.Find("DecoyLauncher").GetComponent<CyclopsDecoyLauncher>();
                     launcher.decoyPrefab = Main_Plugin.decoyPrefab;
+                    GameObject nameInput = subRoot.transform.Find("HelmHUD/HelmHUDVisuals/Canvas_RightHUD/Abilities/BeaconNameInput(Clone)").gameObject;
+                    nameInput.SetActive(false);
                 }
             }
         }
