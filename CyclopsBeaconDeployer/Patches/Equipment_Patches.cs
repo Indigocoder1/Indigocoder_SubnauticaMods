@@ -126,6 +126,11 @@ namespace CyclopsBeaconDeployer.Patches
         [HarmonyPatch(nameof(Equipment.NotifyEquip)), HarmonyPostfix]
         private static void NotifyEquip(Equipment __instance, InventoryItem item)
         {
+            if(item == null)
+            {
+                return;
+            }
+
             if(item.techType != BeaconDeployModule.techType)
             {
                 return;
@@ -135,8 +140,9 @@ namespace CyclopsBeaconDeployer.Patches
             {
                 if (console.transform.parent.TryGetComponent<SubRoot>(out SubRoot subRoot))
                 {
-                    CyclopsDecoyLauncher launcher = subRoot.transform.Find("DecoyLauncher").GetComponent<CyclopsDecoyLauncher>();
+                    CyclopsDecoyLauncher launcher = subRoot.transform.Find("DecoyLauncher")?.GetComponent<CyclopsDecoyLauncher>();
                     launcher.decoyPrefab = Main_Plugin.beaconPrefab;
+
                     GameObject nameInput = subRoot.transform.Find("HelmHUD/HelmHUDVisuals/Canvas_RightHUD/Abilities/BeaconNameInput(Clone)").gameObject;
                     nameInput.SetActive(true);
                 }

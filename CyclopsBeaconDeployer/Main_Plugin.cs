@@ -3,7 +3,6 @@ using BepInEx.Logging;
 using CyclopsBeaconDeployer.Items;
 using HarmonyLib;
 using IndigocoderLib;
-using Nautilus.Utility;
 using System.Collections;
 using System.IO;
 using System.Reflection;
@@ -12,6 +11,7 @@ using UnityEngine;
 namespace CyclopsBeaconDeployer
 {
     [BepInPlugin(myGUID, pluginName, versionString)]
+    [BepInDependency("com.snmodding.nautilus", BepInDependency.DependencyFlags.HardDependency)]
     public class Main_Plugin : BaseUnityPlugin
     {
         private const string myGUID = "Indigocoder.CyclopsBeaconDeployer";
