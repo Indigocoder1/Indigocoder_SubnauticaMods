@@ -1,8 +1,10 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using CyclopsBeaconDeployer.Items;
 using HarmonyLib;
 using IndigocoderLib;
+using Nautilus.Handlers;
 using System.Collections;
 using System.IO;
 using System.Reflection;
@@ -18,12 +20,14 @@ namespace CyclopsBeaconDeployer
         private const string pluginName = "Cyclops Beacon Deployer";
         private const string versionString = "1.0.0";
 
+        public static ConfigEntry<bool> WriteLogs;
+
         private static readonly Harmony harmony = new Harmony(myGUID);
         public static ManualLogSource logger;
+        public static EquipmentType DecoyPlaceholder { get; private set; }
 
         public static string AssetFolderPath { get; private set; } = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
         public static AssetBundle assetBundle { get; private set; }
-
         public static GameObject nameInputFieldGO { get; private set; }
         public static GameObject decoyPrefab { get; private set; }
         public static GameObject beaconPrefab { get; private set; }
@@ -36,6 +40,8 @@ namespace CyclopsBeaconDeployer
             {
                 yield break;
             }
+
+            InitializeConfigs();
 
             CoroutineTask<GameObject> decoyTask = CraftData.GetPrefabForTechTypeAsync(TechType.CyclopsDecoy);
             yield return decoyTask;
@@ -51,12 +57,21 @@ namespace CyclopsBeaconDeployer
 
             beaconPrefab = beaconTask.result.value;
 
+            EnumBuilder<EquipmentType> builder = EnumHandler.AddEntry<EquipmentType>("DecoyPlaceholder");
+            DecoyPlaceholder = builder.Value;
+            Main_Plugin.logger.LogInfo($"Decoy placeholder = {DecoyPlaceholder}");
+
             CraftData.equipmentTypes[TechType.Beacon] = EquipmentType.DecoySlot;
 
             BeaconDeployModule.Patch();
             harmony.PatchAll();
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
+        }
+
+        private void InitializeConfigs()
+        {
+            WriteLogs = Config.Bind("Cyclops Beacon Deployer", "Write Logs", false);
         }
     }
 }

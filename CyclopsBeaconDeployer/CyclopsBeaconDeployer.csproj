@@ -77,14 +77,13 @@
     <Compile Include="Main_Plugin.cs" />
     <Compile Include="Patches\CraftData_Patches.cs" />
     <Compile Include="Patches\DecoyLauncher_Patch.cs" />
+    <Compile Include="Patches\DecoyManager_Patches.cs" />
     <Compile Include="Patches\Equipment_Patches.cs" />
-    <Compile Include="Patches\Inventory_Patches.cs" />
     <Compile Include="Patches\LoadingTube_Patch.cs" />
     <Compile Include="Patches\PlayerTool_Patch.cs" />
     <Compile Include="Patches\InventoryItemPatch.cs" />
     <Compile Include="Patches\Player_Patch.cs" />
     <Compile Include="Patches\SubRoot_Patch.cs" />
-    <Compile Include="Patches\uGUI_Equipment_Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="..\IndigocoderLib\IndigocoderLib.projitems" Label="Shared" />
