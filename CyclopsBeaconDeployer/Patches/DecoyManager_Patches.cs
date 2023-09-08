@@ -45,5 +45,17 @@ namespace CyclopsBeaconDeployer.Patches
         {
             __instance.decoyLauncher.decoyPrefab = previousPrefabs[__instance];
         }
+
+        [HarmonyPatch(nameof(CyclopsDecoyManager.UpdateTotalDecoys)), HarmonyPostfix]
+        private static void UpdateTotalDecoys_Postfix(CyclopsDecoyManager __instance)
+        {
+            SubRoot subRoot = __instance.GetComponent<SubRoot>();
+
+            if(SubRoot_Patch.inputFields.ContainsKey(subRoot))
+            {
+                SubRoot_Patch.inputFields[subRoot].interactable = __instance.decoyCount > 0 ? true : false;
+            }
+            
+        }
     }
 }

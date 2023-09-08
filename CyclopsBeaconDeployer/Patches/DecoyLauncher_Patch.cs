@@ -18,7 +18,10 @@ namespace CyclopsBeaconDeployer.Patches
                 return true;
             }
 
-            Beacon beacon = Object.Instantiate(__instance.decoyPrefab, __instance.transform.position, Quaternion.identity).GetComponent<Beacon>();
+            Rigidbody rb = subroot.GetComponent<Rigidbody>();
+            float yPos = rb.velocity.y <= 0.05? __instance.transform.position.y : __instance.transform.position.y - 15;
+            Vector3 postion = new Vector3(__instance.transform.position.x, yPos, __instance.transform.position.z);
+            Beacon beacon = Object.Instantiate(__instance.decoyPrefab, postion, Quaternion.identity).GetComponent<Beacon>();
 
             if (beacon)
             {
@@ -33,6 +36,8 @@ namespace CyclopsBeaconDeployer.Patches
                 beacon.label = label;
                 beacon.beaconLabel.SetLabel(label);
                 beacon.name = $"Beacon ({label})";
+
+                SubRoot_Patch.inputFields[subroot].text = "";
             }
 
             return false;

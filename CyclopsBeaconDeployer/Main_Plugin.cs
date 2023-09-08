@@ -59,10 +59,10 @@ namespace CyclopsBeaconDeployer
 
             EnumBuilder<EquipmentType> builder = EnumHandler.AddEntry<EquipmentType>("DecoyPlaceholder");
             DecoyPlaceholder = builder.Value;
-            Main_Plugin.logger.LogInfo($"Decoy placeholder = {DecoyPlaceholder}");
 
             CraftData.equipmentTypes[TechType.Beacon] = EquipmentType.DecoySlot;
 
+            new Deployer_ModOptions();
             BeaconDeployModule.Patch();
             harmony.PatchAll();
 
