@@ -5,6 +5,7 @@ using IndigocoderLib;
 using System.Collections;
 using static TextureReplacer.Main;
 using Random = UnityEngine.Random;
+using System.Linq;
 
 namespace TextureReplacer
 {
@@ -63,7 +64,7 @@ namespace TextureReplacer
             for (int i = 0; i < configDatas[nameWithoutClone].Count; i++)
             {
                 TexturePatchConfigData configData = configDatas[nameWithoutClone][i];
-                if (Random.Range(0f, 1f) <= configData.variationChance || configData.variationAccepted)
+                if (configData.variationAccepted || !configData.isVariation || Random.Range(0f, 1f) <= configData.variationChance)
                 {
                     Texture2D texture = textures[nameWithoutClone][i];
 
@@ -71,7 +72,6 @@ namespace TextureReplacer
                     Material material = targetRenderer.materials[configData.materialIndex];
 
                     material.SetTexture(Shader.PropertyToID(configData.textureName), texture);
-                    logger.LogInfo($"Texture successfully replaced for {material.name}");
 
                     EnsureLinkedConfigs(configData);
                 }

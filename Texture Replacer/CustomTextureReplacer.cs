@@ -16,11 +16,11 @@ namespace TextureReplacer
 
         public static void Initialize()
         {
-            textureConfigs = SaveManager.LoadFromJson(configFilePath);
+            textureConfigs = SaveManager.LoadConfigs(folderFilePath);
             if (textureConfigs == null)
             {
                 SaveExampleData();
-                textureConfigs = SaveManager.LoadFromJson(configFilePath);
+                textureConfigs = SaveManager.LoadConfigs(folderFilePath);
             }
 
             LoadAllTextures();

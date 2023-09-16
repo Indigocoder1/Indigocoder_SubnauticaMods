@@ -23,7 +23,7 @@ namespace TextureReplacer
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
 
-            //LifepodTextureReplacer.Initialize();
+            LifepodTextureReplacer.Initialize();
             CustomTextureReplacer.Initialize();
         }
 
