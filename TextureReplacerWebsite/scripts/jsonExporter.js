@@ -47,7 +47,7 @@ function downloadFile()
     URL.revokeObjectURL(link.href);
 }
 
-function updateConfigNameList(newConfig, adding)
+function updateConfigNameList(newConfig, adding, index = 0)
 {
     if(adding)
     {
@@ -59,7 +59,9 @@ function updateConfigNameList(newConfig, adding)
     }
     else
     {
-
+        listItem = linkedConfigNamesForm.childNodes[index];
+        listItem.text = newConfig.configName;
+        listItem.value = newConfig.configName;
     }
 }
 
@@ -91,12 +93,13 @@ function saveToConfig()
     prefabclassIDField.value, rendererHierarchyPathField.value, textureNameField.value, isVariationToggle.value=="on"?false:true,
     isVariationToggle.value?variationChanceField.value:-1, "");
 
+    let alreadyHasConfig = configList.map((config) => config.configName == configNameField.value)[0];
+
     configList[configItemsForm.value - 1] = newConfig;
     configItemsForm.childNodes[configItemsForm.value].innerHTML = configNameField.value;
 
     linkedConfigNamesForm.disabled = false;
-
-    updateConfigNameList(newConfig, true);
+    updateConfigNameList(newConfig, alreadyHasConfig == undefined, configItemsForm.value);
 }
 
 function loadFromConfigItem()
