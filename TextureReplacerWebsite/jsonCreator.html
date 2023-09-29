@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Json Creator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Sidebar navigation -->
+    <div class="sidenav">
+        <a href="index.html">Getting started</a>
+        <a href=runtimeEditor.html>Runtime Editor Tutorial</a>
+        <a href="assetStudio.html">Asset Studio</a>
+        <a href=customConfigs.html>Custom Config Tutorial</a>
+        <a href=lifepodConfigs.html>Lifepod Config Tutorial</a>
+        <a href="jsonCreator.html">Json Creator</a>
+    </div>
+
+    <h2><strong>Current Config:</strong></h2>
+    <form action="" class="bottom-border">
+        <label for="Config Items">
+            <select name="configItems" id="configItems">
+                <option value="1">My Config Name</option>
+            </select>
+        </label>
+    </form>
+    <div>Config Name</div>
+    <input type="text" name="ConfigName" id="configName" placeholder="My Config Name">
+    <br>
+    <div>Material index (Will be rounded if not an integer)</div>
+    <input type="number" name="MaterialIndex" id="materialIndex" step="1" type="number">
+    <br>
+    <div>File Name</div>
+    <input type="text" name="File Name" id="fileName">
+    <br>
+    <div>Prefab Class ID</div>
+    <input type="text" name="PrefabClassID" id="prefabclassID">
+    <br>
+    <div>Renderer Hierarchy Path</div>
+    <input type="text" name="RendererHierarchyPath" id="rendererHierarchyPath">
+    <br>
+    <div>Texture Name</div>
+    <input type="text" name="TextureName" id="textureName">
+    <br>
+    <div>Is Variation</div>
+    <input type="checkbox" name="IsVariation" id="isVariation" onclick="onVariationChange()">
+    <br>
+    <div>Variation Chance</div>
+    <input type="number" name="VariationChance" id="variationChance" disabled value="-1">
+    <div>Linked Config Names (Select with control + click or drag clicking)</div>
+    <form action="" class="bottom-border">
+        <div>
+            <label for="Config names"></label>
+            <select name="names" id="names" multiple class="container" disabled>
+            </select>
+        </div>
+    </form>
+    <div><strong>Configs</strong></div>
+    <button onclick="saveToConfig()">Save to Selected Config</button>
+    <br>
+    <button onclick="loadFromConfigItem()">Load from Selected Config</button>
+    <br>
+    <button onclick="newConfigItem()">Create New Config</button>
+    <br>
+    <br>
+    <div><strong>Json</strong></div>
+    <!-- <button onclick="addToList()">Add to Json List</button> -->
+    <button onclick="downloadFile()">Save Json File</button>
+
+    <script src="scripts/jsonExporter.js"></script>
+</body>
+</html>
