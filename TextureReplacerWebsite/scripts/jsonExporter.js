@@ -98,6 +98,7 @@ function saveToConfig()
     configList[configItemsForm.value - 1] = newConfig;
     configItemsForm.childNodes[configItemsForm.value].innerHTML = configNameField.value;
 
+    console.log(alreadyHasConfig);
     linkedConfigNamesForm.disabled = false;
     updateConfigNameList(newConfig, alreadyHasConfig == undefined, configItemsForm.value);
 }
