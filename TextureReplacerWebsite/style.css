@@ -54,10 +54,6 @@ img
     width: 250px;
     height: 150px;
 }
-.row
-{
-    display: inline-flex;
-}
 
 /* The sidebar menu */
 .sidenav {
