@@ -18,6 +18,11 @@ class Config {
     };
 }
 
+window.onbeforeunload = function (e)
+{
+    return "Are you sure?";
+}
+
 var configList = [];
 var configItemsForm = document.getElementById("configItems");
 var configNameField = document.getElementById("configName");
