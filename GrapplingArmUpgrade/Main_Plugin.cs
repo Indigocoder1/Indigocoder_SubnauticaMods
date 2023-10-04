@@ -3,6 +3,8 @@ using HarmonyLib;
 using BepInEx.Logging;
 using BepInEx.Configuration;
 using IndigocoderLib;
+using BepInEx.Bootstrap;
+using Nautilus.Handlers;
 
 namespace GrapplingArmUpgrade_BepInEx
 {
@@ -29,12 +31,19 @@ namespace GrapplingArmUpgrade_BepInEx
         private static readonly Harmony harmony = new Harmony(myGUID);
 
         public static ManualLogSource logger;
+        public static bool TabsNeeded;
 
         private void Awake()
         {
             PiracyDetector.TryFindPiracy();
 
             logger = Logger;
+
+            if (Chainloader.PluginInfos.ContainsKey("com.ramune.SeaglideUpgrades") || Chainloader.PluginInfos.ContainsKey("com.ramune.OrganizedWorkbench"))
+            {
+                CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, "Other", "Other", SpriteManager.Get(TechType.Titanium));
+                TabsNeeded = true;
+            }
 
             UpgradedArm_Craftable.RegisterModule();
             harmony.PatchAll();

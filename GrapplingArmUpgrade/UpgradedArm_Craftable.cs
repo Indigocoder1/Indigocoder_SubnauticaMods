@@ -24,7 +24,7 @@ namespace GrapplingArmUpgrade_BepInEx
             TechType = prefabInfo.TechType;
 
             var customPrefab = new CustomPrefab(prefabInfo);
-            customPrefab.SetRecipe(new RecipeData()
+            RecipeData recipe = new RecipeData()
             {
                 craftAmount = 1,
                 Ingredients = new List<CraftData.Ingredient>()
@@ -35,9 +35,19 @@ namespace GrapplingArmUpgrade_BepInEx
                     new CraftData.Ingredient(TechType.AramidFibers),
                     new CraftData.Ingredient(TechType.AluminumOxide),
                 }
-            })
+            };
+
+            customPrefab.SetRecipe(recipe)
                 .WithFabricatorType(CraftTree.Type.Workbench)
                 .WithCraftingTime(5f);
+
+            if (Main_Plugin.TabsNeeded)
+            {
+                customPrefab.SetRecipe(recipe)
+                    .WithFabricatorType(CraftTree.Type.Workbench)
+                    .WithStepsToFabricatorTab("Other")
+                    .WithCraftingTime(5f);
+            }
 
             CraftDataHandler.SetBackgroundType(prefabInfo.TechType, CraftData.BackgroundType.ExosuitArm);
             customPrefab.SetUnlock(TechType.ExosuitGrapplingArmModule);
