@@ -1,5 +1,8 @@
-﻿using Nautilus.Handlers;
+﻿using Nautilus.Crafting;
+using Nautilus.Handlers;
 using Nautilus.Options;
+using WarpStabilizationSuit.Items;
+using static CraftData;
 
 namespace WarpStabilizationSuit
 {
@@ -17,6 +20,16 @@ namespace WarpStabilizationSuit
         private void OnHarderRecipeOptionChanged(object sender, ToggleChangedEventArgs e)
         {
             Main_Plugin.UseHardRecipe.Value = e.Value;
+            RecipeData recipe = new RecipeData()
+            {
+                craftAmount = 1,
+                Ingredients = Suit_Craftable.Ingredients,
+                LinkedItems =
+                {
+                    Gloves_Craftable.techType
+                }
+            };
+            CraftDataHandler.SetRecipeData(Suit_Craftable.techType, recipe);
         }
     }
 }

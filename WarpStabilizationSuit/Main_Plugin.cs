@@ -6,6 +6,8 @@ using System.IO;
 using WarpStabilizationSuit.Items;
 using BepInEx.Configuration;
 using IndigocoderLib;
+using BepInEx.Bootstrap;
+using Nautilus.Handlers;
 
 namespace WarpStabilizationSuit
 {
@@ -15,8 +17,7 @@ namespace WarpStabilizationSuit
     {
         private const string myGUID = "Indigocoder.WarpStabilizationSuit";
         private const string pluginName = "Warp Stabilization Suit";
-        private const string versionString = "1.2.6";
-
+        private const string versionString = "1.2.7";
         public static ManualLogSource logger;
 
         public static string AssetsFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
@@ -24,6 +25,7 @@ namespace WarpStabilizationSuit
         private static readonly Harmony harmony = new Harmony(myGUID);
 
         public static ConfigEntry<bool> UseHardRecipe;
+        public static bool TabsNeeded;
 
         private void Awake()
         {
@@ -35,9 +37,15 @@ namespace WarpStabilizationSuit
             }
 
             harmony.PatchAll();
-            UseHardRecipe = Config.Bind("Warp Stabilization Suit", "Use harder recipe", false, new ConfigDescription("Requires restart"));
+            UseHardRecipe = Config.Bind("Warp Stabilization Suit", "Use harder recipe", false);
 
             new Suit_ModOptions();
+
+            if(Chainloader.PluginInfos.ContainsKey("com.ramune.SeaglideUpgrades") || Chainloader.PluginInfos.ContainsKey("com.ramune.OrganizedWorkbench"))
+            {
+                CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, "Other", "Other", SpriteManager.Get(TechType.Titanium));
+                TabsNeeded = true;
+            }
 
             Gloves_Craftable.Patch();
             Suit_Craftable.Patch();

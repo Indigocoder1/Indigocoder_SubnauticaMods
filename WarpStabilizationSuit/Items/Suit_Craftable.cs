@@ -7,14 +7,35 @@ using Ingredient = CraftData.Ingredient;
 using IndigocoderLib;
 using Nautilus.Handlers;
 using System.Collections.Generic;
+using BepInEx.Bootstrap;
 
 namespace WarpStabilizationSuit.Items
 {
     internal static class Suit_Craftable
     {
         public static Color WarpColor = new Color(176 / 255f, 99 / 255f, 213 / 255f);
-
         public static TechType techType { get; private set; }
+
+        public static List<Ingredient> Ingredients
+        {
+            get
+            {
+                bool usingHardRecipe = Main_Plugin.UseHardRecipe.Value;
+                return new List<Ingredient>
+                {
+                    new Ingredient(TechType.ReinforcedDiveSuit, 1),
+                            new Ingredient(TechType.ReinforcedGloves, 1),
+                            new Ingredient(usingHardRecipe?TechType.AramidFibers:TechType.Polyaniline, usingHardRecipe?4:2),
+                            new Ingredient(usingHardRecipe?TechType.Lithium:TechType.AdvancedWiringKit, usingHardRecipe?4:1),
+                            new Ingredient(usingHardRecipe?TechType.AdvancedWiringKit:TechType.Nickel, 2),
+                            new Ingredient(TechType.PrecursorIonCrystal, 2)
+                };
+            }
+            private set
+            {
+
+            }
+        }
 
         public static void Patch()
         {
@@ -37,41 +58,16 @@ namespace WarpStabilizationSuit.Items
                 renderer.materials[1].color = WarpColor;
             };
 
+            bool usingHardRecipe = Main_Plugin.UseHardRecipe.Value;
             RecipeData recipe = new RecipeData()
             {
                 craftAmount = 1,
+                Ingredients = Ingredients,
                 LinkedItems =
                 {
                     Gloves_Craftable.techType
                 }
             };
-
-            if(!Main_Plugin.UseHardRecipe.Value)
-            {
-                recipe.Ingredients = new List<Ingredient>
-                {
-                    new Ingredient(TechType.ReinforcedDiveSuit, 1),
-                    new Ingredient(TechType.ReinforcedGloves, 1),
-                    new Ingredient(TechType.Polyaniline, 2),
-                    new Ingredient(TechType.AdvancedWiringKit, 1),
-                    new Ingredient(TechType.Nickel, 2),
-                    new Ingredient(TechType.PrecursorIonCrystal, 2)
-                };
-            }
-            else
-            {
-                recipe.Ingredients = new List<Ingredient>
-                {
-                    new Ingredient(TechType.ReinforcedDiveSuit, 1),
-                    new Ingredient(TechType.ReinforcedGloves, 1),
-                    new Ingredient(TechType.AramidFibers, 4),
-                    new Ingredient(TechType.Lithium, 4),
-                    new Ingredient(TechType.AdvancedWiringKit, 2),
-                    new Ingredient(TechType.Kyanite, 1),
-                    new Ingredient(TechType.PrecursorIonCrystal, 3)
-                };
-            }
-            
 
             prefab.SetGameObject(cloneTemplate);
             prefab.SetUnlock(TechType.PrecursorPrisonIonGenerator);
@@ -81,10 +77,17 @@ namespace WarpStabilizationSuit.Items
                 .WithFabricatorType(CraftTree.Type.Workbench)
                 .WithCraftingTime(6f);
 
-            prefab.Register();
+            if (Main_Plugin.TabsNeeded)
+            {
+                prefab.SetRecipe(recipe)
+                    .WithFabricatorType(CraftTree.Type.Workbench)
+                    .WithStepsToFabricatorTab("Other")
+                    .WithCraftingTime(6);
+            }
 
-            CraftDataHandler.RemoveFromGroup(TechGroup.Resources, TechCategory.BasicMaterials, techType);
-            CraftDataHandler.AddToGroup(TechGroup.Workbench, TechCategory.Workbench, techType);
+            prefab.SetPdaGroupCategory(TechGroup.Workbench, TechCategory.Workbench);
+
+            prefab.Register();
         }
     }
 }
