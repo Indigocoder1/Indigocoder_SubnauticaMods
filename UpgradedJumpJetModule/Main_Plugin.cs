@@ -1,7 +1,9 @@
 ﻿using BepInEx;
+using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
+using Nautilus.Handlers;
 
 namespace UpgradedJumpJetModule
 {
@@ -20,9 +22,17 @@ namespace UpgradedJumpJetModule
         public static ConfigEntry<float> UpgradedJetAcceleration;
         public static ConfigEntry<float> UpgradedJumpForce;
 
+        public static bool TabsNeeded;
+
         private void Awake()
         {
             logger = Logger;
+
+            if (Chainloader.PluginInfos.ContainsKey("com.ramune.SeaglideUpgrades") || Chainloader.PluginInfos.ContainsKey("com.ramune.OrganizedWorkbench"))
+            {
+                CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, "Other", "Other", SpriteManager.Get(TechType.Titanium));
+                TabsNeeded = true;
+            }
 
             UpgradedJetsModule.RegisterModule();
             harmony.PatchAll();

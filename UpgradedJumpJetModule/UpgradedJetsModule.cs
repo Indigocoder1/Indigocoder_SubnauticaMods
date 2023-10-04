@@ -27,7 +27,7 @@ namespace UpgradedJumpJetModule
             techType = prefabInfo.TechType;
 
             var customPrefab = new CustomPrefab(prefabInfo);
-            customPrefab.SetRecipe(new RecipeData()
+            RecipeData recipe = new RecipeData()
             {
                 craftAmount = 1,
                 Ingredients = new List<CraftData.Ingredient>()
@@ -37,9 +37,19 @@ namespace UpgradedJumpJetModule
                     new CraftData.Ingredient(TechType.Kyanite, 1),
                     new CraftData.Ingredient(TechType.Titanium, 2),
                 }
-            })
+            };
+
+            customPrefab.SetRecipe(recipe)
                 .WithFabricatorType(CraftTree.Type.Workbench)
                 .WithCraftingTime(5f);
+
+            if (Main_Plugin.TabsNeeded)
+            {
+                customPrefab.SetRecipe(recipe)
+                    .WithFabricatorType(CraftTree.Type.Workbench)
+                    .WithStepsToFabricatorTab("Other")
+                    .WithCraftingTime(5f);
+            }
 
             CraftDataHandler.SetBackgroundType(prefabInfo.TechType, CraftData.BackgroundType.Normal);
 
