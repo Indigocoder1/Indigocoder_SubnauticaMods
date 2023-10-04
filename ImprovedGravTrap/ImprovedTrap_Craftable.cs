@@ -5,7 +5,7 @@ using Ingredient = CraftData.Ingredient;
 using Nautilus.Assets.Gadgets;
 using UnityEngine;
 using IndigocoderLib;
-using BepInEx.Logging;
+using Nautilus.Utility;
 
 namespace ImprovedGravTrap
 {
@@ -38,21 +38,23 @@ namespace ImprovedGravTrap
 
                 GameObject child = new GameObject("StorageContainer");
                 child.transform.parent = gameObject.transform;
+                child.SetActive(false);
 
-                Main_Plugin.logger.LogInfo("Ensuring COI");
-
+                Main_Plugin.logger.LogInfo("Attaching Storage");
                 var coi = child.EnsureComponent<ChildObjectIdentifier>();
                 if (coi)
                 {
-                    Main_Plugin.logger.LogInfo("Attaching Storage");
+                    
                     coi.classId = "EnhancedGravTrapStorage";
                     var storageContainer = coi.gameObject.EnsureComponent<StorageContainer>();
                     storageContainer.prefabRoot = gameObject;
                     storageContainer.storageRoot = coi;
-
+                    
                     storageContainer.width = Main_Plugin.GravTrapStorageWidth.Value;
                     storageContainer.height = Main_Plugin.GravTrapStorageHeight.Value;
                     storageContainer.storageLabel = "Grav trap";
+                    storageContainer.errorSound = null;
+                    child.SetActive(true);
                 }
                 else
                 {
@@ -83,6 +85,14 @@ namespace ImprovedGravTrap
             prefab.SetRecipe(recipe)
                 .WithFabricatorType(CraftTree.Type.Workbench)
                 .WithCraftingTime(5f);
+
+            if (Main_Plugin.TabsNeeded)
+            {
+                prefab.SetRecipe(recipe)
+                    .WithFabricatorType(CraftTree.Type.Workbench)
+                    .WithStepsToFabricatorTab("Other")
+                    .WithCraftingTime(5f);
+            }
 
             prefab.SetPdaGroupCategory(TechGroup.Workbench, TechCategory.Workbench);
 

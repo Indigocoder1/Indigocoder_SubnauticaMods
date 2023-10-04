@@ -1,7 +1,9 @@
 ﻿using BepInEx;
+using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
+using Nautilus.Handlers;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -32,6 +34,7 @@ namespace ImprovedGravTrap
         public static List<TechTypeList> AllowedTypes;
 
         public static ManualLogSource logger;
+        public static bool TabsNeeded;
 
         private static readonly Harmony harmony = new Harmony(myGUID);
 
@@ -41,6 +44,12 @@ namespace ImprovedGravTrap
 
             SetUpConfigs();
             new GravTrap_ModOptions();
+
+            if (Chainloader.PluginInfos.ContainsKey("com.ramune.SeaglideUpgrades") || Chainloader.PluginInfos.ContainsKey("com.ramune.OrganizedWorkbench"))
+            {
+                CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, "Other", "Other", SpriteManager.Get(TechType.Titanium));
+                TabsNeeded = true;
+            }
 
             ImprovedTrap_Craftable.Patch();
 

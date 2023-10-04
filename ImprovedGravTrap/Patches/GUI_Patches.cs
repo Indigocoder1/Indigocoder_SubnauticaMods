@@ -38,7 +38,7 @@ namespace ImprovedGravTrap.Patches
             }
         }
 
-        private static bool IsGravTrap(this TechType techType) => techType == TechType.Gravsphere || techType == ImprovedTrap_Craftable.techType;
+        private static bool IsGravTrap(this TechType techType) => techType == ImprovedTrap_Craftable.techType;
 
         [HarmonyPatch(typeof(TooltipFactory), nameof(TooltipFactory.ItemCommons))]
         static class TooltipFactory_ItemCommons_Patch
@@ -50,7 +50,7 @@ namespace ImprovedGravTrap.Patches
 
                 var objectsType = obj.EnsureComponent<GravTrapObjectsType>();
                 objectsType.techTypeListIndex += TypeListSwitcher.GetChangeListDir();
-                TooltipFactory.WriteDescription(sb, $"Allowrd type = {objectsType.GetCurrentListName()}");
+                TooltipFactory.WriteDescription(sb, $"Allowed type = {objectsType.GetCurrentListName()}");
             }
         }
 
