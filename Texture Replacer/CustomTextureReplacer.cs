@@ -28,25 +28,21 @@ namespace TextureReplacer
 
         private static void LoadAllTextures()
         {
-            Main.logger.LogInfo($"Loading texture configs | Count = {textureConfigs.Count}");
-
             for (int i = 0; i < textureConfigs.Count; i++)
             {
                 TexturePatchConfigData configData = textureConfigs[i];
 
                 if (configData == null)
                 {
-                    return;
+                    continue;
                 }
-
-                Main.logger.LogInfo($"Loading texture {configData.configName}");
 
                 bool flag1 = configData.prefabClassID == "Intentionally blank" || string.IsNullOrEmpty(configData.prefabClassID);
                 bool flag2 = configData.rendererHierarchyPath == "Intentionally blank" || string.IsNullOrEmpty(configData.rendererHierarchyPath);
 
                 if (flag1 || flag2)
                 {
-                    return;
+                    continue;
                 }
 
                 CoroutineHost.StartCoroutine(InitializeTexture(configData.prefabClassID, configData.rendererHierarchyPath, configData));
@@ -54,23 +50,22 @@ namespace TextureReplacer
         }
 
         private static IEnumerator InitializeTexture(string classID,
-            string hierchyPath, TexturePatchConfigData configData)
+            string hierarchyPath, TexturePatchConfigData configData)
         {
             IPrefabRequest request = PrefabDatabase.GetPrefabAsync(classID);
-
-            Main.logger.LogInfo($"Loading {configData.configName} | Request = {request}");
 
             yield return request;
 
             if (request.TryGetPrefab(out GameObject prefab))
             {
-                TextureReplacerHelper replacer = prefab.EnsureComponent<TextureReplacerHelper>();
+                TextureReplacerHelper replacer = prefab.AddComponent<TextureReplacerHelper>();
 
-                Renderer targetRenderer = prefab.transform.Find(hierchyPath).GetComponent<Renderer>();
+                Renderer targetRenderer = null;
+                prefab.transform.Find(hierarchyPath).TryGetComponent<Renderer>(out targetRenderer);
 
                 if (targetRenderer == null)
                 {
-                    Main.logger.LogError($"Target renderer was null!");
+                    Main.logger.LogError("Target renderer was null!");
                     yield break;
                 }
 

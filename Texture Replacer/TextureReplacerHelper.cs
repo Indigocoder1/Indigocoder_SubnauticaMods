@@ -54,6 +54,7 @@ namespace TextureReplacer
             {
                 textures.Add(transform.name, new List<Texture2D>());
             }
+
             textures[transform.name].Add(ImageUtils.LoadTextureFromFile(AssetFolderPath + $"/{configData.fileName}"));
         }
 
@@ -74,7 +75,6 @@ namespace TextureReplacer
                     material.SetTexture(Shader.PropertyToID(configData.textureName), texture);
 
                     EnsureLinkedConfigs(configData);
-                    Main.logger.LogInfo($"Texture replaced on {gameObject.name}");
                 }
             }
         }

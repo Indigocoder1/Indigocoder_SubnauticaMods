@@ -34,7 +34,12 @@ namespace TextureReplacer
                 LifepodConfigData configData = lifepodConfigs[i];
                 if (configData == null)
                 {
-                    return;
+                    continue;
+                }
+
+                if(!configData.configName.Contains("Lifepod"))
+                {
+                    continue;
                 }
 
                 CoroutineHost.StartCoroutine(InitializeTextures(configData));
