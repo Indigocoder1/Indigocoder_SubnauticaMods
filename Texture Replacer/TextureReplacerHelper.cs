@@ -5,7 +5,7 @@ using IndigocoderLib;
 using System.Collections;
 using static TextureReplacer.Main;
 using Random = UnityEngine.Random;
-using System.Linq;
+using System;
 
 namespace TextureReplacer
 {
@@ -74,6 +74,7 @@ namespace TextureReplacer
                     material.SetTexture(Shader.PropertyToID(configData.textureName), texture);
 
                     EnsureLinkedConfigs(configData);
+                    Main.logger.LogInfo($"Texture replaced on {gameObject.name}");
                 }
             }
         }

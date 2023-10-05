@@ -11,7 +11,7 @@ namespace TextureReplacer
     internal static class CustomTextureReplacer
     {
         private static string folderFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureReplacer");
-        private static string configFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureReplacer/CustomTextureConfig.json");
+        private static string configFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureReplacer/ExampleTextureConfig.json");
         private static List<TexturePatchConfigData> textureConfigs;
 
         public static void Initialize()
@@ -28,14 +28,19 @@ namespace TextureReplacer
 
         private static void LoadAllTextures()
         {
+            Main.logger.LogInfo($"Loading texture configs | Count = {textureConfigs.Count}");
+
             for (int i = 0; i < textureConfigs.Count; i++)
             {
                 TexturePatchConfigData configData = textureConfigs[i];
+
                 if (configData == null)
                 {
                     return;
                 }
-                
+
+                Main.logger.LogInfo($"Loading texture {configData.configName}");
+
                 bool flag1 = configData.prefabClassID == "Intentionally blank" || string.IsNullOrEmpty(configData.prefabClassID);
                 bool flag2 = configData.rendererHierarchyPath == "Intentionally blank" || string.IsNullOrEmpty(configData.rendererHierarchyPath);
 
@@ -52,6 +57,8 @@ namespace TextureReplacer
             string hierchyPath, TexturePatchConfigData configData)
         {
             IPrefabRequest request = PrefabDatabase.GetPrefabAsync(classID);
+
+            Main.logger.LogInfo($"Loading {configData.configName} | Request = {request}");
 
             yield return request;
 

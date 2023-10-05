@@ -32,7 +32,22 @@ namespace TextureReplacer
                 }
                 catch (Exception e)
                 {
-                    Main.logger.LogError($"Error loading JSON at {file} \nMessage is {e.Message}");
+                    Main.logger.LogError($"Error loading JSON at {file} \nMessage is: {e.Message}");
+                }
+
+                bool isLifepod = false;
+                for (int i = 0; i < tempData.Count; i++)
+                {
+                    if (tempData[i].configName.Contains("Lifepod"))
+                    {
+                        isLifepod = true;
+                        break;
+                    }
+                }
+
+                if(isLifepod)
+                {
+                    continue;
                 }
 
                 configDatas.AddRange(tempData);
@@ -50,6 +65,27 @@ namespace TextureReplacer
 
             string data = File.ReadAllText(filePath);
             return JsonConvert.DeserializeObject<List<Main.TexturePatchConfigData>>(data);
+        }
+
+        public static List<LifepodTextureReplacer.LifepodConfigData> LoadLifepodConfigs(string folderPath)
+        {
+            List<LifepodTextureReplacer.LifepodConfigData> configDatas = new List<LifepodTextureReplacer.LifepodConfigData>();
+            foreach (string file in Directory.EnumerateFiles(folderPath, "*.json"))
+            {
+                List<LifepodTextureReplacer.LifepodConfigData> tempData = new List<LifepodTextureReplacer.LifepodConfigData>();
+                try
+                {
+                    tempData = LoadLifepodConfigFromJson(file);
+                }
+                catch (Exception e)
+                {
+                    Main.logger.LogError($"Error loading JSON at {file} \nMessage is: {e.Message}");
+                }
+
+                configDatas.AddRange(tempData);
+            }
+
+            return configDatas;
         }
 
         public static void SaveLifepodConfigToJson(List<LifepodTextureReplacer.LifepodConfigData> saveData, string filePath, string folderFilePath)

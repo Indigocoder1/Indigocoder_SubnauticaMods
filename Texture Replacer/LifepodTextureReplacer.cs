@@ -12,17 +12,16 @@ namespace TextureReplacer
     internal static class LifepodTextureReplacer
     {
         private static string folderFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureReplacer");
-        private static string configFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureReplacer/LifepodTextureConfig.json");
+        private static string configFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureReplacer/ExampleLifepodTextureConfig.json");
 
         private static List<LifepodConfigData> lifepodConfigs;
 
         public static void Initialize()
         {
-            lifepodConfigs = SaveManager.LoadLifepodConfigFromJson(configFilePath);
+            lifepodConfigs = SaveManager.LoadLifepodConfigs(folderFilePath);
             if (lifepodConfigs == null) 
             {
-                SaveInitialData();
-                lifepodConfigs = SaveManager.LoadLifepodConfigFromJson(configFilePath);
+                return;
             }
 
             LoadAllTextures();
@@ -59,9 +58,8 @@ namespace TextureReplacer
                     Main.logger.LogError($"Target renderer was null!");
                     yield break;
                 }
-
                 TexturePatchConfigData data = new TexturePatchConfigData($"Lifepod_Config{configData.lifepodIndex}_Index{configData.materialIndex}",
-                    configData.materialIndex, configData.fileName, false, -1f, LifepodClassIDs[(LifepodNumber)configData.lifepodIndex],
+                    configData.materialIndex, configData.fileName, configData.isVariation, configData.variationChance, LifepodClassIDs[(LifepodNumber)configData.lifepodIndex],
                     ExternalRendererHierchyPaths[(LifepodNumber)configData.lifepodIndex], "_MainTex", 
                     new List<string> { $"Lifepod{configData.lifepodIndex}_Index{configData.materialIndex}" });
                 replacer.AddTextureData(data);

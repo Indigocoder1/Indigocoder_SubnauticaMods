@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using IndigocoderLib;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
@@ -8,11 +9,12 @@ using System.Reflection;
 namespace TextureReplacer
 {
     [BepInPlugin(myGUID, pluginName, versionString)]
+    [BepInDependency("com.snmodding.nautilus", BepInDependency.DependencyFlags.HardDependency)]
     public class Main : BaseUnityPlugin
     {
         private const string myGUID = "Indigocoder.TextureReplacer";
         private const string pluginName = "Texture Replacer";
-        private const string versionString = "1.0.0";
+        private const string versionString = "1.0.2";
 
         public static ManualLogSource logger;
         public static string AssetFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
@@ -21,10 +23,15 @@ namespace TextureReplacer
         {
             logger = Logger;
 
-            Logger.LogInfo($"{pluginName} {versionString} Loaded.");
+            if(PiracyDetector.TryFindPiracy())
+            {
+                return;
+            }
 
             LifepodTextureReplacer.Initialize();
             CustomTextureReplacer.Initialize();
+
+            Logger.LogInfo($"{pluginName} {versionString} Loaded.");
         }
 
         public class TexturePatchConfigData
