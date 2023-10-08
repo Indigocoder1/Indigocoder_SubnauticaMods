@@ -2,9 +2,11 @@
 using BepInEx.Logging;
 using IndigocoderLib;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using UnityEngine;
 
 namespace TextureReplacer
 {
@@ -97,6 +99,17 @@ namespace TextureReplacer
                 this.variationChance = variationChance;
                 this.linkedConfigNames = linkedConfigNames;
             }
+        }
+
+        public static Dictionary<string, TextureTypes> customTextureNames = new Dictionary<string, TextureTypes>
+        {
+            { "_EmissionMap", TextureTypes.Emission},
+        };
+
+        public enum TextureTypes
+        {
+            Emission,
+            Value
         }
     }
 }

@@ -58,10 +58,16 @@ namespace TextureReplacer
 
             if (request.TryGetPrefab(out GameObject prefab))
             {
-                TextureReplacerHelper replacer = prefab.AddComponent<TextureReplacerHelper>();
+                TextureReplacerHelper replacer = prefab.EnsureComponent<TextureReplacerHelper>();
 
                 Renderer targetRenderer = null;
-                prefab.transform.Find(hierarchyPath).TryGetComponent<Renderer>(out targetRenderer);
+                Transform rendererTransform = prefab.transform.Find(hierarchyPath);
+                if(rendererTransform == null)
+                {
+                    Main.logger.LogError($"There is no object at the hierarchy path '{hierarchyPath}'!");
+                    yield break;
+                }
+                rendererTransform.TryGetComponent<Renderer>(out targetRenderer);
 
                 if (targetRenderer == null)
                 {

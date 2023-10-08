@@ -23,39 +23,41 @@ namespace TextureReplacer
 
         public void AddTextureData(TexturePatchConfigData configData)
         {
-            if(configDatas == null)
-            {
-                configDatas = new Dictionary<string, List<TexturePatchConfigData>>();
-            }
-
-            if(filePaths == null)
-            {
-                filePaths = new Dictionary<string, List<string>>();
-            }
-
-            if(textures == null)
-            {
-                textures = new Dictionary<string, List<Texture2D>>();
-            }
+            InitializeDictionaries();
 
             if (!configDatas.ContainsKey(transform.name))
             {
                 configDatas.Add(transform.name, new List<TexturePatchConfigData>());
             }
-            configDatas[transform.name].Add(configData);
-
             if (!filePaths.ContainsKey(transform.name))
             {
                 filePaths.Add(transform.name, new List<string>());
             }
-            filePaths[transform.name].Add(AssetFolderPath + $"/{configData.fileName}");
-
-            if(!textures.ContainsKey(transform.name))
+            if (!textures.ContainsKey(transform.name))
             {
                 textures.Add(transform.name, new List<Texture2D>());
             }
-
+            configDatas[transform.name].Add(configData);
+            filePaths[transform.name].Add(AssetFolderPath + $"/{configData.fileName}");
             textures[transform.name].Add(ImageUtils.LoadTextureFromFile(AssetFolderPath + $"/{configData.fileName}"));
+        }
+
+        private void InitializeDictionaries()
+        {
+            if (configDatas == null)
+            {
+                configDatas = new Dictionary<string, List<TexturePatchConfigData>>();
+            }
+
+            if (filePaths == null)
+            {
+                filePaths = new Dictionary<string, List<string>>();
+            }
+
+            if (textures == null)
+            {
+                textures = new Dictionary<string, List<Texture2D>>();
+            }
         }
 
         private void SetUpTextures()
@@ -72,12 +74,50 @@ namespace TextureReplacer
                     Renderer targetRenderer = transform.Find(configData.rendererHierarchyPath).GetComponent<Renderer>();
                     Material material = targetRenderer.materials[configData.materialIndex];
 
-                    material.SetTexture(Shader.PropertyToID(configData.textureName), texture);
+                    if (configData.textureName.Contains("-"))
+                    {
+                        float emissionLM = 0.6f;
+                        string[] split = configData.textureName.Split('-');
+                        if (customTextureNames.ContainsKey(split[0]))
+                        {           
+                            try
+                            {
+                                emissionLM = float.Parse(split[1]);
+                            }
+                            catch (Exception e)
+                            {
+                                logger.LogError($"Error parsing {configData.textureName}! Error is: \n{e.Message}");
+                            }
+                        }
+                        HandleCustomTextureNames(material, emissionLM, customTextureNames[split[0]]);
+                    }
+                    else if(customTextureNames.ContainsKey(configData.textureName))
+                    {
+                        HandleCustomTextureNames(material, 0.6f, customTextureNames[configData.textureName]);
+                    }
+                    else
+                    {
+                        material.SetTexture(Shader.PropertyToID(configData.textureName), texture);
+                    }
 
                     EnsureLinkedConfigs(configData);
                 }
             }
         }
+
+        private void HandleCustomTextureNames(Material material, float emissionLM, TextureTypes type)
+        {
+            switch(type)
+            {
+                case TextureTypes.Emission:
+                    material.SetFloat("_GlowStrength", 0);
+                    material.SetFloat("_GlowStrengthNight", 0);
+                    material.SetFloat("_EmissionLM", emissionLM);
+                    material.SetFloat("_EmissionLMNight", emissionLM);
+                    break;
+            }
+        }
+
 
         private void EnsureLinkedConfigs(TexturePatchConfigData configData)
         {
