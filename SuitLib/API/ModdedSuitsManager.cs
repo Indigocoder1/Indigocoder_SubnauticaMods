@@ -26,5 +26,16 @@ namespace SuitLib
             Reinforced,
             WaterFiltration
         }
+
+        public enum Modifications
+        {
+            None,
+            Reinforced,
+            Filtration
+        }
+
+        public class ModificationValues
+        {
+        }
     }
 }

@@ -44,7 +44,7 @@ namespace SuitLib.Patches
             for (int suitsIndex = 0; suitsIndex < ModdedSuitsManager.moddedSuitsList.Count; suitsIndex++)
             {
                 ModdedSuit suit = ModdedSuitsManager.moddedSuitsList[suitsIndex];
-                List<string> keys = new List<string>(suit.replacementTexturePropertyPairs.Keys);
+                List<string> keys = new List<string>(suit.suitReplacementTexturePropertyPairs.Keys);
                 foreach (string key in keys)
                 {
                     suitTextureNamesHash.Add(key);
@@ -116,6 +116,7 @@ namespace SuitLib.Patches
         [HarmonyPatch(nameof(Player.EquipmentChanged)), HarmonyPostfix]
         private static void EquipmentChanged_Patch()
         {
+            Main.logger.LogInfo("Equipment changed!");
             Equipment equipment = Inventory.main.equipment;
 
             TechType typeInBodySlot = equipment.GetTechTypeInSlot("Body");
@@ -134,6 +135,10 @@ namespace SuitLib.Patches
 
             bool wearingAnySuit = typeInBodySlot != TechType.None;
             bool wearingAnyGloves = typeInGlovesSlot != TechType.None;
+
+            Main.logger.LogInfo($"Wearing any suit = {wearingAnySuit} | Wearing any gloves = {wearingAnyGloves}");
+            Main.logger.LogInfo($"Wearing modded suit = {wearingModdedSuit} | Wearing modded gloves = {wearingModdedGloves}");
+            Main.logger.LogInfo($"Type in suit slot = {typeInBodySlot} | Type in gloves slot = {typeInGlovesSlot}");
 
             SetGOsActive(typeInBodySlot, typeInGlovesSlot, wearingAnySuit, wearingAnyGloves);
 
@@ -196,20 +201,17 @@ namespace SuitLib.Patches
                     }
 
                     Renderer modelRenderer = GetModel(suit.vanillaModel, true).GetComponent<Renderer>();
-                    foreach (string key in suit.replacementTexturePropertyPairs.Keys)
+                    foreach (string key in suit.suitReplacementTexturePropertyPairs.Keys)
                     {
-                        Texture2D moddedTex = suit.replacementTexturePropertyPairs[key];
-                        if (modelRenderer.materials.Length > 1)
-                        {
-                            for (int i = 0; i < modelRenderer.materials.Length; i++)
-                            {
-                                modelRenderer.materials[i].SetTexture(key, moddedTex);
-                            }
-                        }
-                        else
-                        {
-                            modelRenderer.material.SetTexture(key, moddedTex);
-                        }
+                        Texture2D moddedTex = suit.suitReplacementTexturePropertyPairs[key];
+                        modelRenderer.materials[0].SetTexture(key, moddedTex);
+                        
+                    }
+
+                    foreach (string key in suit.armsReplacementTexturePropertyPairs.Keys)
+                    {
+                        Texture2D armsTex = suit.armsReplacementTexturePropertyPairs[key];
+                        modelRenderer.materials[1].SetTexture(key, armsTex);
                     }
                 }
             }

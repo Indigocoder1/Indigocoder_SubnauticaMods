@@ -9,7 +9,7 @@ namespace SuitLib
     {
         private const string myGUID = "Indigocoder.SuitLib";
         private const string pluginName = "SuitLib";
-        private const string versionString = "1.0.0";
+        private const string versionString = "1.0.1";
 
         public static ManualLogSource logger;
         private static readonly Harmony harmony = new Harmony(myGUID);
