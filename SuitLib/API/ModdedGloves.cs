@@ -11,13 +11,13 @@ namespace SuitLib
         public TechType itemTechType;
 
         /// <param name="replacementTexturePropertyPairs">The texture name (like _MainTex) and the texture pairs</param>
-        /// <param name="vanillaGlovesModel">The tech type for the gloves model you're replacing (like reinforcedGloves)</param>
-        /// <param name="suitTechType">The tech type of the moddedsuit</param>
-        public ModdedGloves(Dictionary<string, Texture2D> replacementTexturePropertyPairs, VanillaModel vanillaGlovesModel, TechType suitTechType)
+        /// <param name="vanillaModel">The tech type for the gloves model you're replacing (like reinforcedGloves)</param>
+        /// <param name="itemTechType">The tech type of the moddedsuit</param>
+        public ModdedGloves(Dictionary<string, Texture2D> replacementTexturePropertyPairs, VanillaModel vanillaModel, TechType itemTechType)
         {
             this.replacementTexturePropertyPairs = replacementTexturePropertyPairs;
-            this.vanillaModel = vanillaGlovesModel;
-            this.itemTechType = suitTechType;
+            this.vanillaModel = vanillaModel;
+            this.itemTechType = itemTechType;
         }
     }
 }

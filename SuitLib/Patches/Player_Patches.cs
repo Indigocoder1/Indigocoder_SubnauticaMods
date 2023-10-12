@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 using UnityEngine;
 using static SuitLib.ModdedSuitsManager;
 using static TechStringCache;
@@ -84,7 +83,7 @@ namespace SuitLib.Patches
             {
                 string texName = gloveTextureNamesHash.ElementAt(glovesTexIndex);
 
-                Texture diveGlovesTex = diveSuitBodyGO.GetComponent<Renderer>().material.GetTexture(texName);
+                Texture diveGlovesTex = diveSuitGlovesGO.GetComponent<Renderer>().material.GetTexture(texName);
                 diveGlovesTextures.Add(texName, diveGlovesTex);
 
                 Texture radiationGlovesTex = radiationGlovesGO.GetComponent<Renderer>().material.GetTexture(texName);
@@ -107,7 +106,7 @@ namespace SuitLib.Patches
             radiationSuitGO = radiationSuit.Find("radiationSuit_body_geo").gameObject;
             radiationGlovesGO = radiationSuit.Find("radiationSuit_gloves_geo").gameObject;
 
-            Transform reinforcedSuit = geo.Find("reinforcedSuit"); ;
+            Transform reinforcedSuit = geo.Find("reinforcedSuit");
             reinforcedSuitGO = reinforcedSuit.Find("reinforced_suit_01_body_geo").gameObject;
             reinforcedGlovesGO = reinforcedSuit.Find("reinforced_suit_01_glove_geo").gameObject;
 
@@ -122,29 +121,29 @@ namespace SuitLib.Patches
             TechType typeInBodySlot = equipment.GetTechTypeInSlot("Body");
             TechType typeInGlovesSlot = equipment.GetTechTypeInSlot("Gloves");
 
-            bool wearingModdedSuit = typeInBodySlot != (TechType.None | TechType.RadiationSuit | TechType.ReinforcedDiveSuit 
-                | TechType.WaterFiltrationSuit);
-            bool wearingModdedGloves = typeInGlovesSlot != (TechType.None | TechType.RadiationGloves | TechType.ReinforcedGloves);
+            bool wearingModdedSuit = 
+                (typeInBodySlot != TechType.None) && 
+                (typeInBodySlot != TechType.RadiationSuit) && 
+                (typeInBodySlot != TechType.ReinforcedDiveSuit) &&
+                (typeInBodySlot != TechType.WaterFiltrationSuit);
+
+            bool wearingModdedGloves = 
+                (typeInGlovesSlot != TechType.None) && 
+                (typeInGlovesSlot != TechType.RadiationGloves) && 
+                (typeInGlovesSlot != TechType.ReinforcedGloves);
 
             bool wearingAnySuit = typeInBodySlot != TechType.None;
             bool wearingAnyGloves = typeInGlovesSlot != TechType.None;
 
             SetGOsActive(typeInBodySlot, typeInGlovesSlot, wearingAnySuit, wearingAnyGloves);
 
-            if (wearingModdedSuit)
-            {
-                SetSuitTextures(typeInBodySlot, wearingModdedSuit);
-            }
-
-            if(wearingModdedGloves)
-            {
-                SetGloveTextures(typeInGlovesSlot, wearingModdedGloves);
-            }
+            SetGloveTextures(typeInGlovesSlot, wearingModdedGloves);
+            SetSuitTextures(typeInBodySlot, wearingModdedSuit);
         }
 
-        private static void SetGOsActive(TechType typeInBodySlot, TechType typeInGlovesSlot, bool wearingASuit, bool wearingAnyGloves)
+        private static void SetGOsActive(TechType typeInBodySlot, TechType typeInGlovesSlot, bool wearingAnySuit, bool wearingAnyGloves)
         {
-            if(wearingASuit)
+            if(wearingAnySuit)
             {
                 diveSuitBodyGO.SetActive(false);
 
@@ -225,19 +224,31 @@ namespace SuitLib.Patches
                 foreach (string key in radiationSuitTextures.Keys)
                 {
                     Texture2D tex = (Texture2D)radiationSuitTextures[key];
-                    radiationSuitGO.GetComponent<Renderer>().material.SetTexture(key, tex);
+                    Renderer rend = radiationSuitGO.GetComponent<Renderer>();
+                    for (int i = 0; i < rend.materials.Length; i++)
+                    {
+                        rend.materials[i].SetTexture(key, tex);
+                    }
                 }
 
                 foreach (string key in reinforcedSuitTextures.Keys)
                 {
                     Texture2D tex = (Texture2D)reinforcedSuitTextures[key];
-                    reinforcedSuitGO.GetComponent<Renderer>().material.SetTexture(key, tex);
+                    Renderer rend = reinforcedSuitGO.GetComponent<Renderer>();
+                    for (int i = 0; i < rend.materials.Length; i++)
+                    {
+                        rend.materials[i].SetTexture(key, tex);
+                    }
                 }
 
                 foreach (string key in filtrationSuitTextures.Keys)
                 {
                     Texture2D tex = (Texture2D)filtrationSuitTextures[key];
-                    filtrationSuitGO.GetComponent<Renderer>().material.SetTexture(key, tex);
+                    Renderer rend = filtrationSuitGO.GetComponent<Renderer>();
+                    for (int i = 0; i < rend.materials.Length; i++)
+                    {
+                        rend.materials[i].SetTexture(key, tex);
+                    }
                 }
             }
         }
@@ -253,11 +264,12 @@ namespace SuitLib.Patches
                         continue;
                     }
 
-                    Renderer modelRenderer = GetModel(gloves.vanillaModel, false).GetComponent<Renderer>();
+                    Renderer glovesModelRenderer = GetModel(gloves.vanillaModel, false).GetComponent<Renderer>();
+                    
                     foreach (string key in gloves.replacementTexturePropertyPairs.Keys)
                     {
                         Texture2D moddedTex = gloves.replacementTexturePropertyPairs[key];
-                        modelRenderer.material.SetTexture(key, moddedTex);
+                        glovesModelRenderer.material.SetTexture(key, moddedTex);
                     }
                 }
             }
