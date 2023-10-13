@@ -36,6 +36,14 @@ namespace SuitLib
 
         public class ModificationValues
         {
+            public float stillsuitDeltaTimeReduction;
+            public float stillsuitWaterIncreaseMultiplier;
+
+            public ModificationValues(float stillsuitDeltaTimeReduction, float stillsuitWaterIncreaseMultiplier)
+            {
+                this.stillsuitDeltaTimeReduction = stillsuitDeltaTimeReduction;
+                this.stillsuitWaterIncreaseMultiplier = stillsuitWaterIncreaseMultiplier;
+            }
         }
     }
 }

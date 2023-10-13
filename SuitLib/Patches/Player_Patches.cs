@@ -30,10 +30,12 @@ namespace SuitLib.Patches
         private static GameObject reinforcedGlovesGO;
 
         private static GameObject filtrationSuitGO;
+        private static Equipment playerEquipment;
 
         [HarmonyPatch(nameof(Player.Start)), HarmonyPrefix]
         private static void Start()
         {
+            playerEquipment = Inventory.main.equipment;
             InitializeModelGOs();
             InitializeVanillaTextures();
         }
@@ -116,29 +118,22 @@ namespace SuitLib.Patches
         [HarmonyPatch(nameof(Player.EquipmentChanged)), HarmonyPostfix]
         private static void EquipmentChanged_Patch()
         {
-            Main.logger.LogInfo("Equipment changed!");
-            Equipment equipment = Inventory.main.equipment;
+            TechType typeInBodySlot = playerEquipment.GetTechTypeInSlot("Body");
+            TechType typeInGlovesSlot = playerEquipment.GetTechTypeInSlot("Gloves");
 
-            TechType typeInBodySlot = equipment.GetTechTypeInSlot("Body");
-            TechType typeInGlovesSlot = equipment.GetTechTypeInSlot("Gloves");
-
-            bool wearingModdedSuit = 
-                (typeInBodySlot != TechType.None) && 
-                (typeInBodySlot != TechType.RadiationSuit) && 
+            bool wearingModdedSuit =
+                (typeInBodySlot != TechType.None) &&
+                (typeInBodySlot != TechType.RadiationSuit) &&
                 (typeInBodySlot != TechType.ReinforcedDiveSuit) &&
                 (typeInBodySlot != TechType.WaterFiltrationSuit);
 
-            bool wearingModdedGloves = 
-                (typeInGlovesSlot != TechType.None) && 
-                (typeInGlovesSlot != TechType.RadiationGloves) && 
+            bool wearingModdedGloves =
+                (typeInGlovesSlot != TechType.None) &&
+                (typeInGlovesSlot != TechType.RadiationGloves) &&
                 (typeInGlovesSlot != TechType.ReinforcedGloves);
 
             bool wearingAnySuit = typeInBodySlot != TechType.None;
             bool wearingAnyGloves = typeInGlovesSlot != TechType.None;
-
-            Main.logger.LogInfo($"Wearing any suit = {wearingAnySuit} | Wearing any gloves = {wearingAnyGloves}");
-            Main.logger.LogInfo($"Wearing modded suit = {wearingModdedSuit} | Wearing modded gloves = {wearingModdedGloves}");
-            Main.logger.LogInfo($"Type in suit slot = {typeInBodySlot} | Type in gloves slot = {typeInGlovesSlot}");
 
             SetGOsActive(typeInBodySlot, typeInGlovesSlot, wearingAnySuit, wearingAnyGloves);
 
@@ -146,9 +141,43 @@ namespace SuitLib.Patches
             SetSuitTextures(typeInBodySlot, wearingModdedSuit);
         }
 
+        [HarmonyPatch(nameof(Player.HasReinforcedSuit)), HarmonyPostfix]
+        private static void HasReinforcedSuit_Patch(bool __result)
+        {
+            foreach (ModdedSuit suit in moddedSuitsList)
+            {
+                if (!WearingItem(suit.itemTechType, "Body"))
+                {
+                    continue;
+                }
+
+                if ((suit.modifications & Modifications.Reinforced) != 0)
+                {
+                    __result = true;
+                }
+            }
+        }
+
+        [HarmonyPatch(nameof(Player.HasReinforcedGloves)), HarmonyPostfix]
+        private static void HasReinforcedGloves_Patch(bool __result)
+        {
+            foreach (ModdedGloves gloves in moddedGlovesList)
+            {
+                if (!WearingItem(gloves.itemTechType, "Gloves"))
+                {
+                    continue;
+                }
+
+                if ((gloves.modifications & Modifications.Reinforced) != 0)
+                {
+                    __result = true;
+                }
+            }
+        }
+
         private static void SetGOsActive(TechType typeInBodySlot, TechType typeInGlovesSlot, bool wearingAnySuit, bool wearingAnyGloves)
         {
-            if(wearingAnySuit)
+            if (wearingAnySuit)
             {
                 diveSuitBodyGO.SetActive(false);
 
@@ -168,7 +197,7 @@ namespace SuitLib.Patches
                 diveSuitBodyGO.SetActive(true);
             }
 
-            if(wearingAnyGloves)
+            if (wearingAnyGloves)
             {
                 diveSuitGlovesGO.SetActive(false);
 
@@ -195,7 +224,7 @@ namespace SuitLib.Patches
             {
                 foreach (ModdedSuit suit in ModdedSuitsManager.moddedSuitsList)
                 {
-                    if(suit.itemTechType != typeInSuitSlot)
+                    if (!WearingItem(suit.itemTechType, "Body"))
                     {
                         continue;
                     }
@@ -205,7 +234,7 @@ namespace SuitLib.Patches
                     {
                         Texture2D moddedTex = suit.suitReplacementTexturePropertyPairs[key];
                         modelRenderer.materials[0].SetTexture(key, moddedTex);
-                        
+
                     }
 
                     foreach (string key in suit.armsReplacementTexturePropertyPairs.Keys)
@@ -261,13 +290,13 @@ namespace SuitLib.Patches
             {
                 foreach (ModdedGloves gloves in ModdedSuitsManager.moddedGlovesList)
                 {
-                    if (gloves.itemTechType != typeInGlovesSlot)
+                    if (!WearingItem(gloves.itemTechType, "Gloves"))
                     {
                         continue;
                     }
 
                     Renderer glovesModelRenderer = GetModel(gloves.vanillaModel, false).GetComponent<Renderer>();
-                    
+
                     foreach (string key in gloves.replacementTexturePropertyPairs.Keys)
                     {
                         Texture2D moddedTex = gloves.replacementTexturePropertyPairs[key];
@@ -299,7 +328,7 @@ namespace SuitLib.Patches
 
         private static GameObject GetModel(VanillaModel type, bool isSuit)
         {
-            switch(type)
+            switch (type)
             {
                 case VanillaModel.Dive:
                     return isSuit ? diveSuitBodyGO : diveSuitGlovesGO;
@@ -309,9 +338,14 @@ namespace SuitLib.Patches
                     return isSuit ? reinforcedSuitGO : reinforcedGlovesGO;
                 case VanillaModel.WaterFiltration:
                     return isSuit ? filtrationSuitGO : null;
-                default: 
+                default:
                     return null;
             }
+        }
+
+        public static bool WearingItem(TechType item, string slot)
+        {
+            return item == playerEquipment.GetTechTypeInSlot(slot);
         }
     }
 }

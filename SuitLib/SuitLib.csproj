@@ -65,6 +65,7 @@
     <Compile Include="API\ModdedSuit.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Patches\Player_Patches.cs" />
+    <Compile Include="Patches\Stillsuit_Patches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

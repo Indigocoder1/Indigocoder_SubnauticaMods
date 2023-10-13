@@ -9,6 +9,8 @@ namespace SuitLib
         public Dictionary<string, Texture2D> replacementTexturePropertyPairs;
         public VanillaModel vanillaModel;
         public TechType itemTechType;
+        public Modifications modifications;
+        public ModificationValues modificationValues;
 
         /// <param name="replacementTexturePropertyPairs">The texture name (like _MainTex) and the texture pairs</param>
         /// <param name="vanillaModel">The tech type for the gloves model you're replacing (like reinforcedGloves)</param>
@@ -18,6 +20,16 @@ namespace SuitLib
             this.replacementTexturePropertyPairs = replacementTexturePropertyPairs;
             this.vanillaModel = vanillaModel;
             this.itemTechType = itemTechType;
+        }
+
+        public ModdedGloves(Dictionary<string, Texture2D> replacementTexturePropertyPairs, VanillaModel vanillaModel, TechType itemTechType,
+            Modifications modifications, ModificationValues modificationValues = null)
+        {
+            this.replacementTexturePropertyPairs = replacementTexturePropertyPairs;
+            this.vanillaModel = vanillaModel;
+            this.itemTechType = itemTechType;
+            this.modifications = modifications;
+            this.modificationValues = modificationValues;
         }
     }
 }
