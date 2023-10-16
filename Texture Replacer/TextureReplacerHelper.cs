@@ -6,6 +6,7 @@ using System.Collections;
 using static TextureReplacer.Main;
 using Random = UnityEngine.Random;
 using System;
+using System.Collections.ObjectModel;
 
 namespace TextureReplacer
 {
@@ -123,10 +124,14 @@ namespace TextureReplacer
                     material.SetTexture("EmissionMap", texture);
                     break;
                 case TextureType.LightColor:
-                    Light light = gameObject.GetComponentInChildren<Light>();
-                    if(light != null)
+                    Light[] lightArray = gameObject.GetComponentsInChildren<Light>();
+                    
+                    if(lightArray != null)
                     {
-                        light.color = AverageColorFromTexture(texture);
+                        foreach (Light light in lightArray)
+                        {
+                            light.color = AverageColorFromTexture(texture);
+                        }
                     }
                     break;
             }
