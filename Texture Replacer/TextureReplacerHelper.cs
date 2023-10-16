@@ -72,28 +72,32 @@ namespace TextureReplacer
                     Texture2D texture = textures[nameWithoutClone][i];
 
                     Renderer targetRenderer = transform.Find(configData.rendererHierarchyPath).GetComponent<Renderer>();
-                    Material material = targetRenderer.materials[configData.materialIndex];
+                    Material material = null;
+                    if (targetRenderer != null)
+                    {
+                        material = targetRenderer.materials[configData.materialIndex];
+                    }
 
                     if (configData.textureName.Contains("-"))
                     {
-                        float emissionLM = 0.6f;
                         string[] split = configData.textureName.Split('-');
+                        float extractedValue = textureNameValueDefaults[customTextureNames[split[0]]];
                         if (customTextureNames.ContainsKey(split[0]))
                         {           
                             try
                             {
-                                emissionLM = float.Parse(split[1]);
+                                extractedValue = float.Parse(split[1]);
                             }
                             catch (Exception e)
                             {
-                                logger.LogError($"Error parsing {configData.textureName}! Error is: \n{e.Message}");
+                                logger.LogError($"Error parsing \"{configData.textureName}\"! Error is: \n{e.Message}");
                             }
                         }
-                        HandleCustomTextureNames(material, emissionLM, customTextureNames[split[0]]);
+                        HandleCustomTextureNames(material, texture, extractedValue, customTextureNames[split[0]]);
                     }
                     else if(customTextureNames.ContainsKey(configData.textureName))
                     {
-                        HandleCustomTextureNames(material, 0.6f, customTextureNames[configData.textureName]);
+                        HandleCustomTextureNames(material, texture, 0.6f, customTextureNames[configData.textureName]);
                     }
                     else
                     {
@@ -105,17 +109,53 @@ namespace TextureReplacer
             }
         }
 
-        private void HandleCustomTextureNames(Material material, float emissionLM, TextureTypes type)
+        private void HandleCustomTextureNames(Material material, Texture2D texture, float extractedValue, TextureType type)
         {
-            switch(type)
+            Main.logger.LogInfo($"Doing custom texture name for {type}");
+
+            switch (type)
             {
-                case TextureTypes.Emission:
+                case TextureType.Emission:
                     material.SetFloat("_GlowStrength", 0);
                     material.SetFloat("_GlowStrengthNight", 0);
-                    material.SetFloat("_EmissionLM", emissionLM);
-                    material.SetFloat("_EmissionLMNight", emissionLM);
+                    material.SetFloat("_EmissionLM", extractedValue);
+                    material.SetFloat("_EmissionLMNight", extractedValue);
+                    material.SetTexture("EmissionMap", texture);
+                    break;
+                case TextureType.LightColor:
+                    Light light = gameObject.GetComponentInChildren<Light>();
+                    if(light != null)
+                    {
+                        light.color = AverageColorFromTexture(texture);
+                    }
                     break;
             }
+        }
+
+        private Color32 AverageColorFromTexture(Texture2D tex)
+        {
+            Color32[] texColors = tex.GetPixels32();
+
+            int total = texColors.Length;
+
+            float r = 0;
+            float g = 0;
+            float b = 0;
+
+            for (int i = 0; i < total; i++)
+            {
+
+                r += texColors[i].r;
+
+                g += texColors[i].g;
+
+                b += texColors[i].b;
+
+            }
+
+            Color32 color = new Color32((byte)(r / total), (byte)(g / total), (byte)(b / total), 0);
+            Main.logger.LogInfo($"Average color = {color}");
+            return color;
         }
 
 

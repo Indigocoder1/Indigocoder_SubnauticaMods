@@ -69,9 +69,9 @@ namespace TextureReplacer
                 }
                 rendererTransform.TryGetComponent<Renderer>(out targetRenderer);
 
-                if (targetRenderer == null)
+                if (targetRenderer == null && !Main.customTextureNames.ContainsKey(configData.textureName))
                 {
-                    Main.logger.LogError("Target renderer was null!");
+                    Main.logger.LogError("Target renderer was null! Aborting texture load.");
                     yield break;
                 }
 
