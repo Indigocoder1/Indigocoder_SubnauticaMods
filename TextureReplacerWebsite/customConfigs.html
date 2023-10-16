@@ -92,11 +92,12 @@ An example of this is:
 }
 </pre>
 <h3 class="top-border">Texture Names</h3>
-<div>Here are some basic texture names that are commonly used:</div>
+<div>Here are some texture names that are commonly used and/or have special functionality:</div>
 <ul>
     <li>_MainTex - The main color of the object. This color is also influenced by the _SpecMap</li>
     <li>_SpecMap - The map that describes how light reflects off an object. This can usually be set to the same texture as _MainTex and gives a more vibrant feel</li>
     <li>_EmissionMap - Affects the luminescence coming off an object. It defaults to 0.6 but can be changed by adding -[my value] to the end of the name. E.g. "_EmissionMap-0.4"</li>
+    <li>_EmissionColor - Changes the color of any chilren light components to the average color of the provided texture. The brightness can be edited the same way as _EmissionMap</li>
 </ul>
 <h3 class="top-border"><strong>IMPORTANT:</strong></h3>
 <div>One thing you have to keep in mind when adding the custom texture/image files is that you have to put them inside of the Assets folder in the mod folder.</div>
