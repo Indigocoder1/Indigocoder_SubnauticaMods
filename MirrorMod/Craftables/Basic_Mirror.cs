@@ -52,23 +52,38 @@ namespace MirrorMod.Craftables
             Transform mirrorCamera = mirrorPrefab.transform.Find("MirrorCamera");
 
             Transform outlineParent = mirrorPrefab.transform.Find("IgnoreOnOtherMirrors/MirrorOutline");
-            MaterialUtils.ApplySNShaders(outlineParent.gameObject,
+            if(outlineParent)
+            {
+                MaterialUtils.ApplySNShaders(outlineParent.gameObject,
                 specularIntensity: 0.25f,
                 shininess: 5
                 );
-
-            Transform renderPlaneParent = mirrorPrefab.transform.Find("IgnoreOnOtherMirrors/TargetPlane");
-            MaterialUtils.ApplySNShaders(renderPlaneParent.gameObject,
+            }
+            
+            Transform renderPlane = mirrorPrefab.transform.Find("IgnoreOnOtherMirrors/RenderPlane");
+            if(renderPlane)
+            {
+                MaterialUtils.ApplySNShaders(renderPlane.gameObject,
                 specularIntensity: 0f,
                 shininess: 2
                 );
+            }
 
-            mirrorCamera.gameObject.AddComponent<CameraComponentCopier>();
+            Transform handlesParent = mirrorPrefab.transform.Find("IgnoreOnOtherMirrors/Handles");
+            if(handlesParent)
+            {
+                MaterialUtils.ApplySNShaders(handlesParent.gameObject,
+                specularIntensity: 0.25f,
+                shininess: 5
+                );
+            }
+
+            mirrorCamera.gameObject.EnsureComponent<CameraComponentCopier>();
 
             GameObject model = mirrorPrefab.transform.Find("IgnoreOnOtherMirrors").gameObject;
 
             //Constructable
-            Constructable constructable = mirrorPrefab.AddComponent<Constructable>();
+            Constructable constructable = mirrorPrefab.EnsureComponent<Constructable>();
             constructable.techType = techType;
             constructable.model = model;
             constructable.allowedOnWall = true;
@@ -85,18 +100,24 @@ namespace MirrorMod.Craftables
             PrefabUtils.AddConstructable(mirrorPrefab, techType, flags, model);
 
             //Constructable Bounds
-            Transform colliderParent = mirrorPrefab.transform.Find("IgnoreOnOtherMirrors/MirrorOutline");
-
-            ConstructableBounds constructableBounds = mirrorPrefab.AddComponent<ConstructableBounds>();
-            Bounds bounds = new Bounds(outlineParent.position, Vector3.one);
+            ConstructableBounds constructableBounds = mirrorPrefab.EnsureComponent<ConstructableBounds>();
+            Bounds bounds = new Bounds();
             OrientedBounds oBounds = new OrientedBounds();
-            oBounds.position = outlineParent.position;
-            oBounds.rotation = outlineParent.rotation;
-            Renderer[] renderers = colliderParent.GetComponentsInChildren<Renderer>();
+            Renderer[] renderers = mirrorPrefab.GetComponentsInChildren<Renderer>();
+            int index = 0;
             foreach (Renderer renderer in renderers)
             {
-                bounds.Encapsulate(renderer.bounds.extents);
+                if (index == 0)
+                {
+                    bounds = renderer.bounds;
+                    index++;
+                    continue;
+                }
+                bounds.Encapsulate(renderer.bounds);
+                index++;
             }
+            oBounds.position = model.transform.position;
+            oBounds.rotation = model.transform.rotation;
             oBounds.extents = bounds.extents;
             oBounds.size = bounds.size;
             constructableBounds.bounds = oBounds;

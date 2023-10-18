@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using MirrorMod;
+using MirrorMod.Monobehaviors;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Mirror : MonoBehaviour
 {
-    public static Dictionary<Mirror, MirrorInfo> mirrorInfos = new Dictionary<Mirror, MirrorInfo>();
-    public static List<Mirror> mirrorList = new List<Mirror>();
+    public static event EventHandler<OnIsVisibleChanged_Args> OnIsVisibleChanged;
+    private static Dictionary<Mirror, MirrorInfo> mirrorInfos = new Dictionary<Mirror, MirrorInfo>();
+    private static List<Mirror> mirrorList = new List<Mirror>();
 
     public Camera mirrorCam;
     public Transform mirrorTarget;
@@ -22,6 +26,7 @@ public class Mirror : MonoBehaviour
 
     private Bounds mirrorBounds;
     private bool isVisible = true;
+    private bool visibleLastFrame = false;
 
     private void Start()
     {
@@ -32,23 +37,35 @@ public class Mirror : MonoBehaviour
             mirrorTarget = mainCamera.transform;
         }
 
-        InitializeMirrorBounds();
+        InitializeStaticVariables();
         InitializeRenderTexture();
         InitializeNearPlanePoints();
-        InitializeStaticVariables();
+        CreateMirrorBounds();
+
+        SetNearPlane();
     }
 
     private void LateUpdate()
     {
         CheckIfVisible();
 
-        if(isVisible == false)
+        if (visibleLastFrame != isVisible)
         {
+            OnIsVisibleChanged?.Invoke(this, new OnIsVisibleChanged_Args(isVisible));
+        }
+
+        if (isVisible == false)
+        {
+            SetCameraActive();
+            visibleLastFrame = isVisible;
             return;
         }
 
         MirrorMovementAndRotation();
         SetNearPlane();
+        SetCameraActive();
+
+        visibleLastFrame = isVisible;
     }
 
     private void MirrorMovementAndRotation()
@@ -56,7 +73,7 @@ public class Mirror : MonoBehaviour
         Vector3 localPlayerPos = transform.InverseTransformPoint(mirrorTarget.position);
         mirrorCam.transform.position = transform.TransformPoint(new Vector3(localPlayerPos.x, localPlayerPos.y, -localPlayerPos.z));
 
-        Vector3 lookAtMirror = transform.TransformPoint(new Vector3(-localPlayerPos.x, -localPlayerPos.y, localPlayerPos.z));
+        Vector3 lookAtMirror = transform.TransformPoint(new Vector3(-localPlayerPos.x, -localPlayerPos.y, -localPlayerPos.z));
 
         mirrorCam.transform.LookAt(lookAtMirror);
     }
@@ -124,10 +141,10 @@ public class Mirror : MonoBehaviour
             MirrorInfo mirrorInfo = mirrorInfos[mirror];
 
             //Is visible from another mirror's camera?
-            if(VisibleFromCamera(mirrorInfo.mirrorCam, mirrorBounds))
+            if (VisibleFromCamera(mirrorInfo.mirrorCam, mirrorBounds))
             {
                 visibleFromMirror = true;
-                if(mirror != this)
+                if (mirror != this)
                 {
                     mirrorsVisibleFrom.Add(mirror);
                 }
@@ -135,10 +152,10 @@ public class Mirror : MonoBehaviour
         }
 
         //Check if visible from main camera if it's not visible from other mirrors
-        bool visibleFromMainCamera = VisibleFromCamera(mainCamera, mirrorBounds);
+        bool visibleFromMainCamera = GeometryUtility.TestPlanesAABB(Mirror_Manager.mainCameraFrustumPlanes, mirrorBounds);
 
         MirrorInfo info = mirrorInfos[this];
-        if(isVisible)
+        if (isVisible)
         {
             info.visibleInfo.visibleFromMirrorCamera = visibleFromMirror;
             info.visibleInfo.visibleFromMainCamera = visibleFromMainCamera;
@@ -166,7 +183,7 @@ public class Mirror : MonoBehaviour
                 //This makes it so the mirrors are actually disabled when looking away
                 VisibleInfo visibleInfo = mirrorInfos[mirrorsVisibleFrom[i]].visibleInfo;
 
-                if(visibleInfo.visibleFromMainCamera == false)
+                if (visibleInfo.visibleFromMainCamera == false)
                 {
                     /*
                     if(visibleInfo.visibleFromMirrorCamera == false)
@@ -191,12 +208,12 @@ public class Mirror : MonoBehaviour
                 }
             }
 
-            if(numMirrorsNotInView == mirrorsVisibleFrom.Count)
+            if (numMirrorsNotInView == mirrorsVisibleFrom.Count)
             {
                 otherMirrorIsVisible = false;
             }
 
-            if(otherMirrorIsVisible == false)
+            if (otherMirrorIsVisible == false)
             {
                 //If you can't be seen from the other mirror, disable
                 visibleFromCamera = false;
@@ -207,14 +224,21 @@ public class Mirror : MonoBehaviour
         mirrorRenderersParent.SetActive(visibleFromCamera);
     }
 
-    private bool VisibleFromCamera(Camera camera, Bounds bounds)
+    private void SetCameraActive()
     {
-        Plane[] planes = GeometryUtility.CalculateFrustumPlanes(camera);
+        mirrorCam.gameObject.SetActive(isVisible);
+    }
+
+    private bool VisibleFromCamera(Camera cam, Bounds bounds)
+    {
+        //The performance goes down the drain with this one function
+        //Programmers hate it!
+        //Managed to reduce usage by calculating main camera planes only once per frame
+        Plane[] planes = GeometryUtility.CalculateFrustumPlanes(cam);
         return GeometryUtility.TestPlanesAABB(planes, bounds);
     }
 
-
-    private void InitializeMirrorBounds()
+    public void CreateMirrorBounds()
     {
         Bounds tempBounds = new Bounds();
         Renderer[] renderers = mirrorRenderersParent.GetComponentsInChildren<Renderer>();
@@ -231,18 +255,34 @@ public class Mirror : MonoBehaviour
                 tempBounds.Encapsulate(each.bounds);
             }
         }
+
         mirrorBounds = tempBounds;
+        if (mirrorInfos.ContainsKey(this))
+        {
+            MirrorInfo info = mirrorInfos[this];
+            info.rendererBounds = mirrorBounds;
+            mirrorInfos[this] = info;
+        }
     }
 
-    private void InitializeRenderTexture()
+    public void InitializeRenderTexture()
     {
-        int renderTextureSize = 900;
-        renderTexture = new RenderTexture(renderTextureSize, renderTextureSize, 1, UnityEngine.Experimental.Rendering.DefaultFormat.LDR);
+        Renderer planeRend = renderPlane.GetComponentInChildren<Renderer>();
+
+        int defaultSize = Main_Plugin.MirrorResolution.Value;
+        int xSize = defaultSize;
+        int ySize = defaultSize;
+        if (planeRend.transform.parent.name != "IgnoreOnOtherMirrors")
+        {
+            xSize = (int)(renderPlane.localScale.x * defaultSize);
+            ySize = (int)(renderPlane.localScale.y * defaultSize);
+        }
+        
+        renderTexture = new RenderTexture(xSize, ySize, 1, UnityEngine.Experimental.Rendering.DefaultFormat.LDR);
         renderTexture.name = name + "_RenderTexture";
 
         mirrorCam.targetTexture = renderTexture;
 
-        Renderer planeRend = renderPlane.GetComponent<Renderer>();
         planeRend.material.SetTexture("_MainTex", renderTexture);
     }
 
@@ -288,7 +328,7 @@ public class Mirror : MonoBehaviour
     {
         Gizmos.matrix = Matrix4x4.identity;
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube(mirrorBounds.center, mirrorBounds.extents * 2);
+        Gizmos.DrawWireCube(mirrorBounds.center, mirrorBounds.extents * 2);        
     }
 #endif
 
@@ -297,9 +337,9 @@ public class Mirror : MonoBehaviour
         mirrorInfos.Remove(this);
         mirrorList.Remove(this);
 
-        Renderer planeRend = renderPlane.GetComponent<Renderer>();
+        Renderer planeRend = renderPlane.GetComponentInChildren<Renderer>();
         planeRend.material.SetTexture("_MainTex", null);
-        renderTexture.Release();
+        renderTexture?.Release();
     }
 
     public struct MirrorInfo
@@ -323,5 +363,25 @@ public class Mirror : MonoBehaviour
         public bool visibleFromMirrorCamera;
         public bool visibleFromMainCamera;
         public List<Mirror> mirrorsVisibleFrom;
+    }
+
+    public class OnIsVisibleChanged_Args : EventArgs
+    {
+        public bool isVisible;
+
+        public OnIsVisibleChanged_Args(bool isVisible)
+        {
+            this.isVisible = isVisible;
+        }
+    }
+
+    public class OnSeenInMirror_Args : EventArgs
+    {
+        public List<Mirror> mirrorsVisibleFrom;
+
+        public OnSeenInMirror_Args(List<Mirror> mirrorsVisibleFrom)
+        {
+            this.mirrorsVisibleFrom = mirrorsVisibleFrom;
+        }
     }
 }

@@ -64,6 +64,10 @@
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Craftables\Basic_Mirror.cs" />
@@ -71,13 +75,17 @@
     <Compile Include="Mirror_ModOptions.cs" />
     <Compile Include="Monobehaviors\CameraComponentCopier.cs" />
     <Compile Include="Monobehaviors\DisableWhenNotInView.cs" />
-    <Compile Include="Monobehaviors\GeneralizedPerspectiveProjection.cs" />
+    <Compile Include="Monobehaviors\Mirror_Manager.cs" />
+    <Compile Include="Monobehaviors\ResizeHandle.cs" />
+    <Compile Include="Monobehaviors\Deprecated\GeneralizedPerspectiveProjection.cs" />
     <Compile Include="Monobehaviors\HideOnThisCamera.cs" />
     <Compile Include="Monobehaviors\Mirror.cs" />
-    <Compile Include="Monobehaviors\MirrorMovement.cs" />
+    <Compile Include="Monobehaviors\Deprecated\MirrorMovement.cs" />
+    <Compile Include="Monobehaviors\Resizer.cs" />
     <Compile Include="Monobehaviors\ShowOnThisCamera.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\IndigocoderLib\IndigocoderLib.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

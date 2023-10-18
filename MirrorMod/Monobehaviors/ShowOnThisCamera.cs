@@ -29,7 +29,7 @@ public class ShowOnThisCamera : MonoBehaviour
             }
 
             previousStates[item] = item.activeSelf;
-            item.SetActive(true);
+            item?.SetActive(true);
         }
 
         foreach (var action in preCullActions)
@@ -42,7 +42,7 @@ public class ShowOnThisCamera : MonoBehaviour
     {
         foreach (var item in objectsToShow)
         {
-            item.SetActive(previousStates[item]);
+            item?.SetActive(previousStates[item]);
 
             if (previousStates.ContainsKey(item))
             {
