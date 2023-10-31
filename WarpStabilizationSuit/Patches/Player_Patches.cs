@@ -9,6 +9,7 @@ namespace WarpStabilizationSuit
     [HarmonyPatch(typeof(Player))]
     internal static class Player_Patches
     {
+        /*
         private static Texture defaultSuitTexture;
         private static Texture defaultSuitSpec;
         private static Texture defaultArmsTexture;
@@ -143,6 +144,6 @@ namespace WarpStabilizationSuit
             {
                 __result = true;
             }
-        }
+        }*/
     }
 }

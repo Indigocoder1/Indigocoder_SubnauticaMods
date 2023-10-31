@@ -12,18 +12,17 @@ using SuitLib;
 using Nautilus.Utility;
 using UnityEngine;
 using System.Collections.Generic;
-using System.Collections;
 
 namespace WarpStabilizationSuit
 {
     [BepInPlugin(myGUID, pluginName, versionString)]
     [BepInDependency("com.snmodding.nautilus", BepInDependency.DependencyFlags.HardDependency)]
-    //[BepInDependency("Indigocoder.SuitLib", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency("Indigocoder.SuitLib", BepInDependency.DependencyFlags.HardDependency)]
     public class Main_Plugin : BaseUnityPlugin
     {
         private const string myGUID = "Indigocoder.WarpStabilizationSuit";
         private const string pluginName = "Warp Stabilization Suit";
-        private const string versionString = "1.3.2";
+        private const string versionString = "1.3.3";
         public static ManualLogSource logger;
 
         public static string AssetsFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
@@ -33,14 +32,11 @@ namespace WarpStabilizationSuit
         public static ConfigEntry<bool> UseHardRecipe;
         public static bool TabsNeeded;
 
-        private IEnumerator Start()
+        private void Start()
         {
             logger = Logger;
 
-            if (PiracyDetector.TryFindPiracy())
-            {
-                yield break;
-            }
+            PiracyDetector.TryFindPiracy();
 
             harmony.PatchAll();
             UseHardRecipe = Config.Bind("Warp Stabilization Suit", "Use harder recipe", false);
@@ -56,7 +52,7 @@ namespace WarpStabilizationSuit
 
             Gloves_Craftable.Patch();
             Suit_Craftable.Patch();
-            //InitializeSuits();
+            InitializeSuits();
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
         }
