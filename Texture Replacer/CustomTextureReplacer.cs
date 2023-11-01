@@ -42,7 +42,7 @@ namespace TextureReplacer
 
                 if (flag1 || flag2)
                 {
-                    if(Main.logs.Value)
+                    if(Main.writeLogs.Value)
                     {
                         Main.logger.LogDebug($"Skipping config {configData.configName} because it contains example data!");
                     }
@@ -55,7 +55,7 @@ namespace TextureReplacer
 
         private static IEnumerator InitializeTexture(TexturePatchConfigData configData)
         {
-            if (Main.logs.Value)
+            if (Main.writeLogs.Value)
             {
                 Main.logger.LogDebug($"Loading config {configData.configName}");
             }
@@ -72,7 +72,7 @@ namespace TextureReplacer
                 Transform rendererTransform = prefab.transform.Find(configData.rendererHierarchyPath);
                 if(rendererTransform == null)
                 {
-                    if(Main.logs.Value)
+                    if(Main.writeLogs.Value)
                     {
                         Main.logger.LogError($"There is no object at the hierarchy path '{configData.rendererHierarchyPath}'! Aborting texture load.");
                     }
@@ -82,7 +82,7 @@ namespace TextureReplacer
 
                 if (targetRenderer == null && !Main.customTextureNames.ContainsKey(configData.textureName))
                 {
-                    if (Main.logs.Value)
+                    if (Main.writeLogs.Value)
                     {
                         Main.logger.LogError("Target renderer was null! Aborting texture load.");
                     }
@@ -91,7 +91,7 @@ namespace TextureReplacer
 
                 replacer.AddTextureData(configData);
 
-                if (Main.logs.Value)
+                if (Main.writeLogs.Value)
                 {
                     Main.logger.LogDebug($"Loading of config {configData.configName} complete");
                 }

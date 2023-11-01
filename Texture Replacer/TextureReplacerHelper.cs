@@ -68,6 +68,12 @@ namespace TextureReplacer
             for (int i = 0; i < configDatas[nameWithoutClone].Count; i++)
             {
                 TexturePatchConfigData configData = configDatas[nameWithoutClone][i];
+
+                if (Main.writeLogs.Value)
+                {
+                    Main.logger.LogDebug($"Loading textures on {transform.name} from {configData.configName}");
+                }
+
                 if (configData.variationAccepted || !configData.isVariation || Random.Range(0f, 1f) <= configData.variationChance)
                 {
                     Texture2D texture = textures[nameWithoutClone][i];
@@ -112,6 +118,11 @@ namespace TextureReplacer
 
         private void HandleCustomTextureNames(Material material, Texture2D texture, float extractedValue, TextureType type)
         {
+            if(Main.writeLogs.Value)
+            {
+                Main.logger.LogDebug($"Handling custom texture name for type {type.ToString()}");
+            }
+
             switch (type)
             {
                 case TextureType.Emission:

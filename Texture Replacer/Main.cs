@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
-using IndigocoderLib;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
@@ -15,17 +14,17 @@ namespace TextureReplacer
     {
         private const string myGUID = "Indigocoder.TextureReplacer";
         private const string pluginName = "Texture Replacer";
-        private const string versionString = "1.0.7";
+        private const string versionString = "1.0.8";
 
         public static ManualLogSource logger;
         public static string AssetFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
-        public static ConfigEntry<bool> logs;
+        public static ConfigEntry<bool> writeLogs;
 
         private void Awake()
         {
             logger = Logger;
 
-            logs = Config.Bind("Enable logging for textures", "logs", false);
+            writeLogs = Config.Bind("Enable logging for textures", "logs", false);
             //LifepodTextureReplacer.Initialize();
             CustomTextureReplacer.Initialize();
 
