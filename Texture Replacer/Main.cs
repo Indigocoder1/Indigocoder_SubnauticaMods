@@ -18,15 +18,18 @@ namespace TextureReplacer
 
         public static ManualLogSource logger;
         public static string AssetFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
-        public static ConfigEntry<bool> writeLogs;
+        public static ConfigEntry<bool> WriteLogs;
 
         private void Awake()
         {
             logger = Logger;
 
-            writeLogs = Config.Bind("Enable logging for textures", "logs", false);
+            WriteLogs = Config.Bind("Enable logging for textures", "Write Logs", false);
+
             //LifepodTextureReplacer.Initialize();
             CustomTextureReplacer.Initialize();
+
+            new TextureReplacerOptions();
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
         }
