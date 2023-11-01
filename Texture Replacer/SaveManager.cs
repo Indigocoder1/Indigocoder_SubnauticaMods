@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace TextureReplacer
 {
-    internal static class SaveManager
+    internal static class SaveManager<T>
     {
-        public static void SaveToJson(List<Main.TexturePatchConfigData> saveData, string filePath, string folderFilePath)
+        public static void SaveToJson(List<T> saveData, string filePath, string folderFilePath)
         {
             if (!Directory.Exists(folderFilePath))
             {
@@ -20,34 +20,19 @@ namespace TextureReplacer
             Console.WriteLine($"Data saved to JSON at {filePath}");
         }
 
-        public static List<Main.TexturePatchConfigData> LoadConfigs(string folderPath)
+        public static List<T> LoadJsons(string folderPath)
         {
-            List<Main.TexturePatchConfigData> configDatas = new List<Main.TexturePatchConfigData>();
+            List<T> configDatas = new List<T>();
             foreach (string file in Directory.EnumerateFiles(folderPath, "*.json"))
             {
-                List<Main.TexturePatchConfigData> tempData = new List<Main.TexturePatchConfigData>();
+                List<T> tempData = new List<T>();
                 try
                 {
-                    tempData = LoadFromJson(file);
+                    tempData = LoadJson(file);
                 }
                 catch (Exception e)
                 {
                     Main.logger.LogError($"Error loading JSON at {file} \nMessage is: {e.Message}");
-                }
-
-                bool isLifepod = false;
-                for (int i = 0; i < tempData.Count; i++)
-                {
-                    if (tempData[i].configName.Contains("Lifepod"))
-                    {
-                        isLifepod = true;
-                        break;
-                    }
-                }
-
-                if(isLifepod)
-                {
-                    continue;
                 }
 
                 configDatas.AddRange(tempData);
@@ -56,7 +41,7 @@ namespace TextureReplacer
             return configDatas;
         }
 
-        public static List<Main.TexturePatchConfigData> LoadFromJson(string filePath)
+        public static List<T> LoadJson(string filePath)
         {
             if (!File.Exists(filePath))
             {
@@ -64,7 +49,7 @@ namespace TextureReplacer
             }
 
             string data = File.ReadAllText(filePath);
-            return JsonConvert.DeserializeObject<List<Main.TexturePatchConfigData>>(data);
+            return JsonConvert.DeserializeObject<List<T>>(data);
         }
 
         public static List<LifepodTextureReplacer.LifepodConfigData> LoadLifepodConfigs(string folderPath)

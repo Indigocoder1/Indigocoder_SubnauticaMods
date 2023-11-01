@@ -16,11 +16,11 @@ namespace TextureReplacer
 
         public static void Initialize()
         {
-            textureConfigs = SaveManager.LoadConfigs(folderFilePath);
+            textureConfigs = SaveManager<Main.TexturePatchConfigData>.LoadJsons(folderFilePath);
             if (textureConfigs == null)
             {
                 SaveExampleData();
-                textureConfigs = SaveManager.LoadConfigs(folderFilePath);
+                textureConfigs = SaveManager<Main.TexturePatchConfigData>.LoadJsons(folderFilePath);
             }
 
             LoadAllTextures();
@@ -42,17 +42,25 @@ namespace TextureReplacer
 
                 if (flag1 || flag2)
                 {
+                    if(Main.logs.Value)
+                    {
+                        Main.logger.LogDebug($"Skipping config {configData.configName} because it contains example data!");
+                    }
                     continue;
                 }
 
-                CoroutineHost.StartCoroutine(InitializeTexture(configData.prefabClassID, configData.rendererHierarchyPath, configData));
+                CoroutineHost.StartCoroutine(InitializeTexture(configData));
             }
         }
 
-        private static IEnumerator InitializeTexture(string classID,
-            string hierarchyPath, TexturePatchConfigData configData)
+        private static IEnumerator InitializeTexture(TexturePatchConfigData configData)
         {
-            IPrefabRequest request = PrefabDatabase.GetPrefabAsync(classID);
+            if (Main.logs.Value)
+            {
+                Main.logger.LogDebug($"Loading config {configData.configName}");
+            }
+
+            IPrefabRequest request = PrefabDatabase.GetPrefabAsync(configData.prefabClassID);
 
             yield return request;
 
@@ -61,21 +69,32 @@ namespace TextureReplacer
                 TextureReplacerHelper replacer = prefab.EnsureComponent<TextureReplacerHelper>();
 
                 Renderer targetRenderer = null;
-                Transform rendererTransform = prefab.transform.Find(hierarchyPath);
+                Transform rendererTransform = prefab.transform.Find(configData.rendererHierarchyPath);
                 if(rendererTransform == null)
                 {
-                    Main.logger.LogError($"There is no object at the hierarchy path '{hierarchyPath}'!");
+                    if(Main.logs.Value)
+                    {
+                        Main.logger.LogError($"There is no object at the hierarchy path '{configData.rendererHierarchyPath}'! Aborting texture load.");
+                    }
                     yield break;
                 }
                 rendererTransform.TryGetComponent<Renderer>(out targetRenderer);
 
                 if (targetRenderer == null && !Main.customTextureNames.ContainsKey(configData.textureName))
                 {
-                    Main.logger.LogError("Target renderer was null! Aborting texture load.");
+                    if (Main.logs.Value)
+                    {
+                        Main.logger.LogError("Target renderer was null! Aborting texture load.");
+                    }
                     yield break;
                 }
 
                 replacer.AddTextureData(configData);
+
+                if (Main.logs.Value)
+                {
+                    Main.logger.LogDebug($"Loading of config {configData.configName} complete");
+                }
             }
         }
 
@@ -101,7 +120,7 @@ namespace TextureReplacer
                 )
             };
 
-            SaveManager.SaveToJson(configDatas, configFilePath, folderFilePath);
+            SaveManager<Main.TexturePatchConfigData>.SaveToJson(configDatas, configFilePath, folderFilePath);
         }
     }
 }

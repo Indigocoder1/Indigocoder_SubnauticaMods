@@ -18,7 +18,7 @@ namespace TextureReplacer
 
         public static void Initialize()
         {
-            lifepodConfigs = SaveManager.LoadLifepodConfigs(folderFilePath);
+            lifepodConfigs = SaveManager<LifepodConfigData>.LoadLifepodConfigs(folderFilePath);
             if (lifepodConfigs == null) 
             {
                 return;
@@ -93,7 +93,7 @@ namespace TextureReplacer
                     new List<string> { $"Lifepod_Config{(int)num}_Index{matIndex}" }), i, $"Lifepod_Config{(int)num}_Index{matIndex2}"));
             }
 
-            SaveManager.SaveLifepodConfigToJson(lifepodConfigDatas, configFilePath, folderFilePath);
+            SaveManager<LifepodConfigData>.SaveLifepodConfigToJson(lifepodConfigDatas, configFilePath, folderFilePath);
         }
 
         private static readonly Dictionary<LifepodNumber, string> ExternalRendererHierchyPaths = new Dictionary<LifepodNumber, string>

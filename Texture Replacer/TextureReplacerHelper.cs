@@ -112,26 +112,33 @@ namespace TextureReplacer
 
         private void HandleCustomTextureNames(Material material, Texture2D texture, float extractedValue, TextureType type)
         {
-            Main.logger.LogInfo($"Doing custom texture name for {type}");
-
             switch (type)
             {
                 case TextureType.Emission:
-                    material.SetFloat("_GlowStrength", 0);
-                    material.SetFloat("_GlowStrengthNight", 0);
-                    material.SetFloat("_EmissionLM", extractedValue);
-                    material.SetFloat("_EmissionLMNight", extractedValue);
+                    if(extractedValue != Main.textureNameValueDefaults[type])
+                    {
+                        material.SetFloat("_GlowStrength", 0);
+                        material.SetFloat("_GlowStrengthNight", 0);
+                        material.SetFloat("_EmissionLM", extractedValue);
+                        material.SetFloat("_EmissionLMNight", extractedValue);
+                    }                    
                     material.SetTexture("EmissionMap", texture);
                     break;
                 case TextureType.LightColor:
                     Light[] lightArray = gameObject.GetComponentsInChildren<Light>();
-                    
-                    if(lightArray != null)
+                    Color32 averageColor = AverageColorFromTexture(texture);
+
+                    if (lightArray != null)
                     {
                         foreach (Light light in lightArray)
                         {
-                            light.color = AverageColorFromTexture(texture);
+                            light.color = averageColor;
                         }
+                    }
+
+                    if(material != null)
+                    {
+                        material.SetColor("_EmissionColor", averageColor);
                     }
                     break;
             }
