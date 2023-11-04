@@ -43,12 +43,14 @@ namespace WarpStabilizationSuit
 
             new Suit_ModOptions();
 
+            /*
             Dictionary<string, PluginInfo> keys = Chainloader.PluginInfos;
             if (keys.ContainsKey("com.ramune.SeaglideUpgrades") || keys.ContainsKey("com.ramune.OrganizedWorkbench") || keys.ContainsKey("com.ramune.LithiumBatteries"))
             {
                 CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, "Other", "Other", SpriteManager.Get(TechType.Titanium));
                 TabsNeeded = true;
             }
+            */
 
             Gloves_Craftable.Patch();
             Suit_Craftable.Patch();
