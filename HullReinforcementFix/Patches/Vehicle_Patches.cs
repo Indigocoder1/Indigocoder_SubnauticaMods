@@ -28,14 +28,22 @@ namespace HullReinforcementFix.Patches
             float mk2DamageFraction = mk2Count > 0 ? 0.4f * Mathf.Pow(0.55f, mk2Count) : 0;
             float mk3DamageFraction = mk3Count > 0 ? 0.3f * Mathf.Pow(0.3f, mk3Count) : 0;
 
-            float damageFraction = (mk2DamageFraction + mk3DamageFraction) / (mk2Count + mk3Count);
+            float newDamageFraction = 0;
+            if ((mk2Count + mk3Count) != 0)
+            {
+                newDamageFraction = (mk2DamageFraction + mk3DamageFraction) / (mk2Count + mk3Count);
+            }
+            else
+            {
+                newDamageFraction = originalDamageFraction;
+            }
 
-            dealDamageOnImpact.mirroredSelfDamageFraction = damageFraction;
+            dealDamageOnImpact.mirroredSelfDamageFraction = newDamageFraction;
 
             if (Main_Plugin.WriteLogs.Value)
             {
                 Main_Plugin.logger.LogInfo($"Original dmg fraction = {originalDamageFraction}");
-                Main_Plugin.logger.LogInfo($"Altered dmg = {damageFraction}");
+                Main_Plugin.logger.LogInfo($"Altered damage fraction = {newDamageFraction}");
             }
         }
     }

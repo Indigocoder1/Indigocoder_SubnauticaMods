@@ -9,8 +9,13 @@ namespace HullReinforcementFix
     internal static class DamageSystem_Patch
     {
         [HarmonyPatch(nameof(DamageSystem.CalculateDamage)), HarmonyPostfix]
-        private static void CalculateDamage_Patch(GameObject target, ref float __result)
+        private static void CalculateDamage_Patch(GameObject target, DamageType type, ref float __result)
         {
+            if(type == DamageType.Collide)
+            {
+                return;
+            }
+
             LiveMixin mixin = target.GetComponent<LiveMixin>();
             if(mixin == null)
             {
@@ -32,7 +37,15 @@ namespace HullReinforcementFix
                 mk2Damage = mk2HullModuleCount == 0 ? 1 : mk2Damage;
                 mk3Damage = mk3HullModuleCount == 0 ? 1 : mk3Damage;
 
-                float reducedDamage = damage * ((mk1Damage + mk2Damage + mk3Damage) / (mk1HullModuleCount + mk2HullModuleCount + mk3HullModuleCount));
+                float reducedDamage = 0;
+                if ((mk1HullModuleCount + mk2HullModuleCount + mk3HullModuleCount) != 0)
+                {
+                    reducedDamage = damage * ((mk1Damage + mk2Damage + mk3Damage) / (mk1HullModuleCount + mk2HullModuleCount + mk3HullModuleCount));
+                }
+                else
+                {
+                    reducedDamage = __result;
+                }
 
                 damage = Mathf.Max(reducedDamage, 0);
 
@@ -40,7 +53,7 @@ namespace HullReinforcementFix
                 {
                     Main_Plugin.logger.LogInfo($"Original dmg = {__result} (Mk1 Module Count = {mk1HullModuleCount} | " +
                         $"Mk2 Module Count = {mk2HullModuleCount} | Mk3 Module Count = {mk3HullModuleCount}");
-                    Main_Plugin.logger.LogInfo($"Altered dmg = {damage}");
+                    Main_Plugin.logger.LogInfo($"Altered damages: {reducedDamage} | {mk1Damage} | {mk2Damage} | {mk3Damage}");
                 }
             }
 
