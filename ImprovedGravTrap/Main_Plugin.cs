@@ -45,11 +45,13 @@ namespace ImprovedGravTrap
             SetUpConfigs();
             new GravTrap_ModOptions();
 
+            /*
             if (Chainloader.PluginInfos.ContainsKey("com.ramune.SeaglideUpgrades") || Chainloader.PluginInfos.ContainsKey("com.ramune.OrganizedWorkbench"))
             {
                 CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, "Other", "Other", SpriteManager.Get(TechType.Titanium));
                 TabsNeeded = true;
             }
+            */
 
             ImprovedTrap_Craftable.Patch();
 
