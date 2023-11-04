@@ -12,7 +12,7 @@ namespace UpgradedJumpJetModule
     {
         private const string myGUID = "Indigocoder.UpgradedJumpJetModule";
         private const string pluginName = "Upgraded Jump Jet Module";
-        private const string versionString = "1.0.0";
+        private const string versionString = "1.1.3";
 
         public static ManualLogSource logger;
 
