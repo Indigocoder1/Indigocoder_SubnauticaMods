@@ -42,9 +42,9 @@ namespace TextureReplacer
 
                 if (flag1 || flag2)
                 {
-                    if(Main.writeLogs.Value)
+                    if(Main.WriteLogs.Value)
                     {
-                        Main.logger.LogDebug($"Skipping config {configData.configName} because it contains example data!");
+                        Main.logger.LogInfo($"Skipping config {configData.configName} because it contains example data!");
                     }
                     continue;
                 }
@@ -55,9 +55,9 @@ namespace TextureReplacer
 
         private static IEnumerator InitializeTexture(TexturePatchConfigData configData)
         {
-            if (Main.writeLogs.Value)
+            if (Main.WriteLogs.Value)
             {
-                Main.logger.LogDebug($"Loading config {configData.configName}");
+                Main.logger.LogInfo($"Loading config {configData.configName}");
             }
 
             IPrefabRequest request = PrefabDatabase.GetPrefabAsync(configData.prefabClassID);
@@ -72,7 +72,7 @@ namespace TextureReplacer
                 Transform rendererTransform = prefab.transform.Find(configData.rendererHierarchyPath);
                 if(rendererTransform == null)
                 {
-                    if(Main.writeLogs.Value)
+                    if(Main.WriteLogs.Value)
                     {
                         Main.logger.LogError($"There is no object at the hierarchy path '{configData.rendererHierarchyPath}'! Aborting texture load.");
                     }
@@ -82,7 +82,7 @@ namespace TextureReplacer
 
                 if (targetRenderer == null && !Main.customTextureNames.ContainsKey(configData.textureName))
                 {
-                    if (Main.writeLogs.Value)
+                    if (Main.WriteLogs.Value)
                     {
                         Main.logger.LogError("Target renderer was null! Aborting texture load.");
                     }
@@ -91,9 +91,9 @@ namespace TextureReplacer
 
                 replacer.AddTextureData(configData);
 
-                if (Main.writeLogs.Value)
+                if (Main.WriteLogs.Value)
                 {
-                    Main.logger.LogDebug($"Loading of config {configData.configName} complete");
+                    Main.logger.LogInfo($"Loading of config {configData.configName} complete");
                 }
             }
         }

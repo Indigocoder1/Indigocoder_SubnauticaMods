@@ -6,7 +6,6 @@ using System.Collections;
 using static TextureReplacer.Main;
 using Random = UnityEngine.Random;
 using System;
-using System.Collections.ObjectModel;
 
 namespace TextureReplacer
 {
@@ -69,9 +68,9 @@ namespace TextureReplacer
             {
                 TexturePatchConfigData configData = configDatas[nameWithoutClone][i];
 
-                if (Main.writeLogs.Value)
+                if (Main.WriteLogs.Value)
                 {
-                    Main.logger.LogDebug($"Loading textures on {transform.name} from {configData.configName}");
+                    Main.logger.LogInfo($"Loading textures on {transform.name} from {configData.configName}");
                 }
 
                 if (configData.variationAccepted || !configData.isVariation || Random.Range(0f, 1f) <= configData.variationChance)
@@ -118,9 +117,9 @@ namespace TextureReplacer
 
         private void HandleCustomTextureNames(Material material, Texture2D texture, float extractedValue, TextureType type)
         {
-            if(Main.writeLogs.Value)
+            if(Main.WriteLogs.Value)
             {
-                Main.logger.LogDebug($"Handling custom texture name for type {type.ToString()}");
+                Main.logger.LogInfo($"Handling custom texture name for type {type.ToString()}");
             }
 
             switch (type)
@@ -177,7 +176,10 @@ namespace TextureReplacer
             }
 
             Color32 color = new Color32((byte)(r / total), (byte)(g / total), (byte)(b / total), 0);
-            Main.logger.LogInfo($"Average color = {color}");
+            if (Main.WriteLogs.Value)
+            {
+                Main.logger.LogInfo($"Average color for texture \"{tex.name}\" is {color}");
+            }
             return color;
         }
 
