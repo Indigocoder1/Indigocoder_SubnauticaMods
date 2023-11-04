@@ -19,7 +19,7 @@ namespace GrapplingArmUpgrade_BepInEx
     {
         private const string myGUID = "Indigocoder.GrapplingArmUpgrade";
         private const string pluginName = "Grappling Arm Upgrade";
-        private const string versionString = "1.1.0";
+        private const string versionString = "1.1.2";
 
         public static ConfigEntry<bool> EnableMod;
         public static ConfigEntry<float> ArmCooldown;
@@ -39,11 +39,13 @@ namespace GrapplingArmUpgrade_BepInEx
 
             logger = Logger;
 
+            /*
             if (Chainloader.PluginInfos.ContainsKey("com.ramune.SeaglideUpgrades") || Chainloader.PluginInfos.ContainsKey("com.ramune.OrganizedWorkbench"))
             {
                 CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, "Other", "Other", SpriteManager.Get(TechType.Titanium));
                 TabsNeeded = true;
             }
+            */
 
             UpgradedArm_Craftable.RegisterModule();
             harmony.PatchAll();
