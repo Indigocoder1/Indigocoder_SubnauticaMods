@@ -22,7 +22,7 @@ namespace WarpStabilizationSuit
     {
         private const string myGUID = "Indigocoder.WarpStabilizationSuit";
         private const string pluginName = "Warp Stabilization Suit";
-        private const string versionString = "1.3.3";
+        private const string versionString = "1.3.4";
         public static ManualLogSource logger;
 
         public static string AssetsFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");

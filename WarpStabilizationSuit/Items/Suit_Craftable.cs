@@ -5,9 +5,9 @@ using Nautilus.Crafting;
 using UnityEngine;
 using Ingredient = CraftData.Ingredient;
 using IndigocoderLib;
-using Nautilus.Handlers;
 using System.Collections.Generic;
-using BepInEx.Bootstrap;
+using SuitLib;
+using Nautilus.Extensions;
 
 namespace WarpStabilizationSuit.Items
 {
@@ -25,9 +25,9 @@ namespace WarpStabilizationSuit.Items
                 {
                     new Ingredient(TechType.ReinforcedDiveSuit, 1),
                             new Ingredient(TechType.ReinforcedGloves, 1),
-                            new Ingredient(usingHardRecipe?TechType.AramidFibers:TechType.Polyaniline, usingHardRecipe?4:2),
-                            new Ingredient(usingHardRecipe?TechType.Lithium:TechType.AdvancedWiringKit, usingHardRecipe?4:1),
-                            new Ingredient(usingHardRecipe?TechType.AdvancedWiringKit:TechType.Nickel, 2),
+                            new Ingredient(usingHardRecipe ? TechType.AramidFibers : TechType.Polyaniline, usingHardRecipe ? 4 : 2),
+                            new Ingredient(usingHardRecipe ? TechType.Lithium : TechType.AdvancedWiringKit, usingHardRecipe ? 4 : 1),
+                            new Ingredient(usingHardRecipe ? TechType.AdvancedWiringKit : TechType.Nickel, 2),
                             new Ingredient(TechType.PrecursorIonCrystal, 2)
                 };
             }
