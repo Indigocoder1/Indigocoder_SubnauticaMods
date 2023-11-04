@@ -28,11 +28,13 @@ namespace UpgradedJumpJetModule
         {
             logger = Logger;
 
+            /*
             if (Chainloader.PluginInfos.ContainsKey("com.ramune.SeaglideUpgrades") || Chainloader.PluginInfos.ContainsKey("com.ramune.OrganizedWorkbench"))
             {
                 CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, "Other", "Other", SpriteManager.Get(TechType.Titanium));
                 TabsNeeded = true;
             }
+            */
 
             UpgradedJetsModule.RegisterModule();
             harmony.PatchAll();
