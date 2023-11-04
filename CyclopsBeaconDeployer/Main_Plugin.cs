@@ -3,7 +3,6 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using CyclopsBeaconDeployer.Items;
 using HarmonyLib;
-using IndigocoderLib;
 using Nautilus.Handlers;
 using System.Collections;
 using System.IO;
@@ -18,7 +17,7 @@ namespace CyclopsBeaconDeployer
     {
         private const string myGUID = "Indigocoder.CyclopsBeaconDeployer";
         private const string pluginName = "Cyclops Beacon Deployer";
-        private const string versionString = "1.0.0";
+        private const string versionString = "1.1.0";
 
         public static ConfigEntry<bool> WriteLogs;
 
@@ -35,11 +34,6 @@ namespace CyclopsBeaconDeployer
         private IEnumerator Start()
         {
             logger = Logger;
-
-            if (PiracyDetector.TryFindPiracy())
-            {
-                yield break;
-            }
 
             InitializeConfigs();
 

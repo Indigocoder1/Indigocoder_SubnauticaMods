@@ -30,6 +30,8 @@ namespace CyclopsBeaconDeployer.Patches
 
                 if(pickupable.GetTechType() == TechType.CyclopsDecoy)
                 {
+                    __result = true;
+                    /*
                     if (hasModule)
                     {
                         __result = false;
@@ -38,6 +40,7 @@ namespace CyclopsBeaconDeployer.Patches
                     {
                         __result = true;
                     }
+                    */
                 }
             }
         }
@@ -139,7 +142,7 @@ namespace CyclopsBeaconDeployer.Patches
             }
 
             CraftData.equipmentTypes[TechType.Beacon] = EquipmentType.DecoySlot;
-            CraftData.equipmentTypes[TechType.CyclopsDecoy] = Main_Plugin.DecoyPlaceholder;
+            //CraftData.equipmentTypes[TechType.CyclopsDecoy] = Main_Plugin.DecoyPlaceholder;
         }
 
         [HarmonyPatch(nameof(Equipment.NotifyUnequip)), HarmonyPostfix]
@@ -168,6 +171,13 @@ namespace CyclopsBeaconDeployer.Patches
 
             CraftData.equipmentTypes[TechType.Beacon] = EquipmentType.Hand;
             CraftData.equipmentTypes[TechType.CyclopsDecoy] = EquipmentType.DecoySlot;
+        }
+
+        [HarmonyPatch(new Type[] { typeof(string), typeof(bool), typeof(bool) })]
+        [HarmonyPatch(nameof(Equipment.RemoveItem)), HarmonyPrefix]
+        private static void RemoveItem(string slot)
+        {
+            Main_Plugin.logger.LogInfo($"Trying to remove item from slot {slot}");
         }
 
         public static bool IsDecoyTube(Equipment equipment, out CyclopsDecoyLoadingTube decoyTube)

@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using IndigocoderLib;
 
 namespace CyclopsBeaconDeployer.Patches
 {
@@ -14,6 +15,11 @@ namespace CyclopsBeaconDeployer.Patches
             }
 
             if(__instance.currentSub == null)
+            {
+                return;
+            }
+
+            if(Utilities.GetNameWithCloneRemoved(__instance.currentSub.transform.name) != "Cyclops-MainPrefab")
             {
                 return;
             }

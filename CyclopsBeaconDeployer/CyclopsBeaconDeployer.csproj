@@ -55,6 +55,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="Unity.Addressables">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\Unity.Addressables.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\Unity.TextMeshPro.dll</HintPath>
     </Reference>
@@ -81,9 +84,11 @@
     <Compile Include="Items\BeaconDeployModule.cs" />
     <Compile Include="Main_Plugin.cs" />
     <Compile Include="Patches\CraftData_Patches.cs" />
+    <Compile Include="Patches\DecoyButton.cs" />
     <Compile Include="Patches\DecoyLauncher_Patch.cs" />
     <Compile Include="Patches\DecoyManager_Patches.cs" />
     <Compile Include="Patches\Equipment_Patches.cs" />
+    <Compile Include="Patches\LoadingTube.cs" />
     <Compile Include="Patches\LoadingTube_Patch.cs" />
     <Compile Include="Patches\PlayerTool_Patch.cs" />
     <Compile Include="Patches\InventoryItemPatch.cs" />

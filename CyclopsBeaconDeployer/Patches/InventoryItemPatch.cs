@@ -15,10 +15,12 @@ namespace CyclopsBeaconDeployer.Patches
                 __result = true;
             }
 
+            /*
             if(CraftData.GetEquipmentType(__instance.techType) == EquipmentType.DecoySlot)
             {
                 __result = true;
             }
+            */
         }
     }
 }
