@@ -6,8 +6,6 @@ using UnityEngine;
 using Ingredient = CraftData.Ingredient;
 using IndigocoderLib;
 using System.Collections.Generic;
-using SuitLib;
-using Nautilus.Extensions;
 
 namespace WarpStabilizationSuit.Items
 {
@@ -70,7 +68,7 @@ namespace WarpStabilizationSuit.Items
             };
 
             prefab.SetGameObject(cloneTemplate);
-            prefab.SetUnlock(TechType.PrecursorPrisonIonGenerator);
+            //prefab.SetUnlock(TechType.PrecursorPrisonIonGenerator);
             prefab.SetEquipment(EquipmentType.Body);
 
             prefab.SetRecipe(recipe)
