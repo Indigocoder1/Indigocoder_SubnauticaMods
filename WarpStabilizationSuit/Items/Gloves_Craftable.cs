@@ -36,7 +36,7 @@ namespace WarpStabilizationSuit.Items
             };
 
             prefab.SetGameObject(cloneTemplate);
-            prefab.SetUnlock(TechType.PrecursorPrisonIonGenerator);
+            //prefab.SetUnlock(TechType.PrecursorPrisonIonGenerator);
             prefab.SetEquipment(EquipmentType.Gloves);
 
             prefab.Register();
