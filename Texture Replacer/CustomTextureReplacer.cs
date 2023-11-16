@@ -16,6 +16,7 @@ namespace TextureReplacer
 
         public static void Initialize()
         {
+            CraftData.PreparePrefabIDCache();
             textureConfigs = SaveManager<Main.TexturePatchConfigData>.LoadJsons(folderFilePath);
             if (textureConfigs == null)
             {

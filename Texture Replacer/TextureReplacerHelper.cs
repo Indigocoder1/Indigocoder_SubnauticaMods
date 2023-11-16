@@ -86,10 +86,10 @@ namespace TextureReplacer
 
                     if (configData.textureName.Contains("-"))
                     {
-                        string[] split = configData.textureName.Split('-');
+                        string[] split = configData.textureName.Split(new[] { '-' }, 2);
                         float extractedValue = textureNameValueDefaults[customTextureNames[split[0]]];
                         if (customTextureNames.ContainsKey(split[0]))
-                        {           
+                        {
                             try
                             {
                                 extractedValue = float.Parse(split[1]);
@@ -125,7 +125,7 @@ namespace TextureReplacer
             switch (type)
             {
                 case TextureType.Emission:
-                    if(extractedValue != Main.textureNameValueDefaults[type])
+                    if(extractedValue != -1)
                     {
                         material.SetFloat("_GlowStrength", 0);
                         material.SetFloat("_GlowStrengthNight", 0);
