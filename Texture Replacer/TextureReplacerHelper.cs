@@ -132,7 +132,7 @@ namespace TextureReplacer
                         material.SetFloat("_EmissionLM", extractedValue);
                         material.SetFloat("_EmissionLMNight", extractedValue);
                     }                    
-                    material.SetTexture("EmissionMap", texture);
+                    material.SetTexture("_EmissionMap", texture);
                     break;
                 case TextureType.LightColor:
                     Light[] lightArray = gameObject.GetComponentsInChildren<Light>();

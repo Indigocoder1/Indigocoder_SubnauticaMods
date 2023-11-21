@@ -11,14 +11,19 @@ namespace TextureReplacer
     internal static class CustomTextureReplacer
     {
         private static string folderFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureReplacer");
-        private static string configFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureReplacer/ExampleTextureConfig.json");
+        private static string configFilePath = Path.Combine(folderFilePath, "ExampleTextureConfig.json");
         private static List<TexturePatchConfigData> textureConfigs;
 
         public static void Initialize()
         {
             CraftData.PreparePrefabIDCache();
+            if(!Directory.Exists(folderFilePath))
+            {
+                Directory.CreateDirectory(folderFilePath);
+            }
+
             textureConfigs = SaveManager<Main.TexturePatchConfigData>.LoadJsons(folderFilePath);
-            if (textureConfigs == null)
+            if (textureConfigs.Count == 0)
             {
                 SaveExampleData();
                 textureConfigs = SaveManager<Main.TexturePatchConfigData>.LoadJsons(folderFilePath);
