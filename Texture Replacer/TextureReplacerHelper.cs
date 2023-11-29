@@ -6,6 +6,7 @@ using System.Collections;
 using static TextureReplacer.Main;
 using Random = UnityEngine.Random;
 using System;
+using static TextureReplacer.CustomTextureReplacer;
 
 namespace TextureReplacer
 {

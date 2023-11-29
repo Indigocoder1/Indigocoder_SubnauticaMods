@@ -14,7 +14,7 @@ namespace TextureReplacer
     {
         private const string myGUID = "Indigocoder.TextureReplacer";
         private const string pluginName = "Texture Replacer";
-        private const string versionString = "1.0.12";
+        private const string versionString = "1.1.0";
 
         public static ManualLogSource logger;
         public static string AssetFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
@@ -24,56 +24,14 @@ namespace TextureReplacer
         {
             logger = Logger;
 
-            WriteLogs = Config.Bind("Enable logging for textures", "Write Logs", false);
+            WriteLogs = Config.Bind("Enable logging for textures", "Write Logs", false, 
+                new ConfigDescription("Warning: When using many textures, there will be lots of logs\n(Errors will always log)"));
 
             //LifepodTextureReplacer.Initialize();
             CustomTextureReplacer.Initialize();
-
             new TextureReplacerOptions();
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
-        }
-
-        public class TexturePatchConfigData
-        {
-            public string configName;
-            public int materialIndex;
-            public string fileName;
-            public string prefabClassID;
-            public string rendererHierarchyPath;
-            public string textureName;
-
-            public bool isVariation;
-            public float variationChance;
-            public List<string> linkedConfigNames;
-            [JsonIgnore]
-            public bool variationAccepted;
-
-            [JsonConstructor]
-            public TexturePatchConfigData(string configName, int materialIndex, string fileName, bool isVariation, float variationChance,
-                string prefabClassID, string rendererHierarchyPath, string textureName, List<string> linkedConfigNames)
-            {
-                this.configName = configName;
-                this.materialIndex = materialIndex;
-                this.fileName = fileName;
-                this.prefabClassID = prefabClassID;
-                this.rendererHierarchyPath = rendererHierarchyPath;
-                this.textureName = textureName;
-                this.isVariation = isVariation;
-                this.variationChance = variationChance;
-                this.linkedConfigNames = linkedConfigNames;
-            }
-
-            public TexturePatchConfigData(ConfigInfo configInfo)
-            {
-                this.materialIndex = configInfo.materialIndex;
-                this.fileName = configInfo.fileName;
-                this.prefabClassID = configInfo.prefabClassID;
-                this.rendererHierarchyPath = configInfo.rendererHierchyPath;
-                this.isVariation = configInfo.isVariation;
-                this.variationChance = configInfo.variationChance;
-                this.linkedConfigNames = configInfo.linkedConfigNames;
-            }
         }
 
         public struct ConfigInfo

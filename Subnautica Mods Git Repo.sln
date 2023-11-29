@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuitLib", "..\SuitLib\SuitL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "..\Testing\Testing.csproj", "{92D7444C-C110-4A5D-B6A7-57715FF8F8F2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SealGrapplingTurret", "..\SealGrapplingTurret\SealGrapplingTurret.csproj", "{3773E178-535B-44FB-9BB9-7DF6F0BEC1B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +97,10 @@ Global
 		{92D7444C-C110-4A5D-B6A7-57715FF8F8F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92D7444C-C110-4A5D-B6A7-57715FF8F8F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92D7444C-C110-4A5D-B6A7-57715FF8F8F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3773E178-535B-44FB-9BB9-7DF6F0BEC1B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3773E178-535B-44FB-9BB9-7DF6F0BEC1B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3773E178-535B-44FB-9BB9-7DF6F0BEC1B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3773E178-535B-44FB-9BB9-7DF6F0BEC1B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

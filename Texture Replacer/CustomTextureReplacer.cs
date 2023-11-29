@@ -5,16 +5,17 @@ using UWE;
 using static TextureReplacer.Main;
 using BepInEx;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace TextureReplacer
 {
-    internal static class CustomTextureReplacer
+    public static class CustomTextureReplacer
     {
         private static string folderFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureReplacer");
         private static string configFilePath = Path.Combine(folderFilePath, "ExampleTextureConfig.json");
         private static List<TexturePatchConfigData> textureConfigs;
 
-        public static void Initialize()
+        internal static void Initialize()
         {
             CraftData.PreparePrefabIDCache();
             if(!Directory.Exists(folderFilePath))
@@ -22,11 +23,11 @@ namespace TextureReplacer
                 Directory.CreateDirectory(folderFilePath);
             }
 
-            textureConfigs = SaveManager<Main.TexturePatchConfigData>.LoadJsons(folderFilePath);
+            textureConfigs = SaveManager<TexturePatchConfigData>.LoadJsons(folderFilePath);
             if (textureConfigs.Count == 0)
             {
                 SaveExampleData();
-                textureConfigs = SaveManager<Main.TexturePatchConfigData>.LoadJsons(folderFilePath);
+                textureConfigs = SaveManager<TexturePatchConfigData>.LoadJsons(folderFilePath);
             }
 
             LoadAllTextures();
@@ -78,20 +79,14 @@ namespace TextureReplacer
                 Transform rendererTransform = prefab.transform.Find(configData.rendererHierarchyPath);
                 if(rendererTransform == null)
                 {
-                    if(Main.WriteLogs.Value)
-                    {
-                        Main.logger.LogError($"There is no object at the hierarchy path '{configData.rendererHierarchyPath}'! Aborting texture load.");
-                    }
+                    Main.logger.LogError($"There is no object at the hierarchy path '{configData.rendererHierarchyPath}'! Aborting texture load.");
                     yield break;
                 }
                 rendererTransform.TryGetComponent<Renderer>(out targetRenderer);
 
                 if (targetRenderer == null && !Main.customTextureNames.ContainsKey(configData.textureName))
                 {
-                    if (Main.WriteLogs.Value)
-                    {
-                        Main.logger.LogError("Target renderer was null! Aborting texture load.");
-                    }
+                    Main.logger.LogError("Target renderer was null! Aborting texture load.");
                     yield break;
                 }
 
@@ -126,7 +121,58 @@ namespace TextureReplacer
                 )
             };
 
-            SaveManager<Main.TexturePatchConfigData>.SaveToJson(configDatas, configFilePath, folderFilePath);
+            SaveManager<TexturePatchConfigData>.SaveToJson(configDatas, configFilePath, folderFilePath);
+        }
+
+        /// <summary>
+        /// Takes a <see cref="TexturePatchConfigData"/> and adds it to the config list and initializes it
+        /// </summary>
+        public static void AddConfig(TexturePatchConfigData configData)
+        {
+            textureConfigs.Add(configData);
+            CoroutineHost.StartCoroutine(InitializeTexture(configData));
+        }
+
+        public class TexturePatchConfigData
+        {
+            public string configName;
+            public int materialIndex;
+            public string fileName;
+            public string prefabClassID;
+            public string rendererHierarchyPath;
+            public string textureName;
+
+            public bool isVariation;
+            public float variationChance;
+            public List<string> linkedConfigNames;
+            [JsonIgnore]
+            public bool variationAccepted;
+
+            [JsonConstructor]
+            public TexturePatchConfigData(string configName, int materialIndex, string fileName, bool isVariation, float variationChance,
+                string prefabClassID, string rendererHierarchyPath, string textureName, List<string> linkedConfigNames)
+            {
+                this.configName = configName;
+                this.materialIndex = materialIndex;
+                this.fileName = fileName;
+                this.prefabClassID = prefabClassID;
+                this.rendererHierarchyPath = rendererHierarchyPath;
+                this.textureName = textureName;
+                this.isVariation = isVariation;
+                this.variationChance = variationChance;
+                this.linkedConfigNames = linkedConfigNames;
+            }
+
+            internal TexturePatchConfigData(ConfigInfo configInfo)
+            {
+                this.materialIndex = configInfo.materialIndex;
+                this.fileName = configInfo.fileName;
+                this.prefabClassID = configInfo.prefabClassID;
+                this.rendererHierarchyPath = configInfo.rendererHierchyPath;
+                this.isVariation = configInfo.isVariation;
+                this.variationChance = configInfo.variationChance;
+                this.linkedConfigNames = configInfo.linkedConfigNames;
+            }
         }
     }
 }

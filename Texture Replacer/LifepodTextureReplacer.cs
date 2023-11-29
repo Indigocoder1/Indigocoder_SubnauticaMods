@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UWE;
+using static TextureReplacer.CustomTextureReplacer;
 using static TextureReplacer.Main;
 
 namespace TextureReplacer
