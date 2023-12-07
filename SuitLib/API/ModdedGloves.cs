@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Nautilus.Utility;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using static SuitLib.ModdedSuitsManager;
 
@@ -10,7 +13,7 @@ namespace SuitLib
         public VanillaModel vanillaModel;
         public TechType itemTechType;
         public Modifications modifications;
-        public ModificationValues modificationValues;
+        public StillsuitValues stillsuitValues;
 
         /// <param name="replacementTexturePropertyPairs">The texture name (like _MainTex) and the texture pairs</param>
         /// <param name="vanillaModel">The tech type for the gloves model you're replacing (like reinforcedGloves)</param>
@@ -23,13 +26,29 @@ namespace SuitLib
         }
 
         public ModdedGloves(Dictionary<string, Texture2D> replacementTexturePropertyPairs, VanillaModel vanillaModel, TechType itemTechType,
-            Modifications modifications, ModificationValues modificationValues = null)
+            Modifications modifications, StillsuitValues stillsuitValues = null)
         {
             this.replacementTexturePropertyPairs = replacementTexturePropertyPairs;
             this.vanillaModel = vanillaModel;
             this.itemTechType = itemTechType;
             this.modifications = modifications;
-            this.modificationValues = modificationValues;
+            this.stillsuitValues = stillsuitValues;
+        }
+
+        [JsonConstructor]
+        public ModdedGloves(Dictionary<string, string> gloveFileNamePairs, VanillaModel vanillaModel, Modifications modifications)
+        {
+            Dictionary<string, Texture2D> gloveTexturePairs = new Dictionary<string, Texture2D>();
+            foreach (string key in gloveFileNamePairs.Keys)
+            {
+                string path = Path.Combine(Main.jsonTexturesFolder, gloveFileNamePairs[key]);
+                gloveTexturePairs.Add(key, ImageUtils.LoadTextureFromFile(path));
+            }
+
+            this.replacementTexturePropertyPairs = gloveTexturePairs;
+            this.vanillaModel = vanillaModel;
+            this.modifications = modifications;
+            this.itemTechType = TechType.None;
         }
     }
 }

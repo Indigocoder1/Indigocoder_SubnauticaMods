@@ -14,9 +14,19 @@ namespace SuitLib
             moddedSuitsList.Add(moddedSuit);
         }
 
+        public static void AddModdedSuits(List<ModdedSuit> moddedSuit)
+        {
+            moddedSuitsList.AddRange(moddedSuit);
+        }
+
         public static void AddModdedGloves(ModdedGloves moddedGloves)
         {
             moddedGlovesList.Add(moddedGloves);
+        }
+
+        public static void AddModdedGloves(List<ModdedGloves> moddedGloves)
+        {
+            moddedGlovesList.AddRange(moddedGloves);
         }
 
         public enum VanillaModel
@@ -35,12 +45,12 @@ namespace SuitLib
             Filtration
         }
 
-        public class ModificationValues
+        public class StillsuitValues
         {
             public float stillsuitDeltaTimeReduction;
             public float stillsuitWaterIncreaseMultiplier;
 
-            public ModificationValues(float stillsuitDeltaTimeReduction, float stillsuitWaterIncreaseMultiplier)
+            public StillsuitValues(float stillsuitDeltaTimeReduction, float stillsuitWaterIncreaseMultiplier)
             {
                 this.stillsuitDeltaTimeReduction = stillsuitDeltaTimeReduction;
                 this.stillsuitWaterIncreaseMultiplier = stillsuitWaterIncreaseMultiplier;

@@ -142,7 +142,7 @@ namespace SuitLib.Patches
         }
 
         [HarmonyPatch(nameof(Player.HasReinforcedSuit)), HarmonyPostfix]
-        private static void HasReinforcedSuit_Patch(bool __result)
+        private static void HasReinforcedSuit_Patch(ref bool __result)
         {
             foreach (ModdedSuit suit in moddedSuitsList)
             {
@@ -159,15 +159,17 @@ namespace SuitLib.Patches
         }
 
         [HarmonyPatch(nameof(Player.HasReinforcedGloves)), HarmonyPostfix]
-        private static void HasReinforcedGloves_Patch(bool __result)
+        private static void HasReinforcedGloves_Patch(ref bool __result)
         {
             foreach (ModdedGloves gloves in moddedGlovesList)
             {
+                Debug.Log($"Wearing gloves {gloves.itemTechType} = {WearingItem(gloves.itemTechType, "Gloves")}");
                 if (!WearingItem(gloves.itemTechType, "Gloves"))
                 {
                     continue;
                 }
 
+                Debug.Log($"Gloves reinforced = {(gloves.modifications & Modifications.Reinforced) != 0}");
                 if ((gloves.modifications & Modifications.Reinforced) != 0)
                 {
                     __result = true;
@@ -224,7 +226,7 @@ namespace SuitLib.Patches
             {
                 foreach (ModdedSuit suit in ModdedSuitsManager.moddedSuitsList)
                 {
-                    if (!WearingItem(suit.itemTechType, "Body"))
+                    if (!WearingItem(suit.itemTechType, "Body") && suit.itemTechType != TechType.None)
                     {
                         continue;
                     }
@@ -290,7 +292,7 @@ namespace SuitLib.Patches
             {
                 foreach (ModdedGloves gloves in ModdedSuitsManager.moddedGlovesList)
                 {
-                    if (!WearingItem(gloves.itemTechType, "Gloves"))
+                    if (!WearingItem(gloves.itemTechType, "Gloves") && gloves.itemTechType != TechType.None)
                     {
                         continue;
                     }

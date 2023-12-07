@@ -44,8 +44,11 @@
     <Reference Include="BepInEx">
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
-    <Reference Include="DeathrunRemade">
-      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\plugins\DeathrunRemade\DeathrunRemade.dll</HintPath>
+    <Reference Include="Nautilus">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\plugins\Nautilus\Nautilus.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\StasisRifleFixMod_BepInEx\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -63,17 +66,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\JsonLoader.cs" />
     <Compile Include="API\ModdedGloves.cs" />
     <Compile Include="API\ModdedSuitsManager.cs" />
     <Compile Include="API\ModdedSuit.cs" />
     <Compile Include="API\PrefabComponentAssigner.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="Patches\Deathrun_Crush_Patch.cs" />
     <Compile Include="Patches\Player_Patches.cs" />
     <Compile Include="Patches\Stillsuit_Patches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\plugins\$(TargetName)"

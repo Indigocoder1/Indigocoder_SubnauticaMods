@@ -44,12 +44,12 @@ namespace SuitLib.Patches
 
             foreach (ModdedGloves gloves in ModdedSuitsManager.moddedGlovesList)
             {
-                if (!Player_Patches.WearingItem(gloves.itemTechType, "Gloves") || gloves.modificationValues == null)
+                if (!Player_Patches.WearingItem(gloves.itemTechType, "Gloves") || gloves.stillsuitValues == null)
                 {
                     continue;
                 }
 
-                moddedValue += gloves.modificationValues.stillsuitDeltaTimeReduction;
+                moddedValue += gloves.stillsuitValues.stillsuitDeltaTimeReduction;
                 itemsWorn++;
             }
 
@@ -80,12 +80,12 @@ namespace SuitLib.Patches
 
             foreach (ModdedGloves gloves in ModdedSuitsManager.moddedGlovesList)
             {
-                if (!Player_Patches.WearingItem(gloves.itemTechType, "Gloves") || gloves.modificationValues == null)
+                if (!Player_Patches.WearingItem(gloves.itemTechType, "Gloves") || gloves.stillsuitValues == null)
                 {
                     continue;
                 }
 
-                moddedValue += gloves.modificationValues.stillsuitDeltaTimeReduction;
+                moddedValue += gloves.stillsuitValues.stillsuitDeltaTimeReduction;
                 itemsWorn++;
             }
 
