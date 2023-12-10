@@ -43,15 +43,9 @@ namespace ImprovedGravTrap
             logger = Logger;
 
             SetUpConfigs();
-            new GravTrap_ModOptions();
+            InitializeAllowedTypes();
 
-            /*
-            if (Chainloader.PluginInfos.ContainsKey("com.ramune.SeaglideUpgrades") || Chainloader.PluginInfos.ContainsKey("com.ramune.OrganizedWorkbench"))
-            {
-                CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, "Other", "Other", SpriteManager.Get(TechType.Titanium));
-                TabsNeeded = true;
-            }
-            */
+            new GravTrap_ModOptions();
 
             ImprovedTrap_Craftable.Patch();
 
@@ -99,8 +93,6 @@ namespace ImprovedGravTrap
             GravStoragePickupDistance = Config.Bind("Improved Grav Trap", "Enhanced grav trap pickup distance", 5f, 
                 new ConfigDescription("How far an item needs to be from the grav trap before it's picked up",
                 acceptableValues: new AcceptableValueRange<float>(2f, 10f)));
-
-            InitializeAllowedTypes();
         }
 
         private void InitializeAllowedTypes()
@@ -242,7 +234,8 @@ namespace ImprovedGravTrap
                     TechType.LavaLizardEgg,
                     TechType.LavaLizardEggUndiscovered,
                     TechType.GenericEgg,
-                    TechType.SeaTreaderPoop
+                    TechType.SeaTreaderPoop,
+                    TechType.StalkerTooth
                 }),
                 new TechTypeList("Creatures", techTypes:
                 new TechType[]
