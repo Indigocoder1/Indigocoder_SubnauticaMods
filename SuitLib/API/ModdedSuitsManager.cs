@@ -56,5 +56,22 @@ namespace SuitLib
                 this.stillsuitWaterIncreaseMultiplier = stillsuitWaterIncreaseMultiplier;
             }
         }
+
+        public static Dictionary<VanillaModel, TechType> suitModelTechTypes = new Dictionary<VanillaModel, TechType>
+        {
+            { VanillaModel.None, TechType.None },
+            { VanillaModel.Dive, TechType.DiveSuit },
+            { VanillaModel.Radiation, TechType.RadiationSuit },
+            { VanillaModel.Reinforced, TechType.ReinforcedDiveSuit },
+            { VanillaModel.WaterFiltration, TechType.WaterFiltrationSuit},
+        };
+
+        public static Dictionary<VanillaModel, TechType> gloveModelTechTypes = new Dictionary<VanillaModel, TechType>
+        {
+            { VanillaModel.None, TechType.None },
+            { VanillaModel.Dive, TechType.DiveSuit },
+            { VanillaModel.Radiation, TechType.RadiationGloves },
+            { VanillaModel.Reinforced, TechType.ReinforcedGloves }
+        };
     }
 }

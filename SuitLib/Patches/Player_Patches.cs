@@ -222,11 +222,19 @@ namespace SuitLib.Patches
 
         private static void SetSuitTextures(TechType typeInSuitSlot, bool wearingModdedSuit)
         {
+            moddedSuitsList.ForEach(_ =>
+            {
+                if(_.jsonSuit)
+                {
+                    wearingModdedSuit = true;
+                }
+            });
+
             if (wearingModdedSuit)
             {
                 foreach (ModdedSuit suit in ModdedSuitsManager.moddedSuitsList)
                 {
-                    if (!WearingItem(suit.itemTechType, "Body") && suit.itemTechType != TechType.None)
+                    if (!WearingItem(suit.itemTechType, "Body"))
                     {
                         continue;
                     }
@@ -288,11 +296,19 @@ namespace SuitLib.Patches
 
         private static void SetGloveTextures(TechType typeInGlovesSlot, bool wearingModdedGloves)
         {
+            moddedGlovesList.ForEach(_ =>
+            {
+                if (_.jsonGloves)
+                {
+                    wearingModdedGloves = true;
+                }
+            });
+
             if (wearingModdedGloves)
             {
                 foreach (ModdedGloves gloves in ModdedSuitsManager.moddedGlovesList)
                 {
-                    if (!WearingItem(gloves.itemTechType, "Gloves") && gloves.itemTechType != TechType.None)
+                    if (!WearingItem(gloves.itemTechType, "Gloves"))
                     {
                         continue;
                     }
