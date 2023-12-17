@@ -52,8 +52,10 @@ namespace WarpStabilizationSuit.Items
             {
                 var renderer = gameObject.GetComponentInChildren<Renderer>();
 
-                renderer.materials[0].color = WarpColor;
-                renderer.materials[1].color = WarpColor;
+                renderer.materials[0].SetTexture("_MainTex", Main_Plugin.warpSuitMain);
+                renderer.materials[0].SetTexture(ShaderPropertyID._SpecTex, Main_Plugin.warpSuitSpec);
+                renderer.materials[1].SetTexture("_MainTex", Main_Plugin.warpArmsMain);
+                renderer.materials[1].SetTexture(ShaderPropertyID._SpecTex, Main_Plugin.warpArmsSpec);
             };
 
             bool usingHardRecipe = Main_Plugin.UseHardRecipe.Value;

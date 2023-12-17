@@ -24,20 +24,15 @@ namespace WarpStabilizationSuit.Items
 
             var prefab = new CustomPrefab(prefabInfo);
 
-            Texture armsDiffuse = ImageUtils.LoadTextureFromFile(Main_Plugin.AssetsFolderPath + "/Textures/player_02_reinforced_suit_01_arms_WARP.png");
-            Texture armsSpecular = ImageUtils.LoadTextureFromFile(Main_Plugin.AssetsFolderPath + "/Textures/player_02_reinforced_suit_01_arms_spec_WARP.png");
-
             CloneTemplate cloneTemplate = new CloneTemplate(prefabInfo, TechType.ReinforcedGloves);
             cloneTemplate.ModifyPrefab += gameObject =>
             {
-                Main_Plugin.logger.LogInfo("Modify prefab called");
                 Renderer renderer = gameObject.GetComponentInChildren<Renderer>();
-                renderer.material.SetTexture("_MainTex", armsDiffuse);
-                renderer.material.SetTexture(ShaderPropertyID._SpecTex, armsSpecular);
+                renderer.material.SetTexture("_MainTex", Main_Plugin.warpArmsMain);
+                renderer.material.SetTexture(ShaderPropertyID._SpecTex, Main_Plugin.warpArmsSpec);
             };
 
             prefab.SetGameObject(cloneTemplate);
-            prefab.SetUnlock(TechType.Warper).WithAnalysisTech(null);
             prefab.SetEquipment(EquipmentType.Gloves);
 
             prefab.Register();

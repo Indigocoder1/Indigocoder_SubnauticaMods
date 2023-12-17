@@ -25,6 +25,10 @@ namespace WarpStabilizationSuit
         public static ManualLogSource logger;
 
         public static string AssetsFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
+        internal static Texture2D warpSuitMain;
+        internal static Texture2D warpSuitSpec;
+        internal static Texture2D warpArmsMain;
+        internal static Texture2D warpArmsSpec;
 
         private static readonly Harmony harmony = new Harmony(myGUID);
 
@@ -54,19 +58,19 @@ namespace WarpStabilizationSuit
         private void InitializeSuits()
         {
             string suitFilePath = AssetsFolderPath + "/Textures/player_02_reinforced_suit_01_body_WARP.png";
-            Texture2D warpSuitTexture = ImageUtils.LoadTextureFromFile(suitFilePath);
+            warpSuitMain = ImageUtils.LoadTextureFromFile(suitFilePath);
 
             string suitSpecFilePath = AssetsFolderPath + "/Textures/player_02_reinforced_suit_01_body_spec_WARP.png";
-            Texture2D warpSuitSpec = ImageUtils.LoadTextureFromFile(suitSpecFilePath);
+            warpSuitSpec = ImageUtils.LoadTextureFromFile(suitSpecFilePath);
 
             string armsFilePath = AssetsFolderPath + "/Textures/player_02_reinforced_suit_01_arms_WARP.png";
-            Texture2D warpArmsTexture = ImageUtils.LoadTextureFromFile(armsFilePath);
+            warpArmsMain = ImageUtils.LoadTextureFromFile(armsFilePath);
 
             string armsSpecFilePath = AssetsFolderPath + "/Textures/player_02_reinforced_suit_01_arms_spec_WARP.png";
-            Texture2D warpArmsSpec = ImageUtils.LoadTextureFromFile(armsSpecFilePath);
+            warpArmsSpec = ImageUtils.LoadTextureFromFile(armsSpecFilePath);
 
-            Dictionary<string, Texture2D> suitKeyValuePairs = new Dictionary<string, Texture2D> { { "_MainTex", warpSuitTexture }, { "_SpecTex", warpSuitSpec } };
-            Dictionary<string, Texture2D> armKeyValuePairs = new Dictionary<string, Texture2D> { { "_MainTex", warpArmsTexture }, { "_SpecTex", warpArmsSpec } };
+            Dictionary<string, Texture2D> suitKeyValuePairs = new Dictionary<string, Texture2D> { { "_MainTex", warpSuitMain }, { "_SpecTex", warpSuitSpec } };
+            Dictionary<string, Texture2D> armKeyValuePairs = new Dictionary<string, Texture2D> { { "_MainTex", warpArmsMain }, { "_SpecTex", warpArmsSpec } };
 
             ModdedSuit warpSuit = new ModdedSuit(suitKeyValuePairs, armKeyValuePairs, ModdedSuitsManager.VanillaModel.Reinforced, Suit_Craftable.techType,
                 ModdedSuitsManager.Modifications.Reinforced);
