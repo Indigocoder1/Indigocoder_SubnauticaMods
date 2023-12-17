@@ -44,7 +44,8 @@
     <Reference Include="BepInEx">
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
-    <Reference Include="Nautilus">
+    <Reference Include="Nautilus, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\plugins\Nautilus\Nautilus.dll</HintPath>
     </Reference>
     <Reference Include="SuitLib">
@@ -73,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Items\Gloves_Craftable.cs" />
+    <Compile Include="Patches\Player.cs" />
     <Compile Include="Patches\Player_Patches.cs" />
     <Compile Include="Main_Plugin.cs" />
     <Compile Include="Patches\EncySetup.cs" />

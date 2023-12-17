@@ -10,6 +10,7 @@ using SuitLib;
 using Nautilus.Utility;
 using UnityEngine;
 using System.Collections.Generic;
+using Nautilus.Handlers;
 
 namespace WarpStabilizationSuit
 {
@@ -20,7 +21,7 @@ namespace WarpStabilizationSuit
     {
         private const string myGUID = "Indigocoder.WarpStabilizationSuit";
         private const string pluginName = "Warp Stabilization Suit";
-        private const string versionString = "1.3.5";
+        private const string versionString = "1.3.7";
         public static ManualLogSource logger;
 
         public static string AssetsFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
@@ -30,28 +31,21 @@ namespace WarpStabilizationSuit
         public static ConfigEntry<bool> UseHardRecipe;
         public static bool TabsNeeded;
 
-        private void Start()
+        private void Awake()
         {
             logger = Logger;
 
             PiracyDetector.TryFindPiracy();
 
             harmony.PatchAll();
+
             UseHardRecipe = Config.Bind("Warp Stabilization Suit", "Use harder recipe", false);
-
             new Suit_ModOptions();
-
-            /*
-            Dictionary<string, PluginInfo> keys = Chainloader.PluginInfos;
-            if (keys.ContainsKey("com.ramune.SeaglideUpgrades") || keys.ContainsKey("com.ramune.OrganizedWorkbench") || keys.ContainsKey("com.ramune.LithiumBatteries"))
-            {
-                CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, "Other", "Other", SpriteManager.Get(TechType.Titanium));
-                TabsNeeded = true;
-            }
-            */
 
             Gloves_Craftable.Patch();
             Suit_Craftable.Patch();
+            KnownTechHandler.SetAnalysisTechEntry(TechType.Warper, new List<TechType> { Suit_Craftable.techType, Gloves_Craftable.techType });
+
             InitializeSuits();
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");

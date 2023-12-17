@@ -24,9 +24,9 @@ namespace WarpStabilizationSuit.Items
                     new Ingredient(TechType.ReinforcedDiveSuit, 1),
                             new Ingredient(TechType.ReinforcedGloves, 1),
                             new Ingredient(usingHardRecipe ? TechType.AramidFibers : TechType.Polyaniline, usingHardRecipe ? 4 : 2),
-                            new Ingredient(usingHardRecipe ? TechType.Lithium : TechType.AdvancedWiringKit, usingHardRecipe ? 4 : 1),
-                            new Ingredient(usingHardRecipe ? TechType.AdvancedWiringKit : TechType.Nickel, 2),
-                            new Ingredient(TechType.PrecursorIonCrystal, 2)
+                            new Ingredient(usingHardRecipe ? TechType.Lithium : TechType.WiringKit, usingHardRecipe ? 4 : 1),
+                            new Ingredient(usingHardRecipe ? TechType.AdvancedWiringKit : TechType.Aerogel, 2),
+                            new Ingredient(TechType.PrecursorIonCrystal, usingHardRecipe ? 2 : 1)
                 };
             }
             private set
@@ -68,20 +68,13 @@ namespace WarpStabilizationSuit.Items
             };
 
             prefab.SetGameObject(cloneTemplate);
-            //prefab.SetUnlock(TechType.PrecursorPrisonIonGenerator);
+            prefab.SetUnlock(TechType.Warper).WithAnalysisTech(null);
             prefab.SetEquipment(EquipmentType.Body);
-
+            
             prefab.SetRecipe(recipe)
                 .WithFabricatorType(CraftTree.Type.Workbench)
+                .WithStepsToFabricatorTab("ModdedWorkbench")
                 .WithCraftingTime(6f);
-
-            if (Main_Plugin.TabsNeeded)
-            {
-                prefab.SetRecipe(recipe)
-                    .WithFabricatorType(CraftTree.Type.Workbench)
-                    .WithStepsToFabricatorTab("Other")
-                    .WithCraftingTime(6);
-            }
 
             prefab.SetPdaGroupCategory(TechGroup.Workbench, TechCategory.Workbench);
 
