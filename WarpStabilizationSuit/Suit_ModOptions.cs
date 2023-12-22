@@ -20,15 +20,7 @@ namespace WarpStabilizationSuit
         private void OnHarderRecipeOptionChanged(object sender, ToggleChangedEventArgs e)
         {
             Main_Plugin.UseHardRecipe.Value = e.Value;
-            RecipeData recipe = new RecipeData()
-            {
-                craftAmount = 1,
-                Ingredients = Suit_Craftable.Ingredients,
-                LinkedItems =
-                {
-                    Gloves_Craftable.techType
-                }
-            };
+            RecipeData recipe = e.Value ? Main_Plugin.hardSuitRecipe : Main_Plugin.easySuitRecipe;
             CraftDataHandler.SetRecipeData(Suit_Craftable.techType, recipe);
         }
     }

@@ -11,6 +11,9 @@ using Nautilus.Utility;
 using UnityEngine;
 using System.Collections.Generic;
 using Nautilus.Handlers;
+using Nautilus.Crafting;
+using Nautilus.Json.Converters;
+using Newtonsoft.Json;
 
 namespace WarpStabilizationSuit
 {
@@ -21,10 +24,15 @@ namespace WarpStabilizationSuit
     {
         private const string myGUID = "Indigocoder.WarpStabilizationSuit";
         private const string pluginName = "Warp Stabilization Suit";
-        private const string versionString = "1.3.7";
+        private const string versionString = "1.3.8";
         public static ManualLogSource logger;
 
         public static string AssetsFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
+        public static string RecipesFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Recipes");
+
+        public static RecipeData easySuitRecipe;
+        public static RecipeData hardSuitRecipe;
+
         internal static Texture2D warpSuitMain;
         internal static Texture2D warpSuitSpec;
         internal static Texture2D warpArmsMain;
@@ -47,6 +55,9 @@ namespace WarpStabilizationSuit
             new Suit_ModOptions();
 
             Gloves_Craftable.Patch();
+            easySuitRecipe = GetRecipeFromJson(Path.Combine(RecipesFolderPath, "EasySuitRecipe.json"));
+            hardSuitRecipe = GetRecipeFromJson(Path.Combine(RecipesFolderPath, "HardSuitRecipe.json"));
+
             Suit_Craftable.Patch();
             KnownTechHandler.SetAnalysisTechEntry(TechType.Warper, new List<TechType> { Suit_Craftable.techType, Gloves_Craftable.techType });
 
@@ -79,6 +90,12 @@ namespace WarpStabilizationSuit
 
             ModdedSuitsManager.AddModdedSuit(warpSuit);
             ModdedSuitsManager.AddModdedGloves(warpGloves);
+        }
+
+        private static RecipeData GetRecipeFromJson(string path)
+        {
+            var content = File.ReadAllText(path);
+            return JsonConvert.DeserializeObject<RecipeData>(content, new CustomEnumConverter());
         }
     }
 }

@@ -48,6 +48,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\plugins\Nautilus\Nautilus.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\StasisRifleFixMod_BepInEx\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="SuitLib">
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\plugins\SuitLib\SuitLib.dll</HintPath>
     </Reference>
@@ -84,6 +87,10 @@
     <Compile Include="Patches\WarpBall_Patch.cs" />
     <Compile Include="Patches\Warper_Patch.cs" />
     <Compile Include="Suit_ModOptions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="..\IndigocoderLib\IndigocoderLib.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
