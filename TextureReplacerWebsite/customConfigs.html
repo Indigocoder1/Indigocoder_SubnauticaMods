@@ -66,9 +66,8 @@ By default all textures are always loaded. This value is only useful if variatio
 <font color=#1988bf>variationChance</font> - The chance from 0 to 1 that the texture will be loaded.
 This is only useful if <font color=#1988bf>isVariation</font> is true
 
-<font color=#1988bf>linkedConfigNames</font> - A list of <font color=#1988bf>configNames</font> that can link 2 variant configs together.
-Example: If you have 2 variants, config 1 and config 2, and you want both to be loaded together,
-you have to put each other's <font color=#1988bf>configName</font> in the <font color="#1988bf">linkedConfigNames</font> list
+<font color=#1988bf>linkedConfigNames</font> - This is deprecated as of Texture Replacer version 1.1.1. It used to allow different variation configs to be linked together by their config names.
+This is now done automatically but checks similar classIDs.
     </pre>
 <div class="top-border">
     All parts of the config follow Json formatting, so when adding new items to a list you must add a comma at the end of the previous item

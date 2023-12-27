@@ -33,7 +33,6 @@ var rendererHierarchyPathField = document.getElementById("rendererHierarchyPath"
 var textureNameField = document.getElementById("textureName");
 var isVariationToggle = document.getElementById("isVariation");
 var variationChanceField = document.getElementById("variationChance");
-var linkedConfigNamesForm = document.getElementById("names");
 
 var triedToDelete;
 
@@ -61,33 +60,10 @@ function updateConfigNameList(newConfig, adding, index = 0)
         listItem = document.createElement("option");
         listItem.text = newConfig.configName;
         listItem.value = newConfig.configName;
-        linkedConfigNamesForm.appendChild(listItem);
-
-    }
-    else
-    {
-        listItem = linkedConfigNamesForm.options[index];
-        listItem.text = newConfig.configName;
-        listItem.value = newConfig.configName;
+        //linkedConfigNamesForm.appendChild(listItem);
     }
 
     triedToDelete = false;
-}
-
-function removeLinkedConfigName(linkedConfigName)
-{
-    if(!linkedConfigNamesForm)
-    {
-        return;
-    }
-
-    for(let i = 0; i < linkedConfigNamesForm.length; i++)
-    {
-        if(linkedConfigNamesForm[i].value == linkedConfigName)
-        {
-            linkedConfigNamesForm[i].remove();
-        }
-    }
 }
 
 function onVariationChange()
@@ -107,23 +83,12 @@ function newConfigItem()
     var newConfig = new Config("", null, "", "", "", "", false, -1, "");
 
     configList[configItemsForm.value] = newConfig;
-
-    linkedConfigNamesForm.disabled = false;
 }
 
 function saveToConfig()
 {
     var linkedConfigsArray = [];
-    var options = linkedConfigNamesForm.options;
     let currentArrayIndex = 0;
-    for(let i = 0; i < options.length; i++)
-    {
-       if(options[i].selected)
-       {
-            linkedConfigsArray[currentArrayIndex] = options[i].value;
-            currentArrayIndex++;
-       }
-    }
 
     var newConfig = new Config(configNameField.value, Math.round(materialIndexField.value), fileNameField.value,
     prefabclassIDField.value, rendererHierarchyPathField.value, textureNameField.value, isVariationToggle.value=="on"?false:true,
@@ -134,16 +99,11 @@ function saveToConfig()
     configList[configItemsForm.value - 1] = newConfig;
 
     var index = configItemsForm.value - 1;
-    if(configItemsForm.options[index].innerText != configNameField.value)
-    {
-        removeLinkedConfigName(configItemsForm.options[index].innerText);
-    }
 
     console.log(triedToDelete);
 
     configItemsForm.options[index].innerText = configNameField.value;
 
-    linkedConfigNamesForm.disabled = false;
     updateConfigNameList(newConfig, alreadyHasConfig == undefined || alreadyHasConfig == false, index);
     alert("Config saved!");
 }
@@ -154,7 +114,6 @@ function deleteConfigItem()
     if(index != 0)
     {
         configItemsForm.options[index].remove();
-        linkedConfigNamesForm.options[index].remove();
     }
     else
     {
