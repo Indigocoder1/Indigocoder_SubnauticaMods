@@ -66,7 +66,7 @@ namespace TextureReplacer
             {
                 Main.logger.LogInfo($"Loading config {configData.configName}");
             }
-
+            
             IPrefabRequest request = PrefabDatabase.GetPrefabAsync(configData.prefabClassID);
 
             yield return request;
