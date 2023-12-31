@@ -194,12 +194,12 @@ namespace TextureReplacer
                     continue;
                 }
 
-                if (item.prefabClassID == configData.prefabClassID)
+                if (item.linkedConfigNames.Contains(configData.configName))
                 {
                     item.variationAccepted = true;
                 }
 
-                if (item.linkedConfigNames.Contains(configData.configName))
+                if (item.prefabClassID == configData.prefabClassID && item.linkedConfigNames.Count == 0 && configData.linkedConfigNames.Count == 0)
                 {
                     item.variationAccepted = true;
                 }
