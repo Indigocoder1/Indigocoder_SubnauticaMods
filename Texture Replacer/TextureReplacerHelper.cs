@@ -198,6 +198,11 @@ namespace TextureReplacer
                 {
                     item.variationAccepted = true;
                 }
+
+                if (item.linkedConfigNames.Contains(configData.configName))
+                {
+                    item.variationAccepted = true;
+                }
             }
         }
     }
