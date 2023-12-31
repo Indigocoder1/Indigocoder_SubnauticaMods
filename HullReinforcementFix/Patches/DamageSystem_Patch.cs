@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using HullReinforcementFix.Craftables;
 using UnityEngine;
-using static VFXParticlesPool;
 
 namespace HullReinforcementFix
 {
@@ -33,9 +32,14 @@ namespace HullReinforcementFix
                 float mk2Damage = Mathf.Max(0, 1f / Main_Plugin.MK2DamageReductionMultiplier.Value * Mathf.Pow(0.85f, mk2HullModuleCount) - 0.2f);
                 float mk3Damage = Mathf.Max(0, 1f / Main_Plugin.MK3DamageReductionMultiplier.Value * Mathf.Pow(0.8f, mk3HullModuleCount) - 0.2f);
 
-                mk1Damage = mk1HullModuleCount == 0 ? 1 : mk1Damage;
-                mk2Damage = mk2HullModuleCount == 0 ? 1 : mk2Damage;
-                mk3Damage = mk3HullModuleCount == 0 ? 1 : mk3Damage;
+                if(mk1HullModuleCount + mk2HullModuleCount + mk3HullModuleCount == 0)
+                {
+                    return;
+                }
+
+                mk1Damage = mk1HullModuleCount == 0 ? 0 : mk1Damage;
+                mk2Damage = mk2HullModuleCount == 0 ? 0 : mk2Damage;
+                mk3Damage = mk3HullModuleCount == 0 ? 0 : mk3Damage;
 
                 float reducedDamage = 0;
                 if ((mk1HullModuleCount + mk2HullModuleCount + mk3HullModuleCount) != 0)

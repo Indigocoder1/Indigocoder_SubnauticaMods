@@ -28,14 +28,11 @@ namespace HullReinforcementFix.Patches
             float mk2DamageFraction = mk2Count > 0 ? 0.4f * Mathf.Pow(0.55f, mk2Count) : 0;
             float mk3DamageFraction = mk3Count > 0 ? 0.3f * Mathf.Pow(0.3f, mk3Count) : 0;
 
-            float newDamageFraction = 0;
+            float newDamageFraction = originalDamageFraction;
+
             if ((mk2Count + mk3Count) != 0)
             {
                 newDamageFraction = (mk2DamageFraction + mk3DamageFraction) / (mk2Count + mk3Count);
-            }
-            else
-            {
-                newDamageFraction = originalDamageFraction;
             }
 
             dealDamageOnImpact.mirroredSelfDamageFraction = newDamageFraction;
