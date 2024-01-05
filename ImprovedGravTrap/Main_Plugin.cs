@@ -15,7 +15,7 @@ namespace ImprovedGravTrap
     {
         private const string myGUID = "Indigocoder.ImprovedGravTrap";
         private const string pluginName = "Improved Grav Trap";
-        private const string versionString = "1.1.3";
+        private const string versionString = "1.1.4";
 
         private static readonly string ConfigFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "ImprovedGravTrap.json");
 
@@ -78,17 +78,17 @@ namespace ImprovedGravTrap
                 new ConfigDescription("The max attracted objects of the improved grav trap",
                 acceptableValues: new AcceptableValueRange<int>(12, 30)));
 
-            GravTrapStorageWidth = Config.Bind("Improved Grav Trap", "Enhanced grav trap storage width", 4,
+            GravTrapStorageWidth = Config.Bind("Improved Grav Trap", "Enhanced grav trap storage width", 6,
                 new ConfigDescription("How many units wide the storage is (Requires restart)", 
-                acceptableValues: new AcceptableValueRange<int>(2, 7)));
+                acceptableValues: new AcceptableValueRange<int>(2, 20)));
 
-            GravTrapStorageHeight = Config.Bind("Improved Grav Trap", "Enhanced grav trap storage height", 4,
+            GravTrapStorageHeight = Config.Bind("Improved Grav Trap", "Enhanced grav trap storage height", 6,
                 new ConfigDescription("How many units tall the storage is (Requires restart)", 
-                acceptableValues: new AcceptableValueRange<int>(2, 7)));
+                acceptableValues: new AcceptableValueRange<int>(2, 30)));
 
             GravStorageOpenDistance = Config.Bind("Improved Grav Trap", "Storage open distance", 4f, 
                 new ConfigDescription("How far you need to be before you can open the storage",
-                acceptableValues: new AcceptableValueRange<float>(2f, 6f)));
+                acceptableValues: new AcceptableValueRange<float>(3f, 12f)));
 
             GravStoragePickupDistance = Config.Bind("Improved Grav Trap", "Enhanced grav trap pickup distance", 5f, 
                 new ConfigDescription("How far an item needs to be from the grav trap before it's picked up",

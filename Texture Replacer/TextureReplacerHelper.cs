@@ -198,7 +198,7 @@ namespace TextureReplacer
                 {
                     item.variationAccepted = true;
                 }
-
+                
                 if (item.prefabClassID == configData.prefabClassID && item.linkedConfigNames.Count == 0 && configData.linkedConfigNames.Count == 0)
                 {
                     item.variationAccepted = true;

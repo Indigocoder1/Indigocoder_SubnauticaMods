@@ -24,7 +24,7 @@ namespace ImprovedGravTrap.Monobehaviours
             Pickupable component = obj.GetComponent<Pickupable>();
             List<TechType> allowedTypes = Main_Plugin.AllowedTypes[techTypeListIndex].techTypes;
 
-            if(techType == TechType.EscapePod)
+            if(techType == TechType.EscapePod || techType == TechType.Player)
             {
                 return false;
             }
@@ -43,7 +43,7 @@ namespace ImprovedGravTrap.Monobehaviours
             return result;
         }
 
-        private TechType GetObjectTechType(GameObject obj)
+        public TechType GetObjectTechType(GameObject obj)
         {
 			if (obj.GetComponentInParent<SinkingGroundChunk>() || obj.name.Contains("TreaderShale"))
 				return TechType.ShaleChunk;
