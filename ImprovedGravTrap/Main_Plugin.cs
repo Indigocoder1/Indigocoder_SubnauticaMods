@@ -3,7 +3,6 @@ using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
-using Nautilus.Handlers;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -11,6 +10,7 @@ using UnityEngine;
 namespace ImprovedGravTrap
 {
     [BepInPlugin(myGUID, pluginName, versionString)]
+    [BepInDependency("com.snmodding.nautilus")]
     public class Main_Plugin : BaseUnityPlugin
     {
         private const string myGUID = "Indigocoder.ImprovedGravTrap";
@@ -34,7 +34,7 @@ namespace ImprovedGravTrap
         public static List<TechTypeList> AllowedTypes;
 
         public static ManualLogSource logger;
-        public static bool TabsNeeded;
+        public static bool GravTrapStorageLoaded;
 
         private static readonly Harmony harmony = new Harmony(myGUID);
 
@@ -46,6 +46,11 @@ namespace ImprovedGravTrap
             InitializeAllowedTypes();
 
             new GravTrap_ModOptions();
+
+            if(Chainloader.PluginInfos.ContainsKey("GravTrapStorage"))
+            {
+                GravTrapStorageLoaded = true;
+            }
 
             ImprovedTrap_Craftable.Patch();
 

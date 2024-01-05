@@ -86,14 +86,6 @@ namespace ImprovedGravTrap
                 .WithFabricatorType(CraftTree.Type.Workbench)
                 .WithCraftingTime(5f);
 
-            if (Main_Plugin.TabsNeeded)
-            {
-                prefab.SetRecipe(recipe)
-                    .WithFabricatorType(CraftTree.Type.Workbench)
-                    .WithStepsToFabricatorTab("Other")
-                    .WithCraftingTime(5f);
-            }
-
             prefab.SetPdaGroupCategory(TechGroup.Workbench, TechCategory.Workbench);
 
             prefab.Register();

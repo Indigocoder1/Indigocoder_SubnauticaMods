@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 
 namespace ImprovedGravTrap.Patches
@@ -53,6 +54,11 @@ namespace ImprovedGravTrap.Patches
 
             bool inRange = Vector3.Distance(__instance.transform.position, Player.main.transform.position) <= Main_Plugin.GravStorageOpenDistance.Value;
             StorageContainer container = __instance.GetComponentInChildren<StorageContainer>();
+
+            if(Main_Plugin.GravTrapStorageLoaded)
+            {
+                return;
+            }
 
             if (inRange && Input.GetKeyDown(Main_Plugin.OpenStorageKey.Value))
             {
@@ -106,12 +112,12 @@ namespace ImprovedGravTrap.Patches
             {
                 Rigidbody rb = bufferedAttractables[__instance][i];
                 Pickupable pickupable = rb.GetComponent<Pickupable>();
-                if(!pickupable)
+                if (!pickupable)
                 {
                     continue;
                 }
 
-                if(container.container.HasRoomFor(pickupable))
+                if (container.container.HasRoomFor(pickupable))
                 {
                     __instance.AddAttractable(rb);
                     bufferedAttractables[__instance].RemoveAt(i);
@@ -154,11 +160,6 @@ namespace ImprovedGravTrap.Patches
                 .Advance(1)
                 .InsertAndAdvance(new CodeInstruction(OpCodes.Ldarg_0))
                 .SetInstruction(Transpilers.EmitDelegate<Func<List<Rigidbody> ,Gravsphere, int>>(GetAllowedIterations));   
-
-            foreach (var inst in newInstructions.InstructionEnumeration())
-            {
-                Main_Plugin.logger.LogInfo(inst.ToString());
-            }
 
             return newInstructions.InstructionEnumeration();
         }
@@ -242,6 +243,11 @@ namespace ImprovedGravTrap.Patches
         [HarmonyPatch(nameof(Gravsphere.OnTriggerEnter)), HarmonyPostfix]
         private static void TriggerEnterPostfix(Gravsphere __instance, Collider collider)
         {
+            if(Main_Plugin.GravTrapStorageLoaded)
+            {
+                return;
+            }
+
             if(!__instance.TryGetComponent<EnhancedGravSphere>(out _))
             {
                 return;
