@@ -7,6 +7,7 @@ using static TextureReplacer.Main;
 using Random = UnityEngine.Random;
 using System;
 using static TextureReplacer.CustomTextureReplacer;
+using JetBrains.Annotations;
 
 namespace TextureReplacer
 {
@@ -100,11 +101,11 @@ namespace TextureReplacer
                                 logger.LogError($"Error parsing \"{configData.textureName}\"! Error is: \n{e.Message}");
                             }
                         }
-                        HandleCustomTextureNames(material, texture, extractedValue, customTextureNames[split[0]]);
+                        HandleCustomTextureNames(material, texture, extractedValue, split[0]);
                     }
                     else if(customTextureNames.ContainsKey(configData.textureName))
                     {
-                        HandleCustomTextureNames(material, texture, 0.6f, customTextureNames[configData.textureName]);
+                        HandleCustomTextureNames(material, texture, 0.6f, configData.textureName);
                     }
                     else
                     {
@@ -116,9 +117,10 @@ namespace TextureReplacer
             }
         }
 
-        private void HandleCustomTextureNames(Material material, Texture2D texture, float extractedValue, TextureType type)
+        private void HandleCustomTextureNames(Material material, Texture2D texture, float extractedValue, string key)
         {
-            if(Main.WriteLogs.Value)
+            TextureType type = Main.customTextureNames[key];
+            if (Main.WriteLogs.Value)
             {
                 Main.logger.LogInfo($"Handling custom texture name for type {type.ToString()}");
             }
@@ -151,6 +153,9 @@ namespace TextureReplacer
                     {
                         material.SetColor("_EmissionColor", averageColor);
                     }
+                    break;
+                case TextureType.Value:
+                    material.SetFloat(key, extractedValue);
                     break;
             }
         }
