@@ -19,7 +19,7 @@ namespace CyclopsBeaconDeployer.Patches
                 return;
             }
 
-            if(Utilities.GetNameWithCloneRemoved(__instance.currentSub.transform.name) != "Cyclops-MainPrefab")
+            if(!__instance.currentSub.isCyclops)
             {
                 return;
             }

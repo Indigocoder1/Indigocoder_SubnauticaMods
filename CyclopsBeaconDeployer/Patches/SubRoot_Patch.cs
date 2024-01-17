@@ -16,34 +16,36 @@ namespace CyclopsBeaconDeployer.Patches
         [HarmonyPatch(nameof(SubRoot.Start)), HarmonyPostfix]
         private static void Start_Patch(SubRoot __instance)
         {
-            if(Utilities.GetNameWithCloneRemoved(__instance.name) == "Cyclops-MainPrefab")
+            if(!__instance.isCyclops)
             {
-                Transform abiityTransform = __instance.transform.Find("HelmHUD/HelmHUDVisuals/Canvas_RightHUD/Abilities");
-                GameObject inputGO = GameObject.Instantiate(Main_Plugin.nameInputFieldGO, abiityTransform);
-                inputGO.transform.localPosition = new Vector3(200, 620, 0);
+                return;
+            }
 
-                /*
-                Transform cameraButton = abiityTransform.Find("Button_Camera");
-                GameObject beaconLaunchGO = GameObject.Instantiate(cameraButton.gameObject, abiityTransform);
-                beaconLaunchGO.transform.localPosition = new Vector3(350, 432, 0);
-                GameObject.Destroy(beaconLaunchGO.GetComponent<CyclopsExternalCamsButton>());
-                CyclopsDecoyLaunchButton decoyButton = abiityTransform.Find("Button_Decoy").GetComponent<CyclopsDecoyLaunchButton>();
-                beaconLaunchGO.SetActive(false);
-                beaconLaunchGO.AddComponent<CyclopsDecoyLaunchButton>().CopyComponent(decoyButton);
-                beaconLaunchGO.SetActive(true);
-                */
+            Transform abiityTransform = __instance.transform.Find("HelmHUD/HelmHUDVisuals/Canvas_RightHUD/Abilities");
+            GameObject inputGO = GameObject.Instantiate(Main_Plugin.nameInputFieldGO, abiityTransform);
+            inputGO.transform.localPosition = new Vector3(200, 620, 0);
 
-                TMP_InputField inputField = inputGO.transform.Find("InputField (TMP)").gameObject.GetComponent<TMP_InputField>();
-                if(!inputFields.ContainsKey(__instance))
-                {
-                    inputFields.Add(__instance, inputField);
-                }
+            /*
+            Transform cameraButton = abiityTransform.Find("Button_Camera");
+            GameObject beaconLaunchGO = GameObject.Instantiate(cameraButton.gameObject, abiityTransform);
+            beaconLaunchGO.transform.localPosition = new Vector3(350, 432, 0);
+            GameObject.Destroy(beaconLaunchGO.GetComponent<CyclopsExternalCamsButton>());
+            CyclopsDecoyLaunchButton decoyButton = abiityTransform.Find("Button_Decoy").GetComponent<CyclopsDecoyLaunchButton>();
+            beaconLaunchGO.SetActive(false);
+            beaconLaunchGO.AddComponent<CyclopsDecoyLaunchButton>().CopyComponent(decoyButton);
+            beaconLaunchGO.SetActive(true);
+            */
 
-                TMP_Text[] text = inputGO.GetComponentsInChildren<TMP_Text>();
-                foreach (TMP_Text item in text)
-                {
-                    item.font = FontUtils.Aller_Rg;
-                }
+            TMP_InputField inputField = inputGO.transform.Find("InputField (TMP)").gameObject.GetComponent<TMP_InputField>();
+            if (!inputFields.ContainsKey(__instance))
+            {
+                inputFields.Add(__instance, inputField);
+            }
+
+            TMP_Text[] text = inputGO.GetComponentsInChildren<TMP_Text>();
+            foreach (TMP_Text item in text)
+            {
+                item.font = FontUtils.Aller_Rg;
             }
         }
     }
