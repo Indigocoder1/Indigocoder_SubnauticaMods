@@ -1,6 +1,8 @@
 ﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using UnityEngine;
 using static SuitLib.ModdedSuitsManager;
 using static TechStringCache;
@@ -177,6 +179,36 @@ namespace SuitLib.Patches
             }
         }
 
+        [HarmonyPatch(nameof(Player.UpdateReinforcedSuit)), HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> UpdateReinforcedSuit_Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            CodeMatch suitMatch = new CodeMatch(i => i.opcode == OpCodes.Ldc_R4 && ((float)i.operand == 15f));
+            CodeMatch glovesMatch = new CodeMatch(i => i.opcode == OpCodes.Ldc_R4 && ((float)i.operand == 6f));
+
+            var newInstructions = new CodeMatcher(instructions)
+                .MatchForward(false, suitMatch)
+                .SetInstruction(Transpilers.EmitDelegate<Func<float>>(GetSuitTemp))
+                .MatchForward(false, glovesMatch)
+                .SetInstruction(Transpilers.EmitDelegate<Func<float>>(GetGlovesTemp));
+                
+
+            return newInstructions.InstructionEnumeration();
+        }
+
+        public static float GetSuitTemp()
+        {
+            TechType typeInBodySlot = playerEquipment.GetTechTypeInSlot("Body");
+            ModdedSuit suitInSlot = moddedSuitsList.FirstOrDefault(_ => _.itemTechType == typeInBodySlot);
+            return suitInSlot.tempValue;
+        }
+
+        public static float GetGlovesTemp()
+        {
+            TechType typeInGlovesSlot = playerEquipment.GetTechTypeInSlot("Gloves");
+            ModdedGloves glovesInSlot = moddedGlovesList.FirstOrDefault(_ => _.itemTechType == typeInGlovesSlot);
+            return glovesInSlot.tempValue;
+        }
+
         private static void SetGOsActive(TechType typeInBodySlot, TechType typeInGlovesSlot, bool wearingAnySuit, bool wearingAnyGloves)
         {
             if (wearingAnySuit)
@@ -232,19 +264,24 @@ namespace SuitLib.Patches
 
             if (wearingModdedSuit)
             {
-                foreach (ModdedSuit suit in ModdedSuitsManager.moddedSuitsList)
+                foreach (ModdedSuit suit in moddedSuitsList)
                 {
+                    Main.logger.LogInfo(suit.vanillaModel);
+
                     if (!WearingItem(suit.itemTechType, "Body"))
                     {
                         continue;
                     }
 
-                    Renderer modelRenderer = GetModel(suit.vanillaModel, true).GetComponent<Renderer>();
+                    GameObject model = GetModel(suit.vanillaModel, true);
+                    if (!model) continue;
+
+                    Renderer modelRenderer = model.GetComponent<Renderer>();
+                    
                     foreach (string key in suit.suitReplacementTexturePropertyPairs.Keys)
                     {
                         Texture2D moddedTex = suit.suitReplacementTexturePropertyPairs[key];
                         modelRenderer.materials[0].SetTexture(key, moddedTex);
-
                     }
 
                     foreach (string key in suit.armsReplacementTexturePropertyPairs.Keys)

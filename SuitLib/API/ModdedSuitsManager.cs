@@ -60,7 +60,7 @@ namespace SuitLib
         public static Dictionary<VanillaModel, TechType> suitModelTechTypes = new Dictionary<VanillaModel, TechType>
         {
             { VanillaModel.None, TechType.None },
-            { VanillaModel.Dive, TechType.DiveSuit },
+            { VanillaModel.Dive, TechType.None },
             { VanillaModel.Radiation, TechType.RadiationSuit },
             { VanillaModel.Reinforced, TechType.ReinforcedDiveSuit },
             { VanillaModel.WaterFiltration, TechType.WaterFiltrationSuit},
@@ -69,7 +69,7 @@ namespace SuitLib
         public static Dictionary<VanillaModel, TechType> gloveModelTechTypes = new Dictionary<VanillaModel, TechType>
         {
             { VanillaModel.None, TechType.None },
-            { VanillaModel.Dive, TechType.DiveSuit },
+            { VanillaModel.Dive, TechType.None },
             { VanillaModel.Radiation, TechType.RadiationGloves },
             { VanillaModel.Reinforced, TechType.ReinforcedGloves }
         };
