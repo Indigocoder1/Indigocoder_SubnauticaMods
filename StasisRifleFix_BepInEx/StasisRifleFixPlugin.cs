@@ -12,8 +12,8 @@ namespace StasisRifleFixMod_BepInEx
 
         private const string myGUID = "Indigocoder.StasisRifleFix";
         private const string pluginName = "Stasis Rifle Fix";
-        private const string versionString = "2.5.1";
-
+        private const string versionString = "2.5.2";
+        
         private static readonly Harmony harmony = new Harmony(myGUID);
 
         public static ManualLogSource logger;

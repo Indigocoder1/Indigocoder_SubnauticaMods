@@ -19,7 +19,7 @@ namespace StasisRifleFixMod_BepInEx
 
         private void FixedUpdate()
         {
-            if(!creature.liveMixin)
+            if (!creature.liveMixin)
             {
                 return;
             }
@@ -32,6 +32,16 @@ namespace StasisRifleFixMod_BepInEx
                 }
                 isFrozen = false;
             }
+        }
+
+        private void LateUpdate()
+        {
+            if (!isFrozen)
+            {
+                return;
+            }
+
+            creature.Aggression.Value = 0;
         }
 
         public void OnFreezeByStasisSphere()
@@ -50,10 +60,11 @@ namespace StasisRifleFixMod_BepInEx
 
         public void OnUnfreezeByStasisSphere()
         {
-            creature.Aggression.Value = previousAggression;
-            creature.GetAnimator().enabled = true;
-            creature.UpdateBehaviour(Time.time, Time.deltaTime);
             isFrozen = false;
+            creature.Aggression.Value = previousAggression;
+            if(creature.GetAnimator()) creature.GetAnimator().enabled = true;
+
+            creature.UpdateBehaviour(Time.time, Time.deltaTime);
 
             foreach (FMOD_CustomEmitter emitter in emitters)
             {
