@@ -18,6 +18,7 @@ namespace SuitLib
         /// <param name="suitReplacementTexturePropertyPairs">The texture name (like _MainTex) and the texture pairs for the suit (not the arms!)</param>
         /// <param name="vanillaModel">The tech type for the suit you're replacing (like reinforcedSuit)</param>
         /// <param name="itemTechType">The tech type of the moddedsuit</param>
+        /// <param name="tempValue">The temperature damage reduction for this suit</param>
         public ModdedSuit(Dictionary<string, Texture2D> suitReplacementTexturePropertyPairs, Dictionary<string, Texture2D> armsReplacementTexturePropertyPairs, 
             VanillaModel vanillaModel, TechType itemTechType, float tempValue = 15)
         {
@@ -38,6 +39,18 @@ namespace SuitLib
             this.modifications = modifications;
             this.stillsuitValues = modificationValues;
             this.tempValue = tempValue;
+        }
+
+        public ModdedSuit(ModdedSuit copyFrom)
+        {
+            this.suitReplacementTexturePropertyPairs = copyFrom.suitReplacementTexturePropertyPairs;
+            this.armsReplacementTexturePropertyPairs = copyFrom.armsReplacementTexturePropertyPairs;
+            this.vanillaModel = copyFrom.vanillaModel;
+            this.itemTechType = copyFrom.itemTechType;
+            this.modifications = copyFrom.modifications;
+            this.stillsuitValues = copyFrom.stillsuitValues;
+            this.tempValue = copyFrom.tempValue;
+            this.jsonSuit = copyFrom.jsonSuit;
         }
     }
 }

@@ -5,13 +5,14 @@ using System.Linq;
 using System.Reflection.Emit;
 using UnityEngine;
 using static SuitLib.ModdedSuitsManager;
-using static TechStringCache;
 
 namespace SuitLib.Patches
 {
     [HarmonyPatch(typeof(Player))]
     internal static class Player_Patches
     {
+        public static bool Initialized { get; private set; }
+
         private static Dictionary<string, Texture> diveSuitTextures = new Dictionary<string, Texture>();
         private static Dictionary<string, Texture> radiationSuitTextures = new Dictionary<string, Texture>();
         private static Dictionary<string, Texture> reinforcedSuitTextures = new Dictionary<string, Texture>();
@@ -38,8 +39,12 @@ namespace SuitLib.Patches
         private static void Start()
         {
             playerEquipment = Inventory.main.equipment;
+            if (Initialized) return;
+
             InitializeModelGOs();
             InitializeVanillaTextures();
+
+            Initialized = true;
         }
 
         private static void InitializeVanillaTextures()
@@ -199,6 +204,10 @@ namespace SuitLib.Patches
         {
             TechType typeInBodySlot = playerEquipment.GetTechTypeInSlot("Body");
             ModdedSuit suitInSlot = moddedSuitsList.FirstOrDefault(_ => _.itemTechType == typeInBodySlot);
+            if(suitInSlot == null)
+            {
+                return 15f;
+            }
             return suitInSlot.tempValue;
         }
 
@@ -206,6 +215,10 @@ namespace SuitLib.Patches
         {
             TechType typeInGlovesSlot = playerEquipment.GetTechTypeInSlot("Gloves");
             ModdedGloves glovesInSlot = moddedGlovesList.FirstOrDefault(_ => _.itemTechType == typeInGlovesSlot);
+            if(glovesInSlot == null)
+            {
+                return 6f;
+            }
             return glovesInSlot.tempValue;
         }
 
@@ -266,8 +279,6 @@ namespace SuitLib.Patches
             {
                 foreach (ModdedSuit suit in moddedSuitsList)
                 {
-                    Main.logger.LogInfo(suit.vanillaModel);
-
                     if (!WearingItem(suit.itemTechType, "Body"))
                     {
                         continue;

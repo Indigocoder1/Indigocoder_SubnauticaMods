@@ -33,12 +33,12 @@ namespace SuitLib.Patches
 
             foreach (ModdedSuit suit in ModdedSuitsManager.moddedSuitsList)
             {
-                if(!Player_Patches.WearingItem(suit.itemTechType, "Body") || suit.modificationValues == null)
+                if(!Player_Patches.WearingItem(suit.itemTechType, "Body") || suit.stillsuitValues == null)
                 {
                     continue;
                 }
 
-                moddedValue += suit.modificationValues.stillsuitDeltaTimeReduction;
+                moddedValue += suit.stillsuitValues.stillsuitDeltaTimeReduction;
                 itemsWorn++;
             }
 
@@ -69,12 +69,12 @@ namespace SuitLib.Patches
 
             foreach (ModdedSuit suit in ModdedSuitsManager.moddedSuitsList)
             {
-                if (!Player_Patches.WearingItem(suit.itemTechType, "Body") || suit.modificationValues == null)
+                if (!Player_Patches.WearingItem(suit.itemTechType, "Body") || suit.stillsuitValues == null)
                 {
                     continue;
                 }
 
-                moddedValue += suit.modificationValues.stillsuitDeltaTimeReduction;
+                moddedValue += suit.stillsuitValues.stillsuitDeltaTimeReduction;
                 itemsWorn++;
             }
 
