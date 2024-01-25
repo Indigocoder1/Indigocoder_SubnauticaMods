@@ -1,6 +1,6 @@
 # Indogocoder_SubnauticaMods
 
-This is all my mods for Subnautica
+These are all my mods for Subnautica
 
 Most of them are for BepInEx, but some are for Legacy  
 They are marked if they have multiple versions  
