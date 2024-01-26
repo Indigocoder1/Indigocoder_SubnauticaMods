@@ -6,6 +6,7 @@ using Nautilus.Assets.Gadgets;
 using UnityEngine;
 using IndigocoderLib;
 using Nautilus.Utility;
+using Nautilus.Extensions;
 
 namespace ImprovedGravTrap
 {
@@ -34,19 +35,15 @@ namespace ImprovedGravTrap
                 {
                     rend.material.color = new Color(55 / 255f, 178 / 255f, 212 / 255f);
                 }
-                gameObject.EnsureComponent<EnhancedGravSphere>();
+                EnhancedGravSphere enhanced = gameObject.EnsureComponent<EnhancedGravSphere>();
 
-                GameObject child = new GameObject("StorageContainer");
-                child.transform.parent = gameObject.transform;
-                child.SetActive(false);
+                var coi = gameObject.transform.GetChild(0)?.gameObject.EnsureComponent<ChildObjectIdentifier>();
 
-                Main_Plugin.logger.LogInfo("Attaching Storage");
-                var coi = child.EnsureComponent<ChildObjectIdentifier>();
                 if (coi)
                 {
-                    
+                    gameObject.SetActive(false);
                     coi.classId = "EnhancedGravTrapStorage";
-                    var storageContainer = coi.gameObject.EnsureComponent<StorageContainer>();
+                    StorageContainer storageContainer = coi.gameObject.EnsureComponent<StorageContainer>();
                     storageContainer.prefabRoot = gameObject;
                     storageContainer.storageRoot = coi;
                     
@@ -54,16 +51,19 @@ namespace ImprovedGravTrap
                     storageContainer.height = Main_Plugin.GravTrapStorageHeight.Value;
                     storageContainer.storageLabel = "Grav trap";
                     storageContainer.errorSound = null;
-                    child.SetActive(true);
+
+                    gameObject.SetActive(true);
+
+                    enhanced.container = storageContainer;
+                    GravTrap_ModOptions.OnStorageSizeChange += enhanced.OnStorageSizeChange;
                 }
                 else
                 {
-                    Main_Plugin.logger.LogInfo("Failed to add COI. Unable to attach storage!");
+                    Main_Plugin.logger.LogError("Failed to add COI. Unable to attach storage!");
                 }
 
                 PickupableStorage pickupableStorage = coi.gameObject.EnsureComponent<PickupableStorage>();
                 pickupableStorage.pickupable = gameObject.GetComponent<Pickupable>();
-                pickupableStorage.storageContainer = coi.GetComponent<StorageContainer>();
             };
 
             RecipeData recipe = new RecipeData

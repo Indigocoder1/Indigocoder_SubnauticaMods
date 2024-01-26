@@ -11,17 +11,16 @@ namespace ImprovedGravTrap
 {
     [BepInPlugin(myGUID, pluginName, versionString)]
     [BepInDependency("com.snmodding.nautilus")]
+    [BepInIncompatibility("GravTrapStorage")]
     public class Main_Plugin : BaseUnityPlugin
     {
         private const string myGUID = "Indigocoder.ImprovedGravTrap";
         private const string pluginName = "Improved Grav Trap";
-        private const string versionString = "1.1.4";
+        private const string versionString = "1.1.5";
 
         private static readonly string ConfigFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "ImprovedGravTrap.json");
 
         public static ConfigEntry<bool> UseScrollWheel;
-        public static ConfigEntry<KeyCode> AdvanceKey;
-        public static ConfigEntry<KeyCode> OpenStorageKey;
         public static ConfigEntry<int> EnhancedRange;
         public static ConfigEntry<float> EnhancedMaxForce;
         public static ConfigEntry<float> EnhancedMaxMassStable;
@@ -62,10 +61,6 @@ namespace ImprovedGravTrap
         private void SetUpConfigs()
         {
             UseScrollWheel = Config.Bind("Improved Grav Trap", "Use scroll wheel to advance types", false);
-
-            AdvanceKey = Config.Bind("Improved Grav Trap", "Key used to advance the type", KeyCode.Mouse2);
-
-            OpenStorageKey = Config.Bind("Improved Grav Trap", "Key used to open the grav trap storage", KeyCode.LeftAlt);
 
             EnhancedRange = Config.Bind("Improved Grav Trap", "Enhanced grav trap range", 30,
                 new ConfigDescription("The range of the improved grav trap",

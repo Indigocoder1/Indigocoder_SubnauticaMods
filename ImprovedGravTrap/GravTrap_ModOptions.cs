@@ -1,15 +1,13 @@
 ﻿using Nautilus.Handlers;
 using Nautilus.Options;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImprovedGravTrap
 {
     internal class GravTrap_ModOptions : ModOptions
     {
+        public static Action OnStorageSizeChange;
+
         public GravTrap_ModOptions() : base("Improved Grav Trap Mod Options")
         {
             OptionsPanelHandler.RegisterModOptions(this);
@@ -17,14 +15,6 @@ namespace ImprovedGravTrap
             var useScrollWheelOption = Main_Plugin.UseScrollWheel.ToModToggleOption();
             useScrollWheelOption.OnChanged += OnUseScrollWheelOptionChanged;
             AddItem(useScrollWheelOption);
-
-            var advanceKeyOption = Main_Plugin.AdvanceKey.ToModKeybindOption();
-            advanceKeyOption.OnChanged += OnAdvanceKeyOptionChanged;
-            AddItem(advanceKeyOption);
-
-            var openStorageKey = Main_Plugin.OpenStorageKey.ToModKeybindOption();
-            openStorageKey.OnChanged += OnOpenStorageKeyChanged;
-            AddItem(openStorageKey);
 
             var rangeOption = Main_Plugin.EnhancedRange.ToModSliderOption(minValue: 17, maxValue: 40, step: 1);
             rangeOption.OnChanged += OnRangeOptionChanged;
@@ -63,14 +53,6 @@ namespace ImprovedGravTrap
         {
             Main_Plugin.UseScrollWheel.Value = e.Value;
         }
-        private void OnAdvanceKeyOptionChanged(object sender, KeybindChangedEventArgs e)
-        {
-            Main_Plugin.AdvanceKey.Value = e.Value;
-        }
-        private void OnOpenStorageKeyChanged(object sender, KeybindChangedEventArgs e)
-        {
-            Main_Plugin.OpenStorageKey.Value = e.Value;
-        }
         private void OnRangeOptionChanged(object sender, SliderChangedEventArgs e)
         {
             Main_Plugin.EnhancedRange.Value = (int)e.Value;
@@ -90,10 +72,12 @@ namespace ImprovedGravTrap
         private void OnStorageWidthOptionChanged(object sender, SliderChangedEventArgs e)
         {
             Main_Plugin.GravTrapStorageWidth.Value = (int)e.Value;
+            OnStorageSizeChange?.Invoke();
         }
         private void OnStorageHeightOptionChanged(object sender, SliderChangedEventArgs e)
         {
             Main_Plugin.GravTrapStorageHeight.Value = (int)e.Value;
+            OnStorageSizeChange?.Invoke();
         }
         private void OnStorageOpenDistOptionChanged(object sender, SliderChangedEventArgs e)
         {

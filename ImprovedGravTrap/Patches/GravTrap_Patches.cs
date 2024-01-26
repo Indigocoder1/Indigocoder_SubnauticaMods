@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.Remoting.Messaging;
 using UnityEngine;
+using static VFXParticlesPool;
 
 namespace ImprovedGravTrap.Patches
 {
@@ -14,10 +14,11 @@ namespace ImprovedGravTrap.Patches
     internal static class GravTrap_Patches
     {
         private static readonly Dictionary<Gravsphere, List<Rigidbody>> bufferedAttractables = new Dictionary<Gravsphere, List<Rigidbody>>();
+        private static Dictionary<Gravsphere, bool> ResetTriggers = new Dictionary<Gravsphere, bool>();
 
         private static void UpdateRange(Gravsphere gravsphere)
         {
-            if(!gravsphere.GetComponent<EnhancedGravSphere>())
+            if (!gravsphere.GetComponent<EnhancedGravSphere>())
             {
                 return;
             }
@@ -42,37 +43,34 @@ namespace ImprovedGravTrap.Patches
             {
                 bufferedAttractables[__instance] = new List<Rigidbody>();
             }
+
+            ResetTriggers[__instance] = false;
         }
 
         [HarmonyPatch(nameof(Gravsphere.Update)), HarmonyPostfix]
         private static void Update_Patch(Gravsphere __instance)
         {
-            if(!__instance.GetComponent<EnhancedGravSphere>())
+            EnhancedGravSphere enhancedSphere = __instance.GetComponent<EnhancedGravSphere>();
+            if (!enhancedSphere)
             {
                 return;
             }
 
-            bool inRange = Vector3.Distance(__instance.transform.position, Player.main.transform.position) <= Main_Plugin.GravStorageOpenDistance.Value;
             StorageContainer container = __instance.GetComponentInChildren<StorageContainer>();
+            HandleStorageOpening(__instance, container);
 
-            if(Main_Plugin.GravTrapStorageLoaded)
+            HandleStorageAdding(__instance, container);
+            HandleBufferTransfer(__instance, container);
+            HandleHeldEnable(__instance);
+        }
+
+        private static void HandleStorageAdding(Gravsphere instance, StorageContainer container)
+        {   
+            for (int i = 0; i < instance.attractableList.Count; i++)
             {
-                return;
-            }
+                Rigidbody rb = instance.attractableList[i];
 
-            if (inRange && Input.GetKeyDown(Main_Plugin.OpenStorageKey.Value))
-            {
-                if(!__instance.GetComponent<Pickupable>()._attached)
-                {
-                    container.Open();
-                }
-            }
-
-            for (int i = 0; i < __instance.attractableList.Count; i++)
-            {
-                Rigidbody rb = __instance.attractableList[i];
-
-                if (Vector3.Distance(rb.position, __instance.transform.position) > Main_Plugin.GravStoragePickupDistance.Value)
+                if (Vector3.Distance(rb.position, instance.transform.position) > Main_Plugin.GravStoragePickupDistance.Value)
                 {
                     continue;
                 }
@@ -92,25 +90,27 @@ namespace ImprovedGravTrap.Patches
                     pickupable.Initialize();
                     container.container.AddItem(pickupable);
 
-                    int lastIndex = bufferedAttractables[__instance].Count - 1;
-                    if(lastIndex <= 0)
+                    int lastIndex = bufferedAttractables[instance].Count - 1;
+                    if (lastIndex <= 0)
                     {
                         return;
                     }
 
-                    Rigidbody bufferedRb = bufferedAttractables[__instance][lastIndex];
-                    if(!bufferedRb.isKinematic)
+                    Rigidbody bufferedRb = bufferedAttractables[instance][lastIndex];
+                    if (!bufferedRb.isKinematic)
                     {
-                        __instance.AddAttractable(bufferedRb);
-                        bufferedAttractables[__instance].Remove(bufferedRb);
+                        instance.AddAttractable(bufferedRb);
+                        bufferedAttractables[instance].Remove(bufferedRb);
                     }
                     UWE.Utils.SetIsKinematicAndUpdateInterpolation(bufferedRb, false, false);
                 }
             }
-
-            for (int i = bufferedAttractables[__instance].Count - 1; i >= 0; i--)
+        }
+        private static void HandleBufferTransfer(Gravsphere instance, StorageContainer container)
+        {
+            for (int i = bufferedAttractables[instance].Count - 1; i >= 0; i--)
             {
-                Rigidbody rb = bufferedAttractables[__instance][i];
+                Rigidbody rb = bufferedAttractables[instance][i];
                 Pickupable pickupable = rb.GetComponent<Pickupable>();
                 if (!pickupable)
                 {
@@ -119,12 +119,59 @@ namespace ImprovedGravTrap.Patches
 
                 if (container.container.HasRoomFor(pickupable))
                 {
-                    __instance.AddAttractable(rb);
-                    bufferedAttractables[__instance].RemoveAt(i);
+                    instance.AddAttractable(rb);
+                    bufferedAttractables[instance].RemoveAt(i);
                 }
             }
         }
-        
+        private static void HandleHeldEnable(Gravsphere instance)
+        {
+            if (!Player.main.IsInside())
+            {
+                if (GameInput.GetButtonDown(GameInput.Button.LeftHand))
+                {
+                    if (!instance.trigger.enabled && !ResetTriggers[instance])
+                    {
+                        instance.trigger.enabled = true;
+                        instance.gameObject.GetComponent<Pickupable>().attached = false;
+                    }
+                    else
+                    {
+                        instance.DeactivatePads();
+                        instance.trigger.enabled = false;
+                        ResetTriggers[instance] = false;
+                        instance.gameObject.GetComponent<Pickupable>().attached = true;
+                    }
+                }
+            }
+            else if (instance.trigger.enabled)
+            {
+                instance.DeactivatePads();
+                instance.trigger.enabled = false;
+                instance.gameObject.GetComponent<Pickupable>().attached = true;
+            }
+        }
+        private static void HandleStorageOpening(Gravsphere instance, StorageContainer container)
+        {
+            //If deployed, in range and open key pressed, open storage
+            bool inRange = Vector3.Distance(instance.transform.position, Player.main.transform.position) <= Main_Plugin.GravStorageOpenDistance.Value;
+            bool trapInInventory = Inventory.main.Contains(instance.pickupable);
+            if (inRange && GameInput.GetButtonDown(GameInput.Button.AltTool) && !trapInInventory)
+            {
+                if (!instance.GetComponent<Pickupable>()._attached)
+                {
+                    container.Open();
+                }
+            }
+
+            //If not deployed & open key pressed, open storage
+            if (!container.GetOpen() && !IngameMenu.main.selected && GameInput.GetButtonDown(GameInput.Button.AltTool) && trapInInventory)
+            {
+                container.Open(instance.transform);
+            }
+        }
+
+        #region ---Transpilers ---
         [HarmonyPatch(nameof(Gravsphere.OnTriggerEnter)), HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> OnTriggerEnter_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
@@ -175,24 +222,6 @@ namespace ImprovedGravTrap.Patches
             return Mathf.Min(rbs.Count, maxAmount);
         }
 
-        /*
-        [HarmonyPatch(nameof(Gravsphere.ApplyGravitation)), HarmonyPrefix]
-        private static bool ApplyGravitation_Prefix(Gravsphere __instance)
-        {
-            Pickupable pickupable = __instance.GetComponent<Pickupable>();
-
-            return pickupable._attached ? false : true;
-        }
-
-        [HarmonyPatch(nameof(Gravsphere.OnTriggerEnter)), HarmonyPrefix]
-        private static bool OnTriggerEnter_Prefix(Gravsphere __instance)
-        {
-            Pickupable pickupable = __instance.GetComponent<Pickupable>();
-
-            return pickupable._attached ? false : true;
-        }
-        */
-
         private static float GetMaxForce(Gravsphere sphere)
         {
             if (sphere.TryGetComponent<EnhancedGravSphere>(out EnhancedGravSphere component))
@@ -228,9 +257,11 @@ namespace ImprovedGravTrap.Patches
                 return 12;
             }
         }
+        #endregion
 
         //Use animation from vanilla gravtrap
-        [HarmonyPrefix, HarmonyPatch(typeof(QuickSlots), "SetAnimationState")]
+        [HarmonyPatch(typeof(QuickSlots), nameof(QuickSlots.SetAnimationState))]
+        [HarmonyPrefix]
         private static bool Animation_Patch(QuickSlots __instance, string toolName)
         {
             if (toolName != ImprovedTrap_Craftable.techType.ToString().ToLower())
@@ -243,11 +274,7 @@ namespace ImprovedGravTrap.Patches
         [HarmonyPatch(nameof(Gravsphere.OnTriggerEnter)), HarmonyPostfix]
         private static void TriggerEnterPostfix(Gravsphere __instance, Collider collider)
         {
-            if(Main_Plugin.GravTrapStorageLoaded)
-            {
-                return;
-            }
-
+            //Buffer stuff (Fixes dropping of quartz)
             if(!__instance.TryGetComponent<EnhancedGravSphere>(out _))
             {
                 return;
