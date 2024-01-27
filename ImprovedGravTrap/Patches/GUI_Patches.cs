@@ -5,13 +5,15 @@ using System.Text;
 
 namespace ImprovedGravTrap.Patches
 {
+    [HarmonyPatch]
     internal static class GUI_Patches
     {
         private static class TypeListSwitcher
         {
             public static string GetAdvanceKey()
             {
-                return "F";//GameInput.Button.AltTool.ToString();
+                GameInput.Device device = GameInput.GetPrimaryDevice();
+                return GameInput.GetBinding(device, GameInput.Button.AltTool, GameInput.BindingSet.Primary);
             }
 
             public static int GetListChangeDelta()
@@ -26,15 +28,9 @@ namespace ImprovedGravTrap.Patches
                     {
                         return -1;
                     }
-                    else
-                    {
-                        return 0;
-                    }
                 }
-                else
-                {
-                    return GameInput.GetButtonDown(GameInput.Button.AltTool) ? 1 : 0;
-                }
+
+                return GameInput.GetButtonDown(GameInput.Button.AltTool) ? 1 : 0;
             }
         }
 
@@ -46,10 +42,14 @@ namespace ImprovedGravTrap.Patches
             if (!techType.IsEnhancedGravTrap())
                 return;
 
-            Main_Plugin.logger.LogInfo("Patching item commons for an enhanced grav trap");
+            GravTrapObjectsType objectsType = obj.EnsureComponent<GravTrapObjectsType>();
+            int changeDelta = TypeListSwitcher.GetListChangeDelta();
 
-            var objectsType = obj.EnsureComponent<GravTrapObjectsType>();
-            objectsType.techTypeListIndex += TypeListSwitcher.GetListChangeDelta();
+            //Handle index overflow
+            int nextIndex = (objectsType.techTypeListIndex + changeDelta) % Main_Plugin.AllowedTypes.Count;
+
+            //Handle negative scoll wheel input wrap around
+            objectsType.techTypeListIndex = (objectsType.techTypeListIndex == 0 && changeDelta < 0) ? Main_Plugin.AllowedTypes.Count - 1 : nextIndex;
             TooltipFactory.WriteDescription(sb, $"Allowed type = {objectsType.GetCurrentListName()}");
         } 
 
@@ -57,52 +57,22 @@ namespace ImprovedGravTrap.Patches
         [HarmonyPostfix]
         private static void ItemActions_Postfix(StringBuilder sb, InventoryItem item) 
         {
-            Main_Plugin.logger.LogInfo($"Item {item.techType} is enhanced grav trap = {item.techType.IsEnhancedGravTrap()}");
             if (!item.techType.IsEnhancedGravTrap())
-            {
                 return;
-            }
 
             string button = TypeListSwitcher.GetAdvanceKey();
-            StorageContainer storageContainer = item.item.gameObject.GetComponentInChildren<StorageContainer>(true);
-
-            Main_Plugin.logger.LogInfo("Patching item actions for an enhanced grav trap");
-            TooltipFactory.WriteAction(sb, button, "Switch object's type"); //Advance type display in inventory
-
-            /*
-            if (!storageContainer) return;
-            
-            // Open/close storage prompt:
-            string msg = storageContainer.GetOpen() ? "Close Storage" : "Open Storage";
-            bool usingController = GameInput.GetPrimaryDevice() == GameInput.Device.Controller;
-            
-            TooltipFactory.WriteAction(sb,
-                uGUI.FormatButton(usingController ? GameInput.Button.Sprint : GameInput.Button.AltTool), msg);
-            */
+            TooltipFactory.WriteAction(sb, button, "Switch object's type"); //Display advance type prompt in inventory
         }
         #endregion
-
-        [HarmonyPatch(typeof(GUIHand), nameof(GUIHand.OnUpdate))]
-        [HarmonyPostfix]
-        static void GUIHand_OnUpdate_Postfix(GUIHand __instance)
-        {
-            if (!__instance.player.IsFreeToInteract() || !AvatarInputHandler.main.IsEnabled())
-                return;
-
-            if (__instance.GetTool() is PlayerTool tool && tool.pickupable?.GetTechType().IsEnhancedGravTrap() == true)
-            {
-                string text = tool.GetCustomUseText();
-                text += $"\n{tool.gameObject.GetComponent<GravTrapObjectsType>().GetCurrentListName()}";
-                HandReticle.main.SetText(HandReticle.TextType.Use, text, true);
-            }
-        }
 
         [HarmonyPatch(typeof(Pickupable), nameof(Pickupable.OnHandHover))]
         [HarmonyPostfix]
         static void Pickupable_OnHandHover_Postfix(Pickupable __instance)
         {
-            if (__instance.GetTechType().IsEnhancedGravTrap())
-                HandReticle.main.SetText(HandReticle.TextType.Use, __instance.gameObject.GetComponent<GravTrapObjectsType>().GetCurrentListName(), true);
+            if (!__instance.GetTechType().IsEnhancedGravTrap())
+                return;
+
+            HandReticle.main.SetText(HandReticle.TextType.Use, __instance.gameObject.GetComponent<GravTrapObjectsType>().GetCurrentListName(), true);
         }
     }
 }

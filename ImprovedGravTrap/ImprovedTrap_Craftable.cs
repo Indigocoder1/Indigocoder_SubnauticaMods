@@ -55,7 +55,7 @@ namespace ImprovedGravTrap
                     gameObject.SetActive(true);
 
                     enhanced.container = storageContainer;
-                    GravTrap_ModOptions.OnStorageSizeChange += enhanced.OnStorageSizeChange;
+                    //GravTrap_ModOptions.OnStorageSizeChange += enhanced.OnStorageSizeChange;
                 }
                 else
                 {

@@ -3,9 +3,11 @@ using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UWE;
 
 namespace ImprovedGravTrap
 {
@@ -30,6 +32,8 @@ namespace ImprovedGravTrap
         public static ConfigEntry<float> GravStoragePickupDistance;
         public static ConfigEntry<float> GravStorageOpenDistance;
 
+        public static ConfigEntry<bool> FirstTime1_1_5;
+
         public static List<TechTypeList> AllowedTypes;
 
         public static ManualLogSource logger;
@@ -43,6 +47,7 @@ namespace ImprovedGravTrap
 
             SetUpConfigs();
             InitializeAllowedTypes();
+            CoroutineHost.StartCoroutine(CheckFirstUse());
 
             new GravTrap_ModOptions();
 
@@ -60,6 +65,7 @@ namespace ImprovedGravTrap
 
         private void SetUpConfigs()
         {
+            FirstTime1_1_5 = Config.Bind("Improved Grav Trap", "First time using version 1.1.5?", true);
             UseScrollWheel = Config.Bind("Improved Grav Trap", "Use scroll wheel to advance types", false);
 
             EnhancedRange = Config.Bind("Improved Grav Trap", "Enhanced grav trap range", 30,
@@ -93,6 +99,21 @@ namespace ImprovedGravTrap
             GravStoragePickupDistance = Config.Bind("Improved Grav Trap", "Enhanced grav trap pickup distance", 5f, 
                 new ConfigDescription("How far an item needs to be from the grav trap before it's picked up",
                 acceptableValues: new AcceptableValueRange<float>(2f, 10f)));
+        }
+        private IEnumerator CheckFirstUse()
+        {
+            if (!FirstTime1_1_5.Value) yield break;
+
+            yield return new WaitForSeconds(5f);
+
+            for (int i = 0; i < 10; i++)
+            {
+                ErrorMessage.AddError("Enhanced grav traps will not work in older saves as of version 1.1.5\n" +
+                    "You can destroy the old one in a trash can and use \"item enhancedgravsphere\" in the debug console to get a new one");
+                yield return new WaitForSeconds(2f);
+            }
+            
+            FirstTime1_1_5.Value = false;
         }
 
         private void InitializeAllowedTypes()

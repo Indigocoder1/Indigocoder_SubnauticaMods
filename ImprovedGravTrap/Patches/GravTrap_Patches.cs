@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using ImprovedGravTrap.Monobehaviours;
+using Nautilus.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,6 +63,7 @@ namespace ImprovedGravTrap.Patches
             HandleStorageAdding(__instance, container);
             HandleBufferTransfer(__instance, container);
             HandleHeldEnable(__instance);
+            HandleHandText(__instance, container);
         }
 
         private static void HandleStorageAdding(Gravsphere instance, StorageContainer container)
@@ -69,6 +71,10 @@ namespace ImprovedGravTrap.Patches
             for (int i = 0; i < instance.attractableList.Count; i++)
             {
                 Rigidbody rb = instance.attractableList[i];
+                if(!rb)
+                {
+                    continue;
+                }
 
                 if (Vector3.Distance(rb.position, instance.transform.position) > Main_Plugin.GravStoragePickupDistance.Value)
                 {
@@ -111,6 +117,11 @@ namespace ImprovedGravTrap.Patches
             for (int i = bufferedAttractables[instance].Count - 1; i >= 0; i--)
             {
                 Rigidbody rb = bufferedAttractables[instance][i];
+                if(!rb)
+                {
+                    bufferedAttractables[instance].RemoveAt(i);
+                    continue;
+                }
                 Pickupable pickupable = rb.GetComponent<Pickupable>();
                 if (!pickupable)
                 {
@@ -168,6 +179,26 @@ namespace ImprovedGravTrap.Patches
             if (!container.GetOpen() && !IngameMenu.main.selected && GameInput.GetButtonDown(GameInput.Button.AltTool) && trapInInventory)
             {
                 container.Open(instance.transform);
+            }
+        }
+        private static void HandleHandText(Gravsphere instance, StorageContainer container)
+        {
+            string gravtrapactivate =
+                    container.container.IsFull() ? "Cannot Activate, Storage is Full" :
+                    !instance.trigger.enabled && !ResetTriggers[instance] ? "Activate Gravtrap" :
+                    "Deactivate Gravtrap";
+
+            string primaryString =
+                $"{Language.main.GetFormat<string, string>("HandReticleAddButtonFormat", "Deploy Gravtrap", uGUI.FormatButton(GameInput.Button.RightHand))}";
+
+            string secondaryString = 
+                $"{Language.main.GetFormat<string, string>("HandReticleAddButtonFormat", gravtrapactivate, uGUI.FormatButton(GameInput.Button.LeftHand))}\n"+
+                $"{Language.main.GetFormat<string, string>("HandReticleAddButtonFormat", "Open Storage", uGUI.FormatButton(GameInput.Button.AltTool))}";
+
+            if(!container.GetOpen() && !IngameMenu.main.selected)
+            {
+                HandReticle.main.textUse = primaryString;
+                HandReticle.main.textUseSubscript = secondaryString;
             }
         }
 

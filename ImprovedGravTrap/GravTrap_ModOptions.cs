@@ -6,7 +6,7 @@ namespace ImprovedGravTrap
 {
     internal class GravTrap_ModOptions : ModOptions
     {
-        public static Action OnStorageSizeChange;
+        public static event EventHandler OnStorageSizeChange;
 
         public GravTrap_ModOptions() : base("Improved Grav Trap Mod Options")
         {
@@ -72,12 +72,12 @@ namespace ImprovedGravTrap
         private void OnStorageWidthOptionChanged(object sender, SliderChangedEventArgs e)
         {
             Main_Plugin.GravTrapStorageWidth.Value = (int)e.Value;
-            OnStorageSizeChange?.Invoke();
+            OnStorageSizeChange?.Invoke(this, EventArgs.Empty);
         }
         private void OnStorageHeightOptionChanged(object sender, SliderChangedEventArgs e)
         {
             Main_Plugin.GravTrapStorageHeight.Value = (int)e.Value;
-            OnStorageSizeChange?.Invoke();
+            OnStorageSizeChange?.Invoke(this, EventArgs.Empty);
         }
         private void OnStorageOpenDistOptionChanged(object sender, SliderChangedEventArgs e)
         {
