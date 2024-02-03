@@ -17,7 +17,7 @@ namespace SuitLib
     {
         private const string myGUID = "Indigocoder.SuitLib";
         private const string pluginName = "SuitLib";
-        private const string versionString = "1.1.3";
+        private const string versionString = "1.1.4";
 
         public static ManualLogSource logger;
         private static readonly Harmony harmony = new Harmony(myGUID);
@@ -42,6 +42,9 @@ namespace SuitLib
 
         private void LoadJsons()
         {
+            if (!Directory.Exists(jsonFolder)) Directory.CreateDirectory(jsonFolder);
+            if (!Directory.Exists(jsonTexturesFolder)) Directory.CreateDirectory(jsonTexturesFolder);
+
             AddModdedSuits();
             logger.LogInfo("Finished loading suit Jsons");
 
