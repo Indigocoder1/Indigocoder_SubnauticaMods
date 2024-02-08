@@ -37,6 +37,11 @@ namespace ImprovedGravTrap
                 }
                 EnhancedGravSphere enhanced = gameObject.EnsureComponent<EnhancedGravSphere>();
 
+                PingInstance ping = gameObject.EnsureComponent<PingInstance>();
+                ping.SetType(Main_Plugin.GravTrapBeaconType.Value);
+                ping.origin = gameObject.transform;
+                ping.visible = true;
+
                 var coi = gameObject.transform.GetChild(0)?.gameObject.EnsureComponent<ChildObjectIdentifier>();
 
                 if (coi)
@@ -53,9 +58,7 @@ namespace ImprovedGravTrap
                     storageContainer.errorSound = null;
 
                     gameObject.SetActive(true);
-
                     enhanced.container = storageContainer;
-                    //GravTrap_ModOptions.OnStorageSizeChange += enhanced.OnStorageSizeChange;
                 }
                 else
                 {

@@ -87,6 +87,7 @@
     <Compile Include="Items\VariableGravityCannon_Craftable.cs" />
     <Compile Include="Main_Plugin.cs" />
     <Compile Include="Monos\VariableGravityCannon_Mono.cs" />
+    <Compile Include="Options.cs" />
     <Compile Include="Patches\InventoryPatches.cs" />
     <Compile Include="Patches\PlayerPatches.cs" />
     <Compile Include="Patches\PropulsionCannonPatch.cs" />

@@ -28,7 +28,7 @@ namespace VariableGravityCannon.Patches
         {
             if (instance.GetComponent<VariableGravityCannon_Mono>() == null) return 4f;
 
-            return Main_Plugin.repulsionModeFireEnergy.Value;
+            return Main_Plugin.RepulsionModeFireEnergy.Value;
         }
     }
 }

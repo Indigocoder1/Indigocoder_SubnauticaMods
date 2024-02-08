@@ -18,7 +18,7 @@ namespace ImprovedGravTrap
     {
         private const string myGUID = "Indigocoder.ImprovedGravTrap";
         private const string pluginName = "Improved Grav Trap";
-        private const string versionString = "1.1.5";
+        private const string versionString = "1.1.6";
 
         private static readonly string ConfigFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "ImprovedGravTrap.json");
 
@@ -31,6 +31,7 @@ namespace ImprovedGravTrap
         public static ConfigEntry<int> GravTrapStorageHeight;
         public static ConfigEntry<float> GravStoragePickupDistance;
         public static ConfigEntry<float> GravStorageOpenDistance;
+        public static ConfigEntry<PingType> GravTrapBeaconType;
 
         public static ConfigEntry<bool> FirstTime1_1_5;
 
@@ -99,6 +100,9 @@ namespace ImprovedGravTrap
             GravStoragePickupDistance = Config.Bind("Improved Grav Trap", "Enhanced grav trap pickup distance", 5f, 
                 new ConfigDescription("How far an item needs to be from the grav trap before it's picked up",
                 acceptableValues: new AcceptableValueRange<float>(2f, 10f)));
+
+            GravTrapBeaconType = Config.Bind("Improved Grav Trap", "The beacon type of the enhanced grav trap", PingType.Beacon, 
+                new ConfigDescription("Requires restart"));
         }
         private IEnumerator CheckFirstUse()
         {

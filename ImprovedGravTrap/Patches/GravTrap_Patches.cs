@@ -183,6 +183,13 @@ namespace ImprovedGravTrap.Patches
         }
         private static void HandleHandText(Gravsphere instance, StorageContainer container)
         {
+            if (Inventory.main.quickSlots.heldItem == null) return;
+
+            if(!Inventory.main.quickSlots.heldItem.Equals(instance.pickupable.inventoryItem))
+            {
+                return;
+            }
+
             string gravtrapactivate =
                     container.container.IsFull() ? "Cannot Activate, Storage is Full" :
                     !instance.trigger.enabled && !ResetTriggers[instance] ? "Activate Gravtrap" :

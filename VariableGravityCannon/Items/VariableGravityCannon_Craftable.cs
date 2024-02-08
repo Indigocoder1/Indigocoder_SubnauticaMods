@@ -77,6 +77,7 @@ namespace VariableGravityCannon.Items
             repulsionCannon.callBubblesFX = false;
             repulsionCannon.leftHandIKTarget = gameObject.transform.Find("1st person model/Propulsion_Cannon_anim/leftAttach/left_hand_target");
             repulsionCannon.ikAimRightArm = true;
+            repulsionCannon.ikAimLeftArm = true;
             repulsionCannon.hasFirstUseAnimation = true;
             repulsionCannon.savedIkAimRightArm = true;
             repulsionCannon.drawTime = 0;

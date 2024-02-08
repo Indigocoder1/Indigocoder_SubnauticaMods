@@ -1,23 +1,24 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ImprovedGravTrap
 {
     internal class EnhancedGravSphere : MonoBehaviour
     {
         public StorageContainer container { get; set; }
+        [SerializeField] public PingInstance pingInstance { get; set; }
+        [SerializeField] private Pickupable pickupable;
 
-        /*
-        public void OnStorageSizeChange(object sender, EventArgs e)
+        private void Start() 
         {
-            container.Resize(Main_Plugin.GravTrapStorageWidth.Value, Main_Plugin.GravTrapStorageHeight.Value);
-            Main_Plugin.logger.LogInfo($"Container = {container} (Width = {container.width}, Height = {container.height})");
+            pickupable = GetComponent<Pickupable>();
+            pingInstance = GetComponent<PingInstance>();
+
+            pingInstance.SetLabel("Enhanced Grav Trap");
         }
 
-        private void OnDestroy()
+        private void Update()
         {
-            GravTrap_ModOptions.OnStorageSizeChange -= OnStorageSizeChange;
+            pingInstance.visible = !pickupable.attached;
         }
-        */
     }
 }

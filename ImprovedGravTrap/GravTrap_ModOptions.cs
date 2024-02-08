@@ -1,6 +1,7 @@
 ﻿using Nautilus.Handlers;
 using Nautilus.Options;
 using System;
+using System.Collections.Generic;
 
 namespace ImprovedGravTrap
 {
@@ -47,6 +48,12 @@ namespace ImprovedGravTrap
             var storagePickupDistance = Main_Plugin.GravStoragePickupDistance.ToModSliderOption(minValue: 2f, maxValue: 10f, step: 1f, floatFormat: "{0}");
             storagePickupDistance.OnChanged += OnStoragePickupDistanceChanged;
             AddItem(storagePickupDistance);
+
+            List<PingType> pingTypes = new List<PingType> { PingType.Lifepod, PingType.Seamoth,
+                PingType.Cyclops, PingType.Exosuit, PingType.Rocket, PingType.Beacon, PingType.Signal, PingType.MapRoomCamera, PingType.Sunbeam, PingType.ControlRoom};
+            var beaconType = Main_Plugin.GravTrapBeaconType.ToModChoiceOption(options: pingTypes);
+            beaconType.OnChanged += OnBeaconTypeChanged;
+            AddItem(beaconType);
         }
 
         private void OnUseScrollWheelOptionChanged(object sender, ToggleChangedEventArgs e)
@@ -86,6 +93,10 @@ namespace ImprovedGravTrap
         private void OnStoragePickupDistanceChanged(object sender, SliderChangedEventArgs e)
         {
             Main_Plugin.GravStoragePickupDistance.Value = e.Value;
+        }
+        private void OnBeaconTypeChanged(object sender, ChoiceChangedEventArgs<PingType> e)
+        {
+            Main_Plugin.GravTrapBeaconType.Value = e.Value;
         }
     }
 }

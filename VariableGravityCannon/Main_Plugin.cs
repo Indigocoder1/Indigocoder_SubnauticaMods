@@ -24,9 +24,9 @@ namespace VariableGravityCannon
 
         public static ManualLogSource logger;
 
-        public static ConfigEntry<float> repulsionModeFireEnergy;
-        public static ConfigEntry<float> propulsionModeFireEnergy;
-        public static ConfigEntry<float> propulsionModePerSecondEnergy;
+        public static ConfigEntry<float> RepulsionModeFireEnergy;
+        public static ConfigEntry<float> PropulsionModeFireEnergy;
+        public static ConfigEntry<float> PropulsionModePerSecondEnergy;
 
         public static string AssetsFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
         public static string RecipesFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Recipes");
@@ -43,6 +43,7 @@ namespace VariableGravityCannon
         {
             logger = Logger;
             SetupConfigs();
+            new Options();
 
             CoroutineTask<GameObject> repulsionTask = CraftData.GetPrefabForTechTypeAsync(TechType.RepulsionCannon);
             yield return repulsionTask;
@@ -65,9 +66,13 @@ namespace VariableGravityCannon
 
         private void SetupConfigs()
         {
-            repulsionModeFireEnergy = Config.Bind("VariableGravityCannon", "Repulsion mode fire energy draw", 4f);
-            propulsionModeFireEnergy = Config.Bind("VariableGravityCannon", "Propulsion mode fire energy draw", 4f);
-            propulsionModePerSecondEnergy = Config.Bind("VariableGravityCannon", "Repulsion mode constant energy draw", 0.7f);
+            RepulsionModeFireEnergy = Config.Bind("VariableGravityCannon", "Repulsion mode fire energy draw", 4f, 
+                new ConfigDescription("How much energy the cannon uses when firing in the repulsion mode", new AcceptableValueRange<float>(0, 25f)));
+            PropulsionModeFireEnergy = Config.Bind("VariableGravityCannon", "Propulsion mode fire energy draw", 4f,
+                new ConfigDescription("How much energy the cannon uses when firing in the propulsion mode", new AcceptableValueRange<float>(0, 25f)));
+            PropulsionModePerSecondEnergy = Config.Bind("VariableGravityCannon", "Repulsion mode constant energy draw", 0.7f,
+                new ConfigDescription("How much energy the cannon uses per second while holding an item in propuslion mode", 
+                new AcceptableValueRange<float>(0, 2f)));
         }
 
         public static RecipeData GetRecipeFromJson(string path)

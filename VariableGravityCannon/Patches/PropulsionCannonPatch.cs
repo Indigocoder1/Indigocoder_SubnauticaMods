@@ -40,14 +40,14 @@ namespace VariableGravityCannon.Patches
         {
             if (instance.GetComponent<VariableGravityCannon_Mono>() == null) return 4f;
 
-            return Main_Plugin.propulsionModeFireEnergy.Value;
+            return Main_Plugin.PropulsionModeFireEnergy.Value;
         }
 
         public static float GetConstEnergyConsumption(RepulsionCannon instance)
         {
             if (instance.GetComponent<VariableGravityCannon_Mono>() == null) return 0.7f;
 
-            return Main_Plugin.propulsionModePerSecondEnergy.Value;
+            return Main_Plugin.PropulsionModePerSecondEnergy.Value;
         }
     }
 }
