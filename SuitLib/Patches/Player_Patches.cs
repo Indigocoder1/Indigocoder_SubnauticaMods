@@ -11,8 +11,6 @@ namespace SuitLib.Patches
     [HarmonyPatch(typeof(Player))]
     internal static class Player_Patches
     {
-        public static bool Initialized { get; private set; }
-
         private static Dictionary<string, Texture> diveSuitTextures = new Dictionary<string, Texture>();
         private static Dictionary<string, Texture> radiationSuitTextures = new Dictionary<string, Texture>();
         private static Dictionary<string, Texture> reinforcedSuitTextures = new Dictionary<string, Texture>();
@@ -39,12 +37,18 @@ namespace SuitLib.Patches
         private static void Start()
         {
             playerEquipment = Inventory.main.equipment;
-            if (Initialized) return;
+            diveSuitTextures.Clear();
+            radiationSuitTextures.Clear();
+            reinforcedSuitTextures.Clear();
+            filtrationSuitTextures.Clear();
+
+            diveGlovesTextures.Clear();
+            radiationGlovesTextures.Clear();
+            reinforcedGlovesTextures.Clear();
+            filtrationGlovesTextures.Clear();
 
             InitializeModelGOs();
             InitializeVanillaTextures();
-
-            Initialized = true;
         }
 
         private static void InitializeVanillaTextures()
