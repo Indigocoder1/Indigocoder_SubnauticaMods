@@ -22,6 +22,7 @@ namespace HullReinforcementFix.Patches
             }
 
             DealDamageOnImpact dealDamageOnImpact = __instance.GetComponent<DealDamageOnImpact>();
+            int mk1Count = __instance.modules.GetCount(TechType.VehicleArmorPlating);
             int mk2Count = __instance.modules.GetCount(UpgradedHullReinfocement.mk2TechType);
             int mk3Count = __instance.modules.GetCount(UpgradedHullReinfocement.mk3TechType);
             float originalDamageFraction = dealDamageOnImpact.mirroredSelfDamageFraction;
@@ -32,7 +33,8 @@ namespace HullReinforcementFix.Patches
 
             if ((mk2Count + mk3Count) != 0)
             {
-                newDamageFraction = (mk2DamageFraction + mk3DamageFraction) / (mk2Count + mk3Count);
+                newDamageFraction = (originalDamageFraction + mk2DamageFraction + mk3DamageFraction) / (mk1Count + mk2Count + mk3Count);
+                newDamageFraction = Mathf.Min(newDamageFraction, mk3DamageFraction);
             }
 
             dealDamageOnImpact.mirroredSelfDamageFraction = newDamageFraction;
