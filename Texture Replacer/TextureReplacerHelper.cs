@@ -50,7 +50,6 @@ namespace TextureReplacer
 
             if (!configDatas.ContainsKey(transform.name))
             {
-                Main.logger.LogInfo($"Adding dictionary key for {transform.name}");
                 configDatas.Add(transform.name, new List<TexturePatchConfigData>());
             }
             if (!filePaths.ContainsKey(transform.name))
@@ -65,11 +64,6 @@ namespace TextureReplacer
 
         private void SetUpTextures()
         {
-            Main.logger.LogInfo($"Name = {transform.name}");
-            foreach (var item in configDatas.Keys)
-            {
-                Main.logger.LogInfo($"{item.ToString()}");
-            }
             string nameWithoutClone = Utilities.GetNameWithCloneRemoved(transform.name);
 
             for (int i = 0; i < configDatas[nameWithoutClone].Count; i++)
