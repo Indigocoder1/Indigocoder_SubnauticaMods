@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using HarmonyLib;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
@@ -14,11 +15,13 @@ namespace TextureReplacer
     {
         private const string myGUID = "Indigocoder.TextureReplacer";
         private const string pluginName = "Texture Replacer";
-        private const string versionString = "1.1.3";
+        private const string versionString = "1.1.5";
 
         public static ManualLogSource logger;
         public static string AssetFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
         public static ConfigEntry<bool> WriteLogs;
+
+        private static readonly Harmony harmony = new Harmony(myGUID);
 
         private void Awake()
         {
@@ -26,6 +29,8 @@ namespace TextureReplacer
 
             WriteLogs = Config.Bind("Enable logging for textures", "Write Logs", false, 
                 new ConfigDescription("Warning: When using many textures, there will be lots of logs\n(Errors will always log)"));
+
+            harmony.PatchAll();
 
             //LifepodTextureReplacer.Initialize();
             CustomTextureReplacer.Initialize();
@@ -61,7 +66,7 @@ namespace TextureReplacer
         {
             { "_EmissionMap", TextureType.Emission},
             { "_EmissionColor", TextureType.LightColor},
-            { "_SpecInt", TextureType.Value }
+            { "_Color", TextureType.Color }
         };
 
         public static Dictionary<TextureType, float> textureNameValueDefaults = new Dictionary<TextureType, float>
@@ -75,6 +80,7 @@ namespace TextureReplacer
         {
             Emission,
             LightColor,
+            Color,
             Value
         }
     }

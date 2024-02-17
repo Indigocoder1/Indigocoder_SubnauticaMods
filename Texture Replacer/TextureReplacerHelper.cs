@@ -7,7 +7,6 @@ using static TextureReplacer.Main;
 using Random = UnityEngine.Random;
 using System;
 using static TextureReplacer.CustomTextureReplacer;
-using JetBrains.Annotations;
 
 namespace TextureReplacer
 {
@@ -26,19 +25,7 @@ namespace TextureReplacer
         public void AddTextureData(TexturePatchConfigData configData)
         {
             InitializeDictionaries();
-
-            if (!configDatas.ContainsKey(transform.name))
-            {
-                configDatas.Add(transform.name, new List<TexturePatchConfigData>());
-            }
-            if (!filePaths.ContainsKey(transform.name))
-            {
-                filePaths.Add(transform.name, new List<string>());
-            }
-            if (!textures.ContainsKey(transform.name))
-            {
-                textures.Add(transform.name, new List<Texture2D>());
-            }
+            
             configDatas[transform.name].Add(configData);
             filePaths[transform.name].Add(AssetFolderPath + $"/{configData.fileName}");
             textures[transform.name].Add(ImageUtils.LoadTextureFromFile(AssetFolderPath + $"/{configData.fileName}"));
@@ -60,10 +47,29 @@ namespace TextureReplacer
             {
                 textures = new Dictionary<string, List<Texture2D>>();
             }
+
+            if (!configDatas.ContainsKey(transform.name))
+            {
+                Main.logger.LogInfo($"Adding dictionary key for {transform.name}");
+                configDatas.Add(transform.name, new List<TexturePatchConfigData>());
+            }
+            if (!filePaths.ContainsKey(transform.name))
+            {
+                filePaths.Add(transform.name, new List<string>());
+            }
+            if (!textures.ContainsKey(transform.name))
+            {
+                textures.Add(transform.name, new List<Texture2D>());
+            }
         }
 
         private void SetUpTextures()
         {
+            Main.logger.LogInfo($"Name = {transform.name}");
+            foreach (var item in configDatas.Keys)
+            {
+                Main.logger.LogInfo($"{item.ToString()}");
+            }
             string nameWithoutClone = Utilities.GetNameWithCloneRemoved(transform.name);
 
             for (int i = 0; i < configDatas[nameWithoutClone].Count; i++)
@@ -89,17 +95,19 @@ namespace TextureReplacer
                     if (configData.textureName.Contains("-"))
                     {
                         string[] split = configData.textureName.Split(new[] { '-' }, 2);
-                        float extractedValue = textureNameValueDefaults[customTextureNames[split[0]]];
+                        float extractedValue = 0.6f;
                         if (customTextureNames.ContainsKey(split[0]))
                         {
-                            try
-                            {
-                                extractedValue = float.Parse(split[1]);
-                            }
-                            catch (Exception e)
-                            {
-                                logger.LogError($"Error parsing \"{configData.textureName}\"! Error is: \n{e.Message}");
-                            }
+                            extractedValue = textureNameValueDefaults[customTextureNames[split[0]]];
+                        }
+
+                        try
+                        {
+                            extractedValue = float.Parse(split[1]);
+                        }
+                        catch (Exception e)
+                        {
+                            logger.LogError($"Error parsing \"{configData.textureName}\"! Error is: \n{e.Message}");
                         }
                         HandleCustomTextureNames(material, texture, extractedValue, split[0]);
                     }
@@ -119,7 +127,12 @@ namespace TextureReplacer
 
         private void HandleCustomTextureNames(Material material, Texture2D texture, float extractedValue, string key)
         {
-            TextureType type = Main.customTextureNames[key];
+            TextureType type = TextureType.Value;
+            if (customTextureNames.ContainsKey(key))
+            {
+                type = Main.customTextureNames[key];
+            }
+
             if (Main.WriteLogs.Value)
             {
                 Main.logger.LogInfo($"Handling custom texture name for type {type.ToString()}");
@@ -154,6 +167,9 @@ namespace TextureReplacer
                         material.SetColor("_EmissionColor", averageColor);
                     }
                     break;
+                case TextureType.Color:
+                    material.SetColor("_Color", AverageColorFromTexture(texture));
+                    break;
                 case TextureType.Value:
                     material.SetFloat(key, extractedValue);
                     break;
@@ -181,7 +197,7 @@ namespace TextureReplacer
 
             }
 
-            Color32 color = new Color32((byte)(r / total), (byte)(g / total), (byte)(b / total), 0);
+            Color32 color = new Color32((byte)(r / total), (byte)(g / total), (byte)(b / total), 255);
             if (Main.WriteLogs.Value)
             {
                 Main.logger.LogInfo($"Average color for texture \"{tex.name}\" is {color}");

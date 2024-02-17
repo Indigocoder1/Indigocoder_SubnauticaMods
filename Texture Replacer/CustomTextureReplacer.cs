@@ -11,6 +11,7 @@ namespace TextureReplacer
 {
     public static class CustomTextureReplacer
     {
+        [SerializeField] public static List<TexturePatchConfigData> queuedPlayerConfigs = new List<TexturePatchConfigData>();
         private static string folderFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureReplacer");
         private static string configFilePath = Path.Combine(folderFilePath, "ExampleTextureConfig.json");
         private static List<TexturePatchConfigData> textureConfigs;
@@ -53,6 +54,18 @@ namespace TextureReplacer
                     {
                         Main.logger.LogInfo($"Skipping config {configData.configName} because it contains example data!");
                     }
+                    continue;
+                }
+
+                if(configData.prefabClassID == "player")
+                {
+                    queuedPlayerConfigs.Add(configData);
+
+                    if (Main.WriteLogs.Value)
+                    {
+                        Main.logger.LogInfo($"Adding of queued config {configData.configName} complete (Config for player GO)");
+                    }
+
                     continue;
                 }
 
