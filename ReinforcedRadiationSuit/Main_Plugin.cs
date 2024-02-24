@@ -13,6 +13,8 @@ using Nautilus.Crafting;
 using Nautilus.Json.Converters;
 using Newtonsoft.Json;
 using ReinforcedRadiationSuit.Items;
+using BepInEx.Bootstrap;
+using DeathrunRemade;
 
 namespace ReinforcedRadiationSuit
 {
@@ -23,7 +25,7 @@ namespace ReinforcedRadiationSuit
     {
         private const string myGUID = "Indigocoder.ReinforcedRadiationSuit";
         private const string pluginName = "Reinforced Radiation Suit";
-        private const string versionString = "1.0.0";
+        private const string versionString = "1.0.1";
         public static ManualLogSource logger;
 
         public static string AssetsFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
@@ -52,6 +54,11 @@ namespace ReinforcedRadiationSuit
 
             InitializeSuits();
 
+            if(Chainloader.PluginInfos.ContainsKey("com.github.tinyhoot.DeathrunRemade"))
+            {
+                AddDeathrunCrushDepths();
+            }
+
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
         }
 
@@ -78,6 +85,12 @@ namespace ReinforcedRadiationSuit
 
             ModdedSuitsManager.AddModdedSuit(warpSuit);
             ModdedSuitsManager.AddModdedGloves(warpGloves);
+        }
+
+        private void AddDeathrunCrushDepths()
+        {
+            DeathrunAPI.AddSuitCrushDepth(ReinforcedRadiationSuit_Craftable.techType, new List<float> { 900, 750, 600 });
+            DeathrunAPI.AddNitrogenModifier(RebreatherRadiationHelmet_Craftable.techType, new List<float> { .3f, .15f, 0f });
         }
 
         private static RecipeData GetRecipeFromJson(string path)
