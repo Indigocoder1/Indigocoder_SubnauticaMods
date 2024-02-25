@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace ReinforcedRadiationSuit.Patches
 {
+    /*
     [HarmonyPatch(typeof(Equipment))]
     internal static class EquipmentPatches
     {
@@ -18,7 +19,7 @@ namespace ReinforcedRadiationSuit.Patches
                 __result = __instance.GetCount(RebreatherRadiationHelmet_Craftable.techType);
             }
 
-            if(SuitToRadiationTechTypes.Keys.Contains(techType))
+            if(SuitToRadiationTechTypes.Keys.Contains(techType) && __instance.GetCount(techType) != 0)
             {
                 __result = __instance.GetCount(SuitToRadiationTechTypes[techType]);
             }
@@ -31,4 +32,5 @@ namespace ReinforcedRadiationSuit.Patches
             { TechType.RadiationHelmet, RebreatherRadiationHelmet_Craftable.techType }
         };
     }
+    */
 }

@@ -49,6 +49,9 @@
     <Reference Include="BepInEx">
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
+    <Reference Include="DeathrunRemade">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\_____Plugins to Ignore\DeathrunRemade\DeathrunRemade.dll</HintPath>
+    </Reference>
     <Reference Include="Nautilus, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\plugins\Nautilus\Nautilus.dll</HintPath>
@@ -86,6 +89,7 @@
     <Compile Include="Items\ReinforcedRadiationSuit_Craftable.cs" />
     <Compile Include="Main_Plugin.cs" />
     <Compile Include="Patches\EquipmentPatches.cs" />
+    <Compile Include="Patches\Radiate_Patches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

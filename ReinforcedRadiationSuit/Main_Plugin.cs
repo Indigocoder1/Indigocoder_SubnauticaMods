@@ -25,7 +25,7 @@ namespace ReinforcedRadiationSuit
     {
         private const string myGUID = "Indigocoder.ReinforcedRadiationSuit";
         private const string pluginName = "Reinforced Radiation Suit";
-        private const string versionString = "1.0.1";
+        private const string versionString = "1.0.2";
         public static ManualLogSource logger;
 
         public static string AssetsFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
