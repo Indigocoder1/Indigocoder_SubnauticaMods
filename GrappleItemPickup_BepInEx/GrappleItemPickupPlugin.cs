@@ -16,7 +16,7 @@ namespace GrappleItemPickup_BepInEx
 
         private const string myGUID = "Indigocoder.GrappleItemPickup";
         private const string pluginName = "Grapple Item Pickup";
-        private const string versionString = "2.1.2";
+        private const string versionString = "2.1.3";
 
         private static readonly Harmony harmony = new Harmony(myGUID);
 

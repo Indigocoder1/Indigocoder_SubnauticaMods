@@ -59,7 +59,7 @@ namespace GrappleItemPickup_BepInEx
                 }
 
                 Vehicle pickupableVehicle = pickupable.GetComponent<Vehicle>();
-                if (pickupableVehicle == Player.main.GetVehicle())
+                if (pickupableVehicle != null && pickupableVehicle == Player.main.GetVehicle())
                 {
                     if (GrappleItemPickupPlugin.WriteLogs.Value)
                         GrappleItemPickupPlugin.logger.LogInfo("Returning because the item trying to be picked up is the current Vehicle");
@@ -68,7 +68,7 @@ namespace GrappleItemPickup_BepInEx
                 }
 
                 SubRoot pickupableSubRoot = pickupable.GetComponent<SubRoot>();
-                if (pickupableSubRoot == Player.main.GetCurrentSub())
+                if (pickupableSubRoot != null && pickupableSubRoot == Player.main.GetCurrentSub())
                 {
                     if (GrappleItemPickupPlugin.WriteLogs.Value)
                         GrappleItemPickupPlugin.logger.LogInfo("Returning because the item trying to be picked up is the current SubRoot");
