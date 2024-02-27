@@ -1,13 +1,12 @@
 ﻿using BepInEx;
-using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
-using IndigocoderLib;
 
 namespace GrappleItemPickup_BepInEx
 {
     [BepInPlugin(myGUID, pluginName, versionString)]
+    [BepInDependency("com.snmodding.nautilus", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("Indigocoder.GrapplingArmUpgrade", BepInDependency.DependencyFlags.SoftDependency)]
     public class GrappleItemPickupPlugin : BaseUnityPlugin
     {
@@ -17,7 +16,7 @@ namespace GrappleItemPickup_BepInEx
 
         private const string myGUID = "Indigocoder.GrappleItemPickup";
         private const string pluginName = "Grapple Item Pickup";
-        private const string versionString = "2.2.0";
+        private const string versionString = "2.1.2";
 
         private static readonly Harmony harmony = new Harmony(myGUID);
 
@@ -27,8 +26,7 @@ namespace GrappleItemPickup_BepInEx
         {
             logger = Logger;
 
-            harmony.Patch(AccessTools.Method(typeof(ExosuitGrapplingArm), "FixedUpdate"), 
-               new HarmonyMethod(AccessTools.Method(typeof(GrappleItemPickupMod), nameof(GrappleItemPickupMod.GrapplingArm_Patch))));
+            harmony.PatchAll();
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
 

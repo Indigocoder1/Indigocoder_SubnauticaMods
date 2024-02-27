@@ -1,16 +1,11 @@
 ﻿using HarmonyLib;
-using GrapplingArmUpgrade_BepInEx;
 using UnityEngine;
-using BepInEx.Logging;
 
 namespace GrappleItemPickup_BepInEx
 {
     [HarmonyPatch(typeof(ExosuitGrapplingArm))]
     internal static class GrapplingArmUpgrade_FixedUpdate_Patch
     {
-        private static bool WriteLogs = GrappleItemPickupPlugin.WriteLogs.Value;
-        private static float PickupDistance = GrappleItemPickupPlugin.PickupDistance.Value;
-
         [HarmonyPatch(nameof(ExosuitGrapplingArm.FixedUpdate)), HarmonyPostfix]
         public static void GrapplingArm_Patch(ExosuitGrapplingArm __instance)
         {
@@ -24,16 +19,16 @@ namespace GrappleItemPickup_BepInEx
                 return;
             }
 
-            if (WriteLogs)
-                GrappleItemPickupPlugin.logger.Log(LogLevel.Info, "Attach flag passed");
+            if (GrappleItemPickupPlugin.WriteLogs.Value)
+                GrappleItemPickupPlugin.logger.LogInfo("Attach flag passed");
 
-            if (Vector2.Distance(__instance.front.position, __instance.hook.transform.position) > PickupDistance)
+            if (Vector2.Distance(__instance.front.position, __instance.hook.transform.position) > GrappleItemPickupPlugin.PickupDistance.Value)
             {
                 return;
             }
 
-            if (WriteLogs)
-                GrappleItemPickupPlugin.logger.Log(LogLevel.Info, "Distance flag passed, searching for item within radius");
+            if (GrappleItemPickupPlugin.WriteLogs.Value)
+                GrappleItemPickupPlugin.logger.LogInfo("Distance flag passed; searching for item within radius");
 
             Collider[] colliders = Physics.OverlapSphere(__instance.hook.transform.position, 1f);
 
@@ -48,41 +43,63 @@ namespace GrappleItemPickup_BepInEx
 
                 if (pickupable == null)
                 {
-                    if (WriteLogs)
-                        GrappleItemPickupPlugin.logger.Log(LogLevel.Info, $"Pickupable not found!");
+                    if (GrappleItemPickupPlugin.WriteLogs.Value)
+                        GrappleItemPickupPlugin.logger.LogInfo($"Pickupable not found!");
                     continue;
                 }
 
-                if (WriteLogs)
-                    GrappleItemPickupPlugin.logger.Log(LogLevel.Info, $"Pickupable = {pickupable}");
+                if (GrappleItemPickupPlugin.WriteLogs.Value)
+                    GrappleItemPickupPlugin.logger.LogInfo($"Pickupable = {pickupable}");
 
-                if (pickupable)
+                GrappleItemPickupPlugin.logger.LogInfo($"Pickupable (bool) = {(bool)pickupable}");
+
+                if (!pickupable)
                 {
-                    if (!__instance.exosuit.storageContainer.container.HasRoomFor(pickupable))
+                    return;
+                }
+
+                Vehicle pickupableVehicle = pickupable.GetComponent<Vehicle>();
+                if (pickupableVehicle == Player.main.GetVehicle())
+                {
+                    if (GrappleItemPickupPlugin.WriteLogs.Value)
+                        GrappleItemPickupPlugin.logger.LogInfo("Returning because the item trying to be picked up is the current Vehicle");
+
+                    return;
+                }
+
+                SubRoot pickupableSubRoot = pickupable.GetComponent<SubRoot>();
+                if (pickupableSubRoot == Player.main.GetCurrentSub())
+                {
+                    if (GrappleItemPickupPlugin.WriteLogs.Value)
+                        GrappleItemPickupPlugin.logger.LogInfo("Returning because the item trying to be picked up is the current SubRoot");
+
+                    return;
+                }
+
+                if (!__instance.exosuit.storageContainer.container.HasRoomFor(pickupable))
+                {
+                    if (Player.main.GetVehicle() == __instance.exosuit)
                     {
-                        if (Player.main.GetVehicle() == __instance.exosuit)
-                        {
-                            ErrorMessage.AddMessage(Language.main.Get("ContainerCantFit"));
-                        }
+                        ErrorMessage.AddMessage(Language.main.Get("ContainerCantFit"));
                     }
-                    else
-                    {
-                        //Thanks ExosuitDrillArm :)
+                }
+                else
+                {
+                    //Thanks ExosuitDrillArm :)
 
-                        string techName = Language.main.Get(pickupable.GetTechName());
-                        ErrorMessage.AddMessage(Language.main.GetFormat<string>("VehicleAddedToStorage", techName));
-                        uGUI_IconNotifier.main.Play(pickupable.GetTechType(), uGUI_IconNotifier.AnimationType.From, null);
-                        pickupable.Initialize();
-                        InventoryItem item = new InventoryItem(pickupable);
-                        __instance.exosuit.storageContainer.container.UnsafeAdd(item);
-                        pickupable.PlayPickupSound();
+                    string techName = Language.main.Get(pickupable.GetTechName());
+                    ErrorMessage.AddMessage(Language.main.GetFormat<string>("VehicleAddedToStorage", techName));
+                    uGUI_IconNotifier.main.Play(pickupable.GetTechType(), uGUI_IconNotifier.AnimationType.From, null);
+                    pickupable.Initialize();
+                    InventoryItem item = new InventoryItem(pickupable);
+                    __instance.exosuit.storageContainer.container.UnsafeAdd(item);
+                    pickupable.PlayPickupSound();
 
-                        if (WriteLogs)
-                            GrappleItemPickupPlugin.logger.Log(LogLevel.Debug, $"Adding item to container: {pickupable.name}");
+                    if (GrappleItemPickupPlugin.WriteLogs.Value)
+                        GrappleItemPickupPlugin.logger.LogInfo($"Adding {pickupable.name} to prawn storage");
 
-                        __instance.ResetHook();
-                        break;
-                    }
+                    __instance.ResetHook();
+                    break;
                 }
             }
         }
