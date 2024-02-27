@@ -1,11 +1,9 @@
 ﻿using HarmonyLib;
 using ReinforcedRadiationSuit.Items;
-using System.Collections.Generic;
-using System.Linq;
+using UnityEngine;
 
 namespace ReinforcedRadiationSuit.Patches
 {
-    /*
     [HarmonyPatch(typeof(Equipment))]
     internal static class EquipmentPatches
     {
@@ -14,23 +12,10 @@ namespace ReinforcedRadiationSuit.Patches
         {
             if (Inventory.main.equipment != __instance) return;
 
-            if(techType == TechType.Rebreather && __instance.GetCount(RebreatherRadiationHelmet_Craftable.techType) != 0)
+            if(techType == TechType.Rebreather)
             {
-                __result = __instance.GetCount(RebreatherRadiationHelmet_Craftable.techType);
-            }
-
-            if(SuitToRadiationTechTypes.Keys.Contains(techType) && __instance.GetCount(techType) != 0)
-            {
-                __result = __instance.GetCount(SuitToRadiationTechTypes[techType]);
+                __result = Mathf.Max(__result, __instance.GetCount(RebreatherRadiationHelmet_Craftable.techType));
             }
         }
-
-        private static Dictionary<TechType, TechType> SuitToRadiationTechTypes = new()
-        {
-            { TechType.RadiationSuit, ReinforcedRadiationSuit_Craftable.techType },
-            { TechType.RadiationGloves, ReinforcedRadiationGloves_Craftable.techType  },
-            { TechType.RadiationHelmet, RebreatherRadiationHelmet_Craftable.techType }
-        };
     }
-    */
 }
