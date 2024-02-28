@@ -14,7 +14,7 @@ using Nautilus.Json.Converters;
 using Newtonsoft.Json;
 using ReinforcedRadiationSuit.Items;
 using BepInEx.Bootstrap;
-using DeathrunRemade;
+using System;
 
 namespace ReinforcedRadiationSuit
 {
@@ -25,7 +25,7 @@ namespace ReinforcedRadiationSuit
     {
         private const string myGUID = "Indigocoder.ReinforcedRadiationSuit";
         private const string pluginName = "Reinforced Radiation Suit";
-        private const string versionString = "1.0.3";
+        private const string versionString = "1.0.4";
         public static ManualLogSource logger;
 
         public static string AssetsFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
@@ -89,8 +89,13 @@ namespace ReinforcedRadiationSuit
 
         private void AddDeathrunCrushDepths()
         {
-            DeathrunAPI.AddSuitCrushDepth(ReinforcedRadiationSuit_Craftable.techType, new List<float> { 900, 750, 600 });
-            DeathrunAPI.AddNitrogenModifier(RebreatherRadiationHelmet_Craftable.techType, new List<float> { .3f, .15f, 0f });
+            Type DeathrunAPI = AccessTools.TypeByName("DeathrunRemade.DeathrunAPI");
+
+            MethodInfo AddSuitCrushDepth = DeathrunAPI.GetMethod("AddSuitCrushDepth", new Type[] { typeof(TechType), typeof(IEnumerable<float>) });
+            MethodInfo AddNitrogenModifier = DeathrunAPI.GetMethod("AddNitrogenModifier", new Type[] { typeof(TechType), typeof(IEnumerable<float>) });
+
+            AddSuitCrushDepth.Invoke(null, new object[] { ReinforcedRadiationSuit_Craftable.techType, new List<float> { 900, 750, 600 } });
+            AddNitrogenModifier.Invoke(null, new object[] { RebreatherRadiationHelmet_Craftable.techType, new List<float> { .3f, .15f, 0f } });
         }
 
         private static RecipeData GetRecipeFromJson(string path)
