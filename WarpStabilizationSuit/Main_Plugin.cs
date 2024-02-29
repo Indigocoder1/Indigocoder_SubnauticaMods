@@ -14,17 +14,20 @@ using Nautilus.Handlers;
 using Nautilus.Crafting;
 using Nautilus.Json.Converters;
 using Newtonsoft.Json;
+using System;
+using BepInEx.Bootstrap;
 
 namespace WarpStabilizationSuit
 {
     [BepInPlugin(myGUID, pluginName, versionString)]
     [BepInDependency("com.snmodding.nautilus", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("Indigocoder.SuitLib", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency("com.github.tinyhoot.DeathrunRemade", BepInDependency.DependencyFlags.SoftDependency)]
     public class Main_Plugin : BaseUnityPlugin
     {
         private const string myGUID = "Indigocoder.WarpStabilizationSuit";
         private const string pluginName = "Warp Stabilization Suit";
-        private const string versionString = "1.3.9";
+        private const string versionString = "1.4.0";
         public static ManualLogSource logger;
 
         public static string AssetsFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
@@ -62,6 +65,10 @@ namespace WarpStabilizationSuit
             KnownTechHandler.SetAnalysisTechEntry(TechType.Warper, new List<TechType> { Suit_Craftable.techType, Gloves_Craftable.techType });
 
             InitializeSuits();
+            if (Chainloader.PluginInfos.ContainsKey("com.github.tinyhoot.DeathrunRemade"))
+            {
+                gameObject.AddComponent<DeathrunComponentAdder>();
+            }
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
         }
@@ -96,6 +103,19 @@ namespace WarpStabilizationSuit
         {
             var content = File.ReadAllText(path);
             return JsonConvert.DeserializeObject<RecipeData>(content, new CustomEnumConverter());
+        }
+    }
+
+    internal class DeathrunComponentAdder : MonoBehaviour
+    {
+        private void Start()
+        {
+            Type DeathrunAPI = AccessTools.TypeByName("DeathrunRemade.DeathrunAPI");
+
+            MethodInfo AddSuitCrushDepth = DeathrunAPI.GetMethod("AddSuitCrushDepth", new Type[] { typeof(TechType), typeof(IEnumerable<float>) });
+            AddSuitCrushDepth.Invoke(null, new object[] { Suit_Craftable.techType, new float[] { 1700f, 1600f } });
+
+            Destroy(this);
         }
     }
 }

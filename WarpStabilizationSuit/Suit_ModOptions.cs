@@ -13,7 +13,7 @@ namespace WarpStabilizationSuit
             OptionsPanelHandler.RegisterModOptions(this);
 
             var harderRecipeOption = Main_Plugin.UseHardRecipe.ToModToggleOption();
-            harderRecipeOption.OnChanged += OnHarderRecipeOptionChanged; ;
+            harderRecipeOption.OnChanged += OnHarderRecipeOptionChanged;
             AddItem(harderRecipeOption);
         }
 
