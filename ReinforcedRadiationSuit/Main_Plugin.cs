@@ -21,11 +21,12 @@ namespace ReinforcedRadiationSuit
     [BepInPlugin(myGUID, pluginName, versionString)]
     [BepInDependency("com.snmodding.nautilus", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("Indigocoder.SuitLib", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency("com.github.tinyhoot.DeathrunRemade", BepInDependency.DependencyFlags.SoftDependency)]
     public class Main_Plugin : BaseUnityPlugin
     {
         private const string myGUID = "Indigocoder.ReinforcedRadiationSuit";
         private const string pluginName = "Reinforced Radiation Suit";
-        private const string versionString = "1.0.4";
+        private const string versionString = "1.0.5";
         public static ManualLogSource logger;
 
         public static string AssetsFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
@@ -56,7 +57,7 @@ namespace ReinforcedRadiationSuit
 
             if(Chainloader.PluginInfos.ContainsKey("com.github.tinyhoot.DeathrunRemade"))
             {
-                AddDeathrunCrushDepths();
+                gameObject.AddComponent<DeathrunComponentAdder>();
             }
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
@@ -87,21 +88,26 @@ namespace ReinforcedRadiationSuit
             ModdedSuitsManager.AddModdedGloves(warpGloves);
         }
 
-        private void AddDeathrunCrushDepths()
+        private static RecipeData GetRecipeFromJson(string path)
+        {
+            var content = File.ReadAllText(path);
+            return JsonConvert.DeserializeObject<RecipeData>(content, new CustomEnumConverter());
+        }
+    }
+
+    internal class DeathrunComponentAdder : MonoBehaviour
+    {
+        private void Start()
         {
             Type DeathrunAPI = AccessTools.TypeByName("DeathrunRemade.DeathrunAPI");
 
             MethodInfo AddSuitCrushDepth = DeathrunAPI.GetMethod("AddSuitCrushDepth", new Type[] { typeof(TechType), typeof(IEnumerable<float>) });
             MethodInfo AddNitrogenModifier = DeathrunAPI.GetMethod("AddNitrogenModifier", new Type[] { typeof(TechType), typeof(IEnumerable<float>) });
 
-            AddSuitCrushDepth.Invoke(null, new object[] { ReinforcedRadiationSuit_Craftable.techType, new List<float> { 900, 750, 600 } });
+            AddSuitCrushDepth.Invoke(null, new object[] { ReinforcedRadiationSuit_Craftable.techType, new List<float> { 900, 700 } });
             AddNitrogenModifier.Invoke(null, new object[] { RebreatherRadiationHelmet_Craftable.techType, new List<float> { .3f, .15f, 0f } });
-        }
 
-        private static RecipeData GetRecipeFromJson(string path)
-        {
-            var content = File.ReadAllText(path);
-            return JsonConvert.DeserializeObject<RecipeData>(content, new CustomEnumConverter());
+            Destroy(this);
         }
     }
 }
