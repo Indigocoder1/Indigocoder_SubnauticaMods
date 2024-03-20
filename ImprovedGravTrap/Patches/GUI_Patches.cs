@@ -2,6 +2,7 @@
 using ImprovedGravTrap.Monobehaviours;
 using UnityEngine;
 using System.Text;
+using static VFXParticlesPool;
 
 namespace ImprovedGravTrap.Patches
 {
@@ -13,7 +14,7 @@ namespace ImprovedGravTrap.Patches
             public static string GetAdvanceKey()
             {
                 GameInput.Device device = GameInput.GetPrimaryDevice();
-                return GameInput.GetBinding(device, GameInput.Button.AltTool, GameInput.BindingSet.Primary);
+                return GameInput.GetBinding(device, GameInput.Button.Deconstruct, GameInput.BindingSet.Primary);
             }
 
             public static int GetListChangeDelta()
@@ -30,7 +31,7 @@ namespace ImprovedGravTrap.Patches
                     }
                 }
 
-                return GameInput.GetButtonDown(GameInput.Button.AltTool) ? 1 : 0;
+                return GameInput.GetButtonDown(GameInput.Button.Deconstruct) ? 1 : 0;
             }
         }
 
@@ -51,6 +52,23 @@ namespace ImprovedGravTrap.Patches
             //Handle negative scoll wheel input wrap around
             objectsType.techTypeListIndex = (objectsType.techTypeListIndex == 0 && changeDelta < 0) ? Main_Plugin.AllowedTypes.Count - 1 : nextIndex;
             TooltipFactory.WriteDescription(sb, $"Allowed type = {objectsType.GetCurrentListName()}");
+
+            //Storage opening
+            StorageContainer container = obj.GetComponentInChildren<StorageContainer>();
+            
+            if (!IngameMenu.main.selected && GameInput.GetButtonDown(GameInput.Button.AltTool))
+            {
+                //Remove player equipment UI
+                Player.main.pda.ui.OnClosePDA();
+
+                //Open storage container
+                container.Open(obj.transform);
+
+                //Refresh UI to show container contents
+                Player.main.pda.ui.OnOpenPDA(PDATab.Inventory);
+                Player.main.pda.ui.Select();
+                Player.main.pda.ui.OnPDAOpened();
+            }
         } 
 
         [HarmonyPatch(typeof(TooltipFactory), nameof(TooltipFactory.ItemActions))]

@@ -162,23 +162,18 @@ namespace ImprovedGravTrap.Patches
                 instance.gameObject.GetComponent<Pickupable>().attached = true;
             }
         }
+
         private static void HandleStorageOpening(Gravsphere instance, StorageContainer container)
         {
-            //If deployed, in range and open key pressed, open storage
+            //If deployed, in range and open key pressed: open storage
             bool inRange = Vector3.Distance(instance.transform.position, Player.main.transform.position) <= Main_Plugin.GravStorageOpenDistance.Value;
             bool trapInInventory = Inventory.main.Contains(instance.pickupable);
+
+            Main_Plugin.logger.LogInfo($"Container = {container}");
+
             if (inRange && GameInput.GetButtonDown(GameInput.Button.AltTool) && !trapInInventory)
             {
-                if (!instance.GetComponent<Pickupable>()._attached)
-                {
-                    container.Open();
-                }
-            }
-
-            //If not deployed & open key pressed, open storage
-            if (!container.GetOpen() && !IngameMenu.main.selected && GameInput.GetButtonDown(GameInput.Button.AltTool) && trapInInventory)
-            {
-                container.Open(instance.transform);
+                container.Open();
             }
         }
         private static void HandleHandText(Gravsphere instance, StorageContainer container)

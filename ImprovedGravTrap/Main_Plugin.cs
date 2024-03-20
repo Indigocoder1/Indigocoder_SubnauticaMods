@@ -18,7 +18,7 @@ namespace ImprovedGravTrap
     {
         private const string myGUID = "Indigocoder.ImprovedGravTrap";
         private const string pluginName = "Improved Grav Trap";
-        private const string versionString = "1.1.6";
+        private const string versionString = "1.1.7";
 
         private static readonly string ConfigFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "ImprovedGravTrap.json");
 
