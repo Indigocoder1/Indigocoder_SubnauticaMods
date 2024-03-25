@@ -13,7 +13,11 @@ namespace Chameleon.Monobehaviors
 
         public void OnHandClick(GUIHand hand)
         {
-            Utils.PlayFMODAsset(sound, targetPosition.position);
+            if(sound != null)
+            {
+                Utils.PlayFMODAsset(sound, targetPosition.position);
+            }
+
             Player.main.SetPosition(targetPosition.position, targetPosition.rotation);
             Player.main.SetCurrentSub(subRoot, true);
         }
