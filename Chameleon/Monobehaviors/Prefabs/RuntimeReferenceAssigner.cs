@@ -1,4 +1,4 @@
-﻿using Chameleon.Monobehaviors.Cyclops;
+﻿using Chameleon.Interfaces;
 using UnityEngine;
 
 namespace Chameleon.Monobehaviors.Prefabs

@@ -58,6 +58,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
@@ -75,18 +78,35 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Craftables\Chameleon_Craftable.cs" />
+    <Compile Include="Interfaces\IUIElement.cs" />
     <Compile Include="Main_Plugin.cs" />
     <Compile Include="Monobehaviors\Camo_Button.cs" />
+    <Compile Include="Monobehaviors\UI\ChameleonHUDManager.cs" />
     <Compile Include="Monobehaviors\Cyclops\CyclopsReferenceManager.cs" />
-    <Compile Include="Monobehaviors\Cyclops\ICyclopsReferencer.cs" />
+    <Compile Include="Interfaces\ICyclopsReferencer.cs" />
+    <Compile Include="Monobehaviors\Prefabs\ApplyHUDMaterial.cs" />
     <Compile Include="Monobehaviors\Prefabs\RuntimeReferenceAssigner.cs" />
+    <Compile Include="Monobehaviors\Prefabs\SpawnFloodlights.cs" />
     <Compile Include="Monobehaviors\Prefabs\SpawnPowerCells.cs" />
     <Compile Include="Monobehaviors\Prefabs\SpawnSteeringWheel.cs" />
     <Compile Include="Monobehaviors\Prefabs\SpawnUpgradeModules.cs" />
     <Compile Include="Monobehaviors\SubEnterHandTarget.cs" />
+    <Compile Include="Monobehaviors\Tags\FloodlightMarker.cs" />
+    <Compile Include="Monobehaviors\UI\DepthUIManager.cs" />
+    <Compile Include="Monobehaviors\UI\EngineUIManager.cs" />
+    <Compile Include="Monobehaviors\UI\HealthUIManager.cs" />
+    <Compile Include="Monobehaviors\UI\NoiseUIManager.cs" />
+    <Compile Include="Monobehaviors\UI\PowerUIManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

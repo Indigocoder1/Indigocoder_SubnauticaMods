@@ -1,12 +1,11 @@
 ﻿using Nautilus.Assets;
-using Nautilus.Crafting;
-using static CraftData;
 using UnityEngine;
 using Nautilus.Assets.Gadgets;
 using System.IO;
 using System.Collections;
 using Chameleon.Monobehaviors.Cyclops;
-using System;
+using Nautilus.Utility;
+using Chameleon.Interfaces;
 
 namespace Chameleon.Craftables
 {
@@ -16,7 +15,7 @@ namespace Chameleon.Craftables
 
         public static void Patch()
         {
-            PrefabInfo prefabInfo = PrefabInfo.WithTechType("chameleon", "Chameleon Sub", "An advanced sub that utilizes cloaking technology for enhanced stealth")
+            PrefabInfo prefabInfo = PrefabInfo.WithTechType("Chameleon", "Chameleon Sub", "An advanced sub that utilizes cloaking technology for enhanced stealth")
                 .WithIcon(SpriteManager.Get(TechType.PosterAurora));
 
             techType = prefabInfo.TechType;
@@ -39,9 +38,8 @@ namespace Chameleon.Craftables
 
         private static IEnumerator GetSubPrefab(IOut<GameObject> prefabOut)
         {
-            Main_Plugin.logger.LogInfo("Retrieving sub prefab");
+            GameObject model = Main_Plugin.assetBundle.LoadAsset<GameObject>("ChameleonSub");
 
-            GameObject model = Main_Plugin.assetBundle.LoadAsset<GameObject>("Chameleon");
             model.SetActive(false);
             GameObject chameleon = GameObject.Instantiate(model);
 
@@ -51,6 +49,13 @@ namespace Chameleon.Craftables
             {
                 referencer.OnCyclopsReferenceFinished(CyclopsReferenceManager.CyclopsReference);
             }
+
+            yield return new WaitUntil(() => MaterialUtils.IsReady);
+
+            MaterialUtils.ApplySNShaders(chameleon, shininess: 1f);
+            chameleon.transform.Find("Model/Exterior/Sub_Canopy").GetComponent<MeshRenderer>().material.color = new Color(1f, 1f, 1f, 0.3f);
+
+            PrefabUtils.AddBasicComponents(chameleon, "chameleon", techType, LargeWorldEntity.CellLevel.Batch);
 
             prefabOut.Set(chameleon);
         }

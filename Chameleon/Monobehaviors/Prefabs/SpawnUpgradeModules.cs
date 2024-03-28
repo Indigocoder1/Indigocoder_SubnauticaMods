@@ -1,4 +1,4 @@
-﻿using Chameleon.Monobehaviors.Cyclops;
+﻿using Chameleon.Interfaces;
 using System;
 using UnityEngine;
 

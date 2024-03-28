@@ -22,7 +22,7 @@ namespace Chameleon.Monobehaviors
         {
             subExteriorRenderer.materials[0] = camoMaterial;
             accentMaterial.EnableKeyword("_Emission");
-            canopyMaterial.color = new Color(108, 108, 108, 255);
+            canopyMaterial.color = new Color(108 / 255f, 108 / 255f, 108 / 255f, 1f);
         }
 
         public void DisableCamo()
