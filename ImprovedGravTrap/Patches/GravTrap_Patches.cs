@@ -64,6 +64,7 @@ namespace ImprovedGravTrap.Patches
             HandleBufferTransfer(__instance, container);
             HandleHeldEnable(__instance);
             HandleHandText(__instance, container);
+            HandleModeAdvancing(__instance);
         }
 
         private static void HandleStorageAdding(Gravsphere instance, StorageContainer container)
@@ -162,16 +163,12 @@ namespace ImprovedGravTrap.Patches
                 instance.gameObject.GetComponent<Pickupable>().attached = true;
             }
         }
-
         private static void HandleStorageOpening(Gravsphere instance, StorageContainer container)
         {
             //If deployed, in range and open key pressed: open storage
             bool inRange = Vector3.Distance(instance.transform.position, Player.main.transform.position) <= Main_Plugin.GravStorageOpenDistance.Value;
-            bool trapInInventory = Inventory.main.Contains(instance.pickupable);
 
-            Main_Plugin.logger.LogInfo($"Container = {container}");
-
-            if (inRange && GameInput.GetButtonDown(GameInput.Button.AltTool) && !trapInInventory)
+            if (inRange && GameInput.GetButtonDown(GameInput.Button.AltTool) && !Player.main.pda.isOpen)
             {
                 container.Open();
             }
@@ -185,6 +182,8 @@ namespace ImprovedGravTrap.Patches
                 return;
             }
 
+            GravTrapObjectsType objectsType = instance.GetComponent<GravTrapObjectsType>();
+
             string gravtrapactivate =
                     container.container.IsFull() ? "Cannot Activate, Storage is Full" :
                     !instance.trigger.enabled && !ResetTriggers[instance] ? "Activate Gravtrap" :
@@ -193,15 +192,26 @@ namespace ImprovedGravTrap.Patches
             string primaryString =
                 $"{Language.main.GetFormat<string, string>("HandReticleAddButtonFormat", "Deploy Gravtrap", uGUI.FormatButton(GameInput.Button.RightHand))}";
 
-            string secondaryString = 
-                $"{Language.main.GetFormat<string, string>("HandReticleAddButtonFormat", gravtrapactivate, uGUI.FormatButton(GameInput.Button.LeftHand))}\n"+
-                $"{Language.main.GetFormat<string, string>("HandReticleAddButtonFormat", "Open Storage", uGUI.FormatButton(GameInput.Button.AltTool))}";
+            string secondaryString =
+                $"{Language.main.GetFormat<string, string>("HandReticleAddButtonFormat", gravtrapactivate, uGUI.FormatButton(GameInput.Button.LeftHand))}\n" +
+                $"{Language.main.GetFormat<string, string>("HandReticleAddButtonFormat", "Open Storage", uGUI.FormatButton(GameInput.Button.AltTool))} | " +
+                $"{Language.main.GetFormat<string, string>("HandReticleAddButtonFormat", "Advance Mode", uGUI.FormatButton(GameInput.Button.Deconstruct))}" +
+                $" ({objectsType.GetCurrentListName()})";
 
-            if(!container.GetOpen() && !IngameMenu.main.selected)
+            if (!container.GetOpen() && !IngameMenu.main.selected)
             {
                 HandReticle.main.textUse = primaryString;
                 HandReticle.main.textUseSubscript = secondaryString;
             }
+        }
+        private static void HandleModeAdvancing(Gravsphere instance)
+        {
+            GravTrapObjectsType objectsType = instance.GetComponent<GravTrapObjectsType>();
+
+            int indexDelta = GameInput.GetButtonDown(GameInput.Button.Deconstruct) ? 1 : 0;
+            int nextIndex = (objectsType.techTypeListIndex + indexDelta) % Main_Plugin.AllowedTypes.Count;
+
+            objectsType.techTypeListIndex = nextIndex;
         }
 
         #region ---Transpilers ---

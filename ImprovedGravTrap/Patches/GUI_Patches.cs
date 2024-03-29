@@ -58,16 +58,38 @@ namespace ImprovedGravTrap.Patches
             
             if (!IngameMenu.main.selected && GameInput.GetButtonDown(GameInput.Button.AltTool))
             {
-                //Remove player equipment UI
-                Player.main.pda.ui.OnClosePDA();
+                PDA pda = Player.main.GetPDA();
 
-                //Open storage container
-                container.Open(obj.transform);
+                if(!container.GetOpen())
+                {
+                    //Remove player equipment UI
+                    pda.ui.OnClosePDA();
 
-                //Refresh UI to show container contents
-                Player.main.pda.ui.OnOpenPDA(PDATab.Inventory);
-                Player.main.pda.ui.Select();
-                Player.main.pda.ui.OnPDAOpened();
+                    //Open storage container
+                    container.Open(obj.transform);
+
+                    //Have to set open manually since PDA.Open returns false (it's already open) and it won't be set in StorageContainer.Open
+                    container.open = true;
+
+                    //Refresh UI to show container contents
+                    pda.ui.OnOpenPDA(PDATab.Inventory);
+                    pda.ui.Select();
+                    pda.ui.OnPDAOpened();
+                }
+                else
+                {
+                    //Remove storage UI
+                    pda.ui.OnClosePDA();
+
+                    //Clear used storage
+                    Inventory.main.ClearUsedStorage();
+                    container.OnClosePDA(Player.main.pda);
+
+                    //Refresh UI
+                    pda.ui.OnOpenPDA(PDATab.Inventory);
+                    pda.ui.Select();
+                    pda.ui.OnPDAOpened();
+                }
             }
         } 
 
@@ -80,6 +102,13 @@ namespace ImprovedGravTrap.Patches
 
             string button = TypeListSwitcher.GetAdvanceKey();
             TooltipFactory.WriteAction(sb, button, "Switch object's type"); //Display advance type prompt in inventory
+
+            GameInput.Device device = GameInput.GetPrimaryDevice();
+            string altToolKey = GameInput.GetBinding(device, GameInput.Button.AltTool, GameInput.BindingSet.Primary);
+
+            StorageContainer container = item.item.GetComponentInChildren<StorageContainer>();
+
+            TooltipFactory.WriteAction(sb, altToolKey, container.open ? "Close Storage" : "Open Storage");
         }
         #endregion
 
