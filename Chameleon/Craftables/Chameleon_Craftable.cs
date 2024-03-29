@@ -43,6 +43,11 @@ namespace Chameleon.Craftables
             model.SetActive(false);
             GameObject chameleon = GameObject.Instantiate(model);
 
+            yield return new WaitUntil(() => MaterialUtils.IsReady);
+
+            //Apply shaders first so you don't mess with the instantiated stuff
+            MaterialUtils.ApplySNShaders(chameleon, shininess: 1f);
+
             yield return CyclopsReferenceManager.EnsureCyclopsReference();
 
             foreach (ICyclopsReferencer referencer in chameleon.GetComponentsInChildren<ICyclopsReferencer>())
@@ -50,9 +55,6 @@ namespace Chameleon.Craftables
                 referencer.OnCyclopsReferenceFinished(CyclopsReferenceManager.CyclopsReference);
             }
 
-            yield return new WaitUntil(() => MaterialUtils.IsReady);
-
-            MaterialUtils.ApplySNShaders(chameleon, shininess: 1f);
             chameleon.transform.Find("Model/Exterior/Sub_Canopy").GetComponent<MeshRenderer>().material.color = new Color(1f, 1f, 1f, 0.3f);
 
             PrefabUtils.AddBasicComponents(chameleon, "chameleon", techType, LargeWorldEntity.CellLevel.Batch);

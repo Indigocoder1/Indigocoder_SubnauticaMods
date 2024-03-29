@@ -43,7 +43,7 @@ namespace Chameleon.Monobehaviors.UI
             if (Player.main.currentSub != subRoot || subRoot.subDestroyed) return;
 
             float targetAlpha = hudActive ? 1f : 0f;
-            canvasGroup.alpha = Mathf.Lerp(canvasGroup.alpha, targetAlpha, Time.deltaTime * 3f);
+            canvasGroup.alpha = Mathf.Lerp(canvasGroup.alpha, targetAlpha, Time.deltaTime * 4f);
             canvasGroup.interactable = hudActive;
         }
 

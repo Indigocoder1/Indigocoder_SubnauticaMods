@@ -11,7 +11,7 @@ namespace Chameleon.Monobehaviors.UI
 
         public void UpdateUI()
         {
-            float normalizedPower = subRoot.powerRelay.GetMaxPower() / subRoot.powerRelay.GetMaxPower();
+            float normalizedPower = subRoot.powerRelay.GetPower() / subRoot.powerRelay.GetMaxPower();
             int currentPower = subRoot.powerRelay.GetMaxPower() == 0f ? 0 : Mathf.CeilToInt(normalizedPower * 100f);
 
             powerText.text = $"{currentPower}%";
