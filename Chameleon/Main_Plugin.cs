@@ -3,6 +3,7 @@ using BepInEx.Logging;
 using Chameleon.Craftables;
 using HarmonyLib;
 using IndigocoderLib;
+using Nautilus.Handlers;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
@@ -32,6 +33,8 @@ namespace Chameleon
             logger = Logger;
 
             PiracyDetector.TryFindPiracy();
+
+            LanguageHandler.RegisterLocalizationFolder();
             assetBundle = AssetBundle.LoadFromFile(Path.Combine(AssetsFolderPath, "chameleon"));
 
             Chameleon_Craftable.Patch();

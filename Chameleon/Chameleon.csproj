@@ -91,6 +91,7 @@
     <Compile Include="Interfaces\IUIElement.cs" />
     <Compile Include="Main_Plugin.cs" />
     <Compile Include="Monobehaviors\Camo_Button.cs" />
+    <Compile Include="Monobehaviors\ChameleonUpgradeConsole.cs" />
     <Compile Include="Monobehaviors\Prefabs\ApplyTextMaterial.cs" />
     <Compile Include="Monobehaviors\UI\ChameleonHUDManager.cs" />
     <Compile Include="Monobehaviors\Cyclops\CyclopsReferenceManager.cs" />

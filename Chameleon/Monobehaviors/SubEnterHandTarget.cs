@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Chameleon.Monobehaviors
 {
@@ -10,6 +11,7 @@ namespace Chameleon.Monobehaviors
         public SubRoot subRoot;
         public Transform targetPosition;
         public FMODAsset sound;
+        public event EventHandler OnEnter;
 
         public void OnHandClick(GUIHand hand)
         {
@@ -20,11 +22,16 @@ namespace Chameleon.Monobehaviors
 
             Player.main.SetPosition(targetPosition.position, targetPosition.rotation);
             Player.main.SetCurrentSub(subRoot, true);
+
+            OnEnter?.Invoke(this, EventArgs.Empty);
         }
 
         public void OnHandHover(GUIHand hand)
         {
-            string text = (subRoot ? "Board Chameleon" : "Disembark Chameleon");
+            string enterText = Language.main.Get("ChameleonEnter");
+            string exitText = Language.main.Get("ChameleonExit");
+
+            string text = (subRoot ? enterText : exitText);
             HandReticle.main.SetText(HandReticle.TextType.Hand, text, true, GameInput.Button.LeftHand);
             HandReticle.main.SetText(HandReticle.TextType.HandSubscript, string.Empty, false, GameInput.Button.None);
             HandReticle.main.SetIcon(HandReticle.IconType.Hand, 1f);
