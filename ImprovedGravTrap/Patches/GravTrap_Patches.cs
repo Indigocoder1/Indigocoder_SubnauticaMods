@@ -140,7 +140,7 @@ namespace ImprovedGravTrap.Patches
         {
             if (!Player.main.IsInside())
             {
-                if (GameInput.GetButtonDown(GameInput.Button.LeftHand))
+                if (GameInput.GetButtonDown(GameInput.Button.LeftHand) && !instance.pickupable.isValidHandTarget)
                 {
                     if (!instance.trigger.enabled && !ResetTriggers[instance])
                     {

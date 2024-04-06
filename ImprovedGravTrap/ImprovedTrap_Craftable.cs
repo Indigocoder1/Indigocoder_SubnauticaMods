@@ -65,6 +65,8 @@ namespace ImprovedGravTrap
                     Main_Plugin.logger.LogError("Failed to add COI. Unable to attach storage!");
                 }
 
+                gameObject.GetComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Global;
+
                 PickupableStorage pickupableStorage = coi.gameObject.EnsureComponent<PickupableStorage>();
                 pickupableStorage.pickupable = gameObject.GetComponent<Pickupable>();
             };
