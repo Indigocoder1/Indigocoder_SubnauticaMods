@@ -1,8 +1,6 @@
 ﻿using HarmonyLib;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static VehicleUpgradeConsoleInput;
 
 namespace CyclopsBeaconDeployer.Patches
 {
@@ -13,7 +11,7 @@ namespace CyclopsBeaconDeployer.Patches
         private static Dictionary<CyclopsDecoyManager, GameObject> previousPrefab = new Dictionary<CyclopsDecoyManager, GameObject>();
 
         [HarmonyPatch(nameof(CyclopsDecoyManager.TryLaunchDecoy)), HarmonyPrefix]
-        private static void TryLaunchDecoy_Prefix(CyclopsDecoyManager __instance)
+        private static bool TryLaunchDecoy_Prefix(CyclopsDecoyManager __instance, bool __result)
         {
             Equipment decoySlots = __instance.decoyLoadingTube.decoySlots;
             int decoyCount = 0;
@@ -58,9 +56,6 @@ namespace CyclopsBeaconDeployer.Patches
                 }
             }
 
-            Main_Plugin.logger.LogInfo($"Launching beacon = {launchingBeacon}");
-            Main_Plugin.logger.LogInfo($"Slot with beacon = {slotWithBeacon}");
-            Main_Plugin.logger.LogInfo($"Slot with decoy = {slotWithDecoy}");
             if (!decoyInfos.ContainsKey(__instance.subRoot))
             {
                 decoyInfos.Add(__instance.subRoot, new DecoyInfo(launchingBeacon, slotWithDecoy, slotWithBeacon));
@@ -69,6 +64,14 @@ namespace CyclopsBeaconDeployer.Patches
             {
                 decoyInfos[__instance.subRoot] = new DecoyInfo(launchingBeacon, slotWithDecoy, slotWithBeacon);
             }
+
+            if (!launchingBeacon && string.IsNullOrEmpty(slotWithDecoy))
+            {
+                __result = false;
+                return false;
+            }
+
+            return true;
         }
 
         [HarmonyPatch(nameof(CyclopsDecoyManager.LaunchWithDelay)), HarmonyPostfix]

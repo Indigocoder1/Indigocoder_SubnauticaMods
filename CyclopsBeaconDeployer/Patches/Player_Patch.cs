@@ -24,7 +24,14 @@ namespace CyclopsBeaconDeployer.Patches
                 return;
             }
 
-            __result = !SubRoot_Patch.inputFields[__instance.currentSub].isFocused;
+            if(SubRoot_Patch.inputFields.TryGetValue(__instance.currentSub, out var inputField))
+            {
+                __result = !inputField.isFocused;
+            }
+            else
+            {
+                Main_Plugin.logger.LogError($"Input field not found for sub: {__instance.currentSub.name}!");
+            }
         }
     }
 }

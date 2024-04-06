@@ -26,7 +26,6 @@ namespace CyclopsBeaconDeployer.Patches
             DecoyManager_Patches.DecoyInfo decoyInfo = DecoyManager_Patches.decoyInfos[instance.subRoot];
             if (!decoyInfo.launchedBeacon)
             {
-                Main_Plugin.logger.LogInfo($"Slot w/ decoy = {decoyInfo.slotWithDecoy}");
                 return decoyInfo.slotWithDecoy;
             }
 

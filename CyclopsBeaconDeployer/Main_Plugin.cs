@@ -17,7 +17,7 @@ namespace CyclopsBeaconDeployer
     {
         private const string myGUID = "Indigocoder.CyclopsBeaconDeployer";
         private const string pluginName = "Cyclops Beacon Deployer";
-        private const string versionString = "1.1.1";
+        private const string versionString = "1.1.3";
 
         public static ConfigEntry<bool> WriteLogs;
 
