@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using Ingredient = CraftData.Ingredient;
 
 namespace CustomCraftGUI.Monobehaviors
 {
@@ -23,16 +25,32 @@ namespace CustomCraftGUI.Monobehaviors
             }
         }
 
+        [Header("Item Info")]
+        public TMP_InputField customItemNameInputField;
+        public uGUI_ItemIcon customItemIcon;
+
+        [Header("Animators")]
         public Animator ingredientsButtonAnimator;
         public Animator linkedItemsButtonAnimator;
 
-        private List<CraftData.Ingredient> ingredients = new();
-        private List<CraftData.Ingredient> linkedItems = new();
+        [Header("Prefabs")]
+        public GameObject ingredientPrefab;
+        public GameObject customItemPrefab;
+        public Transform ingredientsParent;
+        public Transform linkedItemsParent;
+        public Transform customItemsParent;
+
+        private Dictionary<CustomItem, List<Ingredient>> ingredients = new();
+        private Dictionary<CustomItem, List<Ingredient>> linkedItems = new();
         private bool ingredientsActive;
         private bool linkedItemsActive;
+        private CustomItem currentItem;
 
         private void Start()
         {
+            CreateNewCustomItem();
+
+            ClearInstantiatedItems();
             SetIngredientsActive();
         }
 
@@ -54,19 +72,19 @@ namespace CustomCraftGUI.Monobehaviors
 
         public void AdjustCurrentList(ItemIcon item, int change)
         {
-            List<CraftData.Ingredient> newList = null;
+            List<Ingredient> newList = null;
             if(ingredientsActive)
             {
-                newList = ingredients;
+                newList = ingredients[currentItem];
             }
             else if(linkedItemsActive)
             {
-                newList = linkedItems;
+                newList = linkedItems[currentItem];
             }
 
-            if (newList.Count == 0)
+            if (newList.Find((i) => { return i.techType == item.techType; }) == null && change > 0)
             {
-                newList.Add(new CraftData.Ingredient(item.techType, 1));
+                newList.Add(new Ingredient(item.techType, 1));
             }
             else
             {
@@ -85,25 +103,63 @@ namespace CustomCraftGUI.Monobehaviors
 
             if (ingredientsActive)
             {
-                ingredients = newList;
+                ingredients[currentItem] = newList;
             }
             else if (linkedItemsActive)
             {
-                linkedItems = newList;
+                linkedItems[currentItem] = newList;
             }
 
+            ClearInstantiatedItems();
             UpdateIngredientsList();
             UpdateLinkedItemsList();
         }
 
         private void UpdateIngredientsList()
         {
-
+            foreach (Ingredient ingredient in ingredients[currentItem])
+            {
+                GameObject newIngredient = Instantiate(ingredientPrefab, ingredientsParent);
+                newIngredient.GetComponent<IngredientItem>().SetInfo(SpriteManager.Get(ingredient.techType), ingredient.techType, ingredient.amount);
+            }
         }
 
         private void UpdateLinkedItemsList()
         {
+            foreach (Ingredient linkedItem in linkedItems[currentItem])
+            {
+                GameObject newIngredient = Instantiate(ingredientPrefab, linkedItemsParent);
+                newIngredient.GetComponent<IngredientItem>().SetInfo(SpriteManager.Get(linkedItem.techType), linkedItem.techType, linkedItem.amount);
+            }
+        }
 
+        private void ClearInstantiatedItems()
+        {
+            foreach (Transform child in ingredientsParent)
+            {
+                Destroy(child.gameObject);
+            }
+
+            foreach (Transform child in linkedItemsParent)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
+        private void CreateNewCustomItem()
+        {
+            GameObject newCustomItem = Instantiate(customItemPrefab, customItemsParent);
+            currentItem = newCustomItem.GetComponent<CustomItem>();
+            customItemNameInputField.text = "";
+
+            foreach (Transform child in customItemIcon.transform)
+            {
+                Destroy(child);
+            } 
+
+            ClearInstantiatedItems();
+            UpdateIngredientsList();
+            UpdateLinkedItemsList();
         }
     }
 }

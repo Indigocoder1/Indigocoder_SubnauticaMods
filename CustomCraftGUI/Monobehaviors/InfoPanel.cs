@@ -28,11 +28,15 @@ namespace CustomCraftGUI.Monobehaviors
 
         public void AddItemToCurrentList()
         {
+            if (!currentItem) return;
+
             customItemsManager.AdjustCurrentList(currentItem, 1);
         }
 
         public void RemoveItemFromCurrentList()
         {
+            if (!currentItem) return;
+
             customItemsManager.AdjustCurrentList(currentItem, -1);
         }
 

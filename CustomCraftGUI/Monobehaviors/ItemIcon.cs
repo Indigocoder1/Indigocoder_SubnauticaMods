@@ -10,7 +10,7 @@ namespace CustomCraftGUI.Monobehaviors
         {
             get
             {
-                return techType.ToString();
+                return Language.main.Get(techType.ToString());
             }
         }
 

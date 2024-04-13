@@ -92,6 +92,7 @@
     <Compile Include="Interfaces\IItemIconComparer.cs" />
     <Compile Include="Monobehaviors\AtlasHelper.cs" />
     <Compile Include="Monobehaviors\CustomCraftFormatter.cs" />
+    <Compile Include="Monobehaviors\CustomItem.cs" />
     <Compile Include="Monobehaviors\CustomItemsManager.cs" />
     <Compile Include="Monobehaviors\InfoPanel.cs" />
     <Compile Include="Monobehaviors\IngredientItem.cs" />
