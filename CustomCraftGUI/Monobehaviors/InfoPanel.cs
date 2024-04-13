@@ -2,29 +2,44 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using static HandReticle;
-
 namespace CustomCraftGUI.Monobehaviors
 {
     public class InfoPanel : MonoBehaviour
     {
+        [Header("Header Info")]
         public TextMeshProUGUI itemNameText;
         public uGUI_ItemIcon itemIcon;
 
+        [Header("Custom Items")]
+        public CustomItemsManager customItemsManager;
+
+        [Header("Ingredients and Linked Items")]
         public GameObject ingredientItemPrefab;
         public Transform ingredientsPrefabParent;
         public Transform linkedItemsPrefabsParent;
 
         private List<IngredientItem> linkedItems = new();
+        private ItemIcon currentItem;
 
         private void Start()
         {
             ClearItemsLists();
         }
 
+        public void AddItemToCurrentList()
+        {
+            customItemsManager.AdjustCurrentList(currentItem, 1);
+        }
+
+        public void RemoveItemFromCurrentList()
+        {
+            customItemsManager.AdjustCurrentList(currentItem, -1);
+        }
+
         public void SetCurrentItem(ItemIcon icon)
         {
             ClearItemsLists();
+            currentItem = icon;
 
             Atlas.Sprite sprite = SpriteManager.Get(icon.techType);
 
@@ -54,7 +69,7 @@ namespace CustomCraftGUI.Monobehaviors
             TryCollapseLinkedItems();
         }
 
-        public void ClearItemsLists()
+        private void ClearItemsLists()
         {
             foreach (Transform child in ingredientsPrefabParent)
             {

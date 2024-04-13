@@ -1,4 +1,5 @@
-﻿using CustomCraftGUI.Utilities;
+﻿using CustomCraftGUI.Interfaces;
+using CustomCraftGUI.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,8 +12,8 @@ namespace CustomCraftGUI.Monobehaviors
         public GameObject iconPrefab;
         public Transform iconsParent;
         public InfoPanel infoPanel;
-        
-        private List<ItemIcon> itemIcons = new();
+
+        public Dictionary<string, ItemIcon> itemIconKVPs = new(); 
 
         public IEnumerator SpawnIcons()
         {
@@ -26,25 +27,14 @@ namespace CustomCraftGUI.Monobehaviors
 
                 icon.SetTechType(techType);
                 icon.SetInfoPanel(infoPanel);
-                itemIcons.Add(icon);
+                itemIconKVPs.Add(icon.itemName.ToLower(), icon);
 
                 uGUI_ItemIcon itemIcon = newIconPrefab.GetComponentInChildren<uGUI_ItemIcon>();
                 itemIcon.SetForegroundSprite(atlasSprite);
                 itemIcon.foreground.transform.localScale = Vector3.one * 0.8f * SpriteSizeFormatter.GetSpriteShrinkScalar(atlasSprite);
             }
 
-            SortIcons();
             yield break;
-        }
-
-        private void SortIcons()
-        {
-            
-        }
-
-        public List<ItemIcon> TryFindItemIcon(string targetName)
-        {
-
         }
     }
 }
