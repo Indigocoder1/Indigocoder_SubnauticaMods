@@ -10,10 +10,13 @@ namespace CustomCraftGUI.Monobehaviors
         public List<CraftData.Ingredient> linkedItems { get; private set; }
 
         public TextMeshProUGUI nameText;
+        public uGUI_ItemIcon icon;
+        public float iconScalar;
 
         private CustomItemsManager manager;
         public string itemID { get; private set; }
         public string displayName { get; private set; }
+        public Atlas.Sprite itemSprite { get; private set; }
         public int amountCrafted { get; private set; }
         public bool unlockAtStart { get; private set; }
         public string[] fabricatorPath { get; private set; }
@@ -28,6 +31,12 @@ namespace CustomCraftGUI.Monobehaviors
         public void SetDisplayName(string name)
         {
             displayName = name;
+        }
+        public void SetItemSprite(Atlas.Sprite sprite)
+        {
+            itemSprite = sprite;
+            icon.SetForegroundSprite(sprite);
+            icon.foreground.transform.localScale = Vector3.one * iconScalar;
         }
         public void SetItemsManager(CustomItemsManager manager)
         {

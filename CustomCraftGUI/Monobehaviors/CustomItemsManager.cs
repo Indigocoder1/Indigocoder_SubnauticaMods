@@ -3,6 +3,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Ingredient = CraftData.Ingredient;
+using System.Windows.Forms;
+using System.Reflection;
+using System.IO;
+using Nautilus.Utility;
 
 namespace CustomCraftGUI.Monobehaviors
 {
@@ -30,6 +34,7 @@ namespace CustomCraftGUI.Monobehaviors
         public Transform linkedItemsParent;
         public Transform customItemsParent;
 
+        public List<CustomItem> customItems = new();
         private Dictionary<CustomItem, List<Ingredient>> ingredients = new();
         private Dictionary<CustomItem, List<Ingredient>> linkedItems = new();
         private bool ingredientsActive;
@@ -42,7 +47,7 @@ namespace CustomCraftGUI.Monobehaviors
             CreateNewCustomItem();
 
             ClearInstantiatedItems();
-            SetIngredientsActive();
+            Invoke(nameof(SetIngredientsActive), 0.2f);
         }
 
         public void SetIngredientsActive()
@@ -112,7 +117,7 @@ namespace CustomCraftGUI.Monobehaviors
         public void SetCurrentItem(CustomItem item)
         {
             currentItem = item;
-            customItemNameInputField.text = item.nameText.text;
+            customItemNameInputField.text = item.displayName;
 
             ClearInstantiatedItems();
             UpdateIngredientsList();
@@ -149,15 +154,45 @@ namespace CustomCraftGUI.Monobehaviors
         {
             currentItem.SetTooltip(itemTooltipInputField.text);
         }
+        public void OnLoadIconPressed()
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.InitialDirectory = Assembly.GetExecutingAssembly().Location;
+            dialog.Filter = "Png Files (*.png;*)|*.png";
+            dialog.Title = "Choose item png image";
+
+            if(dialog.ShowDialog() == DialogResult.OK)
+            {
+                string imageLocation = dialog.FileName;
+                if(!File.Exists(imageLocation))
+                {
+                    Plugin.logger.LogError($"File doesn't exist at path {imageLocation}!");
+                    return;
+                }
+
+                currentItem.SetItemSprite(ImageUtils.LoadSpriteFromFile(imageLocation));
+                customItemIcon.SetForegroundSprite(currentItem.itemSprite);
+            }
+        }
 
         public void CreateNewCustomItem()
         {
             GameObject newCustomItem = Instantiate(customItemPrefab, customItemsParent);
-
             currentItem = newCustomItem.GetComponent<CustomItem>();
+
+            currentItem.SetItemID($"myamazingcoolitem{itemsCreated}");
             currentItem.SetDisplayName($"My amazing cool item {itemsCreated}");
             currentItem.SetItemsManager(this);
+            currentItem.SetFabricatorPath(fabricatorPaths["Fabricator Basic Materials"]);
 
+            if(customItemIcon.foreground != null)
+            {
+                Destroy(customItemIcon.foreground.gameObject);
+            }
+
+            customItems.Add(currentItem);
+
+            itemIDInputField.text = "myamazingcoolitem1";
             customItemNameInputField.text = $"My amazing cool item {itemsCreated}";
 
             itemsCreated++;
