@@ -1,33 +1,23 @@
 ﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Ingredient = CraftData.Ingredient;
 
 namespace CustomCraftGUI.Monobehaviors
 {
     public class CustomItemsManager : MonoBehaviour
     {
-        public static CustomItemsManager Instance
-        {
-            get
-            {
-                return Instance;
-            }
-            set
-            {
-                if(Instance != null)
-                {
-                    Debug.LogError($"More than one CustomItemsManager in the scene! Attempting to set {value}");
-                    return;
-                }
-
-                Instance = value;
-            }
-        }
-
         [Header("Item Info")]
+        public TMP_InputField itemIDInputField;
         public TMP_InputField customItemNameInputField;
+        public TMP_InputField amountCraftedInputField;
         public uGUI_ItemIcon customItemIcon;
+        public Toggle unlockAtStartToggle;
+        public TMP_Dropdown fabricatorPathDropdown;
+        public TMP_InputField itemSizeXField;
+        public TMP_InputField itemSizeYField;
+        public TMP_InputField itemTooltipInputField;
 
         [Header("Animators")]
         public Animator ingredientsButtonAnimator;
@@ -45,6 +35,7 @@ namespace CustomCraftGUI.Monobehaviors
         private bool ingredientsActive;
         private bool linkedItemsActive;
         private CustomItem currentItem;
+        private int itemsCreated = 1;
 
         private void Start()
         {
@@ -113,6 +104,75 @@ namespace CustomCraftGUI.Monobehaviors
             ClearInstantiatedItems();
             UpdateIngredientsList();
             UpdateLinkedItemsList();
+
+            currentItem.SetIngredients(ingredients[currentItem]);
+            currentItem.SetLinkedItems(linkedItems[currentItem]);
+        }
+
+        public void SetCurrentItem(CustomItem item)
+        {
+            currentItem = item;
+            customItemNameInputField.text = item.nameText.text;
+
+            ClearInstantiatedItems();
+            UpdateIngredientsList();
+            UpdateLinkedItemsList();
+        }
+
+        public void OnItemIDInputChanged()
+        {
+            currentItem.SetItemID(itemIDInputField.text);
+        }
+        public void OnNameInputChanged()
+        {
+            string text = string.IsNullOrEmpty(customItemNameInputField.text) ? "My amazing cool item" : customItemNameInputField.text;
+            currentItem.SetDisplayName(text);
+        }
+        public void OnAmountCraftedChanged()
+        {
+            currentItem.SetAmountCrafted(int.Parse(amountCraftedInputField.text));
+        }
+        public void OnUnlockAtStartChanged()
+        {
+            currentItem.SetUnlockAtStart(unlockAtStartToggle.isOn);
+        }
+        public void OnFabricatorDropdownChanged()
+        {
+            string dropdownValue = fabricatorPathDropdown.options[fabricatorPathDropdown.value].text;
+            currentItem.SetFabricatorPath(fabricatorPaths[dropdownValue]);
+        }
+        public void OnSizeInputFieldChanged()
+        {
+            currentItem.SetItemSize(new Vector2Int(int.Parse(itemSizeXField.text), int.Parse(itemSizeYField.text)));
+        }
+        public void OnTooltipInputFieldChanged()
+        {
+            currentItem.SetTooltip(itemTooltipInputField.text);
+        }
+
+        public void CreateNewCustomItem()
+        {
+            GameObject newCustomItem = Instantiate(customItemPrefab, customItemsParent);
+
+            currentItem = newCustomItem.GetComponent<CustomItem>();
+            currentItem.SetDisplayName($"My amazing cool item {itemsCreated}");
+            currentItem.SetItemsManager(this);
+
+            customItemNameInputField.text = $"My amazing cool item {itemsCreated}";
+
+            itemsCreated++;
+
+            foreach (Transform child in customItemIcon.transform)
+            {
+                Destroy(child);
+            }
+
+            ingredients.Add(currentItem, new());
+            linkedItems.Add(currentItem, new());
+
+            ClearInstantiatedItems();
+            UpdateIngredientsList();
+            UpdateLinkedItemsList();
         }
 
         private void UpdateIngredientsList()
@@ -146,20 +206,24 @@ namespace CustomCraftGUI.Monobehaviors
             }
         }
 
-        private void CreateNewCustomItem()
+        private Dictionary<string, string[]> fabricatorPaths = new()
         {
-            GameObject newCustomItem = Instantiate(customItemPrefab, customItemsParent);
-            currentItem = newCustomItem.GetComponent<CustomItem>();
-            customItemNameInputField.text = "";
-
-            foreach (Transform child in customItemIcon.transform)
-            {
-                Destroy(child);
-            } 
-
-            ClearInstantiatedItems();
-            UpdateIngredientsList();
-            UpdateLinkedItemsList();
-        }
+            { "Fabricator Basic Materials", new string[] { "Fabricator", "Resources", "BasicMaterials" } },
+            { "Fabricator Advanced Materials", new string[] { "Fabricator",  "Resources", "AdvancedMaterials" } },
+            { "Fabricator Electronics", new string[] { "Fabricator",  "Resources", "Electronics" } },
+            { "Fabricator Water", new string[] { "Fabricator", "Survival", "Water" } },
+            { "Fabricator Cooked Food", new string[] { "Fabricator",  "Survival", "CookedFood" } },
+            { "Fabricator Cured Food", new string[] { "Fabricator",  "Survival", "CuredFood" } },
+            { "Fabricator Equipment", new string[] { "Fabricator", "Personal", "Equipment" } },
+            { "Fabricator Tools", new string[] { "Fabricator", "Personal", "Tools" } },
+            { "Fabricator Deployables", new string[] { "Fabricator", "Machines" } },
+            { "MVB Vehicles", new string[] { "Constructor", "Vehicles" } },
+            { "MVB Rocket", new string[] { "Constructor", "Rocket" } },
+            { "Common Vehicle Upgrades", new string[] { "Workbench", "CommonModules" } },
+            { "Seamoth Vehicle Upgrades", new string[] { "Workbench", "SeamothModules" } },
+            { "Prawn Vehicle Upgrades", new string[] { "Workbench", "ExosuitModules" } },
+            { "Vehicle Torpedos", new string[] { "Workbench", "Torpedos" } },
+            { "Cyclops Upgrade Fabricator", new string[] { "CyclopsFabricator" } }
+        };
     }
 }

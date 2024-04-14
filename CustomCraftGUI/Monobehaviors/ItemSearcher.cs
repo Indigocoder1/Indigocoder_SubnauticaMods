@@ -52,7 +52,8 @@ namespace CustomCraftGUI.Monobehaviors
 
             foreach (ItemIcon item in itemSpawner.itemIconKVPs.Values)
             {
-                if(!item.itemName.ToLower().Contains(inputField.text.ToLower()))
+                string localizedItemName = Language.main.Get(item.itemName);
+                if(!localizedItemName.ToLower().Contains(inputField.text.ToLower()))
                 {
                     item.gameObject.SetActive(false);
                     continue;

@@ -4,10 +4,10 @@ using HarmonyLib;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace CustomCraftGUI
 {
+    [BepInDependency("com.snmodding.nautilus", BepInDependency.DependencyFlags.HardDependency)]
     [BepInPlugin(myGUID, pluginName, versionString)]
     public class Plugin : BaseUnityPlugin
     {

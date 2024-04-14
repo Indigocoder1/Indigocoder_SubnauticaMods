@@ -47,7 +47,7 @@ namespace CustomCraftGUI.Monobehaviors
 
             Atlas.Sprite sprite = SpriteManager.Get(icon.techType);
 
-            itemNameText.text = icon.itemName;
+            itemNameText.text = Language.main.Get(icon.itemName);
             itemIcon.SetForegroundSprite(sprite);
             itemIcon.foreground.transform.localScale = SpriteSizeFormatter.GetSpriteShrinkScalar(sprite);
 

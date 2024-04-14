@@ -1,5 +1,4 @@
-﻿using CustomCraftGUI.Interfaces;
-using CustomCraftGUI.Utilities;
+﻿using CustomCraftGUI.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
