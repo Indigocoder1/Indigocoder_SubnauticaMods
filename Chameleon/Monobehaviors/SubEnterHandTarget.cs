@@ -11,7 +11,7 @@ namespace Chameleon.Monobehaviors
         public SubRoot subRoot;
         public Transform targetPosition;
         public FMODAsset sound;
-        public event EventHandler OnEnter;
+        public Action OnEnter;
 
         public void OnHandClick(GUIHand hand)
         {
@@ -23,7 +23,7 @@ namespace Chameleon.Monobehaviors
             Player.main.SetPosition(targetPosition.position, targetPosition.rotation);
             Player.main.SetCurrentSub(subRoot, true);
 
-            OnEnter?.Invoke(this, EventArgs.Empty);
+            OnEnter.Invoke();
         }
 
         public void OnHandHover(GUIHand hand)

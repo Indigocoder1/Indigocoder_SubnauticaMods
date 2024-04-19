@@ -57,7 +57,7 @@ namespace Chameleon.Craftables
 
             chameleon.transform.Find("Model/Exterior/Sub_Canopy").GetComponent<MeshRenderer>().material.color = new Color(1f, 1f, 1f, 0.3f);
 
-            PrefabUtils.AddBasicComponents(chameleon, "chameleon", techType, LargeWorldEntity.CellLevel.Batch);
+            PrefabUtils.AddBasicComponents(chameleon, "chameleon", techType, LargeWorldEntity.CellLevel.Global);
 
             prefabOut.Set(chameleon);
         }

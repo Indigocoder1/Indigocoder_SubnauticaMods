@@ -22,6 +22,8 @@ namespace Chameleon
 
         private static readonly Harmony harmony = new Harmony(myGUID);
 
+        internal static ChameleonSaveCache SaveCache { get; } = SaveDataHandler.RegisterSaveDataCache<ChameleonSaveCache>();
+
         public static string AssetsFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
         public static string RecipesFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Recipes");
         public static string LocalizationFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Localization");
@@ -36,12 +38,21 @@ namespace Chameleon
 
             LanguageHandler.RegisterLocalizationFolder();
             assetBundle = AssetBundle.LoadFromFile(Path.Combine(AssetsFolderPath, "chameleon"));
+            InitializeSlotMapping();
 
             Chameleon_Craftable.Patch();
 
             harmony.PatchAll();
 
             logger.LogInfo($"{pluginName} {versionString} Loaded.");
+        }
+
+        private void InitializeSlotMapping()
+        {
+            Equipment.slotMapping.Add("ChameleonUpgrade1", EquipmentType.VehicleModule);
+            Equipment.slotMapping.Add("ChameleonUpgrade2", EquipmentType.VehicleModule);
+            Equipment.slotMapping.Add("ChameleonUpgrade3", EquipmentType.VehicleModule);
+            Equipment.slotMapping.Add("ChameleonUpgrade4", EquipmentType.VehicleModule);
         }
     }
 }
