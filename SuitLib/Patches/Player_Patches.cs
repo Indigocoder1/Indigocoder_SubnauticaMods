@@ -230,8 +230,6 @@ namespace SuitLib.Patches
         {
             if (wearingAnySuit)
             {
-                diveSuitBodyGO.SetActive(false);
-
                 foreach (ModdedSuit suit in ModdedSuitsManager.moddedSuitsList)
                 {
                     if (suit.itemTechType != typeInBodySlot)
@@ -241,6 +239,7 @@ namespace SuitLib.Patches
 
                     GameObject model = GetModel(suit.vanillaModel, true);
                     model.SetActive(true);
+                    diveSuitBodyGO.SetActive(false);
                 }
             }
             else
@@ -250,8 +249,6 @@ namespace SuitLib.Patches
 
             if (wearingAnyGloves)
             {
-                diveSuitGlovesGO.SetActive(false);
-
                 foreach (ModdedGloves gloves in ModdedSuitsManager.moddedGlovesList)
                 {
                     if (gloves.itemTechType != typeInGlovesSlot)
@@ -261,6 +258,7 @@ namespace SuitLib.Patches
 
                     GameObject model = GetModel(gloves.vanillaModel, false);
                     model.SetActive(true);
+                    diveSuitGlovesGO.SetActive(false);
                 }
             }
             else
