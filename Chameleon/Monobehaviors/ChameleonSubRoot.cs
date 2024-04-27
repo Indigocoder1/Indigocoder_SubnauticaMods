@@ -47,6 +47,9 @@ namespace Chameleon.Monobehaviors
         private void Update()
         {
             base.Update();
+
+            if (Player.main.currentSub != this) return;
+
             toggleLights.CheckLightToggle();
         }
 

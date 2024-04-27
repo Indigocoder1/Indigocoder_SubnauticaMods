@@ -11,7 +11,6 @@ namespace Chameleon.Patches
         {
             if (__instance is not ChameleonSubRoot chameleon) return true;
 
-            Main_Plugin.logger.LogMessage($"ID = {chameleon.GetComponent<PrefabIdentifier>().Id}");
             chameleon.LoadSaveData(chameleon.GetComponent<PrefabIdentifier>().Id);
 
             return false; //Temp fix until SubNames are properly implemented (idek if this will get done, just copying the Seal's comments)

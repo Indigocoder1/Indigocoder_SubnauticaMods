@@ -24,6 +24,7 @@ namespace Chameleon.Monobehaviors.UI
 
         [Header("Materials")]
         public Material camoMaterial;
+        public Material legacyCamoMaterial;
 
         [Header("Power Consumption")]
         public float timeBetweenDischarges;
@@ -143,11 +144,13 @@ namespace Chameleon.Monobehaviors.UI
             Material[] newTowerMaterials = conningTowerRenderer.materials;
             newTowerMaterials[0].SetInt("_ZWrite", 0);
 
-            newBodyMaterials[0] = camoMaterial;
-            newBodyMaterials[1] = camoMaterial;
+            Material mat = Main_Plugin.UseLegacyCloakEffect.Value ? legacyCamoMaterial : camoMaterial;
 
-            newTowerMaterials[0] = camoMaterial;
-            newTowerMaterials[1] = camoMaterial;
+            newBodyMaterials[0] = mat;
+            newBodyMaterials[1] = mat;
+
+            newTowerMaterials[0] = mat;
+            newTowerMaterials[1] = mat;
 
             subExteriorRenderer.materials = newBodyMaterials;
             conningTowerRenderer.materials = newTowerMaterials;
@@ -209,7 +212,7 @@ namespace Chameleon.Monobehaviors.UI
                 }
             }
 
-            canopyRenderer.material = camoMaterial;
+            canopyRenderer.material = Main_Plugin.UseLegacyCloakEffect.Value ? legacyCamoMaterial : camoMaterial;
 
             previousLightsState = toggleLights.lightsActive;
             toggleLights.SetLightsActive(false);

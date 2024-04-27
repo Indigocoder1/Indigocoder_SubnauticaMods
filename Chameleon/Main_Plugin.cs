@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using Chameleon.Attributes;
 using Chameleon.Craftables;
@@ -10,6 +11,9 @@ using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
 using Nautilus.Crafting;
 using Nautilus.Handlers;
+using Nautilus.Json;
+using Nautilus.Options.Attributes;
+using rail;
 using System;
 using System.IO;
 using System.Reflection;
@@ -50,6 +54,12 @@ namespace Chameleon
 
         internal static PingType ChameleonPingType { get; private set; }
 
+        #region Options
+
+        public static ConfigEntry<bool> UseLegacyCloakEffect;
+
+        #endregion
+
         private void Awake()
         {
             logger = Logger;
@@ -62,11 +72,19 @@ namespace Chameleon
             ChameleonPingType = EnumHandler.AddEntry<PingType>("ChameleonSub")
             .WithIcon(new Atlas.Sprite(AssetBundle.LoadAsset<Sprite>("Ping_Chameleon")));
 
+            InitializeModOptions();
             InitializeSlotMapping();
             RegisterUpgradeModules();
             RegisterUpgradeModuleFunctionalities(Assembly.GetExecutingAssembly());
 
             logger.LogInfo($"{pluginName} {versionString} Loaded.");
+        }
+
+        private void InitializeModOptions()
+        {
+            UseLegacyCloakEffect = Config.Bind("Chamleon", "Use legacy cloaking effect", false);
+
+            new ChameleonOptions();
         }
 
         private void InitializeSlotMapping()
