@@ -15,7 +15,7 @@ namespace Chameleon.Craftables
 
         public static void Patch()
         {
-            PrefabInfo prefabInfo = PrefabInfo.WithTechType("Chameleon", "Chameleon Sub", "An advanced sub that utilizes cloaking technology for enhanced stealth")
+            PrefabInfo prefabInfo = PrefabInfo.WithTechType("Chameleon", null, null, "English")
                 .WithIcon(SpriteManager.Get(TechType.PosterAurora));
 
             techType = prefabInfo.TechType;
@@ -25,7 +25,7 @@ namespace Chameleon.Craftables
             prefab.SetGameObject(GetSubPrefab);
             prefab.SetUnlock(TechType.PictureFrame);
 
-            prefab.SetRecipeFromJson(Path.Combine(Main_Plugin.RecipesFolderPath, "ChameleonRecipe.json"))
+            prefab.SetRecipeFromJson(Path.Combine(Main_Plugin.RecipesFolderPath, "Chameleon.json"))
                 .WithFabricatorType(CraftTree.Type.Constructor)
                 .WithStepsToFabricatorTab("Vehicles")
                 .WithCraftingTime(25f);
@@ -38,7 +38,7 @@ namespace Chameleon.Craftables
 
         private static IEnumerator GetSubPrefab(IOut<GameObject> prefabOut)
         {
-            GameObject model = Main_Plugin.assetBundle.LoadAsset<GameObject>("ChameleonSub");
+            GameObject model = Main_Plugin.AssetBundle.LoadAsset<GameObject>("ChameleonSub");
 
             model.SetActive(false);
             GameObject chameleon = GameObject.Instantiate(model);
@@ -56,6 +56,7 @@ namespace Chameleon.Craftables
             }
 
             chameleon.transform.Find("Model/Exterior/Sub_Canopy").GetComponent<MeshRenderer>().material.color = new Color(1f, 1f, 1f, 0.3f);
+            chameleon.GetComponent<PingInstance>().pingType = Main_Plugin.ChameleonPingType;
 
             PrefabUtils.AddBasicComponents(chameleon, "chameleon", techType, LargeWorldEntity.CellLevel.Global);
 

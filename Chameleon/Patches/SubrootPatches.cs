@@ -13,7 +13,6 @@ namespace Chameleon.Patches
 
             Main_Plugin.logger.LogMessage($"ID = {chameleon.GetComponent<PrefabIdentifier>().Id}");
             chameleon.LoadSaveData(chameleon.GetComponent<PrefabIdentifier>().Id);
-            Main_Plugin.logger.LogInfo("Attempting to load Chameleon data");
 
             return false; //Temp fix until SubNames are properly implemented (idek if this will get done, just copying the Seal's comments)
         }

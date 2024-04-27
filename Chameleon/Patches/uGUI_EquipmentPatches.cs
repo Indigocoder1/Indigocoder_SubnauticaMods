@@ -19,7 +19,7 @@ namespace Chameleon.Patches
 
         private static void ApplyChangesToChameleonModuleImage(Image image)
         {
-            image.sprite = Main_Plugin.assetBundle.LoadAsset<Sprite>("ChameleonModulesBackground");
+            image.sprite = Main_Plugin.AssetBundle.LoadAsset<Sprite>("ChameleonModulesBackground");
             image.name = "Chameleon";
             image.transform.localScale = new Vector3(1f, 2.7f, 1f);
         }

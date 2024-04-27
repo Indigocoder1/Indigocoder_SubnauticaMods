@@ -1,5 +1,7 @@
 ﻿using Chameleon.Interfaces;
 using Nautilus.Json;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Chameleon.Monobehaviors
@@ -11,6 +13,11 @@ namespace Chameleon.Monobehaviors
 
         [Header("Chameleon Info")]
         public ChameleonUpgradeConsole chameleonUpgradeConsole;
+        public GameObject moduleFunctionsRoot;
+
+        private ToggleLights toggleLights;
+
+        internal static Dictionary<TechType, Type> moduleFunctions = new();
 
         public void AddIsAllowedToAddListener(IsAllowedToAdd @delegate)
         {
@@ -22,18 +29,25 @@ namespace Chameleon.Monobehaviors
             chameleonUpgradeConsole.modules.isAllowedToAdd -= @delegate;
         }
 
-        public override void Start()
-        {
-            chameleonUpgradeConsole.modules.onEquip += OnEquip;
-            chameleonUpgradeConsole.modules.onUnequip += OnUnequip;
-
-            base.Start();
-        }
-
         public override void Awake()
         {
             base.Awake();
             _saveData = new SaveData(); //New entry for the sub
+        }
+
+        public override void Start()
+        {
+            chameleonUpgradeConsole.modules.onEquip += OnEquip;
+            chameleonUpgradeConsole.modules.onUnequip += OnUnequip;
+            toggleLights = GetComponent<ToggleLights>();
+
+            base.Start();
+        }
+
+        private void Update()
+        {
+            base.Update();
+            toggleLights.CheckLightToggle();
         }
 
         private void OnEnable() => Main_Plugin.SaveCache.OnStartedSaving += OnBeforeSave;
@@ -62,12 +76,29 @@ namespace Chameleon.Monobehaviors
 
         private void OnEquip(string slot, InventoryItem item)
         {
-            Main_Plugin.logger.LogInfo("Module effects are not currently implemented! - TODO");
+            Type type = moduleFunctions[item.item.GetTechType()];
+            Component component = moduleFunctionsRoot.AddComponent(type);
+            NotifyOnChange(item.item.GetTechType(), true);
         }
 
         private void OnUnequip(string slot, InventoryItem item)
         {
-            Main_Plugin.logger.LogInfo("Module effects are not currently implemented! - TODO");
+            Type type = moduleFunctions[item.item.GetTechType()];
+            Component component = moduleFunctionsRoot.GetComponent(type);
+            (component as MonoBehaviour).enabled = false;
+            Destroy(component);
+            NotifyOnChange(item.item.GetTechType(), false);
+        }
+
+        private void NotifyOnChange(TechType type, bool added)
+        {
+            foreach (var onModuleChange in moduleFunctionsRoot.GetComponents<IOnModuleChange>())
+            {
+                if((onModuleChange as MonoBehaviour).enabled)
+                {
+                    onModuleChange.OnChange(type, added);
+                }
+            }
         }
     }
 }

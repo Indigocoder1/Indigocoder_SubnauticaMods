@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UWE;
 
 namespace Chameleon.Monobehaviors
 {
@@ -77,20 +78,23 @@ namespace Chameleon.Monobehaviors
 
         public void OnSaveDataLoaded(SaveData saveData)
         {
-            if (!saveData.modules.TryGetValue(gameObject.name, out var modules)) return;
+            if (!saveData.modules.TryGetValue(gameObject.name, out var value)) return;
 
-            SpawnSavedModules(modules);
+            CoroutineHost.StartCoroutine(SpawnSavedModules(value));
         }
 
-        private IEnumerator SpawnSavedModules(Dictionary<string, TechType> modules)
+        private IEnumerator SpawnSavedModules(Dictionary<string, TechType> cachedModules)
         {
-            foreach (var module in modules)
+            foreach (var module in cachedModules)
             {
                 if (module.Value == TechType.None) continue;
 
                 var task = CraftData.GetPrefabForTechTypeAsync(module.Value);
                 yield return task;
-                this.modules.AddItem(module.Key, new InventoryItem(GameObject.Instantiate(task.GetResult()).GetComponent<Pickupable>()), true);
+
+                GameObject newModule = GameObject.Instantiate(task.GetResult(), modulesRoot.transform);
+                newModule.SetActive(false);
+                modules.AddItem(module.Key, new InventoryItem(newModule.GetComponent<Pickupable>()), true);
             }
         }
 
@@ -107,14 +111,14 @@ namespace Chameleon.Monobehaviors
         public void OnBeforeSave(object sender, JsonFileEventArgs args)
         {
             var saveData = GetComponentInParent<ChameleonSubRoot>().SaveData;
-            var modules = new Dictionary<string, TechType>();
+            var newModules = new Dictionary<string, TechType>();
 
-            foreach (var item in this.modules.equipment)
+            foreach (var item in modules.equipment)
             {
-                modules.Add(item.Key, item.Value != null ? item.Value.item.GetTechType() : TechType.None);
+                newModules.Add(item.Key, item.Value != null ? item.Value.item.GetTechType() : TechType.None);
             }
 
-            saveData.modules[gameObject.name] = modules;
+            saveData.modules[gameObject.name] = newModules;
         }
     }
 }

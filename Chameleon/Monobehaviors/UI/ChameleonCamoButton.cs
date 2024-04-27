@@ -123,55 +123,16 @@ namespace Chameleon.Monobehaviors.UI
         {
             if (canopyMaterial == null || !active) return;
 
-            EnableCamoEffect();      
-
-            for (int i = 0; i < rendererParents.Length; i++)
-            {
-                foreach (Renderer rend in rendererParents[i].GetComponentsInChildren<Renderer>())
-                {
-                    rend.enabled = false;
-                }
-            }
-
-            canopyRenderer.material = camoMaterial;
-
-            previousLightsState = toggleLights.lightsActive;
-            toggleLights.SetLightsActive(false);
-
-            if (Player.main.GetCurrentSub() == subRoot)
-            {
-                foreach (Renderer rend in Player.main.transform.Find("body/player_view").GetComponentsInChildren<Renderer>())
-                {
-                    rend.enabled = false;
-                }
-            }
+            EnableCamoEffect();
+            DisableInterior();            
         }
 
         public void OnEnterSub()
         {
             if (canopyMaterial == null || !active) return;
 
-            DisableCamoEffect();  
-
-            for (int i = 0; i < rendererParents.Length; i++)
-            {
-                foreach (Renderer rend in rendererParents[i].GetComponentsInChildren<Renderer>())
-                {
-                    rend.enabled = true;
-                }
-            }
-
-            canopyRenderer.material = canopyMaterial;
-
-            toggleLights.SetLightsActive(previousLightsState);
-
-            if (Player.main.GetCurrentSub() == subRoot)
-            {
-                foreach (Renderer rend in Player.main.transform.Find("body/player_view/male_geo").GetComponentsInChildren<Renderer>())
-                {
-                    rend.enabled = true;
-                }
-            }
+            DisableCamoEffect();
+            EnableInterior();
         }
 
         public void EnableCamoEffect()
@@ -211,6 +172,55 @@ namespace Chameleon.Monobehaviors.UI
 
             conningTowerAccentMaterial.DisableKeyword("MARMO_EMISSION");
             subAccentMaterial.DisableKeyword("MARMO_EMISSION");
+        }
+
+        public void EnableInterior()
+        {
+            for (int i = 0; i < rendererParents.Length; i++)
+            {
+                foreach (Renderer rend in rendererParents[i].GetComponentsInChildren<Renderer>())
+                {
+                    rend.enabled = true;
+                }
+            }
+
+            canopyRenderer.material = canopyMaterial;
+
+            toggleLights.SetLightsActive(previousLightsState);
+
+            if (Player.main.GetCurrentSub() == subRoot)
+            {
+                foreach (Renderer rend in Player.main.transform.Find("body/player_view/male_geo").GetComponentsInChildren<Renderer>())
+                {
+                    rend.enabled = true;
+                }
+            }
+        }
+
+        public void DisableInterior()
+        {
+            if (!active) return;
+
+            for (int i = 0; i < rendererParents.Length; i++)
+            {
+                foreach (Renderer rend in rendererParents[i].GetComponentsInChildren<Renderer>())
+                {
+                    rend.enabled = false;
+                }
+            }
+
+            canopyRenderer.material = camoMaterial;
+
+            previousLightsState = toggleLights.lightsActive;
+            toggleLights.SetLightsActive(false);
+
+            if (Player.main.GetCurrentSub() == subRoot)
+            {
+                foreach (Renderer rend in Player.main.transform.Find("body/player_view").GetComponentsInChildren<Renderer>())
+                {
+                    rend.enabled = false;
+                }
+            }
         }
 
         private void DrawPowerRepeating()
