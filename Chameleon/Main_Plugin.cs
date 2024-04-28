@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using Chameleon.Attributes;
@@ -23,6 +24,7 @@ namespace Chameleon
 {
     [BepInPlugin(myGUID, pluginName, versionString)]
     [BepInDependency("com.snmodding.nautilus", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency("SealSubInstalled", BepInDependency.DependencyFlags.SoftDependency)]
     public class Main_Plugin : BaseUnityPlugin
     {
         private const string myGUID = "Indigocoder.Chameleon";
@@ -54,9 +56,11 @@ namespace Chameleon
 
         internal static PingType ChameleonPingType { get; private set; }
 
+        public static readonly bool SealSubInstalled = Chainloader.PluginInfos.ContainsKey("SealSub");
+
         #region Options
 
-        public static ConfigEntry<bool> UseLegacyCloakEffect;
+        //public static ConfigEntry<bool> UseLegacyCloakEffect;
 
         #endregion
 
@@ -82,7 +86,7 @@ namespace Chameleon
 
         private void InitializeModOptions()
         {
-            UseLegacyCloakEffect = Config.Bind("Chamleon", "Use legacy cloaking effect", false);
+            //UseLegacyCloakEffect = Config.Bind("Chamleon", "Use legacy cloaking effect", false);
 
             new ChameleonOptions();
         }
@@ -106,9 +110,13 @@ namespace Chameleon
             PrefabInfo depthModuleMk3Info = PrefabInfo.WithTechType("ChameleonHullModule3", null, null)
                 .WithIcon(SpriteManager.Get(TechType.CyclopsHullModule1));
 
+            PrefabInfo thermalModule = PrefabInfo.WithTechType("ChameleonThermalModule", null, null)
+                .WithIcon(SpriteManager.Get(TechType.CyclopsThermalReactorModule));
+
             CreateUpgradeModulePrefab(depthModuleMk1Info);
             CreateUpgradeModulePrefab(depthModuleMk2Info);
             CreateUpgradeModulePrefab(depthModuleMk3Info);
+            CreateUpgradeModulePrefab(thermalModule);
 
             Chameleon_Craftable.Patch();
         }
@@ -134,7 +142,7 @@ namespace Chameleon
                 ChameleonUpgradeModuleAttribute attribute = type.GetCustomAttribute<ChameleonUpgradeModuleAttribute>();
                 if(attribute is null || !type.IsClass || type.IsAbstract)
                 {
-                    return;
+                    continue;
                 }
 
                 TechType techType;

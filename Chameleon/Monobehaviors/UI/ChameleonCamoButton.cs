@@ -1,10 +1,8 @@
-﻿using rail;
-using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Chameleon.Monobehaviors.UI
 {
-    internal class ChameleonCamoButton : MonoBehaviour
+    public class ChameleonCamoButton : MonoBehaviour
     {
         [Header("Sub References")]
         public SubRoot subRoot;
@@ -24,7 +22,6 @@ namespace Chameleon.Monobehaviors.UI
 
         [Header("Materials")]
         public Material camoMaterial;
-        public Material legacyCamoMaterial;
 
         [Header("Power Consumption")]
         public float timeBetweenDischarges;
@@ -41,7 +38,7 @@ namespace Chameleon.Monobehaviors.UI
         private Color originalCanopyColor;
         private Color originalEmissionColor;
 
-        private bool active;
+        private bool isActive;
         private bool hovering;
         private bool previousLightsState;
         private float glowWaverTime;
@@ -78,7 +75,7 @@ namespace Chameleon.Monobehaviors.UI
                 main.SetText(HandReticle.TextType.HandSubscript, string.Empty, false, GameInput.Button.None);
             }
 
-            if(active)
+            if(isActive)
             {
                 float lerpValue = (1.2f + Mathf.Sin(glowWaverTime) * glowSpeed) / 2f;
                 Color targetColor = Color.Lerp(originalEmissionColor, new Color(0, 0, 0, 1), 1 - lerpValue);
@@ -107,22 +104,23 @@ namespace Chameleon.Monobehaviors.UI
         
         public void ToggleCamo()
         {
-            active = !active;
-            animator.SetBool("CamoActive", active);
+            isActive = !isActive;
+            animator.SetBool("CamoActive", isActive);
 
-            if(active)
+            if(isActive)
             {
                 InvokeRepeating(nameof(DrawPowerRepeating), 0, timeBetweenDischarges);
             }
             else
             {
                 CancelInvoke(nameof(DrawPowerRepeating));
+                DisableCamoEffect();
             }
         }
 
         public void OnExitSub()
         {
-            if (canopyMaterial == null || !active) return;
+            if (canopyMaterial == null || !isActive) return;
 
             EnableCamoEffect();
             DisableInterior();            
@@ -130,7 +128,7 @@ namespace Chameleon.Monobehaviors.UI
 
         public void OnEnterSub()
         {
-            if (canopyMaterial == null || !active) return;
+            if (canopyMaterial == null || !isActive) return;
 
             DisableCamoEffect();
             EnableInterior();
@@ -138,19 +136,17 @@ namespace Chameleon.Monobehaviors.UI
 
         public void EnableCamoEffect()
         {
-            if (!active) return;
+            if (!isActive) return;
 
             Material[] newBodyMaterials = subExteriorRenderer.materials;
             Material[] newTowerMaterials = conningTowerRenderer.materials;
             newTowerMaterials[0].SetInt("_ZWrite", 0);
 
-            Material mat = Main_Plugin.UseLegacyCloakEffect.Value ? legacyCamoMaterial : camoMaterial;
+            newBodyMaterials[0] = camoMaterial;
+            newBodyMaterials[1] = camoMaterial;
 
-            newBodyMaterials[0] = mat;
-            newBodyMaterials[1] = mat;
-
-            newTowerMaterials[0] = mat;
-            newTowerMaterials[1] = mat;
+            newTowerMaterials[0] = camoMaterial;
+            newTowerMaterials[1] = camoMaterial;
 
             subExteriorRenderer.materials = newBodyMaterials;
             conningTowerRenderer.materials = newTowerMaterials;
@@ -202,7 +198,7 @@ namespace Chameleon.Monobehaviors.UI
 
         public void DisableInterior()
         {
-            if (!active) return;
+            if (!isActive) return;
 
             for (int i = 0; i < rendererParents.Length; i++)
             {
@@ -212,7 +208,7 @@ namespace Chameleon.Monobehaviors.UI
                 }
             }
 
-            canopyRenderer.material = Main_Plugin.UseLegacyCloakEffect.Value ? legacyCamoMaterial : camoMaterial;
+            canopyRenderer.material = camoMaterial;
 
             previousLightsState = toggleLights.lightsActive;
             toggleLights.SetLightsActive(false);
@@ -224,6 +220,11 @@ namespace Chameleon.Monobehaviors.UI
                     rend.enabled = false;
                 }
             }
+        }
+
+        public bool IsCamoActive()
+        {
+            return isActive;
         }
 
         private void DrawPowerRepeating()

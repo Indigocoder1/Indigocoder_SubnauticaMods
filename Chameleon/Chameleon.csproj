@@ -128,6 +128,8 @@
     <Compile Include="Monobehaviors\UpgradeModules\DepthModule1.cs" />
     <Compile Include="Monobehaviors\UpgradeModules\DepthModule2.cs" />
     <Compile Include="Monobehaviors\UpgradeModules\DepthModule3.cs" />
+    <Compile Include="Patches\CloakEffect\AggressiveToPilotingVehiclePatches.cs" />
+    <Compile Include="Patches\CloakEffect\AggressiveWhenSeeTargetPatches.cs" />
     <Compile Include="Patches\EnergyMixinPatches.cs" />
     <Compile Include="Patches\SubrootPatches.cs" />
     <Compile Include="Patches\uGUI_CameraCyclopsPatches.cs" />

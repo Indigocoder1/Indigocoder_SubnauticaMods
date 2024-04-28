@@ -1,4 +1,5 @@
 ﻿using Chameleon.Interfaces;
+using Chameleon.Monobehaviors.UI;
 using Nautilus.Json;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace Chameleon.Monobehaviors
         public SaveData SaveData { get => _saveData; }
 
         [Header("Chameleon Info")]
+        public ChameleonCamoButton camoButton;
         public ChameleonUpgradeConsole chameleonUpgradeConsole;
         public GameObject moduleFunctionsRoot;
 

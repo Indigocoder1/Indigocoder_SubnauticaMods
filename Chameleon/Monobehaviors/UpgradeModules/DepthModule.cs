@@ -11,29 +11,29 @@ namespace Chameleon.Monobehaviors.UpgradeModules
     internal abstract class DepthModule : MonoBehaviour, IOnModuleChange
     {
         public abstract float Depth { get; }
-        private CrushDamage damage;
+        private CrushDamage _damage;
 
         protected CrushDamage Damage
         {
             get
             {
-                if(!damage)
+                if(!_damage)
                 {
-                    damage = gameObject.GetComponentInParent<CrushDamage>(true);
+                    _damage = gameObject.GetComponentInParent<CrushDamage>(true);
                 }
-                return damage;
+                return _damage;
             }
         }
 
         public void OnChange(TechType techType, bool added)
         {
-            float depth = Mathf.Max(Depth, damage.extraCrushDepth);
+            float depth = Mathf.Max(Depth, Damage.extraCrushDepth);
             Damage.SetExtraCrushDepth(depth);
         }
 
         public void OnDisable()
         {
-            damage.SetExtraCrushDepth(0);
+            _damage.SetExtraCrushDepth(0);
         }
     }
 }

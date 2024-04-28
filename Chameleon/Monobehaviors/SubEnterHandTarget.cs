@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Chameleon.Monobehaviors
 {
-    internal class SubEnterHandTarget : HandTarget, IHandTarget
+    public class SubEnterHandTarget : HandTarget, IHandTarget
     {
         //Blatanly stolen from the Seal sub. Go check them out on their discord server!
         //https://discord.com/invite/R2xCt9zXff
