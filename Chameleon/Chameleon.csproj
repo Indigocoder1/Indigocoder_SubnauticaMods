@@ -104,6 +104,9 @@
     <Compile Include="Monobehaviors\ChameleonFabricatorCustomizer.cs" />
     <Compile Include="Monobehaviors\ChameleonSubRoot.cs" />
     <Compile Include="Monobehaviors\ExternalCamsEnableDisableCallback.cs" />
+    <Compile Include="Monobehaviors\Prefabs\DamageManagerPrefabSetter.cs" />
+    <Compile Include="Monobehaviors\Prefabs\DamagePointSlot.cs" />
+    <Compile Include="Monobehaviors\Prefabs\SpawnCyclopsDamagePoints.cs" />
     <Compile Include="Monobehaviors\UI\ChameleonCamoButton.cs" />
     <Compile Include="Monobehaviors\ChameleonUpgradeConsole.cs" />
     <Compile Include="Monobehaviors\Prefabs\ApplyTextMaterial.cs" />
@@ -124,12 +127,17 @@
     <Compile Include="Monobehaviors\UI\NoiseUIManager.cs" />
     <Compile Include="Monobehaviors\UI\PowerUIManager.cs" />
     <Compile Include="Monobehaviors\UI\SpeedUIManager.cs" />
+    <Compile Include="Monobehaviors\UpgradeModules\BaseChargerFunction.cs" />
+    <Compile Include="Monobehaviors\UpgradeModules\BaseChargerModule.cs" />
     <Compile Include="Monobehaviors\UpgradeModules\DepthModule.cs" />
     <Compile Include="Monobehaviors\UpgradeModules\DepthModule1.cs" />
     <Compile Include="Monobehaviors\UpgradeModules\DepthModule2.cs" />
     <Compile Include="Monobehaviors\UpgradeModules\DepthModule3.cs" />
+    <Compile Include="Monobehaviors\UpgradeModules\ThermalModule.cs" />
     <Compile Include="Patches\CloakEffect\AggressiveToPilotingVehiclePatches.cs" />
     <Compile Include="Patches\CloakEffect\AggressiveWhenSeeTargetPatches.cs" />
+    <Compile Include="Patches\CrafterPatches.cs" />
+    <Compile Include="Patches\CyclopsExternalDamageManagerPatches.cs" />
     <Compile Include="Patches\EnergyMixinPatches.cs" />
     <Compile Include="Patches\SubrootPatches.cs" />
     <Compile Include="Patches\uGUI_CameraCyclopsPatches.cs" />

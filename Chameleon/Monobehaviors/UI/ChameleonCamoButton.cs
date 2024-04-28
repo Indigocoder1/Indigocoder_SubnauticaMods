@@ -14,7 +14,7 @@ namespace Chameleon.Monobehaviors.UI
         public MeshRenderer conningTowerRenderer;
         public MeshRenderer canopyRenderer;
 
-        public GameObject[] rendererParents;
+        public GameObject[] interiorRendererParents;
 
         [Header("Entry Hatches")]
         public SubEnterHandTarget entryHatch;
@@ -175,9 +175,9 @@ namespace Chameleon.Monobehaviors.UI
 
         public void EnableInterior()
         {
-            for (int i = 0; i < rendererParents.Length; i++)
+            for (int i = 0; i < interiorRendererParents.Length; i++)
             {
-                foreach (Renderer rend in rendererParents[i].GetComponentsInChildren<Renderer>())
+                foreach (Renderer rend in interiorRendererParents[i].GetComponentsInChildren<Renderer>())
                 {
                     rend.enabled = true;
                 }
@@ -200,9 +200,9 @@ namespace Chameleon.Monobehaviors.UI
         {
             if (!isActive) return;
 
-            for (int i = 0; i < rendererParents.Length; i++)
+            for (int i = 0; i < interiorRendererParents.Length; i++)
             {
-                foreach (Renderer rend in rendererParents[i].GetComponentsInChildren<Renderer>())
+                foreach (Renderer rend in interiorRendererParents[i].GetComponentsInChildren<Renderer>())
                 {
                     rend.enabled = false;
                 }

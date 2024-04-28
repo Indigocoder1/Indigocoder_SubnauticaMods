@@ -28,7 +28,7 @@ namespace Chameleon.Craftables
             prefab.SetRecipeFromJson(Path.Combine(Main_Plugin.RecipesFolderPath, "Chameleon.json"))
                 .WithFabricatorType(CraftTree.Type.Constructor)
                 .WithStepsToFabricatorTab("Vehicles")
-                .WithCraftingTime(25f);
+                .WithCraftingTime(20f);
 
             prefab.SetUnlock(TechType.Constructor).WithAnalysisTech(null); //ADD FRAGMENTS LATER
             prefab.SetPdaGroupCategory(TechGroup.Constructor, TechCategory.Constructor);
