@@ -82,7 +82,7 @@ namespace Chameleon.Monobehaviors
         private void OnEquip(string slot, InventoryItem item)
         {
             Type type = moduleFunctions[item.item.GetTechType()];
-            Component component = moduleFunctionsRoot.AddComponent(type);
+            moduleFunctionsRoot.AddComponent(type);
             NotifyOnChange(item.item.GetTechType(), true);
         }
 

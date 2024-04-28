@@ -55,7 +55,6 @@ namespace Chameleon.Monobehaviors.UI
             subAccentMaterial.SetColor("_GlowColor", new Color(0, 1, 1, 1));
 
             camoMaterial.SetInt("_ZWrite", 1);
-            camoMaterial.renderQueue = 2501;
 
             originalCanopyColor = canopyMaterial.color;
             originalEmissionColor = camoMaterial.GetColor("_EmissionColor");
@@ -75,6 +74,7 @@ namespace Chameleon.Monobehaviors.UI
                 main.SetText(HandReticle.TextType.HandSubscript, string.Empty, false, GameInput.Button.None);
             }
 
+            /*
             if(isActive)
             {
                 float lerpValue = (1.2f + Mathf.Sin(glowWaverTime) * glowSpeed) / 2f;
@@ -84,6 +84,7 @@ namespace Chameleon.Monobehaviors.UI
 
                 glowWaverTime += Time.deltaTime;
             }
+            */
         }
 
         public void OnMouseEnter()

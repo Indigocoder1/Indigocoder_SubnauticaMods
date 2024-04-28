@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Chameleon.Monobehaviors.UpgradeModules
 {
-    [ChameleonUpgradeModule("SealThermalChargeModule")]
+    [ChameleonUpgradeModule("ChameleonThermalModule")]
     internal class ThermalModule : BaseChargerModule<ThermalChargerFunction>
     {
         
