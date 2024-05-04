@@ -36,7 +36,6 @@ namespace Chameleon.Monobehaviors.UI
         private Material canopyMaterial;
 
         private Color originalCanopyColor;
-        private Color originalEmissionColor;
 
         private bool isActive;
         private bool hovering;
@@ -50,19 +49,10 @@ namespace Chameleon.Monobehaviors.UI
             conningTowerAccentMaterial = subRoot.transform.Find("Model/Exterior/Sub_ConningTower").GetComponent<Renderer>().materials[1];
             subAccentMaterial = subRoot.transform.Find("Model/Exterior/Sub_Body").GetComponent<Renderer>().materials[1];
             canopyMaterial = subRoot.transform.Find("Model/Exterior/Sub_Canopy").GetComponent<Renderer>().materials[0];
-
-            conningTowerAccentMaterial.SetColor("_GlowColor", new Color(0, 1, 1, 1));
-            subAccentMaterial.SetColor("_GlowColor", new Color(0, 1, 1, 1));
-
-            camoMaterial.SetInt("_ZWrite", 1);
-
             originalCanopyColor = canopyMaterial.color;
-            originalEmissionColor = camoMaterial.GetColor("_EmissionColor");
 
             exitHatch.OnEnter = OnExitSub;
             entryHatch.OnEnter = OnEnterSub;
-
-            Main_Plugin.logger.LogInfo($"Rnder queue = {camoMaterial.renderQueue}");
         }
 
         private void Update()
@@ -73,18 +63,6 @@ namespace Chameleon.Monobehaviors.UI
                 main.SetText(HandReticle.TextType.Hand, "ChameleonCamoButton", true, GameInput.Button.LeftHand);
                 main.SetText(HandReticle.TextType.HandSubscript, string.Empty, false, GameInput.Button.None);
             }
-
-            /*
-            if(isActive)
-            {
-                float lerpValue = (1.2f + Mathf.Sin(glowWaverTime) * glowSpeed) / 2f;
-                Color targetColor = Color.Lerp(originalEmissionColor, new Color(0, 0, 0, 1), 1 - lerpValue);
-
-                camoMaterial.SetColor("_EmissionColor", targetColor);
-
-                glowWaverTime += Time.deltaTime;
-            }
-            */
         }
 
         public void OnMouseEnter()

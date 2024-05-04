@@ -6,8 +6,6 @@ namespace Chameleon.Monobehaviors.Prefabs
 {
     internal class SpawnPowerCells : MonoBehaviour, ICyclopsReferencer
     {
-        private static Dictionary<GameObject, TechType> cachedModels = null;
-
         public Vector3 spawnedLocalPos;
         public Vector3 spawnedLocalRoation;
         public Vector3 spawnedLocalScale;
@@ -23,34 +21,30 @@ namespace Chameleon.Monobehaviors.Prefabs
 
         public void OnCyclopsReferenceFinished(GameObject cyclops)
         {
-            if (cachedModels == null) LoadCellModels(cyclops);
+            var models =  LoadCellModels(cyclops);
             batterySource = GetComponent<BatterySource>();
 
-            int index = 0;
-            foreach (GameObject model in cachedModels.Keys)
+            for (int i = 0; i < models.Length; i++)
             {
-                batterySource.batteryModels[index].model = SpawnPowerCellModel(model);
-                batterySource.batteryModels[index].techType = cachedModels[model];
-
-                index++;
+                batterySource.batteryModels[i].model = SpawnPowerCellModel(models[i]);
             }
         }
 
-        private void LoadCellModels(GameObject cyclops)
+        private GameObject[] LoadCellModels(GameObject cyclops)
         {
-            GameObject powerCellModel = cyclops.transform.Find("cyclopspower/generator/SubPowerSocket1/SubPowerCell1/model").gameObject;
-            GameObject ionPowerCellModel = cyclops.transform.Find("cyclopspower/generator/SubPowerSocket1/SubPowerCell1/engine_power_cell_ion").gameObject;
+            var powerCellModel = cyclops.transform.Find("cyclopspower/generator/SubPowerSocket1/SubPowerCell1/model").gameObject;
+            var ionPowerCellModel = cyclops.transform.Find("cyclopspower/generator/SubPowerSocket1/SubPowerCell1/engine_power_cell_ion").gameObject;
 
-            cachedModels = new()
+            return new[]
             {
-                { powerCellModel, TechType.PowerCell },
-                { ionPowerCellModel, TechType.PrecursorIonPowerCell }
+                powerCellModel,
+                ionPowerCellModel
             };
         }
 
         private GameObject SpawnPowerCellModel(GameObject modelReference)
         {
-            GameObject spawnedModel = GameObject.Instantiate(modelReference, transform);
+            GameObject spawnedModel = Instantiate(modelReference, transform);
 
             spawnedModel.transform.localPosition = spawnedLocalPos;
             spawnedModel.transform.localEulerAngles = spawnedLocalRoation;

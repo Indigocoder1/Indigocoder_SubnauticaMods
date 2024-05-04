@@ -8,11 +8,9 @@ namespace Chameleon.Monobehaviors.Prefabs
     {
         public CyclopsExternalDamageManager damageManager;
 
-        private static CyclopsExternalDamageManager cyclopsManager;
-
         public void OnCyclopsReferenceFinished(GameObject cyclops)
         {
-            cyclopsManager = cyclops.GetComponentInChildren<CyclopsExternalDamageManager>();
+            var cyclopsManager = cyclops.GetComponentInChildren<CyclopsExternalDamageManager>();
             List<CyclopsDamagePoint> points = new();
 
             foreach (var slot in gameObject.GetComponentsInChildren<DamagePointSlot>())

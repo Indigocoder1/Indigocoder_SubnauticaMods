@@ -6,6 +6,7 @@ using System.Collections;
 using Chameleon.Monobehaviors.Cyclops;
 using Nautilus.Utility;
 using Chameleon.Interfaces;
+using Chameleon.Monobehaviors.Abstract;
 
 namespace Chameleon.Craftables
 {
@@ -53,6 +54,12 @@ namespace Chameleon.Craftables
             foreach (ICyclopsReferencer referencer in chameleon.GetComponentsInChildren<ICyclopsReferencer>())
             {
                 referencer.OnCyclopsReferenceFinished(CyclopsReferenceManager.CyclopsReference);
+            }
+
+            foreach (PrefabModifier modifier in chameleon.GetComponentsInChildren<PrefabModifier>())
+            {
+                modifier.OnAsyncPrefabTasksCompleted();
+                modifier.OnLateMaterialOperation();
             }
 
             chameleon.transform.Find("Model/Exterior/Sub_Canopy").GetComponent<MeshRenderer>().material.color = new Color(1f, 1f, 1f, 0.3f);

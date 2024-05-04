@@ -101,9 +101,12 @@
     <Compile Include="Interfaces\IOnSaveDataLoaded.cs" />
     <Compile Include="Interfaces\IUIElement.cs" />
     <Compile Include="Main_Plugin.cs" />
+    <Compile Include="Monobehaviors\Abstract\PrefabModifier.cs" />
     <Compile Include="Monobehaviors\ChameleonFabricatorCustomizer.cs" />
     <Compile Include="Monobehaviors\ChameleonSubRoot.cs" />
+    <Compile Include="Monobehaviors\DisableWhenPlayerNotInView.cs" />
     <Compile Include="Monobehaviors\ExternalCamsEnableDisableCallback.cs" />
+    <Compile Include="Monobehaviors\Prefabs\ChildObjectIdentifierFix.cs" />
     <Compile Include="Monobehaviors\Prefabs\DamageManagerPrefabSetter.cs" />
     <Compile Include="Monobehaviors\Prefabs\DamagePointSlot.cs" />
     <Compile Include="Monobehaviors\Prefabs\SpawnCyclopsDamagePoints.cs" />
