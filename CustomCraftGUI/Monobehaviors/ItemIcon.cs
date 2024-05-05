@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 namespace CustomCraftGUI.Monobehaviors
 {
@@ -16,6 +14,7 @@ namespace CustomCraftGUI.Monobehaviors
 
         public TechType techType { get; private set; }
         private InfoPanel infoPanel;
+        private ModifiedItemsManager manager;
 
         public void SetTechType(TechType techType)
         {
@@ -26,10 +25,18 @@ namespace CustomCraftGUI.Monobehaviors
         {
             this.infoPanel = infoPanel;
         }
+        public void SetItemManager(ModifiedItemsManager manager)
+        {
+            this.manager = manager;
+        }
 
         public void SetInfoPanelData()
         {
             infoPanel.SetCurrentItem(this);
+        }
+        public void SetModifiedItemsManagerData()
+        {
+            manager.SetCurrentIcon(this);
         }
     }
 }

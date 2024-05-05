@@ -10,8 +10,8 @@ namespace CustomCraftGUI.Monobehaviors
         public TextMeshProUGUI itemNameText;
         public uGUI_ItemIcon itemIcon;
 
-        [Header("Custom Items")]
-        public CustomItemsManager customItemsManager;
+        [Header("Item Managers")]
+        public ItemManager[] itemManagers;
 
         [Header("Ingredients and Linked Items")]
         public GameObject ingredientItemPrefab;
@@ -30,14 +30,25 @@ namespace CustomCraftGUI.Monobehaviors
         {
             if (!currentItem) return;
 
-            customItemsManager.AdjustCurrentList(currentItem, 1);
+            foreach (var item in itemManagers)
+            {
+                if (!item.gameObject.activeSelf) continue;
+
+                item.AdjustCurrentList(currentItem, 1);
+            }
         }
 
         public void RemoveItemFromCurrentList()
         {
             if (!currentItem) return;
 
-            customItemsManager.AdjustCurrentList(currentItem, -1);
+
+            foreach (var item in itemManagers)
+            {
+                if (!item.gameObject.activeSelf) continue;
+
+                item.AdjustCurrentList(currentItem, -1);
+            }
         }
 
         public void SetCurrentItem(ItemIcon icon)

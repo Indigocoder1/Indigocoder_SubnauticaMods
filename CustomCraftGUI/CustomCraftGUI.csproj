@@ -52,6 +52,10 @@
     <Reference Include="Nautilus">
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\plugins\Nautilus\Nautilus.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
@@ -93,17 +97,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Monobehaviors\ApplySNFont.cs" />
     <Compile Include="Monobehaviors\AtlasHelper.cs" />
     <Compile Include="Monobehaviors\CustomCraftFormatter.cs" />
     <Compile Include="Monobehaviors\CustomItem.cs" />
     <Compile Include="Monobehaviors\CustomItemsManager.cs" />
     <Compile Include="Monobehaviors\InfoPanel.cs" />
     <Compile Include="Monobehaviors\IngredientItem.cs" />
+    <Compile Include="Monobehaviors\Item.cs" />
     <Compile Include="Monobehaviors\ItemIcon.cs" />
     <Compile Include="Monobehaviors\ItemIconSpawner.cs" />
+    <Compile Include="Monobehaviors\ItemManager.cs" />
     <Compile Include="Monobehaviors\ItemSearcher.cs" />
     <Compile Include="Monobehaviors\Menu.cs" />
     <Compile Include="Monobehaviors\MenuManager.cs" />
+    <Compile Include="Monobehaviors\ModifiedItem.cs" />
+    <Compile Include="Monobehaviors\ModifiedItemsManager.cs" />
+    <Compile Include="Patches\KnownTechPatches.cs" />
     <Compile Include="Patches\uGUI_MainMenuPatches.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

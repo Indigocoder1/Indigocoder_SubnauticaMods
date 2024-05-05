@@ -11,6 +11,7 @@ namespace CustomCraftGUI.Monobehaviors
         public GameObject iconPrefab;
         public Transform iconsParent;
         public InfoPanel infoPanel;
+        public ModifiedItemsManager modifiedItemsManager;
 
         public Dictionary<string, ItemIcon> itemIconKVPs = new(); 
 
@@ -26,6 +27,7 @@ namespace CustomCraftGUI.Monobehaviors
 
                 icon.SetTechType(techType);
                 icon.SetInfoPanel(infoPanel);
+                icon.SetItemManager(modifiedItemsManager);
                 itemIconKVPs.Add(icon.itemName.ToLower(), icon);
 
                 uGUI_ItemIcon itemIcon = newIconPrefab.GetComponentInChildren<uGUI_ItemIcon>();

@@ -1,11 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace CustomCraftGUI.Monobehaviors
 {
     public class Menu : MonoBehaviour
     {
+        public Menu subMenuParent;
         public string menuName;
         private bool isOpen;
 

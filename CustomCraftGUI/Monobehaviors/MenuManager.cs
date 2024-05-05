@@ -7,7 +7,8 @@ namespace CustomCraftGUI.Monobehaviors
     public class MenuManager : MonoBehaviour
     {
         public static MenuManager Instance;
-        [SerializeField] private Menu[] menus;
+        public Menu[] menus;
+        public Menu[] subMenus;
 
         private void Awake()
         {
@@ -39,6 +40,27 @@ namespace CustomCraftGUI.Monobehaviors
                 }
             }
             menu.Open();
+        }
+
+        public void OpenSubMenu(Menu subMenu)
+        {
+            if(!subMenu.subMenuParent)
+            {
+                return;
+            }
+
+            OpenMenu(subMenu.subMenuParent);
+
+            foreach (var item in subMenus)
+            {
+                if(item.subMenuParent == subMenu.subMenuParent && item != subMenu)
+                {
+                    item.Close();
+                    continue;
+                }
+
+                subMenu.Open();
+            }
         }
 
         public void CloseMenu(Menu menu)
