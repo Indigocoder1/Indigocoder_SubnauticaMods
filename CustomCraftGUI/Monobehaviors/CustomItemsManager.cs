@@ -30,6 +30,10 @@ namespace CustomCraftGUI.Monobehaviors
         public override void SetCurrentItem(Item item)
         {
             currentItem = item;
+
+            itemIcon.SetForegroundSprite(item.itemSprite);
+
+            itemIDInputField.text = "myamazingcoolitem1";
             customItemNameInputField.text = ((CustomItem)item).displayName;
 
             ClearInstantiatedItems();
@@ -45,6 +49,7 @@ namespace CustomCraftGUI.Monobehaviors
         {
             string text = string.IsNullOrEmpty(customItemNameInputField.text) ? "My amazing cool item" : customItemNameInputField.text;
             ((CustomItem)currentItem).SetDisplayName(text);
+            currentItem.SetNameText(text);
         }
         public void OnFabricatorDropdownChanged()
         {
@@ -91,22 +96,18 @@ namespace CustomCraftGUI.Monobehaviors
             currentItem.SetItemsManager(this);
             ((CustomItem)currentItem).SetFabricatorPath(fabricatorPaths["Fabricator Basic Materials"]);
 
-            if(itemIcon.foreground != null)
+            if (itemIcon.foreground != null)
             {
                 Destroy(itemIcon.foreground.gameObject);
             }
 
-            customItems.Add(((CustomItem)currentItem));
-
             itemIDInputField.text = "myamazingcoolitem1";
-            customItemNameInputField.text = $"My amazing cool item {itemsCreated}";
+            customItemNameInputField.text = ((CustomItem)currentItem).displayName;
+
+            customItems.Add((CustomItem)currentItem);
 
             itemsCreated++;
-
-            foreach (Transform child in itemIcon.transform)
-            {
-                Destroy(child);
-            }
+            itemIcon.SetForegroundSprite(null);
 
             ingredients.Add(currentItem, new());
             linkedItems.Add(currentItem, new());

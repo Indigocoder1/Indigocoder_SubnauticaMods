@@ -127,7 +127,7 @@ namespace CustomCraftGUI.Monobehaviors
         {
             currentItem.SetUnlockAtStart(unlockAtStartToggle.isOn);
         }
-
+        
         protected virtual void UpdateIngredientsList()
         {
             foreach (Ingredient ingredient in ingredients[currentItem])

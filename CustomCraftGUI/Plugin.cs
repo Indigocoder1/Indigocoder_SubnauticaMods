@@ -2,8 +2,10 @@
 using BepInEx.Logging;
 using HarmonyLib;
 using Nautilus.Json.Converters;
+using Nautilus.Utility;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -26,7 +28,6 @@ namespace CustomCraftGUI
         public static AssetBundle assetBundle { get; private set; }
 
         private readonly static string customCraftGUICachePath = Path.Combine(Paths.ConfigPath, "CCGUI_DefaultTechCache.json");
-        //public static HashSet<TechType> defaultTech = new();
         public static CustomCraftCacheData cacheData { get; private set; } = new();
 
         private void Awake()
@@ -34,31 +35,38 @@ namespace CustomCraftGUI
             logger = Logger;
 
             assetBundle = AssetBundle.LoadFromFile(Path.Combine(AssetsFolderPath, "customcraftgui"));
-            harmony.PatchAll();
-
-            cacheData = TryLoadCachedTech();
+            harmony.PatchAll();            
 
             logger.LogInfo($"{pluginName} {versionString} Loaded.");
         }
 
+        private IEnumerator Start()
+        {
+            //Wait until most mods are loaded so that JsonConvert has all the necessary types
+            yield return new WaitUntil(() => MaterialUtils.IsReady);
+            yield return new WaitForSeconds(2f);
+
+            cacheData = TryLoadCachedTech();
+        }
+
         private CustomCraftCacheData TryLoadCachedTech()
         {
-            if(!File.Exists(customCraftGUICachePath))
+            if (!File.Exists(customCraftGUICachePath))
             {
-                return null;
+                return new();
             }
 
             string data = File.ReadAllText(customCraftGUICachePath);
-            CustomCraftCacheData cachedDefaultTech = null;
+            CustomCraftCacheData cachedDefaultTech = new();
             try
             {
                 cachedDefaultTech = JsonConvert.DeserializeObject<CustomCraftCacheData>(data, new CustomEnumConverter());
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 logger.LogError($"Error loading cached tech from {customCraftGUICachePath} | {e.Message}");
             }
-            
+
             return cachedDefaultTech;
         }
 
@@ -69,7 +77,7 @@ namespace CustomCraftGUI
                 return;
             }
 
-            if(cacheData.defaultTech == null && cacheData.analysisTech == null)
+            if (cacheData.defaultTech == null && cacheData.analysisTech == null)
             {
                 return;
             }
@@ -77,22 +85,34 @@ namespace CustomCraftGUI
             var defaultTechJson = JsonConvert.SerializeObject(cacheData, Formatting.Indented, new CustomEnumConverter());
             File.WriteAllText(customCraftGUICachePath, defaultTechJson);
         }
-    }
 
-    public class CustomCraftCacheData
-    {
-        public HashSet<TechType> defaultTech;
-        public List<KnownTech.AnalysisTech> analysisTech;
-
-        public CustomCraftCacheData(HashSet<TechType> defaultTech, List<KnownTech.AnalysisTech> analysisTech)
+        public class CustomCraftCacheData
         {
-            this.defaultTech = defaultTech;
-            this.analysisTech = analysisTech;
+            public HashSet<TechType> defaultTech;
+            public List<SlimAnalysisTech> analysisTech;
+
+            public CustomCraftCacheData(HashSet<TechType> defaultTech, List<SlimAnalysisTech> analysisTech)
+            {
+                this.defaultTech = defaultTech;
+                this.analysisTech = analysisTech;
+            }
+
+            public CustomCraftCacheData()
+            {
+
+            }
         }
 
-        public CustomCraftCacheData()
+        public class SlimAnalysisTech
         {
+            public TechType techType;
+            public List<TechType> unlockTechTypes;
 
+            public SlimAnalysisTech(TechType techType, List<TechType> unlockTechTypes)
+            {
+                this.techType = techType;
+                this.unlockTechTypes = unlockTechTypes;
+            }
         }
     }
 }

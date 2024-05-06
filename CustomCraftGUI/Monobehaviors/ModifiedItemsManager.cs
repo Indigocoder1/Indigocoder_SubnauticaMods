@@ -26,7 +26,17 @@ namespace CustomCraftGUI.Monobehaviors
         public override void SetCurrentItem(Item item)
         {
             currentItem = item;
+
+            itemText.text = Language.main.Get(currentItem.itemID);
+
+            Atlas.Sprite sprite = SpriteManager.Get(((ModifiedItem)currentItem).techType);
+            itemIcon.SetForegroundSprite(sprite);
+
+            ClearInstantiatedItems();
+            UpdateIngredientsList();
+            UpdateLinkedItemsList();
         }
+
         public void SetCurrentIcon(ItemIcon itemIcon)
         {
             currentItemIcon = itemIcon;
@@ -36,6 +46,7 @@ namespace CustomCraftGUI.Monobehaviors
         {
             foreach (var item in modifiedItems)
             {
+                //Don't add duplicates
                 if(item.techType == currentItemIcon.techType)
                 {
                     return;
@@ -43,25 +54,25 @@ namespace CustomCraftGUI.Monobehaviors
             }
 
             GameObject newCustomItem = Instantiate(itemPrefab, itemsParent);
-            Atlas.Sprite sprite = SpriteManager.Get(currentItemIcon.techType);
-
             currentItem = newCustomItem.GetComponent<ModifiedItem>();
+
+            Atlas.Sprite sprite = SpriteManager.Get(currentItemIcon.techType);
             currentItem.SetItemSprite(sprite);
             ((ModifiedItem)currentItem).SetTechType(currentItemIcon.techType);
             currentItem.SetItemID(currentItemIcon.itemName);
-            currentItem.SetNameText(Language.main.Get(currentItemIcon.itemName));
+            currentItem.SetNameText(Language.main.Get(currentItemIcon.techType));
             currentItem.SetItemsManager(this);
 
-            itemText.text = currentItem.itemID;
-
+            itemText.text = Language.main.Get(currentItem.itemID);
             itemIcon.SetForegroundSprite(sprite);
-            itemIcon.foreground.transform.localScale = SpriteSizeFormatter.GetSpriteShrinkScalar(sprite);
 
             ITechData techData = CraftData.Get(currentItemIcon.techType, true);
             if (techData == null)
             {
                 base.ingredients.Add(currentItem, new());
                 base.linkedItems.Add(currentItem, new());
+
+                modifiedItems.Add((ModifiedItem)currentItem);
 
                 ClearInstantiatedItems();
                 UpdateIngredientsList();
@@ -92,7 +103,7 @@ namespace CustomCraftGUI.Monobehaviors
                     linkedItemsDictionary.Add(techType, 1);
                 }
             }
-
+                        
             if (linkedItemsDictionary.Count != 0)
             {
                 foreach (var key in linkedItemsDictionary.Keys)
@@ -103,16 +114,20 @@ namespace CustomCraftGUI.Monobehaviors
 
             amountCraftedInputField.text = techData.craftAmount.ToString();
 
-            if(Plugin.cacheData != null)
+            List<Ingredient> unlocks = new();
+            if (Plugin.cacheData.defaultTech != null)
             {
                 bool unlocksAtStart = Plugin.cacheData.defaultTech.Contains(currentItemIcon.techType);
                 unlockAtStartToggle.isOn = unlocksAtStart;
                 currentItem.SetUnlockAtStart(unlocksAtStart);
+            }
 
-                KnownTech.AnalysisTech tech = null;
+            if(Plugin.cacheData.analysisTech != null)
+            {
+                Plugin.SlimAnalysisTech tech = null;
                 foreach (var item in Plugin.cacheData.analysisTech)
                 {
-                    if(item.techType != currentItemIcon.techType)
+                    if (item.techType != currentItemIcon.techType)
                     {
                         continue;
                     }
@@ -121,21 +136,30 @@ namespace CustomCraftGUI.Monobehaviors
                     break;
                 }
 
-                ((ModifiedItem)currentItem).SetUnlocks(tech.unlockTechTypes);
-
-                //I dislike this looping but idk how else to convert the 2
-                List<Ingredient> unlocks = new();
-                foreach (var techType in tech.unlockTechTypes)
+                if (tech == null)
                 {
-                    unlocks.Add(new(techType, 1));
+                    //No unlocks
+                    ((ModifiedItem)currentItem).SetUnlocks(null);
                 }
-                unlockedItems.Add(currentItem, unlocks);
+                else
+                {
+                    ((ModifiedItem)currentItem).SetUnlocks(tech.unlockTechTypes);
+
+                    //I dislike this looping but idk how else to convert the 2
+                    foreach (var techType in tech.unlockTechTypes)
+                    {
+                        unlocks.Add(new(techType, 1));
+                    }
+                }    
             }
-            else
+
+            bool cacheNotSet = Plugin.cacheData.analysisTech == null && Plugin.cacheData.defaultTech == null;
+
+            if(cacheNotSet)
             {
                 ErrorMessage.AddError(CACHE_NOT_SET_WARNING);
 
-                Invoke(nameof(ReAddWarningMessage), 3f);
+                Invoke(nameof(ReAddWarningMessage), 5f);
             }
 
             currentItem.SetAmountCrafted(techData.craftAmount);
@@ -146,6 +170,7 @@ namespace CustomCraftGUI.Monobehaviors
 
             base.ingredients.Add(currentItem, ingredients);
             base.linkedItems.Add(currentItem, linkedItems);
+            unlockedItems.Add(currentItem, unlocks);
 
             ClearInstantiatedItems();
             UpdateIngredientsList();
@@ -176,10 +201,20 @@ namespace CustomCraftGUI.Monobehaviors
                 Destroy(item.gameObject);
             }
 
-            currentItem = null;
-            currentItemIcon = null;
-
             ClearInstantiatedItems();
+
+            if (modifiedItems.Count > 0)
+            {
+                currentItem = modifiedItems[0];
+
+                SetCurrentItem(currentItem);
+            }
+            else
+            {
+                currentItem = null;
+            }
+            
+            currentItemIcon = null;
         }
 
         private void UpdateUnlockedItemsList()
