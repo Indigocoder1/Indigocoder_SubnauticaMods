@@ -29,6 +29,7 @@ namespace CustomCraftGUI
 
         private readonly static string customCraftGUICachePath = Path.Combine(Paths.ConfigPath, "CCGUI_DefaultTechCache.json");
         public static CustomCraftCacheData cacheData { get; private set; } = new();
+        public static bool cacheSet { get; private set; }
 
         private void Awake()
         {
@@ -67,6 +68,7 @@ namespace CustomCraftGUI
                 logger.LogError($"Error loading cached tech from {customCraftGUICachePath} | {e.Message}");
             }
 
+            cacheSet = true;
             return cachedDefaultTech;
         }
 

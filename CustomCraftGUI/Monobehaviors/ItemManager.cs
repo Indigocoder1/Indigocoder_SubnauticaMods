@@ -3,15 +3,20 @@ using TMPro;
 using UnityEngine;
 using Ingredient = CraftData.Ingredient;
 using UnityEngine.UI;
+using System;
 
 namespace CustomCraftGUI.Monobehaviors
 {
     public abstract class ItemManager : MonoBehaviour
     {
+        public static event EventHandler OnActiveManagerChanged;
+        public event EventHandler OnActiveListChanged;
+
         [Header("Item Info")]
         public TMP_InputField amountCraftedInputField;
         public uGUI_ItemIcon itemIcon;
         public Toggle unlockAtStartToggle;
+        public InfoPanel infoPanel;
 
         [Header("Animators")]
         public Animator ingredientsButtonAnimator;
@@ -35,6 +40,8 @@ namespace CustomCraftGUI.Monobehaviors
         {
             ClearInstantiatedItems();
             Invoke(nameof(SetIngredientsActive), 0.2f);
+
+            OnActiveManagerChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public virtual void SetIngredientsActive()
@@ -43,6 +50,8 @@ namespace CustomCraftGUI.Monobehaviors
             linkedItemsButtonAnimator.SetBool("NotSelected", true);
             ingredientsActive = true;
             linkedItemsActive = false;
+
+            OnActiveListChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public virtual void SetLinkedItemsActive()
@@ -51,20 +60,22 @@ namespace CustomCraftGUI.Monobehaviors
             linkedItemsButtonAnimator.SetBool("NotSelected", false);
             ingredientsActive = false;
             linkedItemsActive = true;
+
+            OnActiveListChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public virtual void AdjustCurrentList(ItemIcon item, int change)
+        public virtual List<Ingredient> AdjustCurrentList(ItemIcon item, int change)
         {
-            List<Ingredient> newList = GetActiveList();
+            List<Ingredient> newList = GetActiveList(out _);
 
             if(currentItem == null)
             {
-                return;
+                return null;
             }
 
             if(newList == null)
             {
-                return;
+                return null;
             }
 
             if (newList.Find((i) => { return i.techType == item.techType; }) == null && change > 0)
@@ -101,24 +112,59 @@ namespace CustomCraftGUI.Monobehaviors
 
             currentItem.SetIngredients(ingredients[currentItem]);
             currentItem.SetLinkedItems(linkedItems[currentItem]);
+
+            return newList;
         }
 
-        protected virtual List<Ingredient> GetActiveList()
+        public virtual List<Ingredient> GetActiveList(out string listName)
         {
+            if ((ingredients == null && linkedItems == null) || currentItem == null)
+            {
+                listName = "Ingredients";
+                return null;
+            }
+
             if (ingredientsActive && ingredients.ContainsKey(currentItem))
             {
+                listName = "Ingredients";
                 return ingredients[currentItem];
             }
             else if (linkedItemsActive && linkedItems.ContainsKey(currentItem))
             {
+                listName = "Linked Items";
                 return linkedItems[currentItem];
             }
 
+            listName = "";
             return null;
         }
 
         public abstract void SetCurrentItem(Item item);
 
+        public virtual void RemoveCurrentItemFromList()
+        {
+            ingredients.Remove(currentItem);
+            linkedItems.Remove(currentItem);
+
+            amountCraftedInputField.text = "1";
+            unlockAtStartToggle.isOn = false;
+
+            itemIcon.SetForegroundSprite(null);
+
+            foreach (var item in itemsParent.GetComponentsInChildren<Item>())
+            {
+                if (item.itemID != currentItem.itemID)
+                {
+                    continue;
+                }
+
+                Destroy(item.gameObject);
+            }
+
+            ClearInstantiatedItems();
+
+            currentItem = null;
+        }
         public virtual void OnAmountCraftedChanged()
         {
             currentItem.SetAmountCrafted(int.Parse(amountCraftedInputField.text));
@@ -133,7 +179,9 @@ namespace CustomCraftGUI.Monobehaviors
             foreach (Ingredient ingredient in ingredients[currentItem])
             {
                 GameObject newIngredient = Instantiate(ingredientPrefab, ingredientsParent);
-                newIngredient.GetComponent<IngredientItem>().SetInfo(SpriteManager.Get(ingredient.techType), ingredient.techType, ingredient.amount);
+                var ingredientItem = newIngredient.GetComponent<IngredientItem>();
+                ingredientItem.SetInfo(SpriteManager.Get(ingredient.techType), ingredient.techType, ingredient.amount, (ModifiedItemsManager)this);
+                ingredientItem.SetInfoPanel(infoPanel);
             }
         }
 
@@ -142,7 +190,9 @@ namespace CustomCraftGUI.Monobehaviors
             foreach (Ingredient linkedItem in linkedItems[currentItem])
             {
                 GameObject newIngredient = Instantiate(ingredientPrefab, linkedItemsParent);
-                newIngredient.GetComponent<IngredientItem>().SetInfo(SpriteManager.Get(linkedItem.techType), linkedItem.techType, linkedItem.amount);
+                var ingredientItem = newIngredient.GetComponent<IngredientItem>();
+                ingredientItem.SetInfo(SpriteManager.Get(linkedItem.techType), linkedItem.techType, linkedItem.amount, (ModifiedItemsManager)this);
+                ingredientItem.SetInfoPanel(infoPanel);
             }
         }
 
@@ -159,7 +209,17 @@ namespace CustomCraftGUI.Monobehaviors
             }
         }
 
-        protected Dictionary<string, string[]> fabricatorPaths = new()
+        protected void InvokeActiveListChanged()
+        {
+            OnActiveListChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnEnable()
+        {
+            OnActiveManagerChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected readonly Dictionary<string, string[]> fabricatorPaths = new()
         {
             { "Fabricator Basic Materials", new[] { "Fabricator", "Resources", "BasicMaterials" } },
             { "Fabricator Advanced Materials", new[] { "Fabricator", "Resources", "AdvancedMaterials" } },

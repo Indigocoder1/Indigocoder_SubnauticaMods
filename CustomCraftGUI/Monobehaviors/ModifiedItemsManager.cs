@@ -1,7 +1,9 @@
 ﻿using CustomCraftGUI.Utilities;
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Ingredient = CraftData.Ingredient;
 
 namespace CustomCraftGUI.Monobehaviors
@@ -44,6 +46,11 @@ namespace CustomCraftGUI.Monobehaviors
 
         public void AddCurrentItemToList()
         {
+            if(currentItemIcon == null)
+            {
+                return;
+            }
+
             foreach (var item in modifiedItems)
             {
                 //Don't add duplicates
@@ -73,6 +80,7 @@ namespace CustomCraftGUI.Monobehaviors
                 base.linkedItems.Add(currentItem, new());
 
                 modifiedItems.Add((ModifiedItem)currentItem);
+                unlockedItems.Add(currentItem, new());
 
                 ClearInstantiatedItems();
                 UpdateIngredientsList();
@@ -153,9 +161,7 @@ namespace CustomCraftGUI.Monobehaviors
                 }    
             }
 
-            bool cacheNotSet = Plugin.cacheData.analysisTech == null && Plugin.cacheData.defaultTech == null;
-
-            if(cacheNotSet)
+            if(!Plugin.cacheSet)
             {
                 ErrorMessage.AddError(CACHE_NOT_SET_WARNING);
 
@@ -178,51 +184,32 @@ namespace CustomCraftGUI.Monobehaviors
             UpdateUnlockedItemsList();
         }
 
-        public void RemoveCurrentItemFromList()
+        public override void RemoveCurrentItemFromList()
         {
-            ingredients.Remove(currentItem);
-            linkedItems.Remove(currentItem);
+            ModifiedItem oldItem = (ModifiedItem)currentItem;
+            base.RemoveCurrentItemFromList();
 
             itemText.text = "N/A";
-            amountCraftedInputField.text = "1";
-            unlockAtStartToggle.isOn = false;
 
-            modifiedItems.Remove((ModifiedItem)currentItem);
-            unlockedItems.Remove(currentItem);
-            itemIcon.SetForegroundSprite(null);
-
-            foreach (var item in itemsParent.GetComponentsInChildren<Item>())
-            {
-                if(item.itemID != currentItem.itemID)
-                {
-                    continue;
-                }
-
-                Destroy(item.gameObject);
-            }
-
-            ClearInstantiatedItems();
+            modifiedItems.Remove(oldItem);
+            unlockedItems.Remove(oldItem);
 
             if (modifiedItems.Count > 0)
             {
-                currentItem = modifiedItems[0];
+                SetCurrentItem(modifiedItems[modifiedItems.Count - 1]);
+            }
 
-                SetCurrentItem(currentItem);
-            }
-            else
-            {
-                currentItem = null;
-            }
-            
             currentItemIcon = null;
         }
 
         private void UpdateUnlockedItemsList()
         {
-            foreach (Ingredient ingredient in unlockedItems[currentItem])
+            foreach (Ingredient unlock in unlockedItems[currentItem])
             {
-                GameObject newUnlock = Instantiate(ingredientPrefab, ingredientsParent);
-                newUnlock.GetComponent<IngredientItem>().SetInfo(SpriteManager.Get(ingredient.techType), ingredient.techType, 1);
+                GameObject newUnlock = Instantiate(ingredientPrefab, unlocksParent);
+                var ingredientItem = newUnlock.GetComponent<IngredientItem>();
+                ingredientItem.SetInfo(SpriteManager.Get(unlock.techType), unlock.techType, unlock.amount, this);
+                ingredientItem.SetInfoPanel(infoPanel);
             }
         }
 
@@ -235,6 +222,8 @@ namespace CustomCraftGUI.Monobehaviors
             ingredientsActive = false;
             linkedItemsActive = false;
             unlocksActive = true;
+
+            InvokeActiveListChanged();
         }
 
         public override void SetIngredientsActive()
@@ -261,14 +250,41 @@ namespace CustomCraftGUI.Monobehaviors
             }
         }
 
-        protected override List<Ingredient> GetActiveList()
+        public override List<Ingredient> GetActiveList(out string listName)
         {
+            if(unlockedItems == null)
+            {
+                return base.GetActiveList(out listName);
+            }
+
             if(unlocksActive && unlockedItems.ContainsKey(currentItem))
             {
+                listName = "Unlocked Items";
                 return unlockedItems[currentItem];
             }
 
-            return base.GetActiveList();
+            return base.GetActiveList(out listName);
+        }
+
+        public override List<Ingredient> AdjustCurrentList(ItemIcon item, int change)
+        {
+            var newList = base.AdjustCurrentList(item, change);
+
+            if(unlocksActive)
+            {
+                unlockedItems[currentItem] = newList;
+            }
+
+            List<TechType> newUnlocks = new();
+            foreach (var ingredient in unlockedItems[currentItem])
+            {
+                newUnlocks.Add(ingredient.techType);
+            }
+            ((ModifiedItem)currentItem).SetUnlocks(newUnlocks);
+            
+            UpdateUnlockedItemsList();
+
+            return newList;
         }
 
         private void ReAddWarningMessage()

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using Ingredient = CraftData.Ingredient;
 using System.Windows.Forms;
 using System.Reflection;
 using System.IO;
@@ -19,7 +18,7 @@ namespace CustomCraftGUI.Monobehaviors
         public TMP_InputField itemSizeYField;
         public TMP_InputField itemTooltipInputField;
 
-        public List<CustomItem> customItems = new();
+        public List<CustomItem> customItems { get; private set; } = new();
 
         public override void Start()
         {
@@ -33,7 +32,7 @@ namespace CustomCraftGUI.Monobehaviors
 
             itemIcon.SetForegroundSprite(item.itemSprite);
 
-            itemIDInputField.text = "myamazingcoolitem1";
+            itemIDInputField.text = item.itemID;
             customItemNameInputField.text = ((CustomItem)item).displayName;
 
             ClearInstantiatedItems();
@@ -101,7 +100,7 @@ namespace CustomCraftGUI.Monobehaviors
                 Destroy(itemIcon.foreground.gameObject);
             }
 
-            itemIDInputField.text = "myamazingcoolitem1";
+            itemIDInputField.text = currentItem.itemID;
             customItemNameInputField.text = ((CustomItem)currentItem).displayName;
 
             customItems.Add((CustomItem)currentItem);
@@ -115,6 +114,21 @@ namespace CustomCraftGUI.Monobehaviors
             ClearInstantiatedItems();
             UpdateIngredientsList();
             UpdateLinkedItemsList();
+        }
+
+        public override void RemoveCurrentItemFromList()
+        {
+            CustomItem oldItem = (CustomItem)currentItem;
+            base.RemoveCurrentItemFromList();
+
+            customItems.Remove(oldItem);
+
+            if (customItems.Count > 0)
+            {
+                SetCurrentItem(customItems[customItems.Count - 1]);
+            }
+
+            itemsCreated--;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace CustomCraftGUI.Monobehaviors
 
         public TechType techType { get; private set; }
         private InfoPanel infoPanel;
-        private ModifiedItemsManager manager;
+        private ItemManager manager;
 
         public void SetTechType(TechType techType)
         {
@@ -25,18 +25,20 @@ namespace CustomCraftGUI.Monobehaviors
         {
             this.infoPanel = infoPanel;
         }
-        public void SetItemManager(ModifiedItemsManager manager)
+        public void SetItemManager(ItemManager manager)
         {
             this.manager = manager;
         }
-
         public void SetInfoPanelData()
         {
             infoPanel.SetCurrentItem(this);
         }
         public void SetModifiedItemsManagerData()
         {
-            manager.SetCurrentIcon(this);
+            if(manager is ModifiedItemsManager)
+            {
+                ((ModifiedItemsManager)manager).SetCurrentIcon(this);
+            }
         }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using CustomCraftGUI.Utilities;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
+using static CraftData;
 namespace CustomCraftGUI.Monobehaviors
 {
     public class InfoPanel : MonoBehaviour
@@ -18,37 +21,49 @@ namespace CustomCraftGUI.Monobehaviors
         public Transform ingredientsPrefabParent;
         public Transform linkedItemsPrefabsParent;
 
+        [Header("Button Text")]
+        public TextMeshProUGUI addItemButtonText;
+        public TextMeshProUGUI removeItemButtonText;
+
         private List<IngredientItem> linkedItems = new();
         private ItemIcon currentItem;
+        private ModifiedItemsManager modifiedItemsManager;
+
+        private void Awake()
+        {
+            ItemManager.OnActiveManagerChanged += (_, __) => ItemManager_OnActiveManagerChanged();
+        }
 
         private void Start()
         {
             ClearItemsLists();
+
+            foreach (var manager in itemManagers)
+            {
+                if(manager is ModifiedItemsManager)
+                {
+                    modifiedItemsManager = (ModifiedItemsManager)manager;
+                    break;
+                }
+            }
+
+            UpdateButtonText();
         }
 
         public void AddItemToCurrentList()
         {
             if (!currentItem) return;
 
-            foreach (var item in itemManagers)
-            {
-                if (!item.gameObject.activeSelf) continue;
-
-                item.AdjustCurrentList(currentItem, 1);
-            }
+            GetActiveManager().AdjustCurrentList(currentItem, 1);
+            UpdateButtonText();
         }
 
         public void RemoveItemFromCurrentList()
         {
             if (!currentItem) return;
 
-
-            foreach (var item in itemManagers)
-            {
-                if (!item.gameObject.activeSelf) continue;
-
-                item.AdjustCurrentList(currentItem, -1);
-            }
+            GetActiveManager().AdjustCurrentList(currentItem, -1);
+            UpdateButtonText();
         }
 
         public void SetCurrentItem(ItemIcon icon)
@@ -69,18 +84,21 @@ namespace CustomCraftGUI.Monobehaviors
             {
                 IIngredient ingredient = techData.GetIngredient(i);
                 IngredientItem ingredientItem = Instantiate(ingredientItemPrefab, ingredientsPrefabParent).GetComponent<IngredientItem>();
-                ingredientItem.SetInfo(SpriteManager.Get(ingredient.techType), ingredient.techType, ingredient.amount);
+                var item = ingredientItem.GetComponent<IngredientItem>();
+                item.SetInfo(SpriteManager.Get(ingredient.techType), ingredient.techType, ingredient.amount, modifiedItemsManager);
+                item.SetInfoPanel(this);
             }
 
             for (int i = 0; i < techData.linkedItemCount; i++)
             {
                 TechType techType = techData.GetLinkedItem(i);
                 IngredientItem ingredientItem = Instantiate(ingredientItemPrefab, linkedItemsPrefabsParent).GetComponent<IngredientItem>();
-                ingredientItem.SetInfo(SpriteManager.Get(techType), techType, 1);
+                var linkedItem = ingredientItem.GetComponent<IngredientItem>();
+                linkedItem.SetInfo(SpriteManager.Get(techType), techType, 1, modifiedItemsManager);
+                linkedItem.SetInfoPanel(this);
 
                 linkedItems.Add(ingredientItem);
             }
-
             TryCollapseLinkedItems();
         }
 
@@ -125,10 +143,39 @@ namespace CustomCraftGUI.Monobehaviors
             foreach (TechType key in linkedItemValues.Keys)
             {
                 IngredientItem ingredientItem = Instantiate(ingredientItemPrefab, linkedItemsPrefabsParent).GetComponent<IngredientItem>();
-                ingredientItem.SetInfo(SpriteManager.Get(key), key, linkedItemValues[key]);
+                ingredientItem.SetInfo(SpriteManager.Get(key), key, linkedItemValues[key], modifiedItemsManager);
+                ingredientItem.SetInfoPanel(this);
 
                 linkedItems.Add(ingredientItem);
             }
+        }
+
+        private ItemManager GetActiveManager()
+        {
+            foreach (var manager in itemManagers)
+            {
+                if(manager.gameObject.activeSelf)
+                {
+                    return manager;
+                }
+            }
+
+            return null;
+        }
+
+        private void UpdateButtonText()
+        {
+            ItemManager activeManager = GetActiveManager();
+
+            activeManager.GetActiveList(out string listName);
+            addItemButtonText.text = $"Add to {listName}";
+            removeItemButtonText.text = $"Remove from {listName}";
+        }
+
+        private void ItemManager_OnActiveManagerChanged()
+        {
+            UpdateButtonText();
+            GetActiveManager().OnActiveListChanged += (_, __) => UpdateButtonText();
         }
     }
 }
