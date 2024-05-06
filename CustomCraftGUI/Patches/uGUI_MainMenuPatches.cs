@@ -19,7 +19,7 @@ namespace CustomCraftGUI.Patches
             canvas.sortingLayerName = "XMenu";
             canvas.planeDistance = 1;
 
-            CoroutineHost.StartCoroutine(customCraftGUICanvas.GetComponentInChildren<ItemIconSpawner>(true).SpawnIcons());
+            customCraftGUICanvas.GetComponentInChildren<ItemIconSpawner>(true).SpawnIcons();
 
             Transform menuButtons = __instance.transform.Find("Panel/MainMenu/PrimaryOptions/MenuButtons");
 

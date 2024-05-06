@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Reflection;
 using System.IO;
 using Nautilus.Utility;
+using CustomCraftGUI.Utilities;
 
 namespace CustomCraftGUI.Monobehaviors
 {
@@ -81,6 +82,7 @@ namespace CustomCraftGUI.Monobehaviors
 
                 currentItem.SetItemSprite(ImageUtils.LoadSpriteFromFile(imageLocation));
                 itemIcon.SetForegroundSprite(currentItem.itemSprite);
+                itemIcon.foreground.transform.localScale = SpriteSizeFormatter.GetSpriteShrinkScalar(currentItem.itemSprite);
             }
         }
 

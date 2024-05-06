@@ -37,6 +37,7 @@ namespace CustomCraftGUI.Monobehaviors
             ClearInstantiatedItems();
             UpdateIngredientsList();
             UpdateLinkedItemsList();
+            UpdateUnlockedItemsList();
         }
 
         public void SetCurrentIcon(ItemIcon itemIcon)
@@ -171,6 +172,8 @@ namespace CustomCraftGUI.Monobehaviors
             currentItem.SetAmountCrafted(techData.craftAmount);
             currentItem.SetIngredients(ingredients);
             currentItem.SetLinkedItems(linkedItems);
+
+            amountCraftedInputField.text = techData.craftAmount.ToString();
 
             modifiedItems.Add((ModifiedItem)currentItem);
 

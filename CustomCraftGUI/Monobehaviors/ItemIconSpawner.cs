@@ -8,6 +8,8 @@ namespace CustomCraftGUI.Monobehaviors
 {
     public class ItemIconSpawner : MonoBehaviour
     {
+        public static Dictionary<TechType, ItemIcon> itemIcons { get; private set; } = new();
+
         public GameObject iconPrefab;
         public Transform iconsParent;
         public InfoPanel infoPanel;
@@ -15,7 +17,7 @@ namespace CustomCraftGUI.Monobehaviors
 
         public Dictionary<string, ItemIcon> itemIconKVPs = new(); 
 
-        public IEnumerator SpawnIcons()
+        public void SpawnIcons()
         {
             foreach (TechType techType in Enum.GetValues(typeof(TechType)))
             {
@@ -33,9 +35,9 @@ namespace CustomCraftGUI.Monobehaviors
                 uGUI_ItemIcon itemIcon = newIconPrefab.GetComponentInChildren<uGUI_ItemIcon>();
                 itemIcon.SetForegroundSprite(atlasSprite);
                 itemIcon.foreground.transform.localScale = Vector3.one * 0.8f * SpriteSizeFormatter.GetSpriteShrinkScalar(atlasSprite);
-            }
 
-            yield break;
+                itemIcons.Add(techType, icon);
+            }
         }
     }
 }

@@ -165,6 +165,7 @@ namespace CustomCraftGUI.Monobehaviors
 
             currentItem = null;
         }
+
         public virtual void OnAmountCraftedChanged()
         {
             currentItem.SetAmountCrafted(int.Parse(amountCraftedInputField.text));
@@ -180,7 +181,8 @@ namespace CustomCraftGUI.Monobehaviors
             {
                 GameObject newIngredient = Instantiate(ingredientPrefab, ingredientsParent);
                 var ingredientItem = newIngredient.GetComponent<IngredientItem>();
-                ingredientItem.SetInfo(SpriteManager.Get(ingredient.techType), ingredient.techType, ingredient.amount, (ModifiedItemsManager)this);
+                ModifiedItemsManager modifiedManager = this is ModifiedItemsManager ? (ModifiedItemsManager)this : null;
+                ingredientItem.SetInfo(SpriteManager.Get(ingredient.techType), ingredient.techType, ingredient.amount, modifiedManager);
                 ingredientItem.SetInfoPanel(infoPanel);
             }
         }
@@ -191,7 +193,8 @@ namespace CustomCraftGUI.Monobehaviors
             {
                 GameObject newIngredient = Instantiate(ingredientPrefab, linkedItemsParent);
                 var ingredientItem = newIngredient.GetComponent<IngredientItem>();
-                ingredientItem.SetInfo(SpriteManager.Get(linkedItem.techType), linkedItem.techType, linkedItem.amount, (ModifiedItemsManager)this);
+                ModifiedItemsManager modifiedManager = this is ModifiedItemsManager ? (ModifiedItemsManager)this : null;
+                ingredientItem.SetInfo(SpriteManager.Get(linkedItem.techType), linkedItem.techType, linkedItem.amount, modifiedManager);
                 ingredientItem.SetInfoPanel(infoPanel);
             }
         }

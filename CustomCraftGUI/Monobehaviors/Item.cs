@@ -17,7 +17,7 @@ namespace CustomCraftGUI.Monobehaviors
         protected ItemManager manager;
         public string itemID { get; private set; }
         public Atlas.Sprite itemSprite { get; protected set; }
-        public int amountCrafted { get; protected set; }
+        public int amountCrafted { get; protected set; } = 1;
         public bool unlockAtStart { get; protected set; }
 
         public virtual void SetItemID(string itemID)

@@ -32,9 +32,7 @@ namespace CustomCraftGUI.Monobehaviors
 
         public void SetInfoPanelData()
         {
-            ItemIcon icon = new();
-            icon.SetTechType(techType);
-            icon.SetInfoPanel(infoPanel);
+            ItemIcon icon = ItemIconSpawner.itemIcons[techType];
 
             infoPanel.SetCurrentItem(icon);
 

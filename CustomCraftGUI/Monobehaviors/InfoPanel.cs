@@ -25,8 +25,8 @@ namespace CustomCraftGUI.Monobehaviors
         public TextMeshProUGUI addItemButtonText;
         public TextMeshProUGUI removeItemButtonText;
 
-        private List<IngredientItem> linkedItems = new();
         private ItemIcon currentItem;
+        private List<IngredientItem> linkedItems = new();
         private ModifiedItemsManager modifiedItemsManager;
 
         private void Awake()
