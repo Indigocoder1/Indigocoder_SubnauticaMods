@@ -16,13 +16,16 @@ namespace Chameleon.Craftables
 
         public static void Patch()
         {
+            Texture2D sprite = Main_Plugin.AssetBundle.LoadAsset<Texture2D>("ChameleonIcon");
+
             PrefabInfo prefabInfo = PrefabInfo.WithTechType("Chameleon", null, null, "English")
-                .WithIcon(SpriteManager.Get(TechType.PosterAurora));
+                .WithIcon(new Atlas.Sprite(sprite));
 
             techType = prefabInfo.TechType;
 
             var prefab = new CustomPrefab(prefabInfo);
 
+            prefab.RemoveFromCache();
             prefab.SetGameObject(GetSubPrefab);
             prefab.SetUnlock(TechType.PictureFrame);
 
@@ -67,6 +70,7 @@ namespace Chameleon.Craftables
 
             PrefabUtils.AddBasicComponents(chameleon, "chameleon", techType, LargeWorldEntity.CellLevel.Global);
 
+            chameleon.SetActive(true);
             prefabOut.Set(chameleon);
         }
     }

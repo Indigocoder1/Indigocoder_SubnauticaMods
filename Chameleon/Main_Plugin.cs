@@ -5,6 +5,7 @@ using BepInEx.Logging;
 using Chameleon.Attributes;
 using Chameleon.Craftables;
 using Chameleon.Monobehaviors;
+using Chameleon.Patches;
 using HarmonyLib;
 using IndigocoderLib;
 using Nautilus.Assets;
@@ -12,9 +13,6 @@ using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
 using Nautilus.Crafting;
 using Nautilus.Handlers;
-using Nautilus.Json;
-using Nautilus.Options.Attributes;
-using rail;
 using System;
 using System.IO;
 using System.Reflection;
@@ -24,7 +22,7 @@ namespace Chameleon
 {
     [BepInPlugin(myGUID, pluginName, versionString)]
     [BepInDependency("com.snmodding.nautilus", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInDependency("SealSubInstalled", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("SealSub", BepInDependency.DependencyFlags.SoftDependency)]
     public class Main_Plugin : BaseUnityPlugin
     {
         private const string myGUID = "Indigocoder.Chameleon";
@@ -68,7 +66,6 @@ namespace Chameleon
         {
             logger = Logger;
 
-            PiracyDetector.TryFindPiracy();
             harmony.PatchAll();
 
             LanguageHandler.RegisterLocalizationFolder();
@@ -80,6 +77,8 @@ namespace Chameleon
             InitializeSlotMapping();
             RegisterUpgradeModules();
             RegisterUpgradeModuleFunctionalities(Assembly.GetExecutingAssembly());
+
+            ChameleonAudio.RegisterAudio(AssetBundle);
 
             logger.LogInfo($"{pluginName} {versionString} Loaded.");
         }
@@ -105,28 +104,28 @@ namespace Chameleon
                 .WithIcon(SpriteManager.Get(TechType.CyclopsHullModule1));
 
             PrefabInfo depthModuleMk2Info = PrefabInfo.WithTechType("ChameleonHullModule2", null, null)
-                .WithIcon(SpriteManager.Get(TechType.CyclopsHullModule1));
+                .WithIcon(SpriteManager.Get(TechType.CyclopsHullModule2));
 
             PrefabInfo depthModuleMk3Info = PrefabInfo.WithTechType("ChameleonHullModule3", null, null)
-                .WithIcon(SpriteManager.Get(TechType.CyclopsHullModule1));
+                .WithIcon(SpriteManager.Get(TechType.CyclopsHullModule3));
 
             PrefabInfo thermalModule = PrefabInfo.WithTechType("ChameleonThermalModule", null, null)
                 .WithIcon(SpriteManager.Get(TechType.CyclopsThermalReactorModule));
 
-            CreateUpgradeModulePrefab(depthModuleMk1Info);
-            CreateUpgradeModulePrefab(depthModuleMk2Info);
-            CreateUpgradeModulePrefab(depthModuleMk3Info);
-            CreateUpgradeModulePrefab(thermalModule);
+            CreateUpgradeModulePrefab(depthModuleMk1Info, Chameleon_Craftable.techType);
+            CreateUpgradeModulePrefab(depthModuleMk2Info, Chameleon_Craftable.techType);
+            CreateUpgradeModulePrefab(depthModuleMk3Info, Chameleon_Craftable.techType);
+            CreateUpgradeModulePrefab(thermalModule, TechType.CyclopsThermalReactorModule);
 
             Chameleon_Craftable.Patch();
         }
 
-        private void CreateUpgradeModulePrefab(PrefabInfo info, RecipeData recipe = null)
+        private void CreateUpgradeModulePrefab(PrefabInfo info, TechType unlock, RecipeData recipe = null)
         {
             CustomPrefab prefab = new(info);
             prefab.SetGameObject(new CloneTemplate(info, TechType.CyclopsHullModule1));
             prefab.SetPdaGroupCategory(ChameleonGroup, ChameleonModuleCategory);
-            prefab.SetUnlock(Chameleon_Craftable.techType);
+            prefab.SetUnlock(unlock);
 
             if (recipe == null) recipe = RecipeUtils.TryGetRecipeFromJson(info.TechType);
             prefab.SetRecipe(recipe).WithFabricatorType(ChameleonFabricatorTree);

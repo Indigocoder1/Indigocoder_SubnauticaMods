@@ -24,21 +24,24 @@ namespace Chameleon.Monobehaviors.Prefabs
             var models =  LoadCellModels(cyclops);
             batterySource = GetComponent<BatterySource>();
 
-            for (int i = 0; i < models.Length; i++)
+            int index = 0;
+            foreach (TechType key in models.Keys)
             {
-                batterySource.batteryModels[i].model = SpawnPowerCellModel(models[i]);
+                batterySource.batteryModels[index].techType = key;
+                batterySource.batteryModels[index].model = SpawnPowerCellModel(models[key]);
+                index++;
             }
         }
 
-        private GameObject[] LoadCellModels(GameObject cyclops)
+        private Dictionary<TechType, GameObject> LoadCellModels(GameObject cyclops)
         {
             var powerCellModel = cyclops.transform.Find("cyclopspower/generator/SubPowerSocket1/SubPowerCell1/model").gameObject;
             var ionPowerCellModel = cyclops.transform.Find("cyclopspower/generator/SubPowerSocket1/SubPowerCell1/engine_power_cell_ion").gameObject;
 
-            return new[]
+            return new()
             {
-                powerCellModel,
-                ionPowerCellModel
+                { TechType.PowerCell, powerCellModel },
+                { TechType.PrecursorIonPowerCell, ionPowerCellModel }
             };
         }
 

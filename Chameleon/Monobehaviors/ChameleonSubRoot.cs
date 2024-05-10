@@ -35,10 +35,15 @@ namespace Chameleon.Monobehaviors
         {
             base.Awake();
             _saveData = new SaveData(); //New entry for the sub
+
+            Main_Plugin.logger.LogInfo("Chameleon Awake reached!");
+            Main_Plugin.logger.LogInfo($"Chameleon active = {gameObject.activeSelf}");
         }
 
         public override void Start()
         {
+            Main_Plugin.logger.LogInfo("Chameleon Start reached!");
+
             chameleonUpgradeConsole.modules.onEquip += OnEquip;
             chameleonUpgradeConsole.modules.onUnequip += OnUnequip;
             toggleLights = GetComponent<ToggleLights>();
@@ -46,11 +51,10 @@ namespace Chameleon.Monobehaviors
             base.Start();
         }
 
-        private void Update()
+        new private void Update()
         {
-            base.Update();
-
             if (Player.main.currentSub != this) return;
+            if (!Player.main.isPiloting) return;
 
             toggleLights.CheckLightToggle();
         }

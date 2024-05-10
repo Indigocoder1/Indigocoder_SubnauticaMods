@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Chameleon.ScriptableObjects;
+using UnityEngine;
 
 namespace Chameleon.Monobehaviors.UI
 {
@@ -29,6 +30,11 @@ namespace Chameleon.Monobehaviors.UI
 
         [Header("Miscellaneous")]
         public float glowSpeed;
+
+        [Header("Audio")]
+        public FMOD_CustomLoopingEmitter loopingSFX;
+        public VoiceNotification camoActivateSFX;
+        public VoiceNotification camoDeactivateSFX;
 
         private Material subDefaultMaterial;
         private Material subAccentMaterial;
@@ -88,12 +94,18 @@ namespace Chameleon.Monobehaviors.UI
 
             if(isActive)
             {
+                subRoot.voiceNotificationManager.PlayVoiceNotification(camoActivateSFX);
+                loopingSFX.Play();
+
                 InvokeRepeating(nameof(DrawPowerRepeating), 0, timeBetweenDischarges);
             }
             else
             {
                 CancelInvoke(nameof(DrawPowerRepeating));
                 DisableCamoEffect();
+
+                subRoot.voiceNotificationManager.PlayVoiceNotification(camoDeactivateSFX);
+                loopingSFX.Stop();
             }
         }
 
