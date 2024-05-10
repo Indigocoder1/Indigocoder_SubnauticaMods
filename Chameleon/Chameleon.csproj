@@ -92,6 +92,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
@@ -113,7 +117,9 @@
     <Compile Include="Monobehaviors\ChameleonFabricatorCustomizer.cs" />
     <Compile Include="Monobehaviors\ChameleonSubRoot.cs" />
     <Compile Include="Monobehaviors\DisableWhenPlayerNotInView.cs" />
+    <Compile Include="Monobehaviors\Editor\GenerateDistanceField.cs" />
     <Compile Include="Monobehaviors\ExternalCamsEnableDisableCallback.cs" />
+    <Compile Include="Monobehaviors\LoadDistanceFieldIntoWaterClipProxy.cs" />
     <Compile Include="Monobehaviors\Prefabs\ChildObjectIdentifierFix.cs" />
     <Compile Include="Monobehaviors\Prefabs\DamageManagerPrefabSetter.cs" />
     <Compile Include="Monobehaviors\Prefabs\DamagePointSlot.cs" />
@@ -156,6 +162,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecipeUtils.cs" />
     <Compile Include="SaveData.cs" />
+    <Compile Include="ScriptableObjects\ChameleonDistanceField.cs" />
     <Compile Include="ScriptableObjects\ChameleonFMODAsset.cs" />
   </ItemGroup>
   <ItemGroup />
