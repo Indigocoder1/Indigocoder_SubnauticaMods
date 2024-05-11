@@ -166,6 +166,8 @@ namespace Chameleon.Monobehaviors.UI
 
         public void EnableInterior()
         {
+            if (!isActive) return;
+
             for (int i = 0; i < interiorRendererParents.Length; i++)
             {
                 foreach (Renderer rend in interiorRendererParents[i].GetComponentsInChildren<Renderer>())

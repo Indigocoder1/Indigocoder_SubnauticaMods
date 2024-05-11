@@ -42,13 +42,16 @@ namespace Chameleon.Monobehaviors.Editor
             if (distanceField.texture == null || distanceField.texture.width != (int)Resolution.x ||
                 distanceField.texture.height != (int)Resolution.y || distanceField.texture.depth != (int)Resolution.z)
             {
-                Debug.Log("Creating texture!");
-                distanceField.texture = new((int)Resolution.x, (int)Resolution.y, (int)Resolution.z, TextureFormat.Alpha8, 1)
+                var texture = new Texture3D((int)Resolution.x, (int)Resolution.y, (int)Resolution.z, TextureFormat.Alpha8, 1)
                 {
                     //Idk why this is needed but Lee said so in the Seal commits ¯\_(ツ)_/¯
                     wrapMode = TextureWrapMode.Clamp
                 };
             }
+
+            Debug.Log($"Bounds min = {bounds.min}");
+            Debug.Log($"Bounds max = {bounds.max}");
+            Debug.Log($"Bounds size = {bounds.size}");
 
             var checkBoxExtents = Vector3.Scale(bounds.extents, VectorReciprocal(Resolution));
             for (int z = 0; z < Resolution.z; z++)

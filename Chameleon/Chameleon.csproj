@@ -119,7 +119,7 @@
     <Compile Include="Monobehaviors\DisableWhenPlayerNotInView.cs" />
     <Compile Include="Monobehaviors\Editor\GenerateDistanceField.cs" />
     <Compile Include="Monobehaviors\ExternalCamsEnableDisableCallback.cs" />
-    <Compile Include="Monobehaviors\LoadDistanceFieldIntoWaterClipProxy.cs" />
+    <Compile Include="Monobehaviors\DistanceFieldAssigner.cs" />
     <Compile Include="Monobehaviors\Prefabs\ChildObjectIdentifierFix.cs" />
     <Compile Include="Monobehaviors\Prefabs\DamageManagerPrefabSetter.cs" />
     <Compile Include="Monobehaviors\Prefabs\DamagePointSlot.cs" />
@@ -156,6 +156,7 @@
     <Compile Include="Patches\CrafterPatches.cs" />
     <Compile Include="Patches\CyclopsExternalDamageManagerPatches.cs" />
     <Compile Include="Patches\EnergyMixinPatches.cs" />
+    <Compile Include="Patches\SDFCutoutPatches.cs" />
     <Compile Include="Patches\SubrootPatches.cs" />
     <Compile Include="Patches\uGUI_CameraCyclopsPatches.cs" />
     <Compile Include="Patches\uGUI_EquipmentPatches.cs" />
