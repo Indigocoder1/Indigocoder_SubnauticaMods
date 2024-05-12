@@ -52,6 +52,10 @@ namespace Chameleon.Craftables
             //Apply shaders first so you don't mess with the instantiated stuff
             MaterialUtils.ApplySNShaders(chameleon, shininess: 1f);
 
+            MaterialUtils.ApplySNShaders(chameleon.transform.Find("Model/Interior/Int_Interior").gameObject, shininess: 0f, specularIntensity: 0f);
+            Material floorMat = chameleon.transform.Find("Model/Interior/Int_Interior").GetComponent<Renderer>().materials[1];
+            floorMat.EnableKeyword("MARMO_SPECMAP");
+
             yield return CyclopsReferenceManager.EnsureCyclopsReference();
 
             foreach (ICyclopsReferencer referencer in chameleon.GetComponentsInChildren<ICyclopsReferencer>())
