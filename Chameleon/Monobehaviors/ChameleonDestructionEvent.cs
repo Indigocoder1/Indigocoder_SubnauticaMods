@@ -24,7 +24,7 @@ namespace Chameleon.Monobehaviors
         public int numComputerChipLoots;
 
         private GameObject interiorFxGO;
-        private GameObject interiorPlayerFx;
+        [SerializeField] private GameObject interiorPlayerFx;
         private GameObject playerFxInstance;
         private GameObject beaconPrefab;
         private float animTime;
@@ -56,6 +56,7 @@ namespace Chameleon.Monobehaviors
             animTime = 0;
 
             GetComponentInChildren<PilotingChair>().enabled = false;
+            GetComponentInChildren<Fabricator>().enabled = false;
             GetComponentsInChildren<Light>().ForEach(light => light.enabled = false);
 
             if (Player.main.currentSub == subRoot)
@@ -103,9 +104,9 @@ namespace Chameleon.Monobehaviors
                 }
 
                 Vector3 localPlayerPos = Utils.GetLocalPlayerPos();
-                if(interiorFxGO.transform.InverseTransformPoint(localPlayerPos).z > 0.5f)
+                if(interiorFxGO.transform.InverseTransformPoint(localPlayerPos).z < 23f)
                 {
-                    playerFxInstance = Utils.SpawnPrefabAt(playerFxInstance, SNCameraRoot.main.transform, SNCameraRoot.main.transform.position);
+                    playerFxInstance = Utils.SpawnPrefabAt(interiorPlayerFx, SNCameraRoot.main.transform, SNCameraRoot.main.transform.position);
                     playerFxInstance.transform.localPosition = new Vector3(0f, 0f, 4f);
                     fxController.Stop(0);
                     interiorFxGO = null;
@@ -188,7 +189,8 @@ namespace Chameleon.Monobehaviors
 
         public void OnCyclopsReferenceFinished(GameObject cyclops)
         {
-            interiorPlayerFx = cyclops.GetComponent<CyclopsDestructionEvent>().interiorPlayerFx;
+            interiorPlayerFx = Instantiate(cyclops.GetComponent<CyclopsDestructionEvent>().interiorPlayerFx);
+            interiorPlayerFx.SetActive(false);
         }
     }
 }
