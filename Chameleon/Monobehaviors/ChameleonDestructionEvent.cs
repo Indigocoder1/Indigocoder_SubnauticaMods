@@ -1,16 +1,18 @@
-﻿using Chameleon.ScriptableObjects;
+﻿using Chameleon.Interfaces;
 using System;
 using System.Collections;
 using UnityEngine;
 
 namespace Chameleon.Monobehaviors
 {
-    internal class ChameleonDestructionEvent : MonoBehaviour
+    internal class ChameleonDestructionEvent : MonoBehaviour, ICyclopsReferencer
     {
         public SubRoot subRoot;
-        public ChameleonFMODAsset explodeSFX;
+        public FMOD_CustomEmitter explodeSFX;
         public VFXController fxController;
         public Transform lootSpawnPoints;
+        public GameObject[] intact;
+        public GameObject[] destroyed;
         public BatterySource[] powerCells;
         public float swapModelsDelay;
         public float interiorFxDuration = 5f;
@@ -20,6 +22,8 @@ namespace Chameleon.Monobehaviors
         public int numComputerChipLoots;
 
         private GameObject interiorFxGO;
+        private GameObject interiorPlayerFx;
+        private GameObject playerFxInstance;
         private GameObject beaconPrefab;
         private float animTime;
 
@@ -46,7 +50,10 @@ namespace Chameleon.Monobehaviors
 
         public void DestroyChameleon()
         {
+            explodeSFX.Play();
             animTime = 0;
+
+            GetComponentInChildren<PilotingChair>().enabled = false;
 
             if (Player.main.currentSub == subRoot)
             {
@@ -76,7 +83,32 @@ namespace Chameleon.Monobehaviors
 
         private void Update()
         {
-            
+            if(Player.main.currentSub != subRoot)
+            {
+                return;
+            }
+
+            if(interiorFxGO != null)
+            {
+                animTime += Time.deltaTime;
+                Vector3 localPos = interiorFxGO.transform.localPosition;
+                localPos.z = Mathf.Lerp(interiorFxStartOffset, interiorFxEndOffset, Mathf.Clamp01(animTime / interiorFxDuration));
+                interiorFxGO.transform.localPosition = localPos;
+                if(animTime > interiorFxDuration)
+                {
+                    fxController.Stop(0);
+                }
+
+                Vector3 localPlayerPos = Utils.GetLocalPlayerPos();
+                if(interiorFxGO.transform.InverseTransformPoint(localPlayerPos).z > 0.5f)
+                {
+                    playerFxInstance = Utils.SpawnPrefabAt(playerFxInstance, SNCameraRoot.main.transform, SNCameraRoot.main.transform.position);
+                    playerFxInstance.transform.localPosition = new Vector3(0f, 0f, 4f);
+                    fxController.Stop(0);
+                    interiorFxGO = null;
+                    Player.main.liveMixin.Kill(DamageType.Normal);
+                }
+            }
 
             if (fxController.emitters[0].fxPS != null && fxController.emitters[0].fxPS.isPlaying)
             {
@@ -87,6 +119,7 @@ namespace Chameleon.Monobehaviors
         public void OnRespawn(Player p)
         {
             fxController.StopAndDestroy(0, 0f);
+            Destroy(playerFxInstance);
         }
 
         private void SwapToDamagedModels()
@@ -135,6 +168,11 @@ namespace Chameleon.Monobehaviors
         private void OnConsoleCommand_destroychameleon(NotificationCenter.Notification n)
         {
             DestroyChameleon();
+        }
+
+        public void OnCyclopsReferenceFinished(GameObject cyclops)
+        {
+            interiorPlayerFx = cyclops.GetComponent<CyclopsDestructionEvent>().interiorPlayerFx;
         }
     }
 }
