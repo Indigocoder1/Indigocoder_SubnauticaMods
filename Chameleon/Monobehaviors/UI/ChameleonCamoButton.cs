@@ -50,11 +50,11 @@ namespace Chameleon.Monobehaviors.UI
 
         private void Start()
         {
-            subDefaultMaterial = subRoot.transform.Find("Model/Exterior/Sub_Body").GetComponent<Renderer>().materials[0];
+            subDefaultMaterial = subRoot.transform.Find("Model/Normal/Exterior/Sub_Body").GetComponent<Renderer>().materials[0];
 
-            conningTowerAccentMaterial = subRoot.transform.Find("Model/Exterior/Sub_ConningTower").GetComponent<Renderer>().materials[1];
-            subAccentMaterial = subRoot.transform.Find("Model/Exterior/Sub_Body").GetComponent<Renderer>().materials[1];
-            canopyMaterial = subRoot.transform.Find("Model/Exterior/Sub_Canopy").GetComponent<Renderer>().materials[0];
+            conningTowerAccentMaterial = subRoot.transform.Find("Model/Normal/Exterior/Sub_ConningTower").GetComponent<Renderer>().materials[1];
+            subAccentMaterial = subRoot.transform.Find("Model/Normal/Exterior/Sub_Body").GetComponent<Renderer>().materials[1];
+            canopyMaterial = subRoot.transform.Find("Model/Normal/Exterior/Sub_Canopy").GetComponent<Renderer>().materials[0];
             originalCanopyColor = canopyMaterial.color;
 
             exitHatch.OnEnter = OnExitSub;

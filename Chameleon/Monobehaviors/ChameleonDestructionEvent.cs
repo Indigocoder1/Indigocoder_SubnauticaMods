@@ -1,4 +1,5 @@
 ﻿using Chameleon.Interfaces;
+using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace Chameleon.Monobehaviors
         public SubRoot subRoot;
         public FMOD_CustomEmitter explodeSFX;
         public VFXController fxController;
+        public PingInstance pingInstance;
         public Transform lootSpawnPoints;
         public GameObject[] intact;
         public GameObject[] destroyed;
@@ -54,6 +56,7 @@ namespace Chameleon.Monobehaviors
             animTime = 0;
 
             GetComponentInChildren<PilotingChair>().enabled = false;
+            GetComponentsInChildren<Light>().ForEach(light => light.enabled = false);
 
             if (Player.main.currentSub == subRoot)
             {
@@ -124,8 +127,21 @@ namespace Chameleon.Monobehaviors
 
         private void SwapToDamagedModels()
         {
+            for (int i = 0; i < intact.Length; i++)
+            {
+                intact[i].SetActive(false);
+            }
+
+            for (int i = 0; i < destroyed.Length; i++)
+            {
+                destroyed[i].SetActive(true);
+            }
+
             ToggleSinking(true);
-            throw new NotImplementedException();
+            subRoot.subWarning = false;
+            subRoot.BroadcastMessage("NewAlarmState", null, SendMessageOptions.DontRequireReceiver);
+            subRoot.subDestroyed = true;
+            pingInstance.enabled = false;
         }
 
         private void ToggleSinking(bool isSinking)

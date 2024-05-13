@@ -52,8 +52,12 @@ namespace Chameleon.Craftables
             //Apply shaders first so you don't mess with the instantiated stuff
             MaterialUtils.ApplySNShaders(chameleon, shininess: 1f);
 
-            MaterialUtils.ApplySNShaders(chameleon.transform.Find("Model/Interior/Int_Interior").gameObject, shininess: 0f, specularIntensity: 0f);
-            Material floorMat = chameleon.transform.Find("Model/Interior/Int_Interior").GetComponent<Renderer>().materials[1];
+            GameObject normalInterior = chameleon.transform.Find("Model/Normal/Interior/Int_Interior").gameObject;
+            MaterialUtils.ApplySNShaders(normalInterior, shininess: 0f, specularIntensity: 0f);
+            GameObject destroyedInterior = chameleon.transform.Find("Model/Destroyed/Interior/Destroyed_Interior").gameObject;
+            MaterialUtils.ApplySNShaders(destroyedInterior, shininess: 0f, specularIntensity: 0f);
+
+            Material floorMat = normalInterior.GetComponent<Renderer>().materials[1];
             floorMat.EnableKeyword("MARMO_SPECMAP");
 
             yield return CyclopsReferenceManager.EnsureCyclopsReference();
@@ -69,7 +73,6 @@ namespace Chameleon.Craftables
                 modifier.OnLateMaterialOperation();
             }
 
-            chameleon.transform.Find("Model/Exterior/Sub_Canopy").GetComponent<MeshRenderer>().material.color = new Color(1f, 1f, 1f, 0.3f);
             chameleon.GetComponent<PingInstance>().pingType = Main_Plugin.ChameleonPingType;
 
             PrefabUtils.AddBasicComponents(chameleon, "chameleon", techType, LargeWorldEntity.CellLevel.Global);
