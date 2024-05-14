@@ -26,6 +26,7 @@ namespace Chameleon
             AddSubVoiceLine(bundle.LoadAsset<AudioClip>("ChameleonCreatureAttack"), "ChameleonCreatureAttack");
             AddSubVoiceLine(bundle.LoadAsset<AudioClip>("ChameleonHealthLow"), "ChameleonHealthLow");
             AddSubVoiceLine(bundle.LoadAsset<AudioClip>("ChameleonHealthCritical"), "ChameleonHealthCritical");
+            AddSubVoiceLine(bundle.LoadAsset<AudioClip>("ChameleonAbandonShip"), "ChameleonAbandonShip");
 
             AddSubVoiceLine(bundle.LoadAsset<AudioClip>("ChameleonNoPower"), "ChameleonNoPower");
             AddSubVoiceLine(bundle.LoadAsset<AudioClip>("ChameleonDamageNotification"), "ChameleonDamageNotification");

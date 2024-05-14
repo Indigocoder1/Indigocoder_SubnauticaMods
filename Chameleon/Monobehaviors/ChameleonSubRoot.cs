@@ -9,6 +9,8 @@ namespace Chameleon.Monobehaviors
 {
     public class ChameleonSubRoot : SubRoot, IProtoEventListener
     {
+        private const float SUB_EXPLOSION_DELAY = 15f;
+
         private SaveData _saveData;
         public SaveData SaveData { get => _saveData; }
 
@@ -46,12 +48,27 @@ namespace Chameleon.Monobehaviors
             base.Start();
         }
 
+        public void DestroyCyclopsSubRoot()
+        {
+            silentRunning = false;
+            SendMessage("DestroyChameleon");
+        }
+
         new private void Update()
         {
             if (Player.main.currentSub != this) return;
             if (!Player.main.isPiloting) return;
 
             toggleLights.CheckLightToggle();
+        }
+
+        new public void OnKill()
+        {
+            voiceNotificationManager.ClearQueue();
+            voiceNotificationManager.PlayVoiceNotification(abandonShipNotification);
+            Invoke(nameof(DestroyCyclopsSubRoot), SUB_EXPLOSION_DELAY);
+            MainCameraControl.main.ShakeCamera(1.5f, 20f);
+            Player.main.TryEject();
         }
 
         private void OnEnable() => Main_Plugin.SaveCache.OnStartedSaving += OnBeforeSave;

@@ -53,10 +53,6 @@ namespace Chameleon.Craftables
             MaterialUtils.ApplySNShaders(chameleon, shininess: 1f);
 
             GameObject normalInterior = chameleon.transform.Find("Model/Normal/Interior/Int_Interior").gameObject;
-            MaterialUtils.ApplySNShaders(normalInterior, shininess: 0f, specularIntensity: 0f);
-            GameObject destroyedInterior = chameleon.transform.Find("Model/Destroyed/Interior/Destroyed_Interior").gameObject;
-            MaterialUtils.ApplySNShaders(destroyedInterior, shininess: 0f, specularIntensity: 0f);
-
             Material floorMat = normalInterior.GetComponent<Renderer>().materials[1];
             floorMat.EnableKeyword("MARMO_SPECMAP");
 

@@ -45,10 +45,12 @@ namespace Chameleon.Monobehaviors
             beaconPrefab = request.GetResult();
         }
 
+        /*
         public void OnKill()
         {
             DestroyChameleon();
         }
+        */
 
         public void DestroyChameleon()
         {
