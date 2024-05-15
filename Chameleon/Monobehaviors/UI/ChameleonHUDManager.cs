@@ -56,6 +56,7 @@ namespace Chameleon.Monobehaviors.UI
 
             if (creatureAttackWarning)
             {
+                subRoot.voiceNotificationManager.PlayVoiceNotification(subRoot.creatureAttackNotification);
                 subRoot.subWarning = true; //<-- Come back to later if implementing fire (OR with fireWarning)
             }
             else
@@ -73,15 +74,6 @@ namespace Chameleon.Monobehaviors.UI
             oldWarningState = subRoot.subWarning;
         }
 
-        public void OnTakeCreatureDamage()
-        {
-            CancelInvoke(nameof(ClearCreatureWarning));
-            Invoke(nameof(ClearCreatureWarning), 10f);
-            creatureAttackWarning = true;
-            creatureDamagesSFX.Play();
-            MainCameraControl.main.ShakeCamera(1.5f);
-        }
-
         private void ClearCreatureWarning()
         {
             creatureAttackWarning = false;
@@ -97,11 +89,22 @@ namespace Chameleon.Monobehaviors.UI
             hudActive = false;
         }
 
-        public void OnTakeCollisionDamage(float value)
+        public void OnTakeCreatureDamage()
         {
-            value *= 1.5f;
-            value = Mathf.Clamp(value / 100f, 0.5f, 1.5f);
-            MainCameraControl.main.ShakeCamera(value);
+            CancelInvoke(nameof(ClearCreatureWarning));
+            Invoke(nameof(ClearCreatureWarning), 10f);
+            creatureAttackWarning = true;
+            creatureDamagesSFX.Play();
+            MainCameraControl.main.ShakeCamera(1.5f);
+        }
+
+        public void OnKill()
+        {
+            //Update 1 extra time to fix stuff like the health not fully going down
+            foreach (IUIElement element in uIElements)
+            {
+                element.UpdateUI();
+            }
         }
     }
 }

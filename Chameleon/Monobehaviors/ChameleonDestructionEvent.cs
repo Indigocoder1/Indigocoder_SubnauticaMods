@@ -1,6 +1,4 @@
 ﻿using Chameleon.Interfaces;
-using ICSharpCode.SharpZipLib.Zip;
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -44,13 +42,6 @@ namespace Chameleon.Monobehaviors
             yield return request;
             beaconPrefab = request.GetResult();
         }
-
-        /*
-        public void OnKill()
-        {
-            DestroyChameleon();
-        }
-        */
 
         public void DestroyChameleon()
         {

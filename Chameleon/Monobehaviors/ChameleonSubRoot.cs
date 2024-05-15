@@ -9,7 +9,7 @@ namespace Chameleon.Monobehaviors
 {
     public class ChameleonSubRoot : SubRoot, IProtoEventListener
     {
-        private const float SUB_EXPLOSION_DELAY = 15f;
+        private const float SUB_EXPLOSION_DELAY = 13f;
 
         private SaveData _saveData;
         public SaveData SaveData { get => _saveData; }
@@ -45,6 +45,8 @@ namespace Chameleon.Monobehaviors
             chameleonUpgradeConsole.modules.onUnequip += OnUnequip;
             toggleLights = GetComponent<ToggleLights>();
 
+            GetComponentInChildren<SubFloodAlarm>().NewAlarmState();
+
             base.Start();
         }
 
@@ -66,6 +68,8 @@ namespace Chameleon.Monobehaviors
         {
             voiceNotificationManager.ClearQueue();
             voiceNotificationManager.PlayVoiceNotification(abandonShipNotification);
+
+            Destroy(GetComponent<RespawnPoint>());
             Invoke(nameof(DestroyCyclopsSubRoot), SUB_EXPLOSION_DELAY);
             MainCameraControl.main.ShakeCamera(1.5f, 20f);
             Player.main.TryEject();

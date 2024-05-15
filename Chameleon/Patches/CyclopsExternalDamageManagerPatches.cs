@@ -1,6 +1,8 @@
 ﻿using Chameleon.Monobehaviors;
+using Chameleon.Monobehaviors.UI;
 using HarmonyLib;
 using System;
+using UnityEngine;
 
 namespace Chameleon.Patches
 {
@@ -17,6 +19,31 @@ namespace Chameleon.Patches
             }
 
             return !(isSubRootSeal || __instance.subRoot is ChameleonSubRoot);
+        }
+
+        [HarmonyPatch(typeof(SubRoot)), HarmonyPatch(nameof(SubRoot.OnTakeDamage)), HarmonyPostfix]
+        private static void OnTakeDamage_Postfix(SubRoot __instance, DamageInfo damageInfo)
+        {
+            if (__instance is not ChameleonSubRoot) return;
+
+            switch (damageInfo.type)
+            {
+                case DamageType.Collide:
+                    damageInfo.damage *= 1.5f;
+                    float value = Mathf.Clamp(damageInfo.damage / 100f, 0.5f, 1.5f);
+                    MainCameraControl.main.ShakeCamera(value);
+                    break;
+                case DamageType.Normal:
+                    if (damageInfo.dealer.TryGetComponent<Creature>(out _))
+                    {
+                        if (damageInfo.dealer.TryGetComponent<Creature>(out var creature))
+                        {
+                            Main_Plugin.logger.LogInfo($"Creature = {creature}");
+                            __instance.GetComponentInChildren<ChameleonHUDManager>().OnTakeCreatureDamage();
+                        }
+                    }
+                    break;
+            }
         }
     }
 }

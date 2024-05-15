@@ -162,6 +162,7 @@
     <Compile Include="Patches\CrafterPatches.cs" />
     <Compile Include="Patches\CyclopsExternalDamageManagerPatches.cs" />
     <Compile Include="Patches\EnergyMixinPatches.cs" />
+    <Compile Include="Patches\Alarms\LightAnimatorPatches.cs" />
     <Compile Include="Patches\SDFCutoutPatches.cs" />
     <Compile Include="Patches\SubrootPatches.cs" />
     <Compile Include="Patches\uGUI_CameraCyclopsPatches.cs" />
