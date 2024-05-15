@@ -40,11 +40,7 @@ namespace Chameleon.Monobehaviors.UI
 
             if(subLiveMixin.IsAlive())
             {
-                foreach(IUIElement element in uIElements)
-                {
-                    element.UpdateUI();
-                }
-
+                UpdateHUD();
                 creatureAttackSprite.gameObject.SetActive(creatureAttackWarning);
             }
 
@@ -98,12 +94,19 @@ namespace Chameleon.Monobehaviors.UI
             MainCameraControl.main.ShakeCamera(1.5f);
         }
 
-        public void OnKill()
+        private void UpdateHUD()
         {
-            //Update 1 extra time to fix stuff like the health not fully going down
             foreach (IUIElement element in uIElements)
             {
                 element.UpdateUI();
+            }
+        }
+
+        public void OnChameleonDestroyed()
+        {
+            foreach (IUIElement element in uIElements)
+            {
+                element.OnSubDestroyed();
             }
         }
     }

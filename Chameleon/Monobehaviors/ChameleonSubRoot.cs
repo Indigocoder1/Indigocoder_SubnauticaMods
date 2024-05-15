@@ -33,9 +33,8 @@ namespace Chameleon.Monobehaviors
             chameleonUpgradeConsole.modules.isAllowedToAdd -= @delegate;
         }
 
-        public override void Awake()
+        new private void Awake()
         {
-            base.Awake();
             _saveData = new SaveData(); //New entry for the sub
         }
 
@@ -53,7 +52,10 @@ namespace Chameleon.Monobehaviors
         public void DestroyCyclopsSubRoot()
         {
             silentRunning = false;
+
+            //Calls ChameleonDestructionEvent.DestroyChameleon
             SendMessage("DestroyChameleon");
+            Main_Plugin.logger.LogInfo("Sending destroy chameleon message");
         }
 
         new private void Update()
@@ -73,6 +75,12 @@ namespace Chameleon.Monobehaviors
             Invoke(nameof(DestroyCyclopsSubRoot), SUB_EXPLOSION_DELAY);
             MainCameraControl.main.ShakeCamera(1.5f, 20f);
             Player.main.TryEject();
+
+            subWarning = true;
+            BroadcastMessage("NewAlarmState", SendMessageOptions.DontRequireReceiver);
+
+            //Update UI 1 extra time to fix stuff like the health not fully going down
+            BroadcastMessage("OnChameleonDestroyed", SendMessageOptions.DontRequireReceiver);
         }
 
         private void OnEnable() => Main_Plugin.SaveCache.OnStartedSaving += OnBeforeSave;

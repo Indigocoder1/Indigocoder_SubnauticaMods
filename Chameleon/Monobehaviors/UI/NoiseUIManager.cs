@@ -14,5 +14,10 @@ namespace Chameleon.Monobehaviors.UI
             float noisePercent = noiseManager.GetNoisePercent();
             noiseBar.fillAmount = Mathf.Lerp(noiseBar.fillAmount, noisePercent, Time.deltaTime);
         }
+
+        public void OnSubDestroyed()
+        {
+            //Nothing extra needed here
+        }
     }
 }

@@ -16,5 +16,10 @@ namespace Chameleon.Monobehaviors.UI
 
             powerText.text = $"{currentPower}%";
         }
+
+        public void OnSubDestroyed()
+        {
+            //Nothing extra needed here
+        }
     }
 }

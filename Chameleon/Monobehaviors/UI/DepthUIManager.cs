@@ -18,5 +18,10 @@ namespace Chameleon.Monobehaviors.UI
             depthText.text = $"{currentDepth}m / {maxDepth}m";
             depthText.color = textColor;
         }
+
+        public void OnSubDestroyed()
+        {
+            //Nothing extra needed here
+        }
     }
 }

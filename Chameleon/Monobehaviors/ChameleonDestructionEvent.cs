@@ -52,6 +52,10 @@ namespace Chameleon.Monobehaviors
             GetComponentInChildren<Fabricator>().enabled = false;
             GetComponentsInChildren<Light>().ForEach(light => light.enabled = false);
 
+            var identifier = subRoot.GetComponent<PrefabIdentifier>();
+            Main_Plugin.SaveCache.saves.Remove(identifier.Id);
+            Destroy(identifier);
+
             if (Player.main.currentSub == subRoot)
             {
                 fxController.Play(0);

@@ -13,5 +13,10 @@ namespace Chameleon.Monobehaviors.UI
         {
             engineOffIndicator.SetActive(!motorMode.engineOn);
         }
+
+        public void OnSubDestroyed()
+        {
+            //Nothing extra needed here
+        }
     }
 }

@@ -34,13 +34,11 @@ namespace Chameleon.Patches
                     MainCameraControl.main.ShakeCamera(value);
                     break;
                 case DamageType.Normal:
+                    if (damageInfo.dealer == null) break;
+
                     if (damageInfo.dealer.TryGetComponent<Creature>(out _))
                     {
-                        if (damageInfo.dealer.TryGetComponent<Creature>(out var creature))
-                        {
-                            Main_Plugin.logger.LogInfo($"Creature = {creature}");
-                            __instance.GetComponentInChildren<ChameleonHUDManager>().OnTakeCreatureDamage();
-                        }
+                        __instance.BroadcastMessage("OnTakeCreatureDamage", SendMessageOptions.DontRequireReceiver);
                     }
                     break;
             }

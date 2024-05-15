@@ -14,5 +14,10 @@ namespace Chameleon.Monobehaviors.UI
             float healthFraction = subLiveMixin.GetHealthFraction();
             healthBar.fillAmount = Mathf.Lerp(healthBar.fillAmount, healthFraction, Time.deltaTime * 2f);
         }
+
+        public void OnSubDestroyed()
+        {
+            healthBar.fillAmount = 0;
+        }
     }
 }
