@@ -12,7 +12,7 @@ namespace Chameleon.Craftables
 {
     internal static class Chameleon_Craftable
     {
-        public static TechType techType;
+        public static PrefabInfo PrefabInfo;
 
         public static void Patch()
         {
@@ -21,7 +21,7 @@ namespace Chameleon.Craftables
             PrefabInfo prefabInfo = PrefabInfo.WithTechType("Chameleon", null, null, "English")
                 .WithIcon(new Atlas.Sprite(sprite));
 
-            techType = prefabInfo.TechType;
+            PrefabInfo = prefabInfo;
 
             var prefab = new CustomPrefab(prefabInfo);
 
@@ -71,9 +71,8 @@ namespace Chameleon.Craftables
 
             chameleon.GetComponent<PingInstance>().pingType = Main_Plugin.ChameleonPingType;
 
-            PrefabUtils.AddBasicComponents(chameleon, "chameleon", techType, LargeWorldEntity.CellLevel.Global);
+            PrefabUtils.AddBasicComponents(chameleon, PrefabInfo.ClassID, PrefabInfo.TechType, LargeWorldEntity.CellLevel.Global);
 
-            chameleon.SetActive(true);
             prefabOut.Set(chameleon);
         }
     }
