@@ -1,17 +1,21 @@
-﻿using Chameleon.ScriptableObjects;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Chameleon.Monobehaviors
 {
-    internal class ChameleonEasterEgg : MonoBehaviour
+    internal class ChameleonEasterEgg : MonoBehaviour, IHandTarget
     {
         public Animator animator;
         public FMOD_CustomEmitter emitter;
 
-        private void OnMouseDown()
+        public void OnHandClick(GUIHand hand)
         {
             animator.SetTrigger("Activate");
             emitter.Play();
+        }
+
+        public void OnHandHover(GUIHand hand)
+        {
+            
         }
     }
 }

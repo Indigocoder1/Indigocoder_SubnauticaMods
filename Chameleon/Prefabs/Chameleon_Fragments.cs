@@ -1,4 +1,5 @@
-﻿using Chameleon.Monobehaviors;
+﻿using Chameleon.Craftables;
+using Chameleon.Monobehaviors;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Handlers;
@@ -37,7 +38,7 @@ namespace Chameleon.Prefabs
                 new() { biome = BiomeType.Mountains_TechSite_Scatter, count = 1, probability = 1f },
             });
 
-            PDAHandler.AddCustomScannerEntry(FragmentInfo.TechType, scanTime: 6f, destroyAfterScan: true);
+            PDAHandler.AddCustomScannerEntry(FragmentInfo.TechType, Chameleon_Craftable.PrefabInfo.TechType, true, 4, 6f, true);
 
             prefab.Register();
         }
