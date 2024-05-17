@@ -112,7 +112,8 @@
     <Compile Include="Attributes\ChameleonUpgradeModuleAttribute.cs" />
     <Compile Include="ChameleonAudio.cs" />
     <Compile Include="ChameleonOptions.cs" />
-    <Compile Include="Craftables\Chameleon_Craftable.cs" />
+    <Compile Include="Monobehaviors\ChameleonEasterEgg.cs" />
+    <Compile Include="Prefabs\Chameleon_Craftable.cs" />
     <Compile Include="Interfaces\IOnModuleChange.cs" />
     <Compile Include="Interfaces\IOnSaveDataLoaded.cs" />
     <Compile Include="Interfaces\IUIElement.cs" />
@@ -120,6 +121,7 @@
     <Compile Include="Monobehaviors\Abstract\PrefabModifier.cs" />
     <Compile Include="Monobehaviors\ChameleonDestructionEvent.cs" />
     <Compile Include="Monobehaviors\ChameleonFabricatorCustomizer.cs" />
+    <Compile Include="Monobehaviors\ChameleonFragment.cs" />
     <Compile Include="Monobehaviors\ChameleonSubRoot.cs" />
     <Compile Include="Monobehaviors\DisableWhenPlayerNotInView.cs" />
     <Compile Include="Monobehaviors\Editor\GenerateDistanceField.cs" />
@@ -167,6 +169,7 @@
     <Compile Include="Patches\SubrootPatches.cs" />
     <Compile Include="Patches\uGUI_CameraCyclopsPatches.cs" />
     <Compile Include="Patches\uGUI_EquipmentPatches.cs" />
+    <Compile Include="Prefabs\Chameleon_Fragments.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecipeUtils.cs" />
     <Compile Include="SaveData.cs" />

@@ -34,6 +34,8 @@ namespace Chameleon
 
             AddSubVoiceLine(bundle.LoadAsset<AudioClip>("ChameleonCloakEnable"), "ChameleonCloakEnable");
             AddSubVoiceLine(bundle.LoadAsset<AudioClip>("ChameleonCloakDisable"), "ChameleonCloakDisable");
+
+            AddSubVoiceLine(bundle.LoadAsset<AudioClip>("ChameleonEasterEgg"), "ChameleonEasterEgg");
         }
 
         public static void AddSubVoiceLine(AudioClip clip, string soundPath)

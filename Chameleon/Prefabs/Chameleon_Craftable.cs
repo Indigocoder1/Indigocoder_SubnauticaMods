@@ -7,12 +7,13 @@ using Chameleon.Monobehaviors.Cyclops;
 using Nautilus.Utility;
 using Chameleon.Interfaces;
 using Chameleon.Monobehaviors.Abstract;
+using Chameleon.Prefabs;
 
 namespace Chameleon.Craftables
 {
     internal static class Chameleon_Craftable
     {
-        public static PrefabInfo PrefabInfo;
+        public static PrefabInfo PrefabInfo { get; private set; }
 
         public static void Patch()
         {
@@ -27,7 +28,7 @@ namespace Chameleon.Craftables
 
             prefab.RemoveFromCache();
             prefab.SetGameObject(GetSubPrefab);
-            prefab.SetUnlock(TechType.PictureFrame);
+            prefab.SetUnlock(Chameleon_Fragments.FragmentInfo.TechType, 4);
 
             prefab.SetRecipeFromJson(Path.Combine(Main_Plugin.RecipesFolderPath, "Chameleon.json"))
                 .WithFabricatorType(CraftTree.Type.Constructor)

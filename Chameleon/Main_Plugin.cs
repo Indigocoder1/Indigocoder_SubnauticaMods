@@ -6,6 +6,7 @@ using Chameleon.Attributes;
 using Chameleon.Craftables;
 using Chameleon.Monobehaviors;
 using Chameleon.Patches;
+using Chameleon.Prefabs;
 using HarmonyLib;
 using IndigocoderLib;
 using Nautilus.Assets;
@@ -78,6 +79,8 @@ namespace Chameleon
             RegisterUpgradeModules();
             RegisterUpgradeModuleFunctionalities(Assembly.GetExecutingAssembly());
 
+            Chameleon_Fragments.Patch();
+            Chameleon_Craftable.Patch();
             ChameleonAudio.RegisterAudio(AssetBundle);
 
             logger.LogInfo($"{pluginName} {versionString} Loaded.");
@@ -112,12 +115,10 @@ namespace Chameleon
             PrefabInfo thermalModule = PrefabInfo.WithTechType("ChameleonThermalModule", null, null)
                 .WithIcon(SpriteManager.Get(TechType.CyclopsThermalReactorModule));
 
-            CreateUpgradeModulePrefab(depthModuleMk1Info, Chameleon_Craftable.techType);
-            CreateUpgradeModulePrefab(depthModuleMk2Info, Chameleon_Craftable.techType);
-            CreateUpgradeModulePrefab(depthModuleMk3Info, Chameleon_Craftable.techType);
+            CreateUpgradeModulePrefab(depthModuleMk1Info, Chameleon_Craftable.PrefabInfo.TechType);
+            CreateUpgradeModulePrefab(depthModuleMk2Info, Chameleon_Craftable.PrefabInfo.TechType);
+            CreateUpgradeModulePrefab(depthModuleMk3Info, Chameleon_Craftable.PrefabInfo.TechType);
             CreateUpgradeModulePrefab(thermalModule, TechType.CyclopsThermalReactorModule);
-
-            Chameleon_Craftable.Patch();
         }
 
         private void CreateUpgradeModulePrefab(PrefabInfo info, TechType unlock, RecipeData recipe = null)

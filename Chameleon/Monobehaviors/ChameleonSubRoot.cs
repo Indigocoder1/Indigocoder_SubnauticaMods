@@ -55,7 +55,6 @@ namespace Chameleon.Monobehaviors
 
             //Calls ChameleonDestructionEvent.DestroyChameleon
             SendMessage("DestroyChameleon");
-            Main_Plugin.logger.LogInfo("Sending destroy chameleon message");
         }
 
         new private void Update()

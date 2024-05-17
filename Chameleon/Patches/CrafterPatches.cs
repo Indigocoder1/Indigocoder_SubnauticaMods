@@ -9,7 +9,7 @@ namespace Chameleon.Patches
         [HarmonyPatch(nameof(Crafter.Craft))]
         private static void Prefix(TechType techType, ref float duration)
         {
-            if(techType == Chameleon_Craftable.techType)
+            if(techType == Chameleon_Craftable.PrefabInfo.TechType)
             {
                 //I doubt I'll ever remember to come back to/change this number so this is what it's gonna be I guess
                 duration = 20f;
