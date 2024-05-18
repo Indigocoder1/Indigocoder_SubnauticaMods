@@ -18,7 +18,7 @@ namespace Chameleon.Prefabs
         private static GameObject[] fragmentGOs;
         private static Dictionary<GameObject, GameObject> cachedPrefabs = new();
 
-        public static void Patch()
+        public static void Register()
         {
             var prefab = new CustomPrefab(FragmentInfo);
 
@@ -38,7 +38,7 @@ namespace Chameleon.Prefabs
                 new() { biome = BiomeType.Mountains_TechSite_Scatter, count = 1, probability = 1f },
             });
 
-            PDAHandler.AddCustomScannerEntry(FragmentInfo.TechType, Chameleon_Craftable.PrefabInfo.TechType, true, 4, 6f, true);
+            PDAHandler.AddCustomScannerEntry(FragmentInfo.TechType, Chameleon_Craftable.PrefabInfo.TechType, true, 4, 12f);
 
             prefab.Register();
         }

@@ -8,6 +8,7 @@ using Nautilus.Utility;
 using Chameleon.Interfaces;
 using Chameleon.Monobehaviors.Abstract;
 using Chameleon.Prefabs;
+using Nautilus.Handlers;
 
 namespace Chameleon.Craftables
 {
@@ -15,7 +16,7 @@ namespace Chameleon.Craftables
     {
         public static PrefabInfo PrefabInfo { get; private set; }
 
-        public static void Patch()
+        public static void Register()
         {
             Texture2D sprite = Main_Plugin.AssetBundle.LoadAsset<Texture2D>("ChameleonIcon");
 
@@ -26,9 +27,11 @@ namespace Chameleon.Craftables
 
             var prefab = new CustomPrefab(prefabInfo);
 
+            Sprite popupSprite = Main_Plugin.AssetBundle.LoadAsset<Sprite>("chameleonPopup");
+
             prefab.RemoveFromCache();
             prefab.SetGameObject(GetSubPrefab);
-            prefab.SetUnlock(Chameleon_Fragments.FragmentInfo.TechType, 4);
+            prefab.SetUnlock(Chameleon_Fragments.FragmentInfo.TechType, 4).WithAnalysisTech(popupSprite, PDAHandler.UnlockImportant);
 
             prefab.SetRecipeFromJson(Path.Combine(Main_Plugin.RecipesFolderPath, "Chameleon.json"))
                 .WithFabricatorType(CraftTree.Type.Constructor)

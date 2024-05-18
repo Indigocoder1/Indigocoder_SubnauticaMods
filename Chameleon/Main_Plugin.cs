@@ -79,8 +79,8 @@ namespace Chameleon
             RegisterUpgradeModules();
             RegisterUpgradeModuleFunctionalities(Assembly.GetExecutingAssembly());
 
-            Chameleon_Fragments.Patch();
-            Chameleon_Craftable.Patch();
+            Chameleon_Fragments.Register();
+            Chameleon_Craftable.Register();
             ChameleonAudio.RegisterAudio(AssetBundle);
 
             logger.LogInfo($"{pluginName} {versionString} Loaded.");
