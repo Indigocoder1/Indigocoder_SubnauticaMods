@@ -31,14 +31,13 @@ namespace Chameleon.Craftables
 
             prefab.RemoveFromCache();
             prefab.SetGameObject(GetSubPrefab);
-            prefab.SetUnlock(Chameleon_Fragments.FragmentInfo.TechType, 4).WithAnalysisTech(popupSprite, PDAHandler.UnlockImportant);
+            prefab.SetUnlock(PrefabInfo.TechType).WithAnalysisTech(popupSprite, PDAHandler.UnlockImportant);
 
             prefab.SetRecipeFromJson(Path.Combine(Main_Plugin.RecipesFolderPath, "Chameleon.json"))
                 .WithFabricatorType(CraftTree.Type.Constructor)
                 .WithStepsToFabricatorTab("Vehicles")
                 .WithCraftingTime(20f);
 
-            prefab.SetUnlock(TechType.Constructor).WithAnalysisTech(null); //ADD FRAGMENTS LATER
             prefab.SetPdaGroupCategory(TechGroup.Constructor, TechCategory.Constructor);
 
             prefab.Register();

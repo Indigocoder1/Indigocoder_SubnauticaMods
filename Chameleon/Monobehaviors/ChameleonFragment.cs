@@ -10,5 +10,11 @@ namespace Chameleon.Monobehaviors
         {
             easterEgg.SetActive(active);
         }
+
+        public void SetupResourceTracker()
+        {
+            var tracker = GetComponent<ResourceTracker>();
+            tracker.prefabIdentifier = GetComponent<PrefabIdentifier>();
+        }
     }
 }

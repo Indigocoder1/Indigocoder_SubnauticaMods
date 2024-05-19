@@ -12,6 +12,7 @@ namespace Chameleon.Prefabs
 {
     internal static class Chameleon_Fragments
     {
+        public const int FRAGMENT_COUNT = 4;
         private const int EASTER_EGG_CHANCE = 10;
 
         public static PrefabInfo FragmentInfo { get; private set; } = PrefabInfo.WithTechType("ChameleonFragment", null, null, "English");
@@ -34,11 +35,11 @@ namespace Chameleon.Prefabs
 
             prefab.SetSpawns(new LootDistributionData.BiomeData[]
             {
-                new() { biome = BiomeType.Dunes_TechSite_Scatter, count = 1, probability = 1f },
-                new() { biome = BiomeType.Mountains_TechSite_Scatter, count = 1, probability = 1f },
+                new() { biome = BiomeType.Dunes_TechSite_Scatter, count = 1, probability = .05f },
+                new() { biome = BiomeType.Mountains_TechSite_Scatter, count = 1, probability = .05f },
             });
 
-            PDAHandler.AddCustomScannerEntry(FragmentInfo.TechType, Chameleon_Craftable.PrefabInfo.TechType, true, 4, 12f);
+            prefab.CreateFragment(Chameleon_Craftable.PrefabInfo.TechType, 12f, FRAGMENT_COUNT);
 
             prefab.Register();
         }
@@ -63,6 +64,7 @@ namespace Chameleon.Prefabs
 
             ChameleonFragment fragment = instance.GetComponent<ChameleonFragment>();
             fragment.SetEasterEggActive(Random.Range(0, 100) <= EASTER_EGG_CHANCE);
+            fragment.SetupResourceTracker();
 
             cachedPrefabs.Add(prefab, instance);
 

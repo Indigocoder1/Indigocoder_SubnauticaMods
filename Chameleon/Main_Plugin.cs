@@ -79,8 +79,8 @@ namespace Chameleon
             RegisterUpgradeModules();
             RegisterUpgradeModuleFunctionalities(Assembly.GetExecutingAssembly());
 
-            Chameleon_Fragments.Register();
             Chameleon_Craftable.Register();
+            Chameleon_Fragments.Register();
             ChameleonAudio.RegisterAudio(AssetBundle);
 
             logger.LogInfo($"{pluginName} {versionString} Loaded.");
@@ -104,7 +104,7 @@ namespace Chameleon
         private void RegisterUpgradeModules()
         {
             PrefabInfo depthModuleMk1Info = PrefabInfo.WithTechType("ChameleonHullModule1", null, null)
-                .WithIcon(SpriteManager.Get(TechType.CyclopsHullModule1));
+                .WithIcon(SpriteManager.Get(Chameleon_Craftable.PrefabInfo.TechType));
 
             PrefabInfo depthModuleMk2Info = PrefabInfo.WithTechType("ChameleonHullModule2", null, null)
                 .WithIcon(SpriteManager.Get(TechType.CyclopsHullModule2));
