@@ -113,6 +113,7 @@
     <Compile Include="ChameleonAudio.cs" />
     <Compile Include="ChameleonOptions.cs" />
     <Compile Include="Monobehaviors\ChameleonEasterEgg.cs" />
+    <Compile Include="Patches\ConstructorInputPatches.cs" />
     <Compile Include="Prefabs\Chameleon_Craftable.cs" />
     <Compile Include="Interfaces\IOnModuleChange.cs" />
     <Compile Include="Interfaces\IOnSaveDataLoaded.cs" />
