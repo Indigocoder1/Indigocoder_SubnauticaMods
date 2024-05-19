@@ -106,7 +106,7 @@ namespace Chameleon
         private void RegisterUpgradeModules()
         {
             PrefabInfo depthModuleMk1Info = PrefabInfo.WithTechType("ChameleonHullModule1", null, null)
-                .WithIcon(SpriteManager.Get(Chameleon_Craftable.PrefabInfo.TechType));
+                .WithIcon(SpriteManager.Get(TechType.CyclopsHullModule1));
 
             PrefabInfo depthModuleMk2Info = PrefabInfo.WithTechType("ChameleonHullModule2", null, null)
                 .WithIcon(SpriteManager.Get(TechType.CyclopsHullModule2));
@@ -118,8 +118,8 @@ namespace Chameleon
                 .WithIcon(SpriteManager.Get(TechType.CyclopsThermalReactorModule));
 
             CreateUpgradeModulePrefab(depthModuleMk1Info, Chameleon_Craftable.PrefabInfo.TechType);
-            CreateUpgradeModulePrefab(depthModuleMk2Info, Chameleon_Craftable.PrefabInfo.TechType);
-            CreateUpgradeModulePrefab(depthModuleMk3Info, Chameleon_Craftable.PrefabInfo.TechType);
+            CreateUpgradeModulePrefab(depthModuleMk2Info, TechType.CyclopsHullModule2);
+            CreateUpgradeModulePrefab(depthModuleMk3Info, TechType.CyclopsHullModule3);
             CreateUpgradeModulePrefab(thermalModule, TechType.CyclopsThermalReactorModule);
         }
 

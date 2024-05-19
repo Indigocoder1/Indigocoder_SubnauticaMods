@@ -38,7 +38,7 @@ namespace Chameleon.Prefabs
                 new() { biome = BiomeType.Dunes_TechSite_Scatter, count = 1, probability = .05f },
                 new() { biome = BiomeType.Mountains_TechSite_Scatter, count = 1, probability = .05f },
             });
-
+            
             prefab.CreateFragment(Chameleon_Craftable.PrefabInfo.TechType, 12f, FRAGMENT_COUNT, "ChameleonSub");
 
             prefab.Register();
