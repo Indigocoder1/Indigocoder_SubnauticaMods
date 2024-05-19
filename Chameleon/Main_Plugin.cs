@@ -14,6 +14,7 @@ using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
 using Nautilus.Crafting;
 using Nautilus.Handlers;
+using Nautilus.Utility;
 using System;
 using System.IO;
 using System.Reflection;
@@ -74,6 +75,7 @@ namespace Chameleon
             ChameleonPingType = EnumHandler.AddEntry<PingType>("ChameleonSub")
             .WithIcon(new Atlas.Sprite(AssetBundle.LoadAsset<Sprite>("Ping_Chameleon")));
 
+            CreateEncyEntry();
             InitializeModOptions();
             InitializeSlotMapping();
             RegisterUpgradeModules();
@@ -151,6 +153,22 @@ namespace Chameleon
                     ChameleonSubRoot.moduleFunctions.Add(techType, type);
                 }
             }
+        }
+
+        private void CreateEncyEntry()
+        {
+            Texture2D bannerImage = AssetBundle.LoadAsset<Texture2D>("chameleonEncyBanner");
+
+            Sprite popupImage = AssetBundle.LoadAsset<Sprite>("chameleonPopup");
+
+            LanguageHandler.SetLanguageLine("Tech/Vehicles", "ChameleonEncyTab");
+
+            PDAHandler.AddEncyclopediaEntry("ChameleonSub", "Tech/Vehicles", Language.main.Get("ChameleonEncyTitle"),
+                Language.main.Get("ChameleonEncyBody"),
+                bannerImage,
+                popupImage,
+                PDAHandler.UnlockImportant
+                );
         }
     }
 }
