@@ -8,6 +8,8 @@ namespace Chameleon.Monobehaviors
         //Blatanly stolen from the Seal sub. Go check them out on their discord server!
         //https://discord.com/invite/R2xCt9zXff
 
+        public static event Action OnHatchUsed;
+
         public SubRoot subRoot;
         public Transform targetPosition;
         public FMODAsset sound;
@@ -24,6 +26,7 @@ namespace Chameleon.Monobehaviors
             Player.main.SetCurrentSub(subRoot, true);
 
             OnEnter.Invoke();
+            OnHatchUsed?.Invoke();
         }
 
         public void OnHandHover(GUIHand hand)

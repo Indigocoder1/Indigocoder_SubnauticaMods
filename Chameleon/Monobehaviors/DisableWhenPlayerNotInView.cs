@@ -13,9 +13,10 @@ namespace Chameleon.Monobehaviors
         private void Start ()
         {
             rend = GetComponent<MeshRenderer>();
+            SubEnterHandTarget.OnHatchUsed += UpdateHatchVisibility;
         }
 
-        private void FixedUpdate()
+        private void UpdateHatchVisibility()
         {
             Vector3 dirToPlayer = Camera.main.transform.position - transform.position;
             float dot = Vector3.Dot(-transform.up, dirToPlayer.normalized);
@@ -28,6 +29,11 @@ namespace Chameleon.Monobehaviors
             {
                 rend.enabled = true;
             }
+        }
+
+        private void OnDestroy()
+        {
+            SubEnterHandTarget.OnHatchUsed -= UpdateHatchVisibility;
         }
     }
 }

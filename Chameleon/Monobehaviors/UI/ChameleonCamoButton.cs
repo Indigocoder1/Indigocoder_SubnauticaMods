@@ -29,6 +29,10 @@ namespace Chameleon.Monobehaviors.UI
         public float energyCostPerDischarge;
 
         [Header("Miscellaneous")]
+        public Light[] interiorLights;
+        public Color normalInteriorLightColor; //FFFFFF
+        public Color cloakInteriorLightColor; //5A58FF
+        public float lightTransitionSpeed;
         public float glowSpeed;
 
         [Header("Audio")]
@@ -69,6 +73,11 @@ namespace Chameleon.Monobehaviors.UI
                 main.SetText(HandReticle.TextType.Hand, "ChameleonCamoButton", true, GameInput.Button.LeftHand);
                 main.SetText(HandReticle.TextType.HandSubscript, string.Empty, false, GameInput.Button.None);
             }
+
+            foreach (var light in interiorLights)
+            {
+                light.color = Color.Lerp(light.color, isActive ? cloakInteriorLightColor : normalInteriorLightColor, Time.deltaTime * lightTransitionSpeed);
+            }
         }
 
         public void OnMouseEnter()
@@ -89,15 +98,20 @@ namespace Chameleon.Monobehaviors.UI
         
         public void ToggleCamo()
         {
+            if(subRoot.powerRelay.GetPowerStatus() == PowerSystem.Status.Offline) 
+            {
+                return;
+            }
+
             isActive = !isActive;
             animator.SetBool("CamoActive", isActive);
 
             if(isActive)
             {
                 subRoot.voiceNotificationManager.PlayVoiceNotification(camoActivateSFX);
-                loopingSFX.Play();
 
                 InvokeRepeating(nameof(DrawPowerRepeating), 0, timeBetweenDischarges);
+                loopingSFX.Play();
             }
             else
             {

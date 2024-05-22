@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Chameleon.Monobehaviors
 {
-    public class ChameleonSubRoot : SubRoot, IProtoEventListener
+    public class ChameleonSubRoot : SubRoot, IProtoEventListener, ICyclopsReferencer
     {
         private const float SUB_EXPLOSION_DELAY = 13f;
 
@@ -33,9 +33,10 @@ namespace Chameleon.Monobehaviors
             chameleonUpgradeConsole.modules.isAllowedToAdd -= @delegate;
         }
 
-        new private void Awake()
+        private void Awake()
         {
             _saveData = new SaveData(); //New entry for the sub
+            oxygenMgr = GetComponent<OxygenManager>();
         }
 
         public override void Start()
@@ -57,8 +58,10 @@ namespace Chameleon.Monobehaviors
             SendMessage("DestroyChameleon");
         }
 
-        new private void Update()
+        private void Update()
         {
+            base.Update();
+
             if (Player.main.currentSub != this) return;
             if (!Player.main.isPiloting) return;
 
@@ -131,6 +134,11 @@ namespace Chameleon.Monobehaviors
                     onModuleChange.OnChange(type, added);
                 }
             }
+        }
+
+        public void OnCyclopsReferenceFinished(GameObject cyclops)
+        {
+            lightControl.skies = cyclops.GetComponent<LightingController>().skies;
         }
     }
 }
