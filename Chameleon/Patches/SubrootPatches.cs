@@ -20,13 +20,6 @@ namespace Chameleon.Patches
             return false; //Temp fix until SubNames are properly implemented (idek if this will get done, just copying the Seal's comments)
         }
 
-        [HarmonyPatch(typeof(LightingController)), HarmonyPatch(nameof(LightingController.LerpToState)), 
-            HarmonyPatch(new Type[] { typeof(int) }), HarmonyPostfix]
-        private static void UpdateLighting_Postfix(LightingController __instance, int targetState)
-        {
-            Main_Plugin.logger.LogInfo($"Lerping to new light state on {__instance}. Target state = {targetState}");
-        }
-
         [HarmonyPatch(nameof(SubRoot.OnTakeDamage)), HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> OnTakeDamage_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
