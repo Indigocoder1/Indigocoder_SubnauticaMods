@@ -104,8 +104,10 @@
   <ItemGroup>
     <Compile Include="Main_Plugin.cs" />
     <Compile Include="Monobehaviors\ApplySNFont.cs" />
+    <Compile Include="Monobehaviors\TodoInputField.cs" />
     <Compile Include="Monobehaviors\uGUI_TodoTab.cs" />
     <Compile Include="Options.cs" />
+    <Compile Include="Patches\MapModCompatibilityPatches.cs" />
     <Compile Include="Patches\uGUI_PDAPatches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
