@@ -62,6 +62,7 @@ namespace TodoList
         {
             Type mapControllerType = Type.GetType("SubnauticaMap.Controller, SubnauticaMap");
             MethodBase methodBase = mapControllerType.GetMethod("Update", BindingFlags.NonPublic | BindingFlags.Instance);
+            logger.LogInfo($"Method base = {methodBase}");
             MethodInfo transpilerInfo = AccessTools.Method(typeof(MapModCompatibilityPatches), 
                 nameof(MapModCompatibilityPatches.ControllerUpdate_Transpiler));
 

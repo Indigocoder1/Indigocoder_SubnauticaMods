@@ -26,8 +26,8 @@ namespace TodoList.Patches
             GameObject.DestroyImmediate(todoTab.GetComponent<uGUI_LogTab>());
             todoTab.AddComponent<uGUI_TodoTab>();
 
-
             __instance.tabs.Add(Main_Plugin.todoTab, todoTab.GetComponent<uGUI_PDATab>());
+            TodoInputField.inputFields = new();
         }
 
         [HarmonyPatch(nameof(uGUI_PDA.SetTabs)), HarmonyTranspiler]

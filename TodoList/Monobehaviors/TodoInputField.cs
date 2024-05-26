@@ -10,7 +10,15 @@ namespace TodoList.Monobehaviors
         private const float ALPHA_TRANSITION_SPEED = 12f;
         internal static List<TodoInputField> inputFields = new();
 
-        private TMP_InputField inputField;
+        public bool IsChecked
+        {
+            get
+            {
+                return toggle.isOn;
+            }
+        }
+
+        public TMP_InputField inputField;
         private Toggle toggle;
         private TextMeshProUGUI text;
         private bool wasFocusedLastFrame;

@@ -1,12 +1,16 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using TodoList.Monobehaviors;
 
 namespace TodoList.Patches
 {
-    internal class MapModCompatibilityPatches
+    //[HarmonyPatch]
+    internal static class MapModCompatibilityPatches
     {
+        //[HarmonyPatch("SubnauticaMap.Controller", "Update"), HarmonyTranspiler]
         internal static IEnumerable<CodeInstruction> ControllerUpdate_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             CodeMatch[] matches = new CodeMatch[]
@@ -18,16 +22,24 @@ namespace TodoList.Patches
 
             var newInstructions = new CodeMatcher(instructions)
                 .MatchForward(false, matches)
-                .SetInstructionAndAdvance(new CodeInstruction(OpCodes.Nop))
-                .SetInstructionAndAdvance(new CodeInstruction(OpCodes.Nop))
-                .SetInstructionAndAdvance(new CodeInstruction(OpCodes.Ldc_I4, 1));
-
-            foreach (var instruction in newInstructions.InstructionEnumeration())
-            {
-                Main_Plugin.logger.LogInfo($"{instruction.opcode} {instruction.operand}");
-            }
+                .Advance(3)
+                .InsertAndAdvance(Transpilers.EmitDelegate(IsUsingTodoInputField))
+                .Advance(4)
+                .InsertAndAdvance(Transpilers.EmitDelegate(IsUsingTodoInputField))
+                .Advance(4)
+                .InsertAndAdvance(Transpilers.EmitDelegate(IsUsingTodoInputField));
 
             return newInstructions.InstructionEnumeration();
+        }
+
+        public static bool IsUsingTodoInputField(bool previousValue)
+        {
+            if (TodoInputField.inputFields.Any(field => field.inputField.isFocused))
+            {
+                return false;
+            }
+
+            return previousValue;
         }
     }
 }
