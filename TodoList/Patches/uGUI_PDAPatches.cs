@@ -27,7 +27,9 @@ namespace TodoList.Patches
             todoTab.AddComponent<uGUI_TodoTab>();
 
             __instance.tabs.Add(Main_Plugin.todoTab, todoTab.GetComponent<uGUI_PDATab>());
-            TodoInputField.inputFields = new();
+
+            TodoItem.todoItems = new();
+            todoTab.GetComponent<uGUI_TodoTab>().LoadSavedItems();
         }
 
         [HarmonyPatch(nameof(uGUI_PDA.SetTabs)), HarmonyTranspiler]

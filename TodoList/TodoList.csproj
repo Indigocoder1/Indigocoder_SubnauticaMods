@@ -105,11 +105,17 @@
     <Compile Include="Main_Plugin.cs" />
     <Compile Include="Monobehaviors\ApplySNFont.cs" />
     <Compile Include="Monobehaviors\TodoInputField.cs" />
+    <Compile Include="Monobehaviors\TodoItem.cs" />
     <Compile Include="Monobehaviors\uGUI_TodoTab.cs" />
     <Compile Include="Options.cs" />
+    <Compile Include="Patches\AutoTodoItems\CompoundGoalPatches.cs" />
+    <Compile Include="Patches\AutoTodoItems\StoryGoalManagerPatches.cs" />
+    <Compile Include="Patches\AutoTodoItems\uGUI_SceneIntroPatches.cs" />
     <Compile Include="Patches\MapModCompatibilityPatches.cs" />
+    <Compile Include="Patches\PlayerPatches.cs" />
     <Compile Include="Patches\uGUI_PDAPatches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TodoListSaveData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

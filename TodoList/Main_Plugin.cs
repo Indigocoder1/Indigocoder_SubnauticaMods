@@ -4,6 +4,7 @@ using HarmonyLib;
 using Nautilus.Handlers;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using TodoList.Patches;
@@ -24,6 +25,7 @@ namespace TodoList
 
         public static string AssetsFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
         public static AssetBundle AssetBundle = AssetBundle.LoadFromFile(Path.Combine(AssetsFolderPath, "todolist"));
+        public static TodoListSaveData SaveData { get; } = SaveDataHandler.RegisterSaveDataCache<TodoListSaveData>();
 
         public static Atlas.Sprite TodoListTabSprite;
         public static GameObject NewItemPrefab;
@@ -68,5 +70,10 @@ namespace TodoList
 
             harmony.Patch(methodBase, null, null, new HarmonyMethod(transpilerInfo));
         }
+
+        internal static Dictionary<string, string[]> StoryGoalTodoEntries { get; } = new()
+        {
+            { "Trigger_PDAIntroEnd", new[] { "Repair the Lifepod secondary systems", "Craft a Scanner Tool" } }
+        };
     }
 }

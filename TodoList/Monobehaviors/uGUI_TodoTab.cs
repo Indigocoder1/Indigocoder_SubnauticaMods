@@ -8,17 +8,42 @@ namespace TodoList.Monobehaviors
 {
     internal class uGUI_TodoTab : uGUI_PDATab, uGUI_IScrollReceiver
     {
+        public static uGUI_TodoTab Instance
+        {
+            get
+            {
+                return _instance;
+            }
+            set
+            {
+                if(_instance != null && value != null)
+                {
+                    Main_Plugin.logger.LogError($"More than 1 uGUI_TodoTab in the scene! Attempted to set {value} to _Instance");
+                    return;
+                }
+
+                _instance = value;
+            }
+        }
+
+        private static uGUI_TodoTab _instance;
+
         private CanvasGroup content;
         private ScrollRect scrollRect;
         private Transform scrollCanvas;
 
-        private void Start()
+        new private void Awake()
         {
             content = GetComponentInChildren<CanvasGroup>();
             scrollRect = transform.Find("Content/ScrollView").GetComponent<ScrollRect>();
             scrollCanvas = scrollRect.transform.Find("Viewport/ScrollCanvas");
             scrollRect.enabled = true;
-            
+
+            Instance = this;
+        }
+
+        private void Start()
+        {
             InitVerticalLayoutGroup();
 
             GameObject label = transform.Find("Content/LogLabel").gameObject;
@@ -88,18 +113,50 @@ namespace TodoList.Monobehaviors
             return true;
         }
 
-        private void CreateNewItem()
+        public void LoadSavedItems()
         {
-            Instantiate(Main_Plugin.NewItemPrefab, scrollCanvas);
+            foreach (SaveData saveData in Main_Plugin.SaveData.saveData)
+            {
+                GameObject newItem = CreateNewItem();
+                newItem.GetComponent<TodoItem>().saveData = saveData;
+            }
+        }
+
+        public GameObject CreateNewItem()
+        {
+            return Instantiate(Main_Plugin.NewItemPrefab, scrollCanvas);
+        }
+
+        public GameObject CreateNewItem(string content)
+        {
+            GameObject newItem = CreateNewItem();
+            var todoItem = newItem.GetComponent<TodoItem>();
+            todoItem.itemText = content;
+            return newItem;
+        }
+
+        public void CreateNewItems(string[] contents)
+        {
+            foreach (string entry in contents)
+            {
+                GameObject newItem = CreateNewItem();
+                var todoItem = newItem.GetComponent<TodoItem>();
+                todoItem.itemText = entry;
+            }
         }
 
         private void ClearCompletedItems()
         {
-            List<TodoInputField> checkedInputFields = TodoInputField.inputFields.Where(i => i.IsChecked).ToList();
+            List<TodoItem> checkedInputFields = TodoItem.todoItems.Where(i => i.isCompleted).ToList();
             for (int i = checkedInputFields.Count - 1; i >= 0; i--)
             {
-                Destroy(checkedInputFields[i].transform.parent.gameObject);
+                Destroy(checkedInputFields[i].gameObject);
             }
+        }
+
+        private void OnDestroy()
+        {
+            Instance = null;
         }
     }
 }

@@ -34,7 +34,7 @@ namespace TodoList.Patches
 
         public static bool IsUsingTodoInputField(bool previousValue)
         {
-            if (TodoInputField.inputFields.Any(field => field.inputField.isFocused))
+            if (TodoItem.todoItems.Any(item => item.todoInputField.inputField.isFocused))
             {
                 return false;
             }
