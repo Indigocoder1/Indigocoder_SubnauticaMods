@@ -11,6 +11,15 @@ namespace TodoList.Monobehaviors
 
         public TodoInputField todoInputField;
         public Toggle toggle;
+
+        public Color hintCheckmarkColor;
+        public Color normalCheckmarkColor;
+        public Image backgroundImage;
+        public Image checkmarkBox;
+        public Image checkmarkCheck;
+
+        public bool isHintItem { get; private set; }
+
         public SaveData saveData
         {
             get
@@ -54,6 +63,15 @@ namespace TodoList.Monobehaviors
             toggle.onValueChanged.AddListener((bool val) => todoInputField.OnToggleChanged(val));
             todoInputField = GetComponentInChildren<TodoInputField>();
             toggle = GetComponentInChildren<Toggle>();
+        }
+
+        public void SetIsHintItem(bool isHintItem)
+        {
+            this.isHintItem = isHintItem;
+            Color checkboxColor = isHintItem ? hintCheckmarkColor : normalCheckmarkColor;
+            backgroundImage.color = isHintItem ? hintCheckmarkColor : Color.white;
+            checkmarkBox.color = checkboxColor;
+            checkmarkCheck.color = checkboxColor;
         }
 
         private void OnEnable()

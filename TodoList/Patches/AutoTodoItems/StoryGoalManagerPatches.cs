@@ -14,7 +14,7 @@ namespace TodoList.Patches.AutoTodoItems
 
             if (Main_Plugin.StoryGoalTodoEntries.TryGetValue(key, out string[] entries))
             {
-                uGUI_TodoTab.Instance.CreateNewItems(entries);
+                uGUI_TodoTab.Instance.CreateNewItems(entries, true);
             }
         }
     }

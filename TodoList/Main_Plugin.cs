@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using Nautilus.Handlers;
@@ -30,6 +31,8 @@ namespace TodoList
         public static Atlas.Sprite TodoListTabSprite;
         public static GameObject NewItemPrefab;
 
+        public static ConfigEntry<bool> CreateHintTodoItems;
+
         private static readonly Harmony harmony = new Harmony(myGUID);
 
         internal static PDATab todoTab;
@@ -37,12 +40,14 @@ namespace TodoList
         private void Awake()
         {
             logger = Logger;
-            //new Options();
 
             LanguageHandler.RegisterLocalizationFolder();
             todoTab = EnumHandler.AddEntry<PDATab>("TodoList");
 
+            BindConfigs();
             CachePrefabs();
+
+            new TodoOptions();
 
             if(BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("sn.subnauticamap.mod"))
             {
@@ -52,6 +57,12 @@ namespace TodoList
             harmony.PatchAll();
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
+        }
+
+        private void BindConfigs()
+        {
+            CreateHintTodoItems = Config.Bind("Todo List", "Create guiding todo items", false,
+                new ConfigDescription("Automatically create todo list items at key story points to give you hints on what to do"));
         }
 
         private void CachePrefabs()
@@ -67,13 +78,25 @@ namespace TodoList
             logger.LogInfo($"Method base = {methodBase}");
             MethodInfo transpilerInfo = AccessTools.Method(typeof(MapModCompatibilityPatches), 
                 nameof(MapModCompatibilityPatches.ControllerUpdate_Transpiler));
-
+            
             harmony.Patch(methodBase, null, null, new HarmonyMethod(transpilerInfo));
         }
 
         internal static Dictionary<string, string[]> StoryGoalTodoEntries { get; } = new()
         {
-            { "Trigger_PDAIntroEnd", new[] { "Repair the Lifepod secondary systems", "Craft a Scanner Tool" } }
+            { "Trigger_PDAIntroEnd", new[] { "Craft a Scanner Tool", "Repair the Lifepod's secondary systems", "Repair the Lifepod radio" } },
+            { "Story_AuroraWarning4", new[] { "Repair the Aurora" } },
+            { "OnPlayRadioBloodKelp29", new[] { "Investigate lifepod 2" } },
+            { "OnPlayRadioGrassy25", new[] { "Investigate lifepod 3" } },
+            { "OnPlayRadioRadiationSuit", new[] { "Investigate lifepod 4" } },
+            { "OnPlayRadioShallows22", new[] { "Investigate lifepod 6" } },
+            { "OnPlayRadioKelp28", new[] { "Investigate lifepod 7" } },
+            { "OnPlayRadioKoosh26", new[] { "Investigate lifepod 12" } },
+            { "OnPlayRadioGrassy21", new[] { "Investigate lifepod 17" } },
+            { "OnPlayRadioSecondOfficer", new[] { "Investigate Officer Keen's lifepod (Lifepod 19)" } },
+            { "OnPlayRadioCaptainsQuartersCode", new[] { "Investigate the Aurora's captain's quarters" } },
+            { "OnPlayRadioSunbeam4", new[] { "Visit the Sunbeam landing site" } },
+            { "Precursor_Gun_DataDownload3", new[] { "Explore for the Disease Research Facility", "Explore for the Thermal Power Facility" } },
         };
     }
 }

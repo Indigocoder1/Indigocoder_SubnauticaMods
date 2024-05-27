@@ -127,21 +127,26 @@ namespace TodoList.Monobehaviors
             return Instantiate(Main_Plugin.NewItemPrefab, scrollCanvas);
         }
 
-        public GameObject CreateNewItem(string content)
+        public GameObject CreateNewItem(string content, bool isHintItem)
         {
             GameObject newItem = CreateNewItem();
             var todoItem = newItem.GetComponent<TodoItem>();
             todoItem.itemText = content;
+            todoItem.SetIsHintItem(isHintItem);
+
+            if(isHintItem)
+            {
+                SortTodoItems();
+            }
+
             return newItem;
         }
 
-        public void CreateNewItems(string[] contents)
+        public void CreateNewItems(string[] contents, bool areHintItems)
         {
             foreach (string entry in contents)
             {
-                GameObject newItem = CreateNewItem();
-                var todoItem = newItem.GetComponent<TodoItem>();
-                todoItem.itemText = entry;
+                GameObject newItem = CreateNewItem(entry, areHintItems);
             }
         }
 
@@ -151,6 +156,14 @@ namespace TodoList.Monobehaviors
             for (int i = checkedInputFields.Count - 1; i >= 0; i--)
             {
                 Destroy(checkedInputFields[i].gameObject);
+            }
+        }
+
+        private void SortTodoItems()
+        {
+            for (int i = 0; i < TodoItem.todoItems.Count; i++)
+            {
+
             }
         }
 
