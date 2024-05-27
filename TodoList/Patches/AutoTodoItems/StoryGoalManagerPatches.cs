@@ -16,7 +16,7 @@ namespace TodoList.Patches.AutoTodoItems
             Main_Plugin.StoryGoalTodoEntry entry = Main_Plugin.StoryGoalTodoEntries.FirstOrDefault(i => i.key == key);
             if (Main_Plugin.StoryGoalTodoEntries.Any(i => i.key == key))
             {
-                ErrorMessage.AddError(Language.main.Get("TODO_NewHintItems"));
+                ErrorMessage.AddError($"<color=#FFFF00>{Language.main.Get("TODO_NewHintItems")}</color>");
 
                 string[] entries = entry.entries;
                 if (entry.localized)

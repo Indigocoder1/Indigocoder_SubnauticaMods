@@ -76,7 +76,6 @@ namespace TodoList
         {
             Type mapControllerType = Type.GetType("SubnauticaMap.Controller, SubnauticaMap");
             MethodBase methodBase = mapControllerType.GetMethod("Update", BindingFlags.NonPublic | BindingFlags.Instance);
-            logger.LogInfo($"Method base = {methodBase}");
             MethodInfo transpilerInfo = AccessTools.Method(typeof(MapModCompatibilityPatches), 
                 nameof(MapModCompatibilityPatches.ControllerUpdate_Transpiler));
             
@@ -86,7 +85,7 @@ namespace TodoList
         public static List<StoryGoalTodoEntry> StoryGoalTodoEntries { get; internal set; } = new()
         {
             new("Trigger_PDAIntroEnd", new[] { "OnPDAIntroEnd1", "OnPDAIntroEnd2", "OnPDAIntroEnd3" }, true),
-            new("Trigger_PDAIntroEnd", new[] { "OnAuroraExplode" }, true),
+            new("Story_AuroraWarning4", new[] { "OnAuroraExplode" }, true),
             new("OnPlayRadioBloodKelp29", new[] { "OnLifepod2RadioFinished" }, true),
             new("OnPlayRadioGrassy25", new[] { "OnLifepod3RadioFinished" }, true),
             new("OnPlayRadioRadiationSuit", new[] { "OnLifepod4RadioFinished" }, true),
@@ -101,26 +100,6 @@ namespace TodoList
             new("Precursor_Gun_DataDownload3", new[] { "OnLostRiverHintDownloaded1", "OnLostRiverHintDownloaded2" }, true),
             new("Emperor_Telepathic_Contact1", new[] { "OnEmperorFirstTelepathy" }, true),
         };
-
-        /*
-        public static Dictionary<string, string[]> StoryGoalTodoEntries { get; internal set; } = new()
-        {
-            { "Trigger_PDAIntroEnd", new[] { "Craft a Scanner Tool", "Repair the Lifepod's secondary systems", "Repair the Lifepod radio" } },
-            { "Story_AuroraWarning4", new[] { "Repair the Aurora" } },
-            { "OnPlayRadioBloodKelp29", new[] { "Investigate Lifepod 2" } },
-            { "OnPlayRadioGrassy25", new[] { "Investigate Lifepod 3" } },
-            { "OnPlayRadioRadiationSuit", new[] { "Investigate Lifepod 4" } },
-            { "OnPlayRadioShallows22", new[] { "Investigate Lifepod 6" } },
-            { "OnPlayRadioKelp28", new[] { "Investigate Lifepod 7" } },
-            { "OnPlayRadioKoosh26", new[] { "Investigate Lifepod 12" } },
-            { "OnPlayRadioGrassy21", new[] { "Investigate Lifepod 17" } },
-            { "OnPlayRadioSecondOfficer", new[] { "Investigate Officer Keen's Lifepod (Lifepod 19)" } },
-            { "OnPlayRadioCaptainsQuartersCode", new[] { "Investigate the Aurora's captain's quarters", "Get a sandwich (The regular)" } },
-            { "OnPlayRadioSunbeam4", new[] { "Visit the Sunbeam landing site" } },
-            { "Precursor_Gun_DataDownload3", new[] { "Search for the Disease Research Facility", "Search for the Thermal Power Facility" } },
-            { "Emperor_Telepathic_Contact1", new[] { "Find the source of the telepathic vision" } },
-        };
-        */
 
         public struct StoryGoalTodoEntry
         {
