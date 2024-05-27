@@ -161,9 +161,21 @@ namespace TodoList.Monobehaviors
 
         private void SortTodoItems()
         {
-            for (int i = 0; i < TodoItem.todoItems.Count; i++)
-            {
+            int sortedHintItemIndex = 0;
+            int unsortedHintItemIndex = TodoItem.todoItems.Count - 1;
 
+            foreach (var item in TodoItem.todoItems)
+            {
+                if(item.isHintItem)
+                {
+                    item.transform.SetSiblingIndex(sortedHintItemIndex);
+                    sortedHintItemIndex++;
+                }
+                else
+                {
+                    item.transform.SetSiblingIndex(unsortedHintItemIndex);
+                    unsortedHintItemIndex--;
+                }
             }
         }
 

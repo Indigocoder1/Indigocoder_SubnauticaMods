@@ -68,6 +68,7 @@ namespace TodoList
         private void CachePrefabs()
         {
             TodoListTabSprite = new Atlas.Sprite(AssetBundle.LoadAsset<Texture2D>("todoListTabImage"));
+            TodoListTabSprite.size = new Vector2(220, 220);
             NewItemPrefab = AssetBundle.LoadAsset<GameObject>("ChecklistItem");
         }
 
@@ -86,17 +87,17 @@ namespace TodoList
         {
             { "Trigger_PDAIntroEnd", new[] { "Craft a Scanner Tool", "Repair the Lifepod's secondary systems", "Repair the Lifepod radio" } },
             { "Story_AuroraWarning4", new[] { "Repair the Aurora" } },
-            { "OnPlayRadioBloodKelp29", new[] { "Investigate lifepod 2" } },
-            { "OnPlayRadioGrassy25", new[] { "Investigate lifepod 3" } },
-            { "OnPlayRadioRadiationSuit", new[] { "Investigate lifepod 4" } },
-            { "OnPlayRadioShallows22", new[] { "Investigate lifepod 6" } },
-            { "OnPlayRadioKelp28", new[] { "Investigate lifepod 7" } },
-            { "OnPlayRadioKoosh26", new[] { "Investigate lifepod 12" } },
-            { "OnPlayRadioGrassy21", new[] { "Investigate lifepod 17" } },
-            { "OnPlayRadioSecondOfficer", new[] { "Investigate Officer Keen's lifepod (Lifepod 19)" } },
+            { "OnPlayRadioBloodKelp29", new[] { "Investigate Lifepod 2" } },
+            { "OnPlayRadioGrassy25", new[] { "Investigate Lifepod 3" } },
+            { "OnPlayRadioRadiationSuit", new[] { "Investigate Lifepod 4" } },
+            { "OnPlayRadioShallows22", new[] { "Investigate Lifepod 6" } },
+            { "OnPlayRadioKelp28", new[] { "Investigate Lifepod 7" } },
+            { "OnPlayRadioKoosh26", new[] { "Investigate Lifepod 12" } },
+            { "OnPlayRadioGrassy21", new[] { "Investigate Lifepod 17" } },
+            { "OnPlayRadioSecondOfficer", new[] { "Investigate Officer Keen's Lifepod (Lifepod 19)" } },
             { "OnPlayRadioCaptainsQuartersCode", new[] { "Investigate the Aurora's captain's quarters" } },
             { "OnPlayRadioSunbeam4", new[] { "Visit the Sunbeam landing site" } },
-            { "Precursor_Gun_DataDownload3", new[] { "Explore for the Disease Research Facility", "Explore for the Thermal Power Facility" } },
+            { "Precursor_Gun_DataDownload3", new[] { "Search for the Disease Research Facility", "Search for the Thermal Power Facility" } },
         };
     }
 }
