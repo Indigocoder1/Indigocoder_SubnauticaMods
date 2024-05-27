@@ -29,6 +29,7 @@ namespace Chameleon.Monobehaviors.UI
         public float energyCostPerDischarge;
 
         [Header("Miscellaneous")]
+        public GameObject decalsParent;
         public Light[] interiorLights;
         public Color normalInteriorLightColor; //FFFFFF
         public Color cloakInteriorLightColor; //5A58FF
@@ -149,9 +150,11 @@ namespace Chameleon.Monobehaviors.UI
 
             newBodyMaterials[0] = camoMaterial;
             newBodyMaterials[1] = camoMaterial;
+            newBodyMaterials[2] = camoMaterial;
 
             newTowerMaterials[0] = camoMaterial;
             newTowerMaterials[1] = camoMaterial;
+            decalsParent.SetActive(false);
 
             subExteriorRenderer.materials = newBodyMaterials;
             conningTowerRenderer.materials = newTowerMaterials;
@@ -170,6 +173,7 @@ namespace Chameleon.Monobehaviors.UI
 
             newTowerMaterials[0] = subDefaultMaterial;
             newTowerMaterials[1] = subAccentMaterial;
+            decalsParent.SetActive(true);
 
             subExteriorRenderer.materials = newBodyMaterials;
             conningTowerRenderer.materials = newTowerMaterials;

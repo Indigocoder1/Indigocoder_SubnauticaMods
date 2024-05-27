@@ -22,6 +22,7 @@ namespace Chameleon
             {
                 Main_Plugin.logger.LogMessage($"Finished loading item. Key: {entry.Key}, value: {entry.Value}");  
             });
+            
         }
     }
 }
