@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Story;
+using System.Linq;
 using TodoList.Monobehaviors;
 
 namespace TodoList.Patches.AutoTodoItems
@@ -12,9 +13,20 @@ namespace TodoList.Patches.AutoTodoItems
         {
             Main_Plugin.logger.LogInfo($"OnGoalComplete for {key}");
 
-            if (Main_Plugin.StoryGoalTodoEntries.TryGetValue(key, out string[] entries))
+            Main_Plugin.StoryGoalTodoEntry entry = Main_Plugin.StoryGoalTodoEntries.FirstOrDefault(i => i.key == key);
+            if (Main_Plugin.StoryGoalTodoEntries.Any(i => i.key == key))
             {
                 ErrorMessage.AddError(Language.main.Get("TODO_NewHintItems"));
+
+                string[] entries = entry.entries;
+                if (entry.localized)
+                {
+                    for (int i = 0; i < entries.Length; i++)
+                    {
+                        entries[i] = Language.main.Get(entries[i]);
+                    }
+                }
+
                 uGUI_TodoTab.Instance.CreateNewItems(entries, true);
             }
         }

@@ -83,6 +83,26 @@ namespace TodoList
             harmony.Patch(methodBase, null, null, new HarmonyMethod(transpilerInfo));
         }
 
+        public static List<StoryGoalTodoEntry> StoryGoalTodoEntries { get; internal set; } = new()
+        {
+            new("Trigger_PDAIntroEnd", new[] { "OnPDAIntroEnd1", "OnPDAIntroEnd2", "OnPDAIntroEnd3" }, true),
+            new("Trigger_PDAIntroEnd", new[] { "OnAuroraExplode" }, true),
+            new("OnPlayRadioBloodKelp29", new[] { "OnLifepod2RadioFinished" }, true),
+            new("OnPlayRadioGrassy25", new[] { "OnLifepod3RadioFinished" }, true),
+            new("OnPlayRadioRadiationSuit", new[] { "OnLifepod4RadioFinished" }, true),
+            new("OnPlayRadioShallows22", new[] { "OnLifepod6RadioFinished" }, true),
+            new("OnPlayRadioKelp28", new[] { "OnLifepod7RadioFinished" }, true),
+            new("OnPlayRadioKoosh26", new[] { "OnLifepod12RadioFinished" }, true),
+            new("OnPlayRadioGrassy21", new[] { "OnLifepod17RadioFinished" }, true),
+            new("OnPlayRadioSecondOfficer", new[] { "OnLifepod19RadioFinished" }, true),
+            new("OnPlayRadioGrassy21", new[] { "OnLifepod17RadioFinished" }, true),
+            new("OnPlayRadioSecondOfficer", new[] { "OnCaptainsCodeRadioFinished1", "OnCaptainsCodeRadioFinished2" }, true),
+            new("OnPlayRadioSunbeam4", new[] { "OnSunbeamPreparingToLand" }, true),
+            new("Precursor_Gun_DataDownload3", new[] { "OnLostRiverHintDownloaded1", "OnLostRiverHintDownloaded2" }, true),
+            new("Emperor_Telepathic_Contact1", new[] { "OnEmperorFirstTelepathy" }, true),
+        };
+
+        /*
         public static Dictionary<string, string[]> StoryGoalTodoEntries { get; internal set; } = new()
         {
             { "Trigger_PDAIntroEnd", new[] { "Craft a Scanner Tool", "Repair the Lifepod's secondary systems", "Repair the Lifepod radio" } },
@@ -97,7 +117,23 @@ namespace TodoList
             { "OnPlayRadioSecondOfficer", new[] { "Investigate Officer Keen's Lifepod (Lifepod 19)" } },
             { "OnPlayRadioCaptainsQuartersCode", new[] { "Investigate the Aurora's captain's quarters", "Get a sandwich (The regular)" } },
             { "OnPlayRadioSunbeam4", new[] { "Visit the Sunbeam landing site" } },
-            { "Precursor_Gun_DataDownload3", new[] { "Search for the Disease Research Facility", "Search for the Thermal Power Facility" } }
+            { "Precursor_Gun_DataDownload3", new[] { "Search for the Disease Research Facility", "Search for the Thermal Power Facility" } },
+            { "Emperor_Telepathic_Contact1", new[] { "Find the source of the telepathic vision" } },
         };
+        */
+
+        public struct StoryGoalTodoEntry
+        {
+            public string key;
+            public string[] entries;
+            public bool localized;
+
+            public StoryGoalTodoEntry(string key, string[] entries, bool localized)
+            {
+                this.key = key;
+                this.entries = entries;
+                this.localized = localized;
+            }
+        }
     }
 }

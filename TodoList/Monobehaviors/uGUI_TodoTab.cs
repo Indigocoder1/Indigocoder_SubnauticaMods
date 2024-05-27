@@ -150,9 +150,14 @@ namespace TodoList.Monobehaviors
             }
         }
 
-        public static void RegisterStoryGoalEntries(string key, string[] entries)
+        public static void RegisterStoryGoalEntry(Main_Plugin.StoryGoalTodoEntry entry)
         {
-            Main_Plugin.StoryGoalTodoEntries.Add(key, entries);
+            Main_Plugin.StoryGoalTodoEntries.Add(entry);
+        }
+
+        public static bool RemoveStoryGoalEntry(Main_Plugin.StoryGoalTodoEntry entry)
+        {
+            return Main_Plugin.StoryGoalTodoEntries.Remove(entry);
         }
 
         private void ClearCompletedItems()
