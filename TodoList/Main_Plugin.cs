@@ -83,7 +83,7 @@ namespace TodoList
             harmony.Patch(methodBase, null, null, new HarmonyMethod(transpilerInfo));
         }
 
-        internal static Dictionary<string, string[]> StoryGoalTodoEntries { get; } = new()
+        public static Dictionary<string, string[]> StoryGoalTodoEntries { get; internal set; } = new()
         {
             { "Trigger_PDAIntroEnd", new[] { "Craft a Scanner Tool", "Repair the Lifepod's secondary systems", "Repair the Lifepod radio" } },
             { "Story_AuroraWarning4", new[] { "Repair the Aurora" } },
@@ -95,9 +95,9 @@ namespace TodoList
             { "OnPlayRadioKoosh26", new[] { "Investigate Lifepod 12" } },
             { "OnPlayRadioGrassy21", new[] { "Investigate Lifepod 17" } },
             { "OnPlayRadioSecondOfficer", new[] { "Investigate Officer Keen's Lifepod (Lifepod 19)" } },
-            { "OnPlayRadioCaptainsQuartersCode", new[] { "Investigate the Aurora's captain's quarters" } },
+            { "OnPlayRadioCaptainsQuartersCode", new[] { "Investigate the Aurora's captain's quarters", "Get a sandwich (The regular)" } },
             { "OnPlayRadioSunbeam4", new[] { "Visit the Sunbeam landing site" } },
-            { "Precursor_Gun_DataDownload3", new[] { "Search for the Disease Research Facility", "Search for the Thermal Power Facility" } },
+            { "Precursor_Gun_DataDownload3", new[] { "Search for the Disease Research Facility", "Search for the Thermal Power Facility" } }
         };
     }
 }

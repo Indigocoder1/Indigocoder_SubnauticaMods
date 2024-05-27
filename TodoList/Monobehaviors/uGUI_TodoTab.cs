@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace TodoList.Monobehaviors
 {
-    internal class uGUI_TodoTab : uGUI_PDATab, uGUI_IScrollReceiver
+    public class uGUI_TodoTab : uGUI_PDATab, uGUI_IScrollReceiver
     {
         public static uGUI_TodoTab Instance
         {
@@ -148,6 +148,11 @@ namespace TodoList.Monobehaviors
             {
                 GameObject newItem = CreateNewItem(entry, areHintItems);
             }
+        }
+
+        public static void RegisterStoryGoalEntries(string key, string[] entries)
+        {
+            Main_Plugin.StoryGoalTodoEntries.Add(key, entries);
         }
 
         private void ClearCompletedItems()
