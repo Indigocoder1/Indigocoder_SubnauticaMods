@@ -43,7 +43,7 @@ namespace CustomCraftGUI.Monobehaviors
             customItemsString += "# Created by Indigocoder #\n\n";
 
             customItemsString += "# If you're creating new items: #\n";
-            customItemsString += "# -You need to place the images for your custom items in the CustomCraft(2/3)/Assets folder #\n";
+            customItemsString += "# -You need to place the images for your custom items in the CustomCraft3/Assets folder #\n";
             customItemsString += "# -The image names need to be the same as the ItemID for each item #\n\n";
 
             customItemsString += "AliasRecipes:\n(\n";
@@ -211,13 +211,13 @@ namespace CustomCraftGUI.Monobehaviors
             if (!cc3Exists)
             {
                 //CC2 and CC3 not installed. Why are you even using this?
-                Plugin.logger.LogInfo("Aborting image file verification due to CC2 and/or CC3 not being installed");
+                Plugin.logger.LogInfo("Aborting image file verification due to CC3 not being installed");
                 return;
             }
 
             if(cc3Exists && !File.Exists(Path.Combine(cc3Path, $"Assets/{item.customItemInfo.itemID}.png")))
             {
-                ErrorMessage.AddError($"There is no image in the Custom Craft 3 assets folder named \"{item.customItemInfo.itemID}.png\"! This item will not work correctly.");
+                ErrorMessage.AddError($"<color=ffe800>There is no image in the Custom Craft 3 assets folder named \"{item.customItemInfo.itemID}.png\"! This item will not work correctly.</color>");
                 Plugin.logger.LogWarning($"There is no image in the Custom Craft 3 assets folder named \"{item.customItemInfo.itemID}.png\"! This item will not work correctly.");
             }
         }

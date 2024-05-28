@@ -1,6 +1,5 @@
-﻿using CustomCraftGUI.Utilities;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using Ingredient = CraftData.Ingredient;
@@ -10,16 +9,15 @@ namespace CustomCraftGUI.Monobehaviors
     public class ModifiedItemsManager : ItemManager
     {
         private const string CACHE_NOT_SET_WARNING =
-            "The default tech has not been cached; " +
+            "<color=ff0000>The default tech has not been cached; " +
             "the unlock at start toggle and unlocks may have incorrect values.\n" +
-            "To fix this, open a saved game, then return to the Custom Craft Editor";
+            "To fix this, open a saved game, then return to the Custom Craft Editor</color>";
 
         [Header("Modified Items Manager")]
         public TextMeshProUGUI itemText;
         public Animator unlocksButtonAnimator;
         public Transform unlocksParent;
 
-        public Dictionary<Item, List<Ingredient>> unlockedItems { get; private set; } = new();
         private ItemIcon currentItemIcon;
         private bool unlocksActive;
 
@@ -49,7 +47,7 @@ namespace CustomCraftGUI.Monobehaviors
             }
         }
 
-        private List<Item> _modifiedItems;
+        private List<Item> _modifiedItems = new();
 
         public override void SetCurrentItem(Item item)
         {
@@ -60,10 +58,7 @@ namespace CustomCraftGUI.Monobehaviors
             Atlas.Sprite sprite = SpriteManager.Get(((ModifiedItem)currentItem).techType);
             itemIcon.SetForegroundSprite(sprite);
 
-            ClearInstantiatedItems();
-            UpdateIngredientsList();
-            UpdateLinkedItemsList();
-            UpdateUnlockedItemsList();
+            UpdateAllLists();
         }
 
         public void SetCurrentIcon(ItemIcon itemIcon)
@@ -89,7 +84,35 @@ namespace CustomCraftGUI.Monobehaviors
 
             GameObject newCustomItem = Instantiate(itemPrefab, itemsParent);
             currentItem = newCustomItem.GetComponent<ModifiedItem>();
+            Items.Add(currentItem);
 
+            SetNewItemInfo();
+
+            ITechData techData = CraftData.Get(currentItemIcon.techType, true);
+            if (techData == null)
+            {
+                //No ingredients (Not meant to be crafted)
+                currentItem.SetUnlocks(new());
+                UpdateAllLists();
+
+                return;
+            }
+
+            SetIngredientsData(techData);
+            SetLinkedItemData(techData);
+
+            currentItem.customItemInfo.SetAmountCrafted(techData.craftAmount);
+            amountCraftedInputField.text = techData.craftAmount.ToString();
+
+            TrySetCachedTechData();
+
+            amountCraftedInputField.text = techData.craftAmount.ToString();
+
+            UpdateAllLists();
+        }
+
+        private void SetNewItemInfo()
+        {
             Atlas.Sprite sprite = SpriteManager.Get(currentItemIcon.techType);
             currentItem.SetItemSprite(sprite);
             currentItem.SetTechType(currentItemIcon.techType);
@@ -98,24 +121,37 @@ namespace CustomCraftGUI.Monobehaviors
 
             itemText.text = Language.main.Get(currentItem.customItemInfo.itemID);
             itemIcon.SetForegroundSprite(sprite);
-
-            ITechData techData = CraftData.Get(currentItemIcon.techType, true);
-            if (techData == null)
+        }
+        private void TrySetCachedTechData()
+        {
+            if (Plugin.cacheData.defaultTech == null)
             {
-                Items.Add(currentItem);
+                ErrorMessage.AddError(CACHE_NOT_SET_WARNING);
 
-                unlockedItems.Add(currentItem, new());
-
-                ClearInstantiatedItems();
-                UpdateIngredientsList();
-                UpdateLinkedItemsList();
-
+                Invoke(nameof(ReAddWarningMessage), 5f);
                 return;
             }
 
+            bool unlocksAtStart = Plugin.cacheData.defaultTech.Contains(currentItemIcon.techType);
+            unlockAtStartToggle.isOn = unlocksAtStart;
+            currentItem.customItemInfo.SetUnlockAtStart(unlocksAtStart);
+
+            Plugin.SlimAnalysisTech tech = Plugin.cacheData.analysisTech.FirstOrDefault(i => i.techType == currentItem.techType);
+            List<Ingredient> unlocks = null;
+
+            if (tech != null)
+            {
+                foreach (var techType in tech.unlockTechTypes)
+                {
+                    unlocks.Add(new(techType));
+                }
+            }
+
+            currentItem.SetUnlocks(unlocks);
+        }
+        private void SetIngredientsData(ITechData techData)
+        {
             List<Ingredient> ingredients = new();
-            List<Ingredient> linkedItems = new();
-            Dictionary<TechType, int> linkedItemsDictionary = new();
 
             for (int i = 0; i < techData.ingredientCount; i++)
             {
@@ -123,10 +159,17 @@ namespace CustomCraftGUI.Monobehaviors
                 ingredients.Add(new Ingredient(ingredient.techType, ingredient.amount));
             }
 
+            currentItem.customItemInfo.SetIngredients(ingredients);
+        }
+        private void SetLinkedItemData(ITechData techData)
+        {
+            Dictionary<TechType, int> linkedItemsDictionary = new();
+            List<Ingredient> linkedItems = new();
+
             for (int i = 0; i < techData.linkedItemCount; i++)
             {
                 TechType techType = techData.GetLinkedItem(i);
-                if(linkedItemsDictionary.ContainsKey(techType))
+                if (linkedItemsDictionary.ContainsKey(techType))
                 {
                     linkedItemsDictionary[techType]++;
                 }
@@ -135,7 +178,7 @@ namespace CustomCraftGUI.Monobehaviors
                     linkedItemsDictionary.Add(techType, 1);
                 }
             }
-                        
+
             if (linkedItemsDictionary.Count != 0)
             {
                 foreach (var key in linkedItemsDictionary.Keys)
@@ -144,94 +187,24 @@ namespace CustomCraftGUI.Monobehaviors
                 }
             }
 
-            amountCraftedInputField.text = techData.craftAmount.ToString();
-
-            List<Ingredient> unlocks = new();
-            if (Plugin.cacheData.defaultTech != null)
-            {
-                bool unlocksAtStart = Plugin.cacheData.defaultTech.Contains(currentItemIcon.techType);
-                unlockAtStartToggle.isOn = unlocksAtStart;
-                currentItem.customItemInfo.SetUnlockAtStart(unlocksAtStart);
-            }
-
-            if(Plugin.cacheData.analysisTech != null)
-            {
-                Plugin.SlimAnalysisTech tech = null;
-                foreach (var item in Plugin.cacheData.analysisTech)
-                {
-                    if (item.techType != currentItemIcon.techType)
-                    {
-                        continue;
-                    }
-
-                    tech = item;
-                    break;
-                }
-
-                if (tech == null)
-                {
-                    //No unlocks
-                    ((ModifiedItem)currentItem).SetUnlocks(null);
-                }
-                else
-                {
-                    ((ModifiedItem)currentItem).SetUnlocks(tech.unlockTechTypes);
-
-                    //I dislike this looping but idk how else to convert the 2
-                    foreach (var techType in tech.unlockTechTypes)
-                    {
-                        unlocks.Add(new(techType, 1));
-                    }
-                }    
-            }
-
-            if(!Plugin.cacheSet)
-            {
-                ErrorMessage.AddError(CACHE_NOT_SET_WARNING);
-
-                Invoke(nameof(ReAddWarningMessage), 5f);
-            }
-
-            currentItem.customItemInfo.SetAmountCrafted(techData.craftAmount);
-            currentItem.customItemInfo.SetIngredients(ingredients);
             currentItem.customItemInfo.SetLinkedItems(linkedItems);
-
-            amountCraftedInputField.text = techData.craftAmount.ToString();
-
-            Items.Add(currentItem);
-            unlockedItems.Add(currentItem, unlocks);
-
-            ClearInstantiatedItems();
-            UpdateIngredientsList();
-            UpdateLinkedItemsList();
-            UpdateUnlockedItemsList();
         }
 
         public override void RemoveCurrentItemFromList()
         {
-            ModifiedItem oldItem = (ModifiedItem)currentItem;
             base.RemoveCurrentItemFromList();
 
             itemText.text = "N/A";
-
-            Items.Remove(oldItem);
-            unlockedItems.Remove(oldItem);
-
-            if (Items.Count > 0)
-            {
-                SetCurrentItem(Items[Items.Count - 1]);
-            }
-
             currentItemIcon = null;
         }
 
         private void UpdateUnlockedItemsList()
         {
-            foreach (Ingredient unlock in unlockedItems[currentItem])
+            foreach (Ingredient ingredient in currentItem.unlockedItems)
             {
                 GameObject newUnlock = Instantiate(ingredientPrefab, unlocksParent);
                 var ingredientItem = newUnlock.GetComponent<IngredientItem>();
-                ingredientItem.SetInfo(SpriteManager.Get(unlock.techType), unlock.techType, unlock.amount, this);
+                ingredientItem.SetInfo(SpriteManager.Get(ingredient.techType), ingredient.techType, ingredient.amount, this);
                 ingredientItem.SetInfoPanel(infoPanel);
             }
         }
@@ -263,9 +236,9 @@ namespace CustomCraftGUI.Monobehaviors
             unlocksActive = false;
         }
 
-        protected override void ClearInstantiatedItems()
+        protected override void ClearAllIngredientItems()
         {
-            base.ClearInstantiatedItems();
+            base.ClearAllIngredientItems();
 
             foreach (Transform child in unlocksParent)
             {
@@ -273,17 +246,23 @@ namespace CustomCraftGUI.Monobehaviors
             }
         }
 
+        protected override void UpdateAllLists()
+        {
+            base.UpdateAllLists();
+            UpdateUnlockedItemsList();
+        }
+
         public override List<Ingredient> GetActiveList(out string listName)
         {
-            if(unlockedItems == null)
+            if(currentItem.unlockedItems == null)
             {
                 return base.GetActiveList(out listName);
             }
 
-            if(unlocksActive && unlockedItems.ContainsKey(currentItem))
+            if(unlocksActive)
             {
                 listName = "Unlocked Items";
-                return unlockedItems[currentItem];
+                return currentItem.unlockedItems;
             }
 
             return base.GetActiveList(out listName);
@@ -295,15 +274,8 @@ namespace CustomCraftGUI.Monobehaviors
 
             if(unlocksActive)
             {
-                unlockedItems[currentItem] = newList;
+                currentItem.SetUnlocks(newList);
             }
-
-            List<TechType> newUnlocks = new();
-            foreach (var ingredient in unlockedItems[currentItem])
-            {
-                newUnlocks.Add(ingredient.techType);
-            }
-            ((ModifiedItem)currentItem).SetUnlocks(newUnlocks);
             
             UpdateUnlockedItemsList();
 

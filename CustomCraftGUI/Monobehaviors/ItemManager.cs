@@ -42,7 +42,7 @@ namespace CustomCraftGUI.Monobehaviors
 
         public virtual void Start()
         {
-            ClearInstantiatedItems();
+            ClearAllIngredientItems();
             Invoke(nameof(SetIngredientsActive), 0.2f);
 
             OnActiveManagerChanged?.Invoke(this, EventArgs.Empty);
@@ -110,7 +110,7 @@ namespace CustomCraftGUI.Monobehaviors
                 currentItem.customItemInfo.SetLinkedItems(newList);
             }
 
-            ClearInstantiatedItems();
+            ClearAllIngredientItems();
             UpdateIngredientsList();
             UpdateLinkedItemsList();
 
@@ -122,7 +122,7 @@ namespace CustomCraftGUI.Monobehaviors
 
         public virtual List<Ingredient> GetActiveList(out string listName)
         {
-            if (currentItem.Equals(null) || (currentItem.customItemInfo.ingredients == null && currentItem.customItemInfo.linkedItems == null))
+            if (currentItem == null || (currentItem.customItemInfo.ingredients == null && currentItem.customItemInfo.linkedItems == null))
             {
                 listName = "Ingredients";
                 return null;
@@ -164,7 +164,12 @@ namespace CustomCraftGUI.Monobehaviors
                 Destroy(item.gameObject);
             }
 
-            ClearInstantiatedItems();
+            ClearAllIngredientItems();
+
+            if (Items.Count > 0)
+            {
+                SetCurrentItem(Items[Items.Count - 1]);
+            }
 
             currentItem = null;
         }
@@ -203,7 +208,7 @@ namespace CustomCraftGUI.Monobehaviors
             }
         }
 
-        protected virtual void ClearInstantiatedItems()
+        protected virtual void ClearAllIngredientItems()
         {
             foreach (Transform child in ingredientsParent)
             {
@@ -214,6 +219,13 @@ namespace CustomCraftGUI.Monobehaviors
             {
                 Destroy(child.gameObject);
             }
+        }
+        
+        protected virtual void UpdateAllLists()
+        {
+            ClearAllIngredientItems();
+            UpdateIngredientsList();
+            UpdateLinkedItemsList();
         }
 
         protected void InvokeActiveListChanged()

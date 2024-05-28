@@ -11,16 +11,18 @@ namespace CustomCraftGUI.Structs
         public List<CraftData.Ingredient> ingredients { get; private set; } = null;
         public List<CraftData.Ingredient> linkedItems { get; private set; } = null;
 
-        public GameObject owner;
-
         public string itemID { get; private set; }
         public Atlas.Sprite itemSprite { get; private set; }
         public int amountCrafted { get; private set; } = 1;
         public bool unlockAtStart { get; private set; }
 
-        public CustomItemInfo(GameObject owner, string itemID, Atlas.Sprite itemSprite, int amountCrafted, bool unlockAtStart)
+        public CustomItemInfo()
         {
-            this.owner = owner;
+
+        }
+
+        public CustomItemInfo(string itemID, Atlas.Sprite itemSprite, int amountCrafted, bool unlockAtStart)
+        {
             this.itemID = itemID;
             this.itemSprite = itemSprite;
             this.amountCrafted = amountCrafted;

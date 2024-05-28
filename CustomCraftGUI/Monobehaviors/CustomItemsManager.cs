@@ -37,15 +37,15 @@ namespace CustomCraftGUI.Monobehaviors
         { 
             get
             {
-                return _items;
+                return _aliasItems;
             }
             protected set
             {
-                _items = value;
+                _aliasItems = value;
             }
         }
 
-        private List<Item> _items;
+        private List<Item> _aliasItems = new();
 
         public override void Start()
         {
@@ -62,9 +62,7 @@ namespace CustomCraftGUI.Monobehaviors
             itemIDInputField.text = currentItem.customItemInfo.itemID;
             customItemNameInputField.text = currentItem.displayName;
 
-            ClearInstantiatedItems();
-            UpdateIngredientsList();
-            UpdateLinkedItemsList();
+            UpdateAllLists();
         }
 
         public void OnItemIDInputChanged()
@@ -74,21 +72,21 @@ namespace CustomCraftGUI.Monobehaviors
         public void OnNameInputChanged()
         {
             string text = string.IsNullOrEmpty(customItemNameInputField.text) ? "My amazing cool item" : customItemNameInputField.text;
-            ((CustomItem)currentItem).SetDisplayName(text);
+            currentItem.SetDisplayName(text);
             currentItem.SetNameText(text);
         }
         public void OnFabricatorDropdownChanged()
         {
             string dropdownValue = fabricatorPathDropdown.options[fabricatorPathDropdown.value].text;
-            ((CustomItem)currentItem).SetFabricatorPath(fabricatorPaths[dropdownValue]);
+            currentItem.SetFabricatorPath(fabricatorPaths[dropdownValue]);
         }
         public void OnSizeInputFieldChanged()
         {
-            ((CustomItem)currentItem).SetItemSize(new Vector2Int(int.Parse(itemSizeXField.text), int.Parse(itemSizeYField.text)));
+            currentItem.SetItemSize(new Vector2Int(int.Parse(itemSizeXField.text), int.Parse(itemSizeYField.text)));
         }
         public void OnTooltipInputFieldChanged()
         {
-            ((CustomItem)currentItem).SetTooltip(itemTooltipInputField.text);
+            currentItem.SetTooltip(itemTooltipInputField.text);
         }
         public void OnLoadIconPressed()
         {
@@ -117,43 +115,32 @@ namespace CustomCraftGUI.Monobehaviors
             GameObject newCustomItem = Instantiate(itemPrefab, itemsParent);
             currentItem = newCustomItem.GetComponent<CustomItem>();
 
+            SetNewItemInfo();
+
+            itemIDInputField.text = currentItem.customItemInfo.itemID;
+            customItemNameInputField.text = currentItem.displayName;
+
+            Items.Add(currentItem);
+            itemsCreated++;
+            UpdateAllLists();
+        }
+
+        private void SetNewItemInfo()
+        {
             currentItem.SetNameText($"MyAmazingCoolItem{itemsCreated}");
             currentItem.SetDisplayName($"My amazing cool item {itemsCreated}");
             currentItem.SetFabricatorPath(fabricatorPaths["Fabricator Basic Materials"]);
             currentItem.customItemInfo.SetItemID($"MyAmazingCoolItem{itemsCreated}");
 
-            if (itemIcon.foreground != null)
-            {
-                Destroy(itemIcon.foreground.gameObject);
-            }
-
-            itemIDInputField.text = currentItem.customItemInfo.itemID;
-            customItemNameInputField.text = ((CustomItem)currentItem).displayName;
-
-            Items.Add(currentItem);
-
-            itemsCreated++;
-            itemIcon.SetForegroundSprite(null);
-
             currentItem.customItemInfo.SetIngredients(new());
             currentItem.customItemInfo.SetLinkedItems(new());
 
-            ClearInstantiatedItems();
-            UpdateIngredientsList();
-            UpdateLinkedItemsList();
+            itemIcon.SetForegroundSprite(null);
         }
 
         public override void RemoveCurrentItemFromList()
         {
-            CustomItem oldItem = currentItem;
             base.RemoveCurrentItemFromList();
-
-            Items.Remove(oldItem);
-
-            if (Items.Count > 0)
-            {
-                SetCurrentItem(Items[Items.Count - 1]);
-            }
 
             itemsCreated--;
         }

@@ -11,7 +11,7 @@ namespace CustomCraftGUI.Monobehaviors
         public TextMeshProUGUI nameText;
         public uGUI_ItemIcon icon;
         public float iconScalar;
-        public CustomItemInfo customItemInfo;
+        public CustomItemInfo customItemInfo = new();
 
         public void SetNameText(string text)
         {
