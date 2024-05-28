@@ -19,7 +19,33 @@ namespace CustomCraftGUI.Monobehaviors
         public TMP_InputField itemSizeYField;
         public TMP_InputField itemTooltipInputField;
 
-        public List<CustomItem> customItems { get; private set; } = new();
+#pragma warning disable CS0108 // Member hides inherited member; missing new keyword
+        private CustomItem currentItem
+#pragma warning restore CS0108 // Member hides inherited member; missing new keyword
+        {
+            get
+            {
+                return base.currentItem as CustomItem;
+            }
+            set
+            {
+                base.currentItem = value;
+            }
+        }
+
+        public override List<Item> Items 
+        { 
+            get
+            {
+                return _items;
+            }
+            protected set
+            {
+                _items = value;
+            }
+        }
+
+        private List<Item> _items;
 
         public override void Start()
         {
@@ -29,12 +55,12 @@ namespace CustomCraftGUI.Monobehaviors
 
         public override void SetCurrentItem(Item item)
         {
-            currentItem = item;
+            currentItem = item as CustomItem;
 
-            itemIcon.SetForegroundSprite(item.itemSprite);
-
-            itemIDInputField.text = item.itemID;
-            customItemNameInputField.text = ((CustomItem)item).displayName;
+            itemIcon.SetForegroundSprite(currentItem.customItemInfo.itemSprite);
+            
+            itemIDInputField.text = currentItem.customItemInfo.itemID;
+            customItemNameInputField.text = currentItem.displayName;
 
             ClearInstantiatedItems();
             UpdateIngredientsList();
@@ -43,7 +69,7 @@ namespace CustomCraftGUI.Monobehaviors
 
         public void OnItemIDInputChanged()
         {
-            ((CustomItem)currentItem).SetItemID(itemIDInputField.text);
+            currentItem.customItemInfo.SetItemID(itemIDInputField.text);
         }
         public void OnNameInputChanged()
         {
@@ -81,8 +107,8 @@ namespace CustomCraftGUI.Monobehaviors
                 }
 
                 currentItem.SetItemSprite(ImageUtils.LoadSpriteFromFile(imageLocation));
-                itemIcon.SetForegroundSprite(currentItem.itemSprite);
-                itemIcon.foreground.transform.localScale = SpriteSizeFormatter.GetSpriteShrinkScalar(currentItem.itemSprite);
+                itemIcon.SetForegroundSprite(currentItem.customItemInfo.itemSprite);
+                itemIcon.foreground.transform.localScale = SpriteSizeFormatter.GetSpriteShrinkScalar(currentItem.customItemInfo.itemSprite);
             }
         }
 
@@ -91,27 +117,26 @@ namespace CustomCraftGUI.Monobehaviors
             GameObject newCustomItem = Instantiate(itemPrefab, itemsParent);
             currentItem = newCustomItem.GetComponent<CustomItem>();
 
-            ((CustomItem)currentItem).SetItemID($"myamazingcoolitem{itemsCreated}");
-            currentItem.SetNameText($"myamazingcoolitem{itemsCreated}");
-            ((CustomItem)currentItem).SetDisplayName($"My amazing cool item {itemsCreated}");
-            currentItem.SetItemsManager(this);
-            ((CustomItem)currentItem).SetFabricatorPath(fabricatorPaths["Fabricator Basic Materials"]);
+            currentItem.SetNameText($"MyAmazingCoolItem{itemsCreated}");
+            currentItem.SetDisplayName($"My amazing cool item {itemsCreated}");
+            currentItem.SetFabricatorPath(fabricatorPaths["Fabricator Basic Materials"]);
+            currentItem.customItemInfo.SetItemID($"MyAmazingCoolItem{itemsCreated}");
 
             if (itemIcon.foreground != null)
             {
                 Destroy(itemIcon.foreground.gameObject);
             }
 
-            itemIDInputField.text = currentItem.itemID;
+            itemIDInputField.text = currentItem.customItemInfo.itemID;
             customItemNameInputField.text = ((CustomItem)currentItem).displayName;
 
-            customItems.Add((CustomItem)currentItem);
+            Items.Add(currentItem);
 
             itemsCreated++;
             itemIcon.SetForegroundSprite(null);
 
-            ingredients.Add(currentItem, new());
-            linkedItems.Add(currentItem, new());
+            currentItem.customItemInfo.SetIngredients(new());
+            currentItem.customItemInfo.SetLinkedItems(new());
 
             ClearInstantiatedItems();
             UpdateIngredientsList();
@@ -120,14 +145,14 @@ namespace CustomCraftGUI.Monobehaviors
 
         public override void RemoveCurrentItemFromList()
         {
-            CustomItem oldItem = (CustomItem)currentItem;
+            CustomItem oldItem = currentItem;
             base.RemoveCurrentItemFromList();
 
-            customItems.Remove(oldItem);
+            Items.Remove(oldItem);
 
-            if (customItems.Count > 0)
+            if (Items.Count > 0)
             {
-                SetCurrentItem(customItems[customItems.Count - 1]);
+                SetCurrentItem(Items[Items.Count - 1]);
             }
 
             itemsCreated--;

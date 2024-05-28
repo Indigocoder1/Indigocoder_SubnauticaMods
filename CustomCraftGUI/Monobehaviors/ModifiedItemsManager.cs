@@ -3,33 +3,59 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using Ingredient = CraftData.Ingredient;
 
 namespace CustomCraftGUI.Monobehaviors
 {
     public class ModifiedItemsManager : ItemManager
     {
-        [Header("Other")]
-        public TextMeshProUGUI itemText;
-        public Animator unlocksButtonAnimator;
-        public Transform unlocksParent;
-
-        public List<ModifiedItem> modifiedItems { get; private set; }  = new();
-        public Dictionary<Item, List<Ingredient>> unlockedItems { get; private set; } = new();
-        private ItemIcon currentItemIcon;
-        private bool unlocksActive;
-
-        private const string CACHE_NOT_SET_WARNING = 
+        private const string CACHE_NOT_SET_WARNING =
             "The default tech has not been cached; " +
             "the unlock at start toggle and unlocks may have incorrect values.\n" +
             "To fix this, open a saved game, then return to the Custom Craft Editor";
 
+        [Header("Modified Items Manager")]
+        public TextMeshProUGUI itemText;
+        public Animator unlocksButtonAnimator;
+        public Transform unlocksParent;
+
+        public Dictionary<Item, List<Ingredient>> unlockedItems { get; private set; } = new();
+        private ItemIcon currentItemIcon;
+        private bool unlocksActive;
+
+#pragma warning disable CS0108 // Member hides inherited member; missing new keyword
+        private ModifiedItem currentItem
+#pragma warning restore CS0108 // Member hides inherited member; missing new keyword
+        {
+            get
+            {
+                return base.currentItem as ModifiedItem;
+            }
+            set
+            {
+                base.currentItem = value;
+            }
+        }
+
+        public override List<Item> Items 
+        { 
+            get
+            {
+                return _modifiedItems;
+            }
+            protected set
+            {
+                _modifiedItems = value;
+            }
+        }
+
+        private List<Item> _modifiedItems;
+
         public override void SetCurrentItem(Item item)
         {
-            currentItem = item;
+            currentItem = item as ModifiedItem;
 
-            itemText.text = Language.main.Get(currentItem.itemID);
+            itemText.text = Language.main.Get(currentItem.customItemInfo.itemID);
 
             Atlas.Sprite sprite = SpriteManager.Get(((ModifiedItem)currentItem).techType);
             itemIcon.SetForegroundSprite(sprite);
@@ -52,10 +78,10 @@ namespace CustomCraftGUI.Monobehaviors
                 return;
             }
 
-            foreach (var item in modifiedItems)
+            foreach (var item in Items)
             {
                 //Don't add duplicates
-                if(item.techType == currentItemIcon.techType)
+                if((item as ModifiedItem).techType == currentItemIcon.techType)
                 {
                     return;
                 }
@@ -66,21 +92,18 @@ namespace CustomCraftGUI.Monobehaviors
 
             Atlas.Sprite sprite = SpriteManager.Get(currentItemIcon.techType);
             currentItem.SetItemSprite(sprite);
-            ((ModifiedItem)currentItem).SetTechType(currentItemIcon.techType);
-            currentItem.SetItemID(currentItemIcon.itemName);
+            currentItem.SetTechType(currentItemIcon.techType);
             currentItem.SetNameText(Language.main.Get(currentItemIcon.techType));
-            currentItem.SetItemsManager(this);
+            currentItem.customItemInfo.SetItemID(currentItemIcon.itemName);
 
-            itemText.text = Language.main.Get(currentItem.itemID);
+            itemText.text = Language.main.Get(currentItem.customItemInfo.itemID);
             itemIcon.SetForegroundSprite(sprite);
 
             ITechData techData = CraftData.Get(currentItemIcon.techType, true);
             if (techData == null)
             {
-                base.ingredients.Add(currentItem, new());
-                base.linkedItems.Add(currentItem, new());
+                Items.Add(currentItem);
 
-                modifiedItems.Add((ModifiedItem)currentItem);
                 unlockedItems.Add(currentItem, new());
 
                 ClearInstantiatedItems();
@@ -128,7 +151,7 @@ namespace CustomCraftGUI.Monobehaviors
             {
                 bool unlocksAtStart = Plugin.cacheData.defaultTech.Contains(currentItemIcon.techType);
                 unlockAtStartToggle.isOn = unlocksAtStart;
-                currentItem.SetUnlockAtStart(unlocksAtStart);
+                currentItem.customItemInfo.SetUnlockAtStart(unlocksAtStart);
             }
 
             if(Plugin.cacheData.analysisTech != null)
@@ -169,16 +192,13 @@ namespace CustomCraftGUI.Monobehaviors
                 Invoke(nameof(ReAddWarningMessage), 5f);
             }
 
-            currentItem.SetAmountCrafted(techData.craftAmount);
-            currentItem.SetIngredients(ingredients);
-            currentItem.SetLinkedItems(linkedItems);
+            currentItem.customItemInfo.SetAmountCrafted(techData.craftAmount);
+            currentItem.customItemInfo.SetIngredients(ingredients);
+            currentItem.customItemInfo.SetLinkedItems(linkedItems);
 
             amountCraftedInputField.text = techData.craftAmount.ToString();
 
-            modifiedItems.Add((ModifiedItem)currentItem);
-
-            base.ingredients.Add(currentItem, ingredients);
-            base.linkedItems.Add(currentItem, linkedItems);
+            Items.Add(currentItem);
             unlockedItems.Add(currentItem, unlocks);
 
             ClearInstantiatedItems();
@@ -194,12 +214,12 @@ namespace CustomCraftGUI.Monobehaviors
 
             itemText.text = "N/A";
 
-            modifiedItems.Remove(oldItem);
+            Items.Remove(oldItem);
             unlockedItems.Remove(oldItem);
 
-            if (modifiedItems.Count > 0)
+            if (Items.Count > 0)
             {
-                SetCurrentItem(modifiedItems[modifiedItems.Count - 1]);
+                SetCurrentItem(Items[Items.Count - 1]);
             }
 
             currentItemIcon = null;

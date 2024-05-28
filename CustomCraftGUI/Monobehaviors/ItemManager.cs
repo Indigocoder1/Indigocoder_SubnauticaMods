@@ -4,6 +4,7 @@ using UnityEngine;
 using Ingredient = CraftData.Ingredient;
 using UnityEngine.UI;
 using System;
+using CustomCraftGUI.Structs;
 
 namespace CustomCraftGUI.Monobehaviors
 {
@@ -29,8 +30,11 @@ namespace CustomCraftGUI.Monobehaviors
         public Transform ingredientsParent;
         public Transform linkedItemsParent;
 
-        protected Dictionary<Item, List<Ingredient>> ingredients = new();
-        protected Dictionary<Item, List<Ingredient>> linkedItems = new();
+        public abstract List<Item> Items
+        {
+            get;
+            protected set;
+        }
         protected bool ingredientsActive;
         protected bool linkedItemsActive;
         protected Item currentItem;
@@ -68,7 +72,7 @@ namespace CustomCraftGUI.Monobehaviors
         {
             List<Ingredient> newList = GetActiveList(out _);
 
-            if(currentItem == null)
+            if(currentItem.Equals(null))
             {
                 return null;
             }
@@ -99,40 +103,40 @@ namespace CustomCraftGUI.Monobehaviors
 
             if (ingredientsActive)
             {
-                ingredients[currentItem] = newList;
+                currentItem.customItemInfo.SetIngredients(newList);
             }
             else if (linkedItemsActive)
             {
-                linkedItems[currentItem] = newList;
+                currentItem.customItemInfo.SetLinkedItems(newList);
             }
 
             ClearInstantiatedItems();
             UpdateIngredientsList();
             UpdateLinkedItemsList();
 
-            currentItem.SetIngredients(ingredients[currentItem]);
-            currentItem.SetLinkedItems(linkedItems[currentItem]);
+            //currentItem.SetIngredients(currentItem.ingredients);
+            //currentItem.SetLinkedItems(currentItem.linkedItems);
 
             return newList;
         }
 
         public virtual List<Ingredient> GetActiveList(out string listName)
         {
-            if ((ingredients == null && linkedItems == null) || currentItem == null)
+            if (currentItem.Equals(null) || (currentItem.customItemInfo.ingredients == null && currentItem.customItemInfo.linkedItems == null))
             {
                 listName = "Ingredients";
                 return null;
             }
 
-            if (ingredientsActive && ingredients.ContainsKey(currentItem))
+            if (ingredientsActive)
             {
                 listName = "Ingredients";
-                return ingredients[currentItem];
+                return currentItem.customItemInfo.ingredients;
             }
-            else if (linkedItemsActive && linkedItems.ContainsKey(currentItem))
+            else if (linkedItemsActive)
             {
                 listName = "Linked Items";
-                return linkedItems[currentItem];
+                return currentItem.customItemInfo.linkedItems;
             }
 
             listName = "";
@@ -143,8 +147,7 @@ namespace CustomCraftGUI.Monobehaviors
 
         public virtual void RemoveCurrentItemFromList()
         {
-            ingredients.Remove(currentItem);
-            linkedItems.Remove(currentItem);
+            Items.Remove(currentItem);
 
             amountCraftedInputField.text = "1";
             unlockAtStartToggle.isOn = false;
@@ -153,7 +156,7 @@ namespace CustomCraftGUI.Monobehaviors
 
             foreach (var item in itemsParent.GetComponentsInChildren<Item>())
             {
-                if (item.itemID != currentItem.itemID)
+                if (item.customItemInfo.itemID != currentItem.customItemInfo.itemID)
                 {
                     continue;
                 }
@@ -168,16 +171,17 @@ namespace CustomCraftGUI.Monobehaviors
 
         public virtual void OnAmountCraftedChanged()
         {
-            currentItem.SetAmountCrafted(int.Parse(amountCraftedInputField.text));
+            currentItem.customItemInfo.SetAmountCrafted(int.Parse(amountCraftedInputField.text));
         }
+
         public virtual void OnUnlockAtStartChanged()
         {
-            currentItem.SetUnlockAtStart(unlockAtStartToggle.isOn);
+            currentItem.customItemInfo.SetUnlockAtStart(unlockAtStartToggle.isOn);
         }
         
         protected virtual void UpdateIngredientsList()
         {
-            foreach (Ingredient ingredient in ingredients[currentItem])
+            foreach (Ingredient ingredient in currentItem.customItemInfo.ingredients)
             {
                 GameObject newIngredient = Instantiate(ingredientPrefab, ingredientsParent);
                 var ingredientItem = newIngredient.GetComponent<IngredientItem>();
@@ -189,7 +193,7 @@ namespace CustomCraftGUI.Monobehaviors
 
         protected virtual void UpdateLinkedItemsList()
         {
-            foreach (Ingredient linkedItem in linkedItems[currentItem])
+            foreach (Ingredient linkedItem in currentItem.customItemInfo.linkedItems)
             {
                 GameObject newIngredient = Instantiate(ingredientPrefab, linkedItemsParent);
                 var ingredientItem = newIngredient.GetComponent<IngredientItem>();
