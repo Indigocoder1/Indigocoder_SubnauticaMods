@@ -20,11 +20,11 @@ namespace TodoList.Monobehaviors
 
         public bool isHintItem { get; private set; }
 
-        public SaveData saveData
+        public ItemSaveData saveData
         {
             get
             {
-                return new(itemText, isCompleted);
+                return new(itemText, isCompleted, isHintItem);
             }
             set
             {

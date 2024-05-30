@@ -115,10 +115,12 @@ namespace TodoList.Monobehaviors
 
         public void LoadSavedItems()
         {
-            foreach (SaveData saveData in Main_Plugin.SaveData.saveData)
+            foreach (ItemSaveData saveData in Main_Plugin.SaveData.saveData)
             {
                 GameObject newItem = CreateNewItem();
-                newItem.GetComponent<TodoItem>().saveData = saveData;
+                var todoItem = newItem.GetComponent<TodoItem>();
+                todoItem.saveData = saveData;
+                todoItem.SetIsHintItem(saveData.isHintItem);
             }
         }
 

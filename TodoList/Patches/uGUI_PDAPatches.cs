@@ -13,13 +13,14 @@ namespace TodoList.Patches
         [HarmonyPatch(nameof(uGUI_PDA.Initialize)), HarmonyPrefix]
         private static void Initialize_Prefix(uGUI_PDA __instance)
         {
+            if (uGUI_PDA.regularTabs.Contains(Main_Plugin.todoTab)) return;
+
             uGUI_PDA.regularTabs.Add(Main_Plugin.todoTab);
         }
 
         [HarmonyPatch(nameof(uGUI_PDA.Initialize)), HarmonyPostfix]
         private static void Initialize_Postfix(uGUI_PDA __instance)
         {
-            //GameObject todoTab = Main_Plugin.AssetBundle.LoadAsset<GameObject>("TodoTab");
             GameObject logTab = __instance.tabLog.gameObject;
             GameObject todoTab = GameObject.Instantiate(logTab, __instance.transform.Find("Content"));
             todoTab.name = "TodoTab";

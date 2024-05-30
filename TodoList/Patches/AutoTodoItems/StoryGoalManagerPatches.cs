@@ -14,6 +14,8 @@ namespace TodoList.Patches.AutoTodoItems
             Main_Plugin.logger.LogInfo($"OnGoalComplete for {key}");
 
             Main_Plugin.StoryGoalTodoEntry entry = Main_Plugin.StoryGoalTodoEntries.FirstOrDefault(i => i.key == key);
+            if (Main_Plugin.SaveData.addedHintEntries.Contains(entry)) return;
+
             if (Main_Plugin.StoryGoalTodoEntries.Any(i => i.key == key))
             {
                 ErrorMessage.AddError($"<color=#FFFF00>{Language.main.Get("TODO_NewHintItems")}</color>");
@@ -27,6 +29,7 @@ namespace TodoList.Patches.AutoTodoItems
                     }
                 }
 
+                Main_Plugin.SaveData.addedHintEntries.Add(entry);
                 uGUI_TodoTab.Instance.CreateNewItems(entries, true);
             }
         }

@@ -4,7 +4,6 @@ using BepInEx.Logging;
 using HarmonyLib;
 using Nautilus.Handlers;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -36,9 +35,12 @@ namespace TodoList
         private static readonly Harmony harmony = new Harmony(myGUID);
 
         internal static PDATab todoTab;
+        internal static bool Initialized;
 
         private void Awake()
         {
+            if (Initialized) return;
+
             logger = Logger;
 
             LanguageHandler.RegisterLocalizationFolder();
@@ -56,6 +58,7 @@ namespace TodoList
 
             harmony.PatchAll();
 
+            Initialized = true;
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
         }
 
@@ -85,13 +88,14 @@ namespace TodoList
         public static List<StoryGoalTodoEntry> StoryGoalTodoEntries { get; internal set; } = new()
         {
             new("Trigger_PDAIntroEnd", new[] { "OnPDAIntroEnd1", "OnPDAIntroEnd2", "OnPDAIntroEnd3" }, true),
-            new("Story_AuroraWarning4", new[] { "OnAuroraExplode" }, true),
+            new("Story_AuroraWarning4", new[] { "OnAuroraExplode1", "OnAuroraExplode2" }, true),
             new("OnPlayRadioBloodKelp29", new[] { "OnLifepod2RadioFinished" }, true),
             new("OnPlayRadioGrassy25", new[] { "OnLifepod3RadioFinished" }, true),
             new("OnPlayRadioRadiationSuit", new[] { "OnLifepod4RadioFinished" }, true),
             new("OnPlayRadioShallows22", new[] { "OnLifepod6RadioFinished" }, true),
             new("OnPlayRadioKelp28", new[] { "OnLifepod7RadioFinished" }, true),
             new("OnPlayRadioKoosh26", new[] { "OnLifepod12RadioFinished" }, true),
+            new("OnPlayRadioMushroom24", new[] { "OnLifepod13RadioFinished" }, true),
             new("OnPlayRadioGrassy21", new[] { "OnLifepod17RadioFinished" }, true),
             new("OnPlayRadioSecondOfficer", new[] { "OnLifepod19RadioFinished" }, true),
             new("OnPlayRadioGrassy21", new[] { "OnLifepod17RadioFinished" }, true),
@@ -99,6 +103,8 @@ namespace TodoList
             new("OnPlayRadioSunbeam4", new[] { "OnSunbeamPreparingToLand" }, true),
             new("Precursor_Gun_DataDownload3", new[] { "OnLostRiverHintDownloaded1", "OnLostRiverHintDownloaded2" }, true),
             new("Emperor_Telepathic_Contact1", new[] { "OnEmperorFirstTelepathy" }, true),
+            new("Goal_SecondarySystems", new[] { "OnLifepodRepaired1", "OnLifepodRepaired2" }, true),
+            new("Goal_JellyCaveEntrance", new[] { "OnJellyHintGiven" }, true),
         };
 
         public struct StoryGoalTodoEntry

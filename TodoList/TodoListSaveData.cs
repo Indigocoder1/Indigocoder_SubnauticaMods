@@ -7,28 +7,31 @@ using TodoList.Monobehaviors;
 namespace TodoList
 {
     [Serializable]
-    public struct SaveData
+    public struct ItemSaveData
     {
         public string itemBody;
         public bool isCompleted;
+        public bool isHintItem;
 
-        public SaveData(string itemBody, bool isCompleted)
+        public ItemSaveData(string itemBody, bool isCompleted, bool isHintItem)
         {
             this.itemBody = itemBody;
             this.isCompleted = isCompleted;
+            this.isHintItem = isHintItem;
         }
     }
 
     [FileName("TodoListSaveData")]
     public class TodoListSaveData : SaveDataCache
     {
-        public List<SaveData> saveData = new();
+        public List<ItemSaveData> saveData = new();
+        public List<Main_Plugin.StoryGoalTodoEntry> addedHintEntries = new();
 
         public TodoListSaveData()
         {
             OnStartedSaving += (_, __) =>
             {
-                List<SaveData> data = new();
+                List<ItemSaveData> data = new();
                 foreach (var item in TodoItem.todoItems)
                 {
                     Main_Plugin.logger.LogInfo($"Saving data for {item}");
