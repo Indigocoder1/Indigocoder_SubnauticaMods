@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using TextureReplacerEditor.Monobehaviors;
+using TextureReplacerEditor.Monobehaviors.Windows;
 using UnityEngine;
 using Utilities = IndigocoderLib.Utilities;
 
@@ -29,11 +30,10 @@ namespace TextureReplacerEditor.Patches
             if (prefabIdentifier == null) return;
 
             TextureReplacerEditorWindow editorWindow = Main_Plugin.CurrentEditorWindowInstance.GetComponent<TextureReplacerEditorWindow>();
-            editorWindow.prefabInfoWindow.prefabNameText.text = Utilities.GetNameWithCloneRemoved(prefabIdentifier.name);
             editorWindow.prefabInfoWindow.CreateChildHierarchy(prefabIdentifier.transform);
+            editorWindow.prefabInfoWindow.SetPrefabNameText(Utilities.GetNameWithCloneRemoved(prefabIdentifier.name));
 
-            Time.timeScale = 0;
-            TextureReplacerEditorWindow.windowActive = true;
+            TextureReplacerEditorWindow.Instance.SetWindowActive(true);
 
             Main_Plugin.CurrentEditorWindowInstance.SetActive(true);
         }

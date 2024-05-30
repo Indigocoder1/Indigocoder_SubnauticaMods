@@ -106,10 +106,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main_Plugin.cs" />
-    <Compile Include="Monobehaviors\ChildItem.cs" />
-    <Compile Include="Monobehaviors\DraggableWindow.cs" />
-    <Compile Include="Monobehaviors\PrefabInfoWindow.cs" />
-    <Compile Include="Monobehaviors\TextureReplacerEditorWindow.cs" />
+    <Compile Include="Monobehaviors\ColorChangeSlider.cs" />
+    <Compile Include="Monobehaviors\Items\ChildItem.cs" />
+    <Compile Include="Monobehaviors\Items\ComponentItem.cs" />
+    <Compile Include="Monobehaviors\Items\MaterialItem.cs" />
+    <Compile Include="Monobehaviors\Windows\DraggableWindow.cs" />
+    <Compile Include="Monobehaviors\Windows\DraggableWindowHandle.cs" />
+    <Compile Include="Monobehaviors\Windows\PrefabInfoWindow.cs" />
+    <Compile Include="Monobehaviors\SNFontApplier.cs" />
+    <Compile Include="Monobehaviors\Windows\RendererWindow.cs" />
+    <Compile Include="Monobehaviors\Windows\TextureReplacerEditorWindow.cs" />
     <Compile Include="Patches\PlayerPatches.cs" />
     <Compile Include="Patches\UtilsPatches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

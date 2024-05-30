@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using TextureReplacerEditor.Monobehaviors;
+using TextureReplacerEditor.Monobehaviors.Windows;
 using UnityEngine;
 
 namespace TextureReplacerEditor.Patches
@@ -10,7 +10,9 @@ namespace TextureReplacerEditor.Patches
         [HarmonyPatch(nameof(UWE.Utils.UpdateCusorLockState)), HarmonyPrefix]
         private static bool UpdateCursorLockState_Prefix()
         {
-            if(TextureReplacerEditorWindow.windowActive)
+            if (TextureReplacerEditorWindow.Instance == null) return true;
+
+            if(TextureReplacerEditorWindow.Instance.WindowActive)
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
