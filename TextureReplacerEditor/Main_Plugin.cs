@@ -1,6 +1,9 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
+using System.IO;
+using System.Reflection;
+using UnityEngine;
 
 namespace TextureReplacerEditor
 {
@@ -14,8 +17,12 @@ namespace TextureReplacerEditor
         private const string versionString = "1.0.0";
 
         public static ManualLogSource logger;
-
         private static readonly Harmony harmony = new Harmony(myGUID);
+
+        public static string AssetsFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
+        public static AssetBundle AssetBundle = AssetBundle.LoadFromFile(Path.Combine(AssetsFolderPath, "texturereplacereditor"));
+
+        internal static GameObject CurrentEditorWindowInstance;
 
         private void Awake()
         {
