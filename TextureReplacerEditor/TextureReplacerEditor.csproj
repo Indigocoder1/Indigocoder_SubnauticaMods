@@ -106,15 +106,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main_Plugin.cs" />
-    <Compile Include="Monobehaviors\ColorChangeSlider.cs" />
+    <Compile Include="Monobehaviors\ActiveColorPreview.cs" />
+    <Compile Include="Monobehaviors\LinkedInputSlider.cs" />
     <Compile Include="Monobehaviors\Items\ChildItem.cs" />
     <Compile Include="Monobehaviors\Items\ComponentItem.cs" />
     <Compile Include="Monobehaviors\Items\MaterialItem.cs" />
+    <Compile Include="Monobehaviors\Items\PropertyItem.cs" />
+    <Compile Include="Monobehaviors\PropertyWindowHandlers\ColorModeHandler.cs" />
+    <Compile Include="Monobehaviors\PropertyWindowHandlers\FloatModeHandler.cs" />
+    <Compile Include="Monobehaviors\PropertyWindowHandlers\PropertyHandler.cs" />
+    <Compile Include="Monobehaviors\PropertyWindowHandlers\TextureModeHandler.cs" />
+    <Compile Include="Monobehaviors\PropertyWindowHandlers\VectorModeHandler.cs" />
     <Compile Include="Monobehaviors\Windows\DraggableWindow.cs" />
     <Compile Include="Monobehaviors\Windows\DraggableWindowHandle.cs" />
+    <Compile Include="Monobehaviors\Windows\MaterialWindow.cs" />
     <Compile Include="Monobehaviors\Windows\PrefabInfoWindow.cs" />
     <Compile Include="Monobehaviors\SNFontApplier.cs" />
     <Compile Include="Monobehaviors\Windows\RendererWindow.cs" />
+    <Compile Include="Monobehaviors\Windows\TextureViewWindow.cs" />
     <Compile Include="Monobehaviors\Windows\TextureReplacerEditorWindow.cs" />
     <Compile Include="Patches\PlayerPatches.cs" />
     <Compile Include="Patches\UtilsPatches.cs" />

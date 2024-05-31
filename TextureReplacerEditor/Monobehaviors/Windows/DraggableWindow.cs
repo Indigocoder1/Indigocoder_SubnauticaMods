@@ -7,13 +7,13 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         public void OpenWindow()
         {
             gameObject.SetActive(true);
-            TextureReplacerEditorWindow.activeWindows.Add(this);
+            TextureReplacerEditorWindow.Instance.SetWindowActive(this, true);
         }
 
         public void CloseWindow()
         {
             gameObject.SetActive(false);
-            TextureReplacerEditorWindow.activeWindows.Remove(this);
+            TextureReplacerEditorWindow.Instance.SetWindowActive(this, false);
         }
     }
 }

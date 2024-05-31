@@ -1,40 +1,52 @@
-﻿using UnityEngine;
+﻿using TextureReplacerEditor.Monobehaviors.Windows;
+using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
+using Valve.VR;
 
 namespace TextureReplacerEditor.Monobehaviors.Items
 {
     internal class MaterialItem : MonoBehaviour
     {
-        public ColorChangeSlider redSlider;
-        public ColorChangeSlider greenSlider;
-        public ColorChangeSlider blueSlider;
-        public Image colorPreview;
-
+        public TextMeshProUGUI materialNameText;
+        public RawImage texturePreview;
+        public Texture2D nullTextureImage;
+        public ActiveColorPreview activeColorPreview;
         private Material material;
+        private Texture2D mainTex;
 
         public void SetInfo(Material material)
         {
             this.material = material;
+            materialNameText.text = material.name;
 
-            redSlider.slider.onValueChanged.AddListener((e) => OnSliderChanged());
-            greenSlider.slider.onValueChanged.AddListener((e) => OnSliderChanged());
-            blueSlider.slider.onValueChanged.AddListener((e) => OnSliderChanged());
+            activeColorPreview.SetActiveColor(material.color);
+            activeColorPreview.OnColorChanged += () =>
+            {
+                material.color = activeColorPreview.GetCurrentColor();
+            };
 
-            redSlider.SetInitialValue(material.color.r);
-            greenSlider.SetInitialValue(material.color.g);
-            blueSlider.SetInitialValue(material.color.b);
-
-            UpdateColorPreview();
+            if (material.HasProperty("_MainTex"))
+            {
+                mainTex = material.GetTexture("_MainTex") as Texture2D;
+                texturePreview.texture = mainTex;
+            }
+            else
+            {
+                texturePreview.texture = nullTextureImage;
+            }
         }
 
-        private void OnSliderChanged()
+        public void OpenMaterialWindow()
         {
-            UpdateColorPreview();
+            TextureReplacerEditorWindow.Instance.materialWindow.OpenWindow();
+            TextureReplacerEditorWindow.Instance.materialWindow.SetMaterial(material);
         }
 
-        private void UpdateColorPreview()
+        public void ViewMaterialMainTex()
         {
-            colorPreview.color = new Color(redSlider.slider.value, greenSlider.slider.value, blueSlider.slider.value);
+            TextureReplacerEditorWindow.Instance.textureViewWindow.OpenWindow();
+            TextureReplacerEditorWindow.Instance.textureViewWindow.SetViewingTexture(mainTex);
         }
     }
 }

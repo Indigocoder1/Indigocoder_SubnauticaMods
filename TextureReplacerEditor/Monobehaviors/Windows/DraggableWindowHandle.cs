@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace TextureReplacerEditor.Monobehaviors.Windows
@@ -11,7 +12,6 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         private void Start()
         {
             canvas = GetComponentInParent<Canvas>();
-            rect = GetComponent<RectTransform>();
         }
 
         public void OnDrag(PointerEventData eventData)

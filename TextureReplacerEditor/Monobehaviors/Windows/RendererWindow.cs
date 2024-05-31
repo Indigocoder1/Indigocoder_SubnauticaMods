@@ -1,7 +1,6 @@
 ﻿using TextureReplacerEditor.Monobehaviors.Items;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace TextureReplacerEditor.Monobehaviors.Windows
 {
@@ -17,6 +16,8 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             currentRenderer = rend;
 
             rendererNameText.text = rend.name;
+
+            SpawnMaterialItems();
         }
 
         private void SpawnMaterialItems()

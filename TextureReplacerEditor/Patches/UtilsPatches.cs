@@ -12,7 +12,7 @@ namespace TextureReplacerEditor.Patches
         {
             if (TextureReplacerEditorWindow.Instance == null) return true;
 
-            if(TextureReplacerEditorWindow.Instance.WindowActive)
+            if(TextureReplacerEditorWindow.Instance.IsWindowActive)
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
