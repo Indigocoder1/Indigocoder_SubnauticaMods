@@ -25,7 +25,6 @@ namespace TodoList
     public class TodoListSaveData : SaveDataCache
     {
         public List<ItemSaveData> saveData = new();
-        public List<Main_Plugin.StoryGoalTodoEntry> addedHintEntries = new();
 
         public TodoListSaveData()
         {
