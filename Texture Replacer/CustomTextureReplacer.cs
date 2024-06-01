@@ -14,7 +14,7 @@ namespace TextureReplacer
     {
         public static List<ConfigInfo> queuedPlayerConfigs = new();
         public static List<ConfigInfo> queuedCyclopsConfigs = new();
-        public static List<ConfigInfo> textureConfigs { get; private set; }
+        public static List<ConfigInfo> textureConfigs { get; private set; } = new();
 
         private static string folderFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureReplacer");
         private static string configFilePath = Path.Combine(folderFilePath, "ExampleTextureConfig.json");
@@ -29,11 +29,11 @@ namespace TextureReplacer
 
             ConvertLegacyConfigs();
 
-            textureConfigs = SaveManager<ConfigInfo>.LoadJsons(folderFilePath);
+            textureConfigs.AddRange(SaveManager<ConfigInfo>.LoadJsons(folderFilePath));
             if (textureConfigs.Count == 0)
             {
                 SaveExampleData();
-                textureConfigs = SaveManager<ConfigInfo>.LoadJsons(folderFilePath);
+                textureConfigs.AddRange(SaveManager<ConfigInfo>.LoadJsons(folderFilePath));
             }
 
             LoadAllTextures();
@@ -41,25 +41,38 @@ namespace TextureReplacer
 
         private static void ConvertLegacyConfigs()
         {
-            List<TexturePatchConfigData> legacyConfigs = SaveManager<TexturePatchConfigData>.LoadJsons(folderFilePath);
-            Dictionary<string, ConfigInfo> editTypeConversions = new();
+            var legacyConfigs = SaveManager<TexturePatchConfigData>.LoadJsons(folderFilePath);
+            Dictionary<string, ConfigInfo> configInfoConversions = new();
 
             foreach (var legacyConfig in legacyConfigs)
             {
                 ConfigInfo info = new(legacyConfig.configName, legacyConfig.prefabClassID, legacyConfig.rendererHierarchyPath,
                     legacyConfig.isVariation, legacyConfig.variationChance, legacyConfig.linkedConfigNames, new());
 
-                if (!editTypeConversions.ContainsKey(legacyConfig.prefabClassID))
+                if (!configInfoConversions.ContainsKey(legacyConfig.prefabClassID))
                 {
-                    editTypeConversions.Add(legacyConfig.prefabClassID, new());
+                    Main.logger.LogInfo($"Adding entry for {legacyConfig.prefabClassID}");
+                    configInfoConversions.Add(legacyConfig.prefabClassID, info);
                 }
 
-                editTypeConversions[legacyConfig.prefabClassID].textureEdits
-                    .Add(new(legacyConfig.materialIndex, TextureEditType.Texture, legacyConfig.textureName, legacyConfig.fileName));
+                string texName = legacyConfig.textureName;
+                if(texName.Contains("-"))
+                {
+                    texName = texName.Split(new char[] { '-' }, 2)[0];
+                }
+
+                Main.logger.LogInfo($"Adding texture data for legacy config {legacyConfig.configName}");
+                configInfoConversions[legacyConfig.prefabClassID].textureEdits
+                    .Add(new(legacyConfig.materialIndex, TextureEditType.Texture, texName, legacyConfig.fileName));
             }
 
-            foreach (var texEdit in editTypeConversions)
+            foreach (var texEdit in configInfoConversions)
             {
+                foreach (var edit in texEdit.Value.textureEdits)
+                {
+                    Main.logger.LogInfo($"Tex edit on {texEdit.Value.configName} = {edit}");
+                }
+
                 textureConfigs.Add(texEdit.Value);
             }
         }
@@ -177,16 +190,16 @@ namespace TextureReplacer
 
         public struct ConfigInfo
         {
-            public string configName;
-            public string prefabClassID;
-            public string rendererHierarchyPath;
-            public bool isVariation;
-            public float variationChance;
-            public List<string> linkedConfigNames;
-            public List<TextureEdit> textureEdits;
+            [SerializeField] public string configName;
+            [SerializeField] public string prefabClassID;
+            [SerializeField] public string rendererHierarchyPath;
+            [SerializeField] public bool isVariation;
+            [SerializeField] public float variationChance;
+            [SerializeField] public List<string> linkedConfigNames;
+            [SerializeField] public List<TextureEdit> textureEdits;
 
             [JsonIgnore]
-            public bool variationAccepted;
+            [SerializeField] public bool variationAccepted;
 
             public ConfigInfo(string configName, string prefabClassID, string rendererHierarchyPath, bool isVariation, 
                 float variationChance, List<string> linkedConfigNames, List<TextureEdit> textureEdits)
@@ -202,13 +215,13 @@ namespace TextureReplacer
 
             public struct TextureEdit
             {
-                public int materialIndex;
-                public TextureEditType editType;
-                public string propertyName;
-                public string data;
+                [SerializeField] public int materialIndex;
+                [SerializeField] public TextureEditType editType;
+                [SerializeField] public string propertyName;
+                [SerializeField] public string data;
 
                 [JsonIgnore]
-                public Texture2D cachedTexture;
+                [SerializeField] public Texture2D cachedTexture;
 
                 public TextureEdit(int materialIndex, TextureEditType editType, string propertyName, string data)
                 {
@@ -237,6 +250,17 @@ namespace TextureReplacer
         {
             textureConfigs.Add(configData);
             CoroutineHost.StartCoroutine(InitializeTexture(configData));
+        }
+
+        [Obsolete("Use the override that takes a ConfigInfo instead")]
+        public static void AddConfig(TexturePatchConfigData configData)
+        {
+            ConfigInfo info = new(configData.configName, configData.prefabClassID,
+                configData.rendererHierarchyPath, configData.isVariation, configData.variationChance, configData.linkedConfigNames,
+                new List<ConfigInfo.TextureEdit> { new ConfigInfo.TextureEdit(configData.materialIndex, 
+                TextureEditType.Texture, configData.textureName, configData.fileName) });
+            textureConfigs.Add(info);
+            CoroutineHost.StartCoroutine(InitializeTexture(info));
         }
 
         [Obsolete("Use ConfigInfo instead")]

@@ -15,8 +15,6 @@ namespace TextureReplacer
     {
         public ConfigInfo configInfo { get; private set; } = new();
 
-        public Texture2D cachedTexture { get; private set; }
-
         private IEnumerator Start()
         {
             yield return new WaitForEndOfFrame();
@@ -25,9 +23,12 @@ namespace TextureReplacer
 
         public void AddTextureData(ConfigInfo configInfo)
         {
+            Main.logger.LogInfo($"Adding texture data for {configInfo.configName} | Texture edits = {configInfo.textureEdits}");
+
             for (int i = 0; i < configInfo.textureEdits.Count; i++)
             {
                 TextureEdit edit = configInfo.textureEdits[i];
+                Main.logger.LogInfo($"Trying to cache texture for {edit}");
                 if (edit.editType == TextureEditType.Texture || edit.editType == TextureEditType.Sprite)
                 {
                     edit.cachedTexture = ImageUtils.LoadTextureFromFile(Main.AssetFolderPath + $"/{edit.data}");
