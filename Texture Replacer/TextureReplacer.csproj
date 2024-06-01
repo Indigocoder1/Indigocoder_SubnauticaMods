@@ -92,7 +92,7 @@
     <Compile Include="Patches\Player_Patches.cs" />
     <Compile Include="TextureReplacerOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SaveManager.cs" />
+    <Compile Include="Saving\SaveManager.cs" />
     <Compile Include="TextureReplacerHelper.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -4,16 +4,18 @@ using System.Collections;
 using System;
 using UnityEngine.UI;
 
+#region Class-Type Assignments
 using Random = UnityEngine.Random;
 using TextureEditType = TextureReplacer.CustomTextureReplacer.TextureEditType;
 using ConfigInfo = TextureReplacer.CustomTextureReplacer.ConfigInfo;
 using TextureEdit = TextureReplacer.CustomTextureReplacer.ConfigInfo.TextureEdit;
+#endregion
 
 namespace TextureReplacer
 {
     internal class TextureReplacerHelper : MonoBehaviour
     {
-        public ConfigInfo configInfo { get; private set; } = new();
+        [SerializeField] public ConfigInfo configInfo { get; private set; } = new();
 
         private IEnumerator Start()
         {
@@ -28,7 +30,6 @@ namespace TextureReplacer
             for (int i = 0; i < configInfo.textureEdits.Count; i++)
             {
                 TextureEdit edit = configInfo.textureEdits[i];
-                Main.logger.LogInfo($"Trying to cache texture for {edit}");
                 if (edit.editType == TextureEditType.Texture || edit.editType == TextureEditType.Sprite)
                 {
                     edit.cachedTexture = ImageUtils.LoadTextureFromFile(Main.AssetFolderPath + $"/{edit.data}");
@@ -46,6 +47,7 @@ namespace TextureReplacer
             }
 
             EnsureLinkedConfigs(configInfo);
+            Main.logger.LogInfo($"Config = {configInfo} | Hierarchy path = {configInfo.rendererHierarchyPath}");
             Renderer targetRenderer = transform.Find(configInfo.rendererHierarchyPath).GetComponent<Renderer>();
             if(targetRenderer == null)
             {

@@ -3,8 +3,11 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json.Linq;
+using static TextureReplacer.CustomTextureReplacer;
+using Nautilus.Json.Converters;
 
-namespace TextureReplacer
+namespace TextureReplacer.Saving
 {
     internal static class SaveManager<T>
     {
@@ -15,9 +18,9 @@ namespace TextureReplacer
                 Directory.CreateDirectory(folderFilePath);
             }
 
-            var textureConfigJson = JsonConvert.SerializeObject(saveData, Formatting.Indented);
+            var textureConfigJson = JsonConvert.SerializeObject(saveData, Formatting.Indented, new CustomEnumConverter());
             File.WriteAllText(filePath, textureConfigJson);
-            Console.WriteLine($"Data saved to JSON at {filePath}");
+            Main.logger.LogInfo($"Data saved to JSON at {filePath}");
         }
 
         public static List<T> LoadJsons(string folderPath)
@@ -25,7 +28,7 @@ namespace TextureReplacer
             List<T> configDatas = new List<T>();
             foreach (string file in Directory.EnumerateFiles(folderPath, "*.json"))
             {
-                List<T> tempData = new List<T>();
+                List<T> tempData = null;
                 try
                 {
                     tempData = LoadJson(file);
@@ -34,6 +37,8 @@ namespace TextureReplacer
                 {
                     Main.logger.LogError($"Error loading JSON at {file} \nMessage is: {e.Message}");
                 }
+
+                if (tempData == null) continue;
 
                 configDatas.AddRange(tempData);
             }
@@ -49,7 +54,20 @@ namespace TextureReplacer
             }
 
             string data = File.ReadAllText(filePath);
-            return JsonConvert.DeserializeObject<List<T>>(data);
+            JArray request = JsonConvert.DeserializeObject<JArray>(data, new CustomEnumConverter());
+
+            //A bit horrendous but should fix the return of the incorrect type
+            if (typeof(T) == typeof(TexturePatchConfigData) && !request.Children<JObject>().Properties().Any(i => i.Name == "fileName"))
+            {
+                return null;
+            }
+
+            if (typeof(T) == typeof(ConfigInfo) && !request.Children<JObject>().Properties().Any(i => i.Name == "textureEdits"))
+            {
+                return null;
+            }
+
+            return JsonConvert.DeserializeObject<List<T>>(data, new CustomEnumConverter());
         }
 
         public static List<LifepodTextureReplacer.LifepodConfigData> LoadLifepodConfigs(string folderPath)
@@ -82,7 +100,7 @@ namespace TextureReplacer
 
             var textureConfigJson = JsonConvert.SerializeObject(saveData, Formatting.Indented);
             File.WriteAllText(filePath, textureConfigJson);
-            Console.WriteLine($"Data saved to JSON at {filePath}");
+            Main.logger.LogInfo($"Data saved to JSON at {filePath}");
         }
 
         public static List<LifepodTextureReplacer.LifepodConfigData> LoadLifepodConfigFromJson(string filePath)

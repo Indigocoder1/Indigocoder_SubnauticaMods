@@ -7,6 +7,8 @@ using BepInEx;
 using System.IO;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
+using TextureReplacer.Saving;
 
 namespace TextureReplacer
 {
@@ -30,6 +32,7 @@ namespace TextureReplacer
             ConvertLegacyConfigs();
 
             textureConfigs.AddRange(SaveManager<ConfigInfo>.LoadJsons(folderFilePath));
+
             if (textureConfigs.Count == 0)
             {
                 SaveExampleData();
@@ -42,17 +45,16 @@ namespace TextureReplacer
         private static void ConvertLegacyConfigs()
         {
             var legacyConfigs = SaveManager<TexturePatchConfigData>.LoadJsons(folderFilePath);
-            Dictionary<string, ConfigInfo> configInfoConversions = new();
+            List<ConfigInfo> configInfoConversions = new();
 
             foreach (var legacyConfig in legacyConfigs)
             {
                 ConfigInfo info = new(legacyConfig.configName, legacyConfig.prefabClassID, legacyConfig.rendererHierarchyPath,
                     legacyConfig.isVariation, legacyConfig.variationChance, legacyConfig.linkedConfigNames, new());
 
-                if (!configInfoConversions.ContainsKey(legacyConfig.prefabClassID))
+                if (!configInfoConversions.Any(i => i.prefabClassID == legacyConfig.prefabClassID && i.rendererHierarchyPath == legacyConfig.rendererHierarchyPath))
                 {
-                    Main.logger.LogInfo($"Adding entry for {legacyConfig.prefabClassID}");
-                    configInfoConversions.Add(legacyConfig.prefabClassID, info);
+                    configInfoConversions.Add(info);
                 }
 
                 string texName = legacyConfig.textureName;
@@ -61,19 +63,13 @@ namespace TextureReplacer
                     texName = texName.Split(new char[] { '-' }, 2)[0];
                 }
 
-                Main.logger.LogInfo($"Adding texture data for legacy config {legacyConfig.configName}");
-                configInfoConversions[legacyConfig.prefabClassID].textureEdits
+                configInfoConversions.First(i => i.prefabClassID == legacyConfig.prefabClassID && i.rendererHierarchyPath == legacyConfig.rendererHierarchyPath).textureEdits
                     .Add(new(legacyConfig.materialIndex, TextureEditType.Texture, texName, legacyConfig.fileName));
             }
 
             foreach (var texEdit in configInfoConversions)
             {
-                foreach (var edit in texEdit.Value.textureEdits)
-                {
-                    Main.logger.LogInfo($"Tex edit on {texEdit.Value.configName} = {edit}");
-                }
-
-                textureConfigs.Add(texEdit.Value);
+                textureConfigs.Add(texEdit);
             }
         }
 
@@ -188,7 +184,7 @@ namespace TextureReplacer
             SaveManager<ConfigInfo>.SaveToJson(configDatas, configFilePath, folderFilePath);
         }
 
-        public struct ConfigInfo
+        public class ConfigInfo
         {
             [SerializeField] public string configName;
             [SerializeField] public string prefabClassID;
@@ -201,6 +197,12 @@ namespace TextureReplacer
             [JsonIgnore]
             [SerializeField] public bool variationAccepted;
 
+            public ConfigInfo()
+            {
+
+            }
+
+            [JsonConstructor]
             public ConfigInfo(string configName, string prefabClassID, string rendererHierarchyPath, bool isVariation, 
                 float variationChance, List<string> linkedConfigNames, List<TextureEdit> textureEdits)
             {
