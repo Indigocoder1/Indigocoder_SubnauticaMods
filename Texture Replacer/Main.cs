@@ -2,7 +2,6 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -15,7 +14,7 @@ namespace TextureReplacer
     {
         private const string myGUID = "Indigocoder.TextureReplacer";
         private const string pluginName = "Texture Replacer";
-        private const string versionString = "1.1.6";
+        private const string versionString = "1.1.7";
 
         public static ManualLogSource logger;
         public static string AssetFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
@@ -39,7 +38,7 @@ namespace TextureReplacer
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
         }
 
-        public struct ConfigInfo
+        public struct LegacyConfigInfo
         {
             public int materialIndex;
             public string fileName;
@@ -50,7 +49,7 @@ namespace TextureReplacer
             public float variationChance;
             public List<string> linkedConfigNames;
 
-            public ConfigInfo(int materialIndex, string fileName, string prefabClassID, string rendererHierchyPath, bool isVariation, float variationChance, List<string> linkedConfigNames)
+            public LegacyConfigInfo(int materialIndex, string fileName, string prefabClassID, string rendererHierchyPath, bool isVariation, float variationChance, List<string> linkedConfigNames)
             {
                 this.materialIndex = materialIndex;
                 this.fileName = fileName;

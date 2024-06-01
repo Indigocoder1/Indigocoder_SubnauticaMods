@@ -88,9 +88,9 @@ namespace TextureReplacer
                 string classID = LifepodClassIDs[num];
                 string hierchy = ExternalRendererHierchyPaths[num];
 
-                lifepodConfigDatas.Add(new LifepodConfigData(new Main.ConfigInfo(matIndex, fileName1, classID, hierchy, false, -1f,
+                lifepodConfigDatas.Add(new LifepodConfigData(new Main.LegacyConfigInfo(matIndex, fileName1, classID, hierchy, false, -1f,
                     new List<string> { $"Lifepod_Config{(int)num}_Index{matIndex2}" }), i, $"Lifepod_Config{(int)num}_Index{matIndex}"));
-                lifepodConfigDatas.Add(new LifepodConfigData(new Main.ConfigInfo(matIndex2, fileName2, classID, hierchy, false, -1f,
+                lifepodConfigDatas.Add(new LifepodConfigData(new Main.LegacyConfigInfo(matIndex2, fileName2, classID, hierchy, false, -1f,
                     new List<string> { $"Lifepod_Config{(int)num}_Index{matIndex}" }), i, $"Lifepod_Config{(int)num}_Index{matIndex2}"));
             }
 
@@ -147,7 +147,7 @@ namespace TextureReplacer
                 this.linkedConfigNames = linkedConfigNames;
             }
 
-            public LifepodConfigData(ConfigInfo configInfo, int lifepodIndex, string configName)
+            public LifepodConfigData(LegacyConfigInfo configInfo, int lifepodIndex, string configName)
             {
                 this.lifepodIndex = lifepodIndex;
                 this.configName = configName;

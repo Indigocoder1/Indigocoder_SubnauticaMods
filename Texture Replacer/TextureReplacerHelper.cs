@@ -7,14 +7,17 @@ using static TextureReplacer.Main;
 using Random = UnityEngine.Random;
 using System;
 using static TextureReplacer.CustomTextureReplacer;
+using UnityEngine.UI;
+using static TextureReplacer.CustomTextureReplacer.ConfigInfo;
+using Valve.VR;
 
 namespace TextureReplacer
 {
     internal class TextureReplacerHelper : MonoBehaviour
     {
-        private static Dictionary<string, List<TexturePatchConfigData>> configDatas;
-        private static Dictionary<string, List<string>> filePaths;
-        private static Dictionary<string, List<Texture2D>> textures;
+        public ConfigInfo configInfo { get; private set; } = new();
+
+        public Texture2D cachedTexture { get; private set; }
 
         private IEnumerator Start()
         {
@@ -22,99 +25,113 @@ namespace TextureReplacer
             SetUpTextures();
         }
 
-        public void AddTextureData(TexturePatchConfigData configData)
+        public void AddTextureData(ConfigInfo configInfo)
         {
-            InitializeDictionaries();
-            
-            configDatas[transform.name].Add(configData);
-            filePaths[transform.name].Add(AssetFolderPath + $"/{configData.fileName}");
-            textures[transform.name].Add(ImageUtils.LoadTextureFromFile(AssetFolderPath + $"/{configData.fileName}"));
-        }
-
-        private void InitializeDictionaries()
-        {
-            if (configDatas == null)
+            for (int i = 0; i < configInfo.textureEdits.Count; i++)
             {
-                configDatas = new Dictionary<string, List<TexturePatchConfigData>>();
+                TextureEdit edit = configInfo.textureEdits[i];
+                if (edit.editType == TextureEditType.Texture || edit.editType == TextureEditType.Sprite)
+                {
+                    edit.cachedTexture = ImageUtils.LoadTextureFromFile(AssetFolderPath + $"/{edit.data}");
+                }
             }
 
-            if (filePaths == null)
-            {
-                filePaths = new Dictionary<string, List<string>>();
-            }
-
-            if (textures == null)
-            {
-                textures = new Dictionary<string, List<Texture2D>>();
-            }
-
-            if (!configDatas.ContainsKey(transform.name))
-            {
-                configDatas.Add(transform.name, new List<TexturePatchConfigData>());
-            }
-            if (!filePaths.ContainsKey(transform.name))
-            {
-                filePaths.Add(transform.name, new List<string>());
-            }
-            if (!textures.ContainsKey(transform.name))
-            {
-                textures.Add(transform.name, new List<Texture2D>());
-            }
+            this.configInfo = configInfo;
         }
 
         private void SetUpTextures()
         {
-            string nameWithoutClone = Utilities.GetNameWithCloneRemoved(transform.name);
-
-            for (int i = 0; i < configDatas[nameWithoutClone].Count; i++)
+            if(Random.Range(0f, 1f) > configInfo.variationChance && configInfo.isVariation && !configInfo.variationAccepted)
             {
-                TexturePatchConfigData configData = configDatas[nameWithoutClone][i];
+                return;
+            }
 
+            EnsureLinkedConfigs(configInfo);
+            Renderer targetRenderer = transform.Find(configInfo.rendererHierarchyPath).GetComponent<Renderer>();
+            if(targetRenderer == null)
+            {
+                Main.logger.LogError($"Target renderer not found at path {configInfo.rendererHierarchyPath} from {transform}! Aborting texture edit load for {configInfo.configName}");
+                return;
+            }
+
+            foreach (var textureEdit in configInfo.textureEdits)
+            {
                 if (Main.WriteLogs.Value)
                 {
-                    Main.logger.LogInfo($"Loading textures on {transform.name} from {configData.configName}");
+                    Main.logger.LogInfo($"Loading texture edits on {transform.name} for {textureEdit.propertyName}");
                 }
 
-                if (configData.variationAccepted || !configData.isVariation || Random.Range(0f, 1f) <= configData.variationChance)
+                Material material = targetRenderer.materials[textureEdit.materialIndex];
+
+                if (textureEdit.propertyName == "Sprite")
                 {
-                    Texture2D texture = textures[nameWithoutClone][i];
+                    HandleSpriteSwapping(textureEdit.cachedTexture, targetRenderer.gameObject);
+                    continue;
+                }
 
-                    Renderer targetRenderer = transform.Find(configData.rendererHierarchyPath).GetComponent<Renderer>();
-                    Material material = null;
-                    if (targetRenderer != null)
-                    {
-                        material = targetRenderer.materials[configData.materialIndex];
-                    }
-
-                    if (configData.textureName.Contains("-"))
-                    {
-                        string[] split = configData.textureName.Split(new[] { '-' }, 2);
-                        float extractedValue = 0.6f;
-                        if (customTextureNames.ContainsKey(split[0]))
-                        {
-                            extractedValue = textureNameValueDefaults[customTextureNames[split[0]]];
-                        }
-
+                switch(textureEdit.editType)
+                {
+                    case TextureEditType.Texture:
+                        material.SetTexture(textureEdit.propertyName, textureEdit.cachedTexture);
+                        break;
+                    case TextureEditType.Color:
+                        string[] colorValues = textureEdit.data.Split(',');
+                        float r, g, b;
+                        float a = 1;
                         try
                         {
-                            extractedValue = float.Parse(split[1]);
+                            r = float.Parse(colorValues[0]);
+                            g = float.Parse(colorValues[1]);
+                            b = float.Parse(colorValues[2]);
+                            if (colorValues.Length > 3)
+                            {
+                                a = float.Parse(colorValues[3]);
+                            }
+                        }
+                        catch(Exception e)
+                        {
+                            Main.logger.LogError($"Error parsing color values on {configInfo.configName}. Aborting color set!\n{e.Message}");
+                            return;
+                        }
+
+                        material.SetColor(textureEdit.propertyName, new Color(r, g, b, a));
+                        break;
+                    case TextureEditType.Float:
+                        float value = 0;
+                        try
+                        {
+                            value = float.Parse(textureEdit.data);
                         }
                         catch (Exception e)
                         {
-                            logger.LogError($"Error parsing \"{configData.textureName}\"! Error is: \n{e.Message}");
+                            Main.logger.LogError($"Error parsing float value on {configInfo.configName}. Aborting float set!\n{e.Message}");
                         }
-                        HandleCustomTextureNames(material, texture, extractedValue, split[0]);
-                    }
-                    else if(customTextureNames.ContainsKey(configData.textureName))
-                    {
-                        HandleCustomTextureNames(material, texture, 0.6f, configData.textureName);
-                    }
-                    else
-                    {
-                        material.SetTexture(Shader.PropertyToID(configData.textureName), texture);
-                    }
 
-                    EnsureLinkedConfigs(configData);
+                        material.SetFloat(textureEdit.propertyName, value);
+                        break;
+                    case TextureEditType.Vector:
+                        string[] vectorValues = textureEdit.data.Split(',');
+                        float x, y, z;
+                        float w = 1;
+                        try
+                        {
+                            x = float.Parse(vectorValues[0]);
+                            y = float.Parse(vectorValues[1]);
+                            z = float.Parse(vectorValues[2]);
+                            
+                            if (vectorValues.Length > 3)
+                            {
+                                w = float.Parse(vectorValues[3]);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Main.logger.LogError($"Error parsing color values on {configInfo.configName}. Aborting color set!\n{e.Message}");
+                            return;
+                        }
+
+                        material.SetVector(textureEdit.propertyName, new Vector4(x, y, z, w));
+                        break;
                 }
             }
         }
@@ -170,37 +187,19 @@ namespace TextureReplacer
             }
         }
 
-        private Color32 AverageColorFromTexture(Texture2D tex)
+        private void HandleSpriteSwapping(Texture2D tex, GameObject go)
         {
-            Color32[] texColors = tex.GetPixels32();
-
-            int total = texColors.Length;
-
-            float r = 0;
-            float g = 0;
-            float b = 0;
-
-            for (int i = 0; i < total; i++)
+            if(!go.TryGetComponent<Image>(out var image))
             {
-
-                r += texColors[i].r;
-
-                g += texColors[i].g;
-
-                b += texColors[i].b;
-
+                Main.logger.LogError($"Image component not found on {go}! A sprite on it was trying to be swapped.");
+                return;
             }
 
-            Color32 color = new Color32((byte)(r / total), (byte)(g / total), (byte)(b / total), 255);
-            if (Main.WriteLogs.Value)
-            {
-                Main.logger.LogInfo($"Average color for texture \"{tex.name}\" is {color}");
-            }
-            return color;
+            image.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), image.sprite.pivot);
         }
 
 
-        private void EnsureLinkedConfigs(TexturePatchConfigData configData)
+        private void EnsureLinkedConfigs(ConfigInfo configData)
         {
             foreach (TexturePatchConfigData item in configDatas[Utilities.GetNameWithCloneRemoved(transform.name)])
             {

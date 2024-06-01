@@ -11,10 +11,11 @@ namespace TextureReplacer
 {
     public static class CustomTextureReplacer
     {
-        [SerializeField] public static List<TexturePatchConfigData> queuedPlayerConfigs = new List<TexturePatchConfigData>();
+        [SerializeField] public static List<ConfigInfo> queuedPlayerConfigs = new();
+        [SerializeField] public static List<ConfigInfo> queuedCyclopsConfigs = new();
         private static string folderFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureReplacer");
         private static string configFilePath = Path.Combine(folderFilePath, "ExampleTextureConfig.json");
-        private static List<TexturePatchConfigData> textureConfigs;
+        private static List<ConfigInfo> textureConfigs;
 
         internal static void Initialize()
         {
@@ -38,12 +39,7 @@ namespace TextureReplacer
         {
             for (int i = 0; i < textureConfigs.Count; i++)
             {
-                TexturePatchConfigData configData = textureConfigs[i];
-
-                if (configData == null)
-                {
-                    continue;
-                }
+                ConfigInfo configData = textureConfigs[i];
 
                 bool flag1 = configData.prefabClassID == "Intentionally blank" || string.IsNullOrEmpty(configData.prefabClassID);
                 bool flag2 = configData.rendererHierarchyPath == "Intentionally blank" || string.IsNullOrEmpty(configData.rendererHierarchyPath);
@@ -69,11 +65,23 @@ namespace TextureReplacer
                     continue;
                 }
 
+                if (configData.prefabClassID == "cyclops")
+                {
+                    queuedCyclopsConfigs.Add(configData);
+
+                    if (Main.WriteLogs.Value)
+                    {
+                        Main.logger.LogInfo($"Adding of queued config {configData.configName} complete (Config for Cyclops GO)");
+                    }
+
+                    continue;
+                }
+
                 CoroutineHost.StartCoroutine(InitializeTexture(configData));
             }
         }
 
-        private static IEnumerator InitializeTexture(TexturePatchConfigData configData)
+        private static IEnumerator InitializeTexture(ConfigInfo configData)
         {
             if (Main.WriteLogs.Value)
             {
@@ -92,12 +100,12 @@ namespace TextureReplacer
                 Transform rendererTransform = prefab.transform.Find(configData.rendererHierarchyPath);
                 if(rendererTransform == null)
                 {
-                    Main.logger.LogError($"There is no object at the hierarchy path '{configData.rendererHierarchyPath}'! Aborting texture load.");
+                    Main.logger.LogError($"There is no object at the hierarchy path '{configData.rendererHierarchyPath}' on {prefab}! Aborting texture load.");
                     yield break;
                 }
                 rendererTransform.TryGetComponent<Renderer>(out targetRenderer);
 
-                if (targetRenderer == null && !Main.customTextureNames.ContainsKey(configData.textureName))
+                if (targetRenderer == null)
                 {
                     Main.logger.LogError("Target renderer was null! Aborting texture load.");
                     yield break;
@@ -114,9 +122,9 @@ namespace TextureReplacer
 
         private static void SaveExampleData()
         {
-            List<TexturePatchConfigData> configDatas = new List<TexturePatchConfigData>
+            List<ConfigInfo> configDatas = new List<ConfigInfo>
             {
-                new TexturePatchConfigData
+                new ConfigInfo
                 (
                     configName: "Example Config Name",
                     materialIndex: 0,
@@ -134,13 +142,59 @@ namespace TextureReplacer
                 )
             };
 
-            SaveManager<TexturePatchConfigData>.SaveToJson(configDatas, configFilePath, folderFilePath);
+            SaveManager<ConfigInfo>.SaveToJson(configDatas, configFilePath, folderFilePath);
+        }
+
+        public struct ConfigInfo
+        {
+            public string configName;
+            public string prefabClassID;
+            public string rendererHierarchyPath;
+            public bool isVariation;
+            public float variationChance;
+            public List<string> linkedConfigNames;
+            public List<TextureEdit> textureEdits;
+
+            [JsonIgnore]
+            public bool variationAccepted;
+
+            public ConfigInfo(string configName, string prefabClassID, string rendererHierarchyPath, bool isVariation, 
+                float variationChance, List<string> linkedConfigNames, List<TextureEdit> textureEdits)
+            {
+                this.configName = configName;
+                this.prefabClassID = prefabClassID;
+                this.rendererHierarchyPath = rendererHierarchyPath;
+                this.isVariation = isVariation;
+                this.variationChance = variationChance;
+                this.linkedConfigNames = linkedConfigNames;
+                this.textureEdits = textureEdits;
+            }
+
+            public struct TextureEdit
+            {
+                public int materialIndex;
+                public TextureEditType editType;
+                public string propertyName;
+                public string data;
+
+                [JsonIgnore]
+                public Texture2D cachedTexture;
+            }
+        }
+
+        public enum TextureEditType
+        {
+            Texture,
+            Sprite,
+            Color,
+            Float,
+            Vector
         }
 
         /// <summary>
-        /// Takes a <see cref="TexturePatchConfigData"/> and adds it to the config list and initializes it
+        /// Takes a <see cref="ConfigInfo"/> and adds it to the config list and initializes it
         /// </summary>
-        public static void AddConfig(TexturePatchConfigData configData)
+        public static void AddConfig(ConfigInfo configData)
         {
             textureConfigs.Add(configData);
             CoroutineHost.StartCoroutine(InitializeTexture(configData));
@@ -176,7 +230,7 @@ namespace TextureReplacer
                 this.linkedConfigNames = linkedConfigNames;
             }
 
-            internal TexturePatchConfigData(ConfigInfo configInfo)
+            internal TexturePatchConfigData(LegacyConfigInfo configInfo)
             {
                 this.materialIndex = configInfo.materialIndex;
                 this.fileName = configInfo.fileName;
