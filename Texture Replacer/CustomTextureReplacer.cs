@@ -9,6 +9,8 @@ using Newtonsoft.Json;
 using System;
 using System.Linq;
 using TextureReplacer.Saving;
+using Nautilus.Utility;
+using UnityStandardAssets.ImageEffects;
 
 namespace TextureReplacer
 {
@@ -63,8 +65,18 @@ namespace TextureReplacer
                     texName = texName.Split(new char[] { '-' }, 2)[0];
                 }
 
+                TextureEditType type = legacyConfig.textureName.Contains("_EmissionColor") ? TextureEditType.Light : TextureEditType.Texture;
+                string data = texName;
+                if (type == TextureEditType.Light)
+                {
+                    Texture2D tex = ImageUtils.LoadTextureFromFile(Main.AssetFolderPath + $"/{legacyConfig.fileName}");
+                    Color32 col = AverageColorFromTexture(tex);
+                    data = $"{col.r / 255f},{col.g / 255f},{col.b / 255f},{col.a / 255f}";
+                    Main.logger.LogInfo($"Changing data for Light config to {data}");
+                }
+
                 configInfoConversions.First(i => i.prefabClassID == legacyConfig.prefabClassID && i.rendererHierarchyPath == legacyConfig.rendererHierarchyPath).textureEdits
-                    .Add(new(legacyConfig.materialIndex, TextureEditType.Texture, texName, legacyConfig.fileName));
+                    .Add(new(legacyConfig.materialIndex, type, texName, legacyConfig.fileName));
             }
 
             foreach (var texEdit in configInfoConversions)
@@ -143,12 +155,6 @@ namespace TextureReplacer
                 }
                 rendererTransform.TryGetComponent<Renderer>(out targetRenderer);
 
-                if (targetRenderer == null)
-                {
-                    Main.logger.LogError("Target renderer was null! Aborting texture load.");
-                    yield break;
-                }
-
                 replacer.AddTextureData(configData);
 
                 if (Main.WriteLogs.Value)
@@ -184,6 +190,32 @@ namespace TextureReplacer
             SaveManager<ConfigInfo>.SaveToJson(configDatas, configFilePath, folderFilePath);
         }
 
+        private static Color32 AverageColorFromTexture(Texture2D tex)
+        {
+            Color32[] texColors = tex.GetPixels32();
+
+            int total = texColors.Length;
+
+            float r = 0;
+            float g = 0;
+            float b = 0;
+
+            for (int i = 0; i < total; i++)
+            {
+                r += texColors[i].r;
+                g += texColors[i].g;
+                b += texColors[i].b;
+            }
+
+            Color32 color = new Color32((byte)(r / total), (byte)(g / total), (byte)(b / total), 255);
+            if (Main.WriteLogs.Value)
+            {
+                Main.logger.LogInfo($"Average color for texture \"{tex.name}\" is {color}");
+            }
+
+            return color;
+        }
+
         public class ConfigInfo
         {
             [SerializeField] public string configName;
@@ -197,10 +229,7 @@ namespace TextureReplacer
             [JsonIgnore]
             [SerializeField] public bool variationAccepted;
 
-            public ConfigInfo()
-            {
-
-            }
+            public ConfigInfo() { }
 
             [JsonConstructor]
             public ConfigInfo(string configName, string prefabClassID, string rendererHierarchyPath, bool isVariation, 
@@ -215,7 +244,7 @@ namespace TextureReplacer
                 this.textureEdits = textureEdits;
             }
 
-            public struct TextureEdit
+            public class TextureEdit
             {
                 [SerializeField] public int materialIndex;
                 [SerializeField] public TextureEditType editType;
@@ -242,7 +271,8 @@ namespace TextureReplacer
             Color,
             Float,
             Vector,
-            Keyword
+            Keyword,
+            Light
         }
 
         /// <summary>
