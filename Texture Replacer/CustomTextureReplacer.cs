@@ -26,7 +26,7 @@ namespace TextureReplacer
         internal static void Initialize()
         {
             CraftData.PreparePrefabIDCache();
-            if(!Directory.Exists(folderFilePath))
+            if (!Directory.Exists(folderFilePath))
             {
                 Directory.CreateDirectory(folderFilePath);
             }
@@ -60,23 +60,30 @@ namespace TextureReplacer
                 }
 
                 string texName = legacyConfig.textureName;
-                if(texName.Contains("-"))
+                if (texName.Contains("-"))
                 {
                     texName = texName.Split(new char[] { '-' }, 2)[0];
                 }
 
                 TextureEditType type = legacyConfig.textureName.Contains("_EmissionColor") ? TextureEditType.Light : TextureEditType.Texture;
-                string data = texName;
+                string data = legacyConfig.fileName;
                 if (type == TextureEditType.Light)
                 {
                     Texture2D tex = ImageUtils.LoadTextureFromFile(Main.AssetFolderPath + $"/{legacyConfig.fileName}");
                     Color32 col = AverageColorFromTexture(tex);
                     data = $"{col.r / 255f},{col.g / 255f},{col.b / 255f},{col.a / 255f}";
-                    Main.logger.LogInfo($"Changing data for Light config to {data}");
                 }
 
-                configInfoConversions.First(i => i.prefabClassID == legacyConfig.prefabClassID && i.rendererHierarchyPath == legacyConfig.rendererHierarchyPath).textureEdits
-                    .Add(new(legacyConfig.materialIndex, type, texName, legacyConfig.fileName));
+                ConfigInfo retrievedInfo = configInfoConversions.First(i => i.prefabClassID == legacyConfig.prefabClassID && i.rendererHierarchyPath == legacyConfig.rendererHierarchyPath);
+                retrievedInfo.textureEdits.Add(new(legacyConfig.materialIndex, type, legacyConfig.textureName, data));
+
+                if (legacyConfig.textureName.Contains("_EmissionMap"))
+                {
+                    retrievedInfo.textureEdits.Add(new(legacyConfig.materialIndex, TextureEditType.Float, "_GlowStrength", "0"));
+                    retrievedInfo.textureEdits.Add(new(legacyConfig.materialIndex, TextureEditType.Float, "_GlowStrengthNight", "0"));
+                    retrievedInfo.textureEdits.Add(new(legacyConfig.materialIndex, TextureEditType.Float, "_EmissionLM", "0.6"));
+                    retrievedInfo.textureEdits.Add(new(legacyConfig.materialIndex, TextureEditType.Float, "_EmissionLMNight", "0.6"));
+                }
             }
 
             foreach (var texEdit in configInfoConversions)
@@ -96,14 +103,14 @@ namespace TextureReplacer
 
                 if (flag1 || flag2)
                 {
-                    if(Main.WriteLogs.Value)
+                    if (Main.WriteLogs.Value)
                     {
                         Main.logger.LogInfo($"Skipping config {configData.configName} because it contains example data!");
                     }
                     continue;
                 }
 
-                if(configData.prefabClassID == "player")
+                if (configData.prefabClassID.ToLower() == "player")
                 {
                     queuedPlayerConfigs.Add(configData);
 
@@ -115,7 +122,7 @@ namespace TextureReplacer
                     continue;
                 }
 
-                if (configData.prefabClassID == "cyclops")
+                if (configData.prefabClassID.ToLower() == "cyclops")
                 {
                     queuedCyclopsConfigs.Add(configData);
 
@@ -137,7 +144,7 @@ namespace TextureReplacer
             {
                 Main.logger.LogInfo($"Loading config {configData.configName}");
             }
-            
+
             IPrefabRequest request = PrefabDatabase.GetPrefabAsync(configData.prefabClassID);
 
             yield return request;
@@ -148,7 +155,7 @@ namespace TextureReplacer
 
                 Renderer targetRenderer = null;
                 Transform rendererTransform = prefab.transform.Find(configData.rendererHierarchyPath);
-                if(rendererTransform == null)
+                if (rendererTransform == null)
                 {
                     Main.logger.LogError($"There is no object at the hierarchy path '{configData.rendererHierarchyPath}' on {prefab}! Aborting texture load.");
                     yield break;
@@ -232,7 +239,7 @@ namespace TextureReplacer
             public ConfigInfo() { }
 
             [JsonConstructor]
-            public ConfigInfo(string configName, string prefabClassID, string rendererHierarchyPath, bool isVariation, 
+            public ConfigInfo(string configName, string prefabClassID, string rendererHierarchyPath, bool isVariation,
                 float variationChance, List<string> linkedConfigNames, List<TextureEdit> textureEdits)
             {
                 this.configName = configName;
@@ -289,7 +296,7 @@ namespace TextureReplacer
         {
             ConfigInfo info = new(configData.configName, configData.prefabClassID,
                 configData.rendererHierarchyPath, configData.isVariation, configData.variationChance, configData.linkedConfigNames,
-                new List<ConfigInfo.TextureEdit> { new ConfigInfo.TextureEdit(configData.materialIndex, 
+                new List<ConfigInfo.TextureEdit> { new ConfigInfo.TextureEdit(configData.materialIndex,
                 TextureEditType.Texture, configData.textureName, configData.fileName) });
             textureConfigs.Add(info);
             CoroutineHost.StartCoroutine(InitializeTexture(info));

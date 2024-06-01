@@ -30,14 +30,11 @@ namespace TextureReplacer
 
         public void AddTextureData(ConfigInfo configInfo, bool isPrefab = true)
         {
-            Main.logger.LogInfo($"Adding texture data for {configInfo.configName} on {transform}");
-
             for (int i = 0; i < configInfo.textureEdits.Count; i++)
             {
                 TextureEdit edit = configInfo.textureEdits[i];
                 if (edit.editType == TextureEditType.Texture || edit.editType == TextureEditType.Sprite)
                 {
-                    Main.logger.LogInfo($"Setting cached texture on {configInfo.configName} for {edit.propertyName}");
                     edit.cachedTexture = ImageUtils.LoadTextureFromFile(Main.AssetFolderPath + $"/{edit.data}");
                 }
             }
@@ -74,18 +71,6 @@ namespace TextureReplacer
             PrefabIdentifier identifier = GetComponent<PrefabIdentifier>();
             List<ConfigInfo> infos = configIsPrefab[identifier.ClassId] ? configInfos[identifier.ClassId] : nonPrefabConfigInfos;
 
-            Main.logger.LogInfo($"Config infos length = {infos.Count} | this = {this}");
-
-            foreach (var info in configInfos)
-            {
-                Main.logger.LogInfo($"Config infos: Key = {info.Key} | Value = {info.Value}");
-            }
-
-            foreach (var info in configIsPrefab)
-            {
-                Main.logger.LogInfo($"Is prefab: Key = {info.Key} | Value = {info.Value}");
-            }
-
             foreach (ConfigInfo configInfo in infos)
             {
                 SwapTextures(configInfo);
@@ -94,14 +79,18 @@ namespace TextureReplacer
 
         private void SwapTextures(ConfigInfo configInfo)
         {
-            Main.logger.LogInfo($"Config = {configInfo} | Hierarchy path = {configInfo?.rendererHierarchyPath}");
+            if(Main.WriteLogs.Value)
+            {
+                Main.logger.LogInfo($"Loading config ({configInfo}) | Hierarchy path = {configInfo?.rendererHierarchyPath}");
+            }
+
             if (Random.Range(0f, 1f) > configInfo.variationChance && configInfo.isVariation && !configInfo.variationAccepted)
             {
                 return;
             }
 
             EnsureLinkedConfigs(configInfo);
-            Renderer targetRenderer = transform.Find(configInfo.rendererHierarchyPath).GetComponent<Renderer>();
+            Renderer targetRenderer = transform.Find(configInfo.rendererHierarchyPath)?.GetComponent<Renderer>();
             if (targetRenderer == null && !configInfo.textureEdits.Any(i => i.editType == TextureEditType.Light))
             {
                 Main.logger.LogError($"Target renderer not found at path {configInfo.rendererHierarchyPath} from {transform}! Aborting texture edit load for {configInfo.configName}");
@@ -126,8 +115,8 @@ namespace TextureReplacer
                 switch (textureEdit.editType)
                 {
                     case TextureEditType.Texture:
-                        Main.logger.LogInfo($"Swapping texture on {material} | Cached texture = {textureEdit.cachedTexture}");
                         material.SetTexture(textureEdit.propertyName, textureEdit.cachedTexture);
+
                         break;
                     case TextureEditType.Color:
                         material.SetColor(textureEdit.propertyName, ParseV4FromString(textureEdit.data, ','));
@@ -159,8 +148,9 @@ namespace TextureReplacer
                         }
                         break;
                     case TextureEditType.Light:
-                        Light light = transform.Find(configInfo.rendererHierarchyPath).GetComponent<Light>();
-                        light.color = ParseV4FromString(textureEdit.data, ',');
+                        Light[] lights = transform.Find(configInfo.rendererHierarchyPath).GetComponentsInChildren<Light>();
+
+                        lights.ForEach(i => i.color = ParseV4FromString(textureEdit.data, ','));
                         break;
                 }
             }
