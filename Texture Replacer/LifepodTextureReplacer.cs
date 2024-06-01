@@ -64,11 +64,19 @@ namespace TextureReplacer
                     Main.logger.LogError($"Target renderer was null!");
                     yield break;
                 }
-                TexturePatchConfigData data = new TexturePatchConfigData($"Lifepod_Config{configData.lifepodIndex}_Index{configData.materialIndex}",
+                /*
+                ConfigInfo data = new($"Lifepod_Config{configData.lifepodIndex}_Index{configData.materialIndex}",
                     configData.materialIndex, configData.fileName, configData.isVariation, configData.variationChance, LifepodClassIDs[(LifepodNumber)configData.lifepodIndex],
                     ExternalRendererHierchyPaths[(LifepodNumber)configData.lifepodIndex], "_MainTex", 
                     new List<string> { $"Lifepod{configData.lifepodIndex}_Index{configData.materialIndex}" });
-                replacer.AddTextureData(data);
+                */
+
+                ConfigInfo info = new($"Lifepod_Config{configData.lifepodIndex}_Index{configData.materialIndex}", 
+                    LifepodClassIDs[(LifepodNumber)configData.lifepodIndex], ExternalRendererHierchyPaths[(LifepodNumber)configData.lifepodIndex], 
+                    configData.isVariation, configData.variationChance,
+                    new List<string> { $"Lifepod{configData.lifepodIndex}_Index{configData.materialIndex}" },
+                    new List<ConfigInfo.TextureEdit> { new(configData.materialIndex, TextureEditType.Texture, "_MainTex", configData.fileName) });
+                replacer.AddTextureData(info);
             }
         }
 

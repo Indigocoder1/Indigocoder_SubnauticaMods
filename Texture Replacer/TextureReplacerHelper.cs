@@ -1,15 +1,13 @@
 ﻿using Nautilus.Utility;
-using System.Collections.Generic;
 using UnityEngine;
-using IndigocoderLib;
 using System.Collections;
-using static TextureReplacer.Main;
-using Random = UnityEngine.Random;
 using System;
-using static TextureReplacer.CustomTextureReplacer;
 using UnityEngine.UI;
-using static TextureReplacer.CustomTextureReplacer.ConfigInfo;
-using Valve.VR;
+
+using Random = UnityEngine.Random;
+using TextureEditType = TextureReplacer.CustomTextureReplacer.TextureEditType;
+using ConfigInfo = TextureReplacer.CustomTextureReplacer.ConfigInfo;
+using TextureEdit = TextureReplacer.CustomTextureReplacer.ConfigInfo.TextureEdit;
 
 namespace TextureReplacer
 {
@@ -32,7 +30,7 @@ namespace TextureReplacer
                 TextureEdit edit = configInfo.textureEdits[i];
                 if (edit.editType == TextureEditType.Texture || edit.editType == TextureEditType.Sprite)
                 {
-                    edit.cachedTexture = ImageUtils.LoadTextureFromFile(AssetFolderPath + $"/{edit.data}");
+                    edit.cachedTexture = ImageUtils.LoadTextureFromFile(Main.AssetFolderPath + $"/{edit.data}");
                 }
             }
 
@@ -132,58 +130,17 @@ namespace TextureReplacer
 
                         material.SetVector(textureEdit.propertyName, new Vector4(x, y, z, w));
                         break;
-                }
-            }
-        }
-
-        private void HandleCustomTextureNames(Material material, Texture2D texture, float extractedValue, string key)
-        {
-            TextureType type = TextureType.Value;
-            if (customTextureNames.ContainsKey(key))
-            {
-                type = Main.customTextureNames[key];
-            }
-
-            if (Main.WriteLogs.Value)
-            {
-                Main.logger.LogInfo($"Handling custom texture name for type {type.ToString()}");
-            }
-
-            switch (type)
-            {
-                case TextureType.Emission:
-                    if(extractedValue != -1)
-                    {
-                        material.SetFloat("_GlowStrength", 0);
-                        material.SetFloat("_GlowStrengthNight", 0);
-                        material.SetFloat("_EmissionLM", extractedValue);
-                        material.SetFloat("_EmissionLMNight", extractedValue);
-                    }                    
-                    material.SetTexture("_EmissionMap", texture);
-                    break;
-                case TextureType.LightColor:
-                    Light[] lightArray = gameObject.GetComponentsInChildren<Light>();
-                    Color32 averageColor = AverageColorFromTexture(texture);
-
-                    if (lightArray != null)
-                    {
-                        foreach (Light light in lightArray)
+                    case TextureEditType.Keyword:
+                        if(textureEdit.data.ToUpper() == "ENABLE")
                         {
-                            light.color = averageColor;
+                            material.EnableKeyword(textureEdit.propertyName);
                         }
-                    }
-
-                    if(material != null)
-                    {
-                        material.SetColor("_EmissionColor", averageColor);
-                    }
-                    break;
-                case TextureType.Color:
-                    material.SetColor("_Color", AverageColorFromTexture(texture));
-                    break;
-                case TextureType.Value:
-                    material.SetFloat(key, extractedValue);
-                    break;
+                        else if(textureEdit.data.ToUpper() == "DISABLE")
+                        {
+                            material.DisableKeyword(textureEdit.propertyName);
+                        }
+                        break;
+                }
             }
         }
 
@@ -198,24 +155,26 @@ namespace TextureReplacer
             image.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), image.sprite.pivot);
         }
 
-
         private void EnsureLinkedConfigs(ConfigInfo configData)
         {
-            foreach (TexturePatchConfigData item in configDatas[Utilities.GetNameWithCloneRemoved(transform.name)])
+            for (int i = 0; i < CustomTextureReplacer.textureConfigs.Count; i++)
             {
-                if (!item.isVariation || item.variationChance == 1)
+                ConfigInfo info = CustomTextureReplacer.textureConfigs[i];
+
+                if (!info.isVariation || info.variationChance == 1)
                 {
                     continue;
                 }
 
-                if (item.linkedConfigNames.Contains(configData.configName))
+                if (info.linkedConfigNames.Contains(configData.configName))
                 {
-                    item.variationAccepted = true;
+                    info.variationAccepted = true;
+                    continue;
                 }
-                
-                if (item.prefabClassID == configData.prefabClassID && item.linkedConfigNames.Count == 0 && configData.linkedConfigNames.Count == 0)
+
+                if (info.prefabClassID == configData.prefabClassID && info.linkedConfigNames.Count == 0 && configData.linkedConfigNames.Count == 0)
                 {
-                    item.variationAccepted = true;
+                    info.variationAccepted = true;
                 }
             }
         }

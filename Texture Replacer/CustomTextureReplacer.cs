@@ -6,16 +6,18 @@ using static TextureReplacer.Main;
 using BepInEx;
 using System.IO;
 using Newtonsoft.Json;
+using System;
 
 namespace TextureReplacer
 {
     public static class CustomTextureReplacer
     {
-        [SerializeField] public static List<ConfigInfo> queuedPlayerConfigs = new();
-        [SerializeField] public static List<ConfigInfo> queuedCyclopsConfigs = new();
+        public static List<ConfigInfo> queuedPlayerConfigs = new();
+        public static List<ConfigInfo> queuedCyclopsConfigs = new();
+        public static List<ConfigInfo> textureConfigs { get; private set; }
+
         private static string folderFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureReplacer");
         private static string configFilePath = Path.Combine(folderFilePath, "ExampleTextureConfig.json");
-        private static List<ConfigInfo> textureConfigs;
 
         internal static void Initialize()
         {
@@ -25,14 +27,41 @@ namespace TextureReplacer
                 Directory.CreateDirectory(folderFilePath);
             }
 
-            textureConfigs = SaveManager<TexturePatchConfigData>.LoadJsons(folderFilePath);
+            ConvertLegacyConfigs();
+
+            textureConfigs = SaveManager<ConfigInfo>.LoadJsons(folderFilePath);
             if (textureConfigs.Count == 0)
             {
                 SaveExampleData();
-                textureConfigs = SaveManager<TexturePatchConfigData>.LoadJsons(folderFilePath);
+                textureConfigs = SaveManager<ConfigInfo>.LoadJsons(folderFilePath);
             }
 
             LoadAllTextures();
+        }
+
+        private static void ConvertLegacyConfigs()
+        {
+            List<TexturePatchConfigData> legacyConfigs = SaveManager<TexturePatchConfigData>.LoadJsons(folderFilePath);
+            Dictionary<string, ConfigInfo> editTypeConversions = new();
+
+            foreach (var legacyConfig in legacyConfigs)
+            {
+                ConfigInfo info = new(legacyConfig.configName, legacyConfig.prefabClassID, legacyConfig.rendererHierarchyPath,
+                    legacyConfig.isVariation, legacyConfig.variationChance, legacyConfig.linkedConfigNames, new());
+
+                if (!editTypeConversions.ContainsKey(legacyConfig.prefabClassID))
+                {
+                    editTypeConversions.Add(legacyConfig.prefabClassID, new());
+                }
+
+                editTypeConversions[legacyConfig.prefabClassID].textureEdits
+                    .Add(new(legacyConfig.materialIndex, TextureEditType.Texture, legacyConfig.textureName, legacyConfig.fileName));
+            }
+
+            foreach (var texEdit in editTypeConversions)
+            {
+                textureConfigs.Add(texEdit.Value);
+            }
         }
 
         private static void LoadAllTextures()
@@ -127,17 +156,18 @@ namespace TextureReplacer
                 new ConfigInfo
                 (
                     configName: "Example Config Name",
-                    materialIndex: 0,
-                    fileName: "Replacement texture file name goes here",
                     isVariation: false,
                     variationChance: -1f,
                     prefabClassID: "Intentionally blank",
                     rendererHierarchyPath: "Intentionally blank",
-                    textureName: "_MainTex",
                     linkedConfigNames: new List<string>
                     {
                         "Example name 1",
                         "Example name 2"
+                    },
+                    textureEdits: new List<ConfigInfo.TextureEdit>
+                    {
+                        new(0, TextureEditType.Texture, "_MainTex", "textureName.fileExtension")
                     }
                 )
             };
@@ -179,6 +209,14 @@ namespace TextureReplacer
 
                 [JsonIgnore]
                 public Texture2D cachedTexture;
+
+                public TextureEdit(int materialIndex, TextureEditType editType, string propertyName, string data)
+                {
+                    this.materialIndex = materialIndex;
+                    this.editType = editType;
+                    this.propertyName = propertyName;
+                    this.data = data;
+                }
             }
         }
 
@@ -188,7 +226,8 @@ namespace TextureReplacer
             Sprite,
             Color,
             Float,
-            Vector
+            Vector,
+            Keyword
         }
 
         /// <summary>
@@ -200,6 +239,7 @@ namespace TextureReplacer
             CoroutineHost.StartCoroutine(InitializeTexture(configData));
         }
 
+        [Obsolete("Use ConfigInfo instead")]
         public class TexturePatchConfigData
         {
             public string configName;
