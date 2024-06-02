@@ -6,7 +6,7 @@ namespace TextureReplacerEditor.Monobehaviors.Items
 {
     internal class ComponentItem : MonoBehaviour
     {
-        public Component component {get; private set;}
+        public Component component { get; private set; }
         public TextMeshProUGUI text;
         private string pathToComponent;
 
@@ -19,7 +19,7 @@ namespace TextureReplacerEditor.Monobehaviors.Items
 
         public void TryOpenMaterialWindow()
         {
-            if(component is not Renderer)
+            if (component is not Renderer)
             {
                 return;
             }

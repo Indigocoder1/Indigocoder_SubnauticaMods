@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using TextureReplacerEditor.Monobehaviors.Windows;
+﻿using TextureReplacerEditor.Monobehaviors.Windows;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,16 +11,22 @@ namespace TextureReplacerEditor.Monobehaviors.Items
     {
         public ConfigInfo configInfo { get; private set; }
 
+        public TextMeshProUGUI configNameText;
         public Toggle isVariationToggle;
         public LinkedInputSlider variationChanceSlider;
 
         private void Start()
         {
             isVariationToggle.onValueChanged.AddListener((_) => UpdateSliderInteractable());
+            isVariationToggle.onValueChanged.AddListener((_) => configInfo.isVariation = isVariationToggle.isOn);
+            variationChanceSlider.OnInputValueChanged += () => configInfo.variationChance = variationChanceSlider.GetCurrentValue() / 100f;
+
+            UpdateSliderInteractable();
         }
-        
+
         public void SetInfo(ConfigInfo info)
         {
+            configNameText.text = info.configName;
             configInfo = info;
             isVariationToggle.isOn = configInfo.isVariation;
             variationChanceSlider.SetInitialValue(configInfo.variationChance);

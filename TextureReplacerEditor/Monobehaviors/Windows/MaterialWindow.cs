@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using TextureReplacerEditor.Monobehaviors.Items;
 using TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers;
@@ -20,6 +21,8 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         public Transform propertyItemsParent;
 
         private Material material;
+        private float searchCallDelay;
+        private bool hasSearched;
 
         public void SetMaterial(Material material, MaterialItem item)
         {
@@ -27,19 +30,37 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             currentMaterialItem = item;
             SpawnPropertyItems();
 
-            searchBar.onValueChanged.AddListener((_) => OnSearchBarValueChange());
+            searchBar.onValueChanged.AddListener((_) => OnSearchBarValueChanged());
+        }
+
+        private void Update()
+        {
+            if(searchCallDelay > 0)
+            {
+                searchCallDelay -= Time.unscaledDeltaTime;
+            }
+            else if(searchCallDelay <= 0 && !hasSearched)
+            {
+                Search();
+
+                hasSearched = true;
+            }
         }
 
         public void OnPropertyChanged(object sender, OnPropertyChangedEventArgs e)
         {
             if (currentMaterialItem == null) return;
 
-            Main_Plugin.logger.LogInfo($"Sender = {sender} | New value = {e.newValue} | Original value = {e.originalValue}");
-            if (e.newValue == e.originalValue) return;
-
-            if(!materialEdits.ContainsKey(currentMaterialItem))
+            if (!materialEdits.ContainsKey(currentMaterialItem))
             {
                 materialEdits.Add(currentMaterialItem, new List<PropertyEditData>());
+            }
+
+            if (e.changedType == ShaderPropertyType.Vector)
+            {
+                Vector4 nVector = (Vector4)e.newValue;
+                Vector4 oVector = (Vector4)e.originalValue;
+                if (nVector == oVector) return;
             }
 
             PropertyItem propertyItem = (sender as MonoBehaviour).GetComponentInParent<PropertyItem>();
@@ -83,30 +104,30 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             }
         }
 
-        private void OnSearchBarValueChange()
+        private void OnSearchBarValueChanged()
         {
             Main_Plugin.logger.LogInfo($"Search bar value changed!");
-            CancelInvoke(nameof(SearchItems));
-            Invoke(nameof(SearchItems), MIN_SEARCH_BAR_WAIT_TIME);
+            searchCallDelay = MIN_SEARCH_BAR_WAIT_TIME;
+            hasSearched = false;
         }
 
-        private void SearchItems()
+        private void Search()
         {
-            foreach (var propertyItem in propertyItemsParent.GetComponentsInChildren<PropertyItem>())
+            foreach (var propertyItem in propertyItemsParent.GetComponentsInChildren<PropertyItem>(true))
             {
-                if(string.IsNullOrEmpty(searchBar.text))
+                if (string.IsNullOrEmpty(searchBar.text))
                 {
                     propertyItem.gameObject.SetActive(true);
                     continue;
                 }
 
-                if(propertyItem.propertyName.Contains(searchBar.text))
+                if (propertyItem.propertyName.ToLower().Contains(searchBar.text.ToLower()))
                 {
-                    gameObject.SetActive(true);
+                    propertyItem.gameObject.SetActive(true);
                 }
                 else
                 {
-                    gameObject.SetActive(false);
+                    propertyItem.gameObject.SetActive(false);
                 }
             }
         }

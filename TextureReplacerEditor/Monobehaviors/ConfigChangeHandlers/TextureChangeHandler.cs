@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.Rendering;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace TextureReplacerEditor.Monobehaviors.ConfigChangeHandlers
@@ -16,7 +14,7 @@ namespace TextureReplacerEditor.Monobehaviors.ConfigChangeHandlers
             Texture2D oldTex = original as Texture2D;
             Texture2D newTex = changed as Texture2D;
 
-            if(original == null)
+            if (original == null)
             {
                 oldTex = nullTextureImage;
             }

@@ -35,7 +35,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
 
         public void SetWindowActive(DraggableWindow window, bool active)
         {
-            if(active && !activeWindows.Contains(window))
+            if (active && !activeWindows.Contains(window))
             {
                 activeWindows.Add(window);
             }

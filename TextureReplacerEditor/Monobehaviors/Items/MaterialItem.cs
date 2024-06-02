@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using TextureReplacerEditor.Monobehaviors.Windows;
+﻿using TextureReplacerEditor.Monobehaviors.Windows;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

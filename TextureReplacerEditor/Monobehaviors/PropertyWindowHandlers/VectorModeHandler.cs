@@ -53,7 +53,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
 
         private void OnSliderChanged()
         {
-            if(!initialized)
+            if (!initialized)
             {
                 initialized = true;
                 return;

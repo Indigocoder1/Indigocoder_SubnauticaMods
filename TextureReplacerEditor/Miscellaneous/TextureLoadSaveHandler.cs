@@ -24,7 +24,7 @@ namespace TextureReplacerEditor.Miscellaneous
                     ErrorMessage.AddError("<color=ff0000>Invalid texture save path!</color>");
                     return;
                 }
-                
+
                 byte[] texBytes = texture.BasedEncoteToPNG();
                 File.WriteAllBytes(path, texBytes);
             }
@@ -36,9 +36,9 @@ namespace TextureReplacerEditor.Miscellaneous
             ofd.Title = "Load texture from disk";
             ofd.Filter = "PNG Files|*.png";
 
-            if(ofd.ShowDialog() == DialogResult.OK)
+            if (ofd.ShowDialog() == DialogResult.OK)
             {
-                if(string.IsNullOrEmpty(ofd.FileName))
+                if (string.IsNullOrEmpty(ofd.FileName))
                 {
                     ErrorMessage.AddError("<color=ff0000>Invalid texture path!</color>");
                     return null;

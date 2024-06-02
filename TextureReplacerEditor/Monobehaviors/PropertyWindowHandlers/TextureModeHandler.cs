@@ -37,7 +37,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
 
         public void SetAsViewingTexture()
         {
-            if(texture is Texture3D)
+            if (texture is Texture3D)
             {
                 ErrorMessage.AddError("Previewing 3D textures is not supported!");
                 return;
@@ -67,7 +67,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
 
         public void SaveTextureToDisk()
         {
-            if(texture == null)
+            if (texture == null)
             {
                 ErrorMessage.AddMessage("<color=fcff00>Texture is null. Cannot save!</color>");
                 return;

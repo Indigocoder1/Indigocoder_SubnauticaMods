@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using TextureReplacerEditor.Monobehaviors.Items;
-using TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -28,6 +27,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
                 if (currentItem == null) return;
 
                 currentItem.configInfo.configName = configNameTextField.text;
+                currentItem.configNameText.text = configNameTextField.text;
             });
         }
 
@@ -45,8 +45,6 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             currentItem = configItem;
 
             MaterialWindow window = TextureReplacerEditorWindow.Instance.materialWindow;
-
-            Main_Plugin.logger.LogInfo($"Prefab identifier = {window.currentMaterialItem.prefabIdentifierRoot}");
 
             ConfigInfo info = new($"MyCoolConfig{createdItems}", window.currentMaterialItem.prefabIdentifierRoot.ClassId, window.currentMaterialItem.pathToRenderer,
                 false, 0, new List<string>(), GetCurrentWindowTextureEdits());

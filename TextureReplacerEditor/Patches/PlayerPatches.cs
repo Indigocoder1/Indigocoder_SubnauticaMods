@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using TextureReplacerEditor.Monobehaviors.Windows;
 using UnityEngine;
-using Utilities = IndigocoderLib.Utilities;
 
 namespace TextureReplacerEditor.Patches
 {
@@ -21,6 +20,11 @@ namespace TextureReplacerEditor.Patches
         private static void Update_Postfix(Player __instance)
         {
             if (!Input.GetMouseButtonDown(2)) return;
+
+            if(TextureReplacerEditorWindow.Instance && TextureReplacerEditorWindow.Instance.IsWindowActive)
+            {
+                return;
+            }
 
             RaycastHit hitInfo;
             if (!Physics.Raycast(SNCameraRoot.main.transform.position, SNCameraRoot.main.transform.forward, out hitInfo)) return;

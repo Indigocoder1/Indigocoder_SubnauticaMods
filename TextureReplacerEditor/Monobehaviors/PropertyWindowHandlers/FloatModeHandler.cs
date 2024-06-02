@@ -15,7 +15,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
 
             linkedInputSlider.OnInputValueChanged += () =>
             {
-                if(!initialized)
+                if (!initialized)
                 {
                     initialized = true;
                     return;
