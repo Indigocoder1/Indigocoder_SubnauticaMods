@@ -1,4 +1,6 @@
-﻿using TextureReplacerEditor.Monobehaviors.Windows;
+﻿using System;
+using TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers;
+using TextureReplacerEditor.Monobehaviors.Windows;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,11 +35,18 @@ namespace TextureReplacerEditor.Monobehaviors.Items
             prefabIdentifierRoot = prefabIdentifier;
             materialNameText.text = material.name;
 
-            activeColorPreview.SetActiveColor(material.color);
             activeColorPreview.OnColorChanged += () =>
             {
                 material.color = activeColorPreview.GetCurrentColor();
             };
+
+            UpdatePreviews(null, null);
+            PropertyHandler.OnPropertyChanged += UpdatePreviews;
+        }
+
+        private void UpdatePreviews(object sender, OnPropertyChangedEventArgs e)
+        {
+            activeColorPreview.SetActiveColor(material.color);
 
             if (material.HasProperty("_MainTex"))
             {

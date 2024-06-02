@@ -6,7 +6,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
 {
     internal abstract class PropertyHandler : MonoBehaviour
     {
-        public virtual event EventHandler<OnPropertyChangedEventArgs> OnPropertyChanged;
+        public static event EventHandler<OnPropertyChangedEventArgs> OnPropertyChanged;
         public abstract void SetInfo(Material material, string propertyName);
         protected bool initialized;
 

@@ -37,5 +37,10 @@ namespace TextureReplacerEditor.Monobehaviors.Items
             handler.gameObject.SetActive(true);
             handler.SetInfo(originalValue, newValue);
         }
+
+        public void RemoveChange()
+        {
+
+        }
     }
 }

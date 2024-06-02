@@ -44,12 +44,12 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             CustomConfigItem configItem = Instantiate(configItemPrefab, configsParent).GetComponent<CustomConfigItem>();
             currentItem = configItem;
 
-            MaterialWindow window = TextureReplacerEditorWindow.Instance.materialWindow;
+            MaterialWindow matWindow = TextureReplacerEditorWindow.Instance.materialWindow;
 
-            ConfigInfo info = new($"MyCoolConfig{createdItems}", window.currentMaterialItem.prefabIdentifierRoot.ClassId, window.currentMaterialItem.pathToRenderer,
+            ConfigInfo info = new($"MyCoolConfig{createdItems}", matWindow.currentMaterialItem.prefabIdentifierRoot.ClassId, matWindow.currentMaterialItem.pathToRenderer,
                 false, 0, new List<string>(), GetCurrentWindowTextureEdits());
 
-            configItem.SetInfo(info);
+            configItem.SetInfo(info, matWindow.materialEdits[matWindow.currentMaterialItem]);
             addedItems.Add(configItem);
 
             createdItems++;
@@ -87,6 +87,12 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             }
 
             return edits;
+        }
+
+        public void RemoveEdit(int editIndex)
+        {
+            currentItem.configInfo.textureEdits.RemoveAt(editIndex);
+
         }
 
         private ConfigInfo.TextureEdit GetTextureEdit(PropertyEditData editData)

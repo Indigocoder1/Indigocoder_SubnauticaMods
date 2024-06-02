@@ -6,9 +6,14 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
     {
         public ActiveColorPreview activeColorPreview;
         private Color originalColor;
+        private Material material;
+        private string colorName;
 
         public override void SetInfo(Material material, string colorName)
         {
+            this.material = material;
+            this.colorName = colorName;
+
             Color color = material.GetColor(colorName);
             activeColorPreview.SetActiveColor(color);
             originalColor = color;
@@ -29,6 +34,12 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
                     newValue = activeColorPreview.GetCurrentColor()
                 });
             };
+        }
+
+        public void UpdateColor()
+        {
+            Color color = material.GetColor(colorName);
+            activeColorPreview.SetActiveColor(color);
         }
     }
 }

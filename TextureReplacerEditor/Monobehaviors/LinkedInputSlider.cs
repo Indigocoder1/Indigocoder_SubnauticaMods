@@ -33,7 +33,7 @@ namespace TextureReplacerEditor.Monobehaviors
         public void SetInitialValue(float val)
         {
             slider.value = val;
-            preciseInputField.text = val.ToString();
+            preciseInputField.text = val.ToString($"F{decimalsToShow}");
         }
 
         public float GetCurrentValue()

@@ -1,4 +1,5 @@
-﻿using TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers;
+﻿using System;
+using TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers;
 using TextureReplacerEditor.Monobehaviors.Windows;
 using TMPro;
 using UnityEngine;
@@ -17,6 +18,8 @@ namespace TextureReplacerEditor.Monobehaviors.Items
 
         public string propertyName { get; private set; }
         public ShaderPropertyType propertyType { get; private set; }
+        private bool isMainColor;
+        private Material material;
 
         private void Awake()
         {
@@ -28,10 +31,20 @@ namespace TextureReplacerEditor.Monobehaviors.Items
 
         private void Start()
         {
-            textureModeHandler.OnPropertyChanged += TextureReplacerEditorWindow.Instance.materialWindow.OnPropertyChanged;
-            colorModeHander.OnPropertyChanged += TextureReplacerEditorWindow.Instance.materialWindow.OnPropertyChanged;
-            floatModeHandler.OnPropertyChanged += TextureReplacerEditorWindow.Instance.materialWindow.OnPropertyChanged;
-            vectorModeHandler.OnPropertyChanged += TextureReplacerEditorWindow.Instance.materialWindow.OnPropertyChanged;
+            PropertyHandler.OnPropertyChanged += TextureReplacerEditorWindow.Instance.materialWindow.OnPropertyChanged;
+        }
+
+        private void Update()
+        {
+            if (!isMainColor)
+            {
+                return;
+            }
+
+            if (material.color != (colorModeHander as ColorModeHandler).activeColorPreview.GetCurrentColor())
+            {
+                (colorModeHander as ColorModeHandler).UpdateColor();
+            }
         }
 
         public void SetInfo(ShaderPropertyType propertyType, Material material, string propertyName)
@@ -41,6 +54,7 @@ namespace TextureReplacerEditor.Monobehaviors.Items
 
             this.propertyName = propertyName;
             this.propertyType = propertyType;
+            this.material = material;
 
             switch (propertyType)
             {
@@ -65,6 +79,16 @@ namespace TextureReplacerEditor.Monobehaviors.Items
                     vectorModeHandler.SetInfo(material, propertyName);
                     break;
             }
+
+            if(propertyName == "_Color" && propertyType == ShaderPropertyType.Color)
+            {
+                isMainColor = true;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            PropertyHandler.OnPropertyChanged -= TextureReplacerEditorWindow.Instance.materialWindow.OnPropertyChanged;
         }
     }
 }

@@ -1,8 +1,9 @@
-﻿using TextureReplacerEditor.Monobehaviors.Windows;
+﻿using System.Collections.Generic;
+using TextureReplacerEditor.Monobehaviors.Windows;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
+using static TextureReplacerEditor.Monobehaviors.Windows.MaterialWindow;
 using ConfigInfo = TextureReplacer.CustomTextureReplacer.ConfigInfo;
 
 namespace TextureReplacerEditor.Monobehaviors.Items
@@ -10,6 +11,7 @@ namespace TextureReplacerEditor.Monobehaviors.Items
     internal class CustomConfigItem : MonoBehaviour
     {
         public ConfigInfo configInfo { get; private set; }
+        public List<PropertyEditData> propertyEdits { get; private set; }
 
         public TextMeshProUGUI configNameText;
         public Toggle isVariationToggle;
@@ -24,9 +26,10 @@ namespace TextureReplacerEditor.Monobehaviors.Items
             UpdateSliderInteractable();
         }
 
-        public void SetInfo(ConfigInfo info)
+        public void SetInfo(ConfigInfo info, List<PropertyEditData> edits)
         {
             configNameText.text = info.configName;
+            propertyEdits = edits;
             configInfo = info;
             isVariationToggle.isOn = configInfo.isVariation;
             variationChanceSlider.SetInitialValue(configInfo.variationChance);
