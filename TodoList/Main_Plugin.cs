@@ -105,6 +105,7 @@ namespace TodoList
             new("Emperor_Telepathic_Contact1", new[] { "OnEmperorFirstTelepathy" }, true),
             new("Goal_SecondarySystems", new[] { "OnLifepodRepaired1", "OnLifepodRepaired2" }, true),
             new("Goal_JellyCaveEntrance", new[] { "OnJellyHintGiven" }, true),
+            new("AdviseSelfScan", new[] { "OnAdviseSelfScan" }, true)
         };
 
         public struct StoryGoalTodoEntry

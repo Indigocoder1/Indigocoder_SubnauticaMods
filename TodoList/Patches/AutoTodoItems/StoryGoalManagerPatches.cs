@@ -13,7 +13,7 @@ namespace TodoList.Patches.AutoTodoItems
         {
             if (!__result) return;
 
-            Main_Plugin.logger.LogInfo($"OnGoalComplete for {key}");
+            //Main_Plugin.logger.LogInfo($"OnGoalComplete for {key}");
 
             Main_Plugin.StoryGoalTodoEntry entry = Main_Plugin.StoryGoalTodoEntries.FirstOrDefault(i => i.key == key);
 
