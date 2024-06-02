@@ -8,6 +8,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
     {
         public virtual event EventHandler<OnPropertyChangedEventArgs> OnPropertyChanged;
         public abstract void SetInfo(Material material, string propertyName);
+        protected bool initialized;
 
         protected void InvokeOnPropertyChanged(OnPropertyChangedEventArgs args)
         {
@@ -17,10 +18,8 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
 
     public class OnPropertyChangedEventArgs : EventArgs
     {
-        public object sender;
-        public object previousValue;
+        public object originalValue;
         public object newValue;
-        public int materialIndex;
         public ShaderPropertyType changedType;
     }
 }

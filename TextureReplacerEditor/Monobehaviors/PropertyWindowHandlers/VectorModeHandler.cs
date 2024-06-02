@@ -43,18 +43,26 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
 
         private void InitSliderValues(LinkedInputSlider slider, float initialValue)
         {
-            slider.SetSliderMaxValue(50);
-            slider.SetSliderMinValue(-50);
+            int valueBounds = initialValue / 10 > 1 ? 100 : 5;
+
+            slider.SetSliderMaxValue(valueBounds);
+            slider.SetSliderMinValue(-valueBounds);
             slider.SetInitialValue(initialValue);
             slider.OnInputValueChanged += () => material.SetVector(vectorName, SliderVector);
         }
 
         private void OnSliderChanged()
         {
+            if(!initialized)
+            {
+                initialized = true;
+                return;
+            }
+
             InvokeOnPropertyChanged(new()
             {
                 changedType = UnityEngine.Rendering.ShaderPropertyType.Vector,
-                previousValue = originalVector,
+                originalValue = originalVector,
                 newValue = SliderVector
             });
         }

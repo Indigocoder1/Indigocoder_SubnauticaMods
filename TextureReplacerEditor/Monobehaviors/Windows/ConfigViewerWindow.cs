@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 using static TextureReplacer.CustomTextureReplacer;
+using static TextureReplacerEditor.Monobehaviors.Windows.MaterialWindow;
 
 namespace TextureReplacerEditor.Monobehaviors.Windows
 {
@@ -17,7 +18,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         public Transform configChangesParent;
 
         private CustomConfigItem currentItem;
-        private List<CustomConfigItem> addedItems;
+        private List<CustomConfigItem> addedItems = new();
         private int createdItems;
 
         private void Start()
@@ -42,23 +43,21 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         {
             CustomConfigItem configItem = Instantiate(configItemPrefab, configsParent).GetComponent<CustomConfigItem>();
             currentItem = configItem;
+
             MaterialWindow window = TextureReplacerEditorWindow.Instance.materialWindow;
 
-            List<ConfigInfo.TextureEdit> textureEdits = new();
-            foreach (var item in window.editChanges)
-            {
-                textureEdits.Add(GetTextureEdit(item.Key));
-            }
+            Main_Plugin.logger.LogInfo($"Prefab identifier = {window.currentMaterialItem.prefabIdentifierRoot}");
 
             ConfigInfo info = new($"MyCoolConfig{createdItems}", window.currentMaterialItem.prefabIdentifierRoot.ClassId, window.currentMaterialItem.pathToRenderer,
-                false, 0, new List<string>(), textureEdits);
-            configItem.SetInfo(info);
+                false, 0, new List<string>(), GetCurrentWindowTextureEdits());
 
+            configItem.SetInfo(info);
             addedItems.Add(configItem);
 
             createdItems++;
 
             SetCurrentConfig(currentItem);
+            SpawnEditedItems();
         }
 
         private void ClearEditedItems()
@@ -71,16 +70,30 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
 
         private void SpawnEditedItems()
         {
-            foreach (var item in configsParent)
+            MaterialWindow matWindow = TextureReplacerEditorWindow.Instance.materialWindow;
+            foreach (var propertyData in matWindow.materialEdits[matWindow.currentMaterialItem])
             {
-                
+                ConfigChangeItem changeItem = Instantiate(configChangePrefab, configChangesParent).GetComponent<ConfigChangeItem>();
+                changeItem.SetInfo(propertyData.propertyName, propertyData.originalValue, propertyData.newValue, propertyData.type);
             }
         }
 
-        private ConfigInfo.TextureEdit GetTextureEdit(OnPropertyChangedEventArgs args)
+        private List<ConfigInfo.TextureEdit> GetCurrentWindowTextureEdits()
         {
-            PropertyItem propertyItem = args.sender as PropertyItem;
-            TextureEditType type = propertyItem.propertyType switch
+            MaterialWindow matWindow = TextureReplacerEditorWindow.Instance.materialWindow;
+            List<PropertyEditData> propertyData = matWindow.materialEdits[matWindow.currentMaterialItem];
+            List<ConfigInfo.TextureEdit> edits = new();
+            foreach (var data in propertyData)
+            {
+                edits.Add(GetTextureEdit(data));
+            }
+
+            return edits;
+        }
+
+        private ConfigInfo.TextureEdit GetTextureEdit(PropertyEditData editData)
+        {
+            TextureEditType type = editData.type switch
             {
                 ShaderPropertyType.Color => TextureEditType.Color,
                 ShaderPropertyType.Vector => TextureEditType.Vector,
@@ -90,17 +103,18 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
                 _ => TextureEditType.Texture
             };
 
-            string data = args.changedType switch
+            string data = editData.type switch
             {
-                ShaderPropertyType.Color => FormatColor(args.newValue),
-                ShaderPropertyType.Vector => FormatVector(args.newValue),
-                ShaderPropertyType.Float => ((float)args.newValue).ToString(),
-                ShaderPropertyType.Range => ((float)args.previousValue).ToString(),
-                ShaderPropertyType.Texture => ((Texture2D)args.newValue).name,
+                ShaderPropertyType.Color => FormatColor(editData.newValue),
+                ShaderPropertyType.Vector => FormatVector(editData.newValue),
+                ShaderPropertyType.Float => ((float)editData.newValue).ToString(),
+                ShaderPropertyType.Range => ((float)editData.newValue).ToString(),
+                ShaderPropertyType.Texture => ((Texture2D)editData.newValue).name,
                 _ => "INVALID INPUT"
             };
 
-            return new(args.materialIndex, type, propertyItem.propertyName, data);
+            MaterialWindow matWindow = TextureReplacerEditorWindow.Instance.materialWindow;
+            return new(matWindow.currentMaterialItem.MaterialIndex, type, editData.propertyName, data);
         }
 
         private string FormatColor(object val)

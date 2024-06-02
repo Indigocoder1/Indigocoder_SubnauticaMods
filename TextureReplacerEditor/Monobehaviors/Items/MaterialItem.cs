@@ -4,14 +4,20 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-using static TextureReplacer.CustomTextureReplacer;
-
 namespace TextureReplacerEditor.Monobehaviors.Items
 {
     internal class MaterialItem : MonoBehaviour
     {
         public PrefabIdentifier prefabIdentifierRoot { get; private set; }
         public string pathToRenderer { get; private set; }
+
+        public int MaterialIndex
+        {
+            get
+            {
+                return transform.GetSiblingIndex();
+            }
+        }
 
         public TextMeshProUGUI materialNameText;
         public RawImage texturePreview;
@@ -48,7 +54,7 @@ namespace TextureReplacerEditor.Monobehaviors.Items
         public void OpenMaterialWindow()
         {
             TextureReplacerEditorWindow.Instance.materialWindow.OpenWindow();
-            TextureReplacerEditorWindow.Instance.materialWindow.SetMaterial(material, transform.GetSiblingIndex(), this);
+            TextureReplacerEditorWindow.Instance.materialWindow.SetMaterial(material, this);
         }
 
         public void ViewMaterialMainTex()

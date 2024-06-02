@@ -10,7 +10,6 @@ namespace TextureReplacerEditor.Monobehaviors.Items
     internal class CustomConfigItem : MonoBehaviour
     {
         public ConfigInfo configInfo { get; private set; }
-        //public List<>
 
         public Toggle isVariationToggle;
         public LinkedInputSlider variationChanceSlider;

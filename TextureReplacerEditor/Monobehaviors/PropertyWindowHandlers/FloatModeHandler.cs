@@ -15,16 +15,24 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
 
             linkedInputSlider.OnInputValueChanged += () =>
             {
+                if(!initialized)
+                {
+                    initialized = true;
+                    return;
+                }
+
                 material.SetFloat(floatName, linkedInputSlider.GetCurrentValue());
                 InvokeOnPropertyChanged(new()
                 {
                     changedType = UnityEngine.Rendering.ShaderPropertyType.Float,
-                    previousValue = originalValue,
+                    originalValue = originalValue,
                     newValue = linkedInputSlider.GetCurrentValue()
                 });
             };
 
-            linkedInputSlider.SetSliderMaxValue(100);
+            int valueBounds = val / 10 > 1 ? 100 : 5;
+            linkedInputSlider.SetSliderMinValue(-valueBounds);
+            linkedInputSlider.SetSliderMaxValue(valueBounds);
         }
     }
 }

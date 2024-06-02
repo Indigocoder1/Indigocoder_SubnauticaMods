@@ -60,7 +60,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
             InvokeOnPropertyChanged(new()
             {
                 changedType = UnityEngine.Rendering.ShaderPropertyType.Texture,
-                previousValue = originalTexture,
+                originalValue = originalTexture,
                 newValue = tex
             });
         }

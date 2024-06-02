@@ -15,11 +15,17 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
 
             activeColorPreview.OnColorChanged += () =>
             {
+                if (!initialized)
+                {
+                    initialized = true;
+                    return;
+                }
+
                 material.SetColor(colorName, activeColorPreview.GetCurrentColor());
                 InvokeOnPropertyChanged(new()
                 {
                     changedType = UnityEngine.Rendering.ShaderPropertyType.Color,
-                    previousValue = originalColor,
+                    originalValue = originalColor,
                     newValue = activeColorPreview.GetCurrentColor()
                 });
             };
