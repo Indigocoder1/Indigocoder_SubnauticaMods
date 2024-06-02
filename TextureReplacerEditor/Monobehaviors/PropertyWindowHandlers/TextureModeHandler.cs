@@ -12,6 +12,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
         public float targetPreviewScale;
 
         private Texture texture;
+        private Texture originalTexture;
         private Material material;
         string textureName;
 
@@ -30,6 +31,8 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
             texturePreview.texture = texture;
             float texRatio = texture.width / texture.height;
             texturePreview.rectTransform.sizeDelta = new Vector2(targetPreviewScale * texRatio, targetPreviewScale);
+
+            originalTexture = texture;
         }
 
         public void SetAsViewingTexture()
@@ -53,6 +56,13 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
 
             texture = tex;
             material.SetTexture(textureName, texture);
+
+            InvokeOnPropertyChanged(new()
+            {
+                changedType = UnityEngine.Rendering.ShaderPropertyType.Texture,
+                previousValue = originalTexture,
+                newValue = tex
+            });
         }
 
         public void SaveTextureToDisk()

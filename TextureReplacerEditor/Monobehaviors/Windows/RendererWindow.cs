@@ -9,11 +9,16 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         public TextMeshProUGUI rendererNameText;
         public GameObject materialItemPrefab;
         public Transform materialItemsParent;
-        private Renderer currentRenderer;
 
-        public void SetRendererInfo(Renderer rend)
+        private Renderer currentRenderer;
+        private PrefabIdentifier prefabIdentifier;
+        private string pathToRend;
+
+        public void SetRendererInfo(Renderer rend, PrefabIdentifier prefabIdentifier, string pathToRend)
         {
             currentRenderer = rend;
+            this.pathToRend = pathToRend;
+            this.prefabIdentifier = prefabIdentifier;
 
             rendererNameText.text = rend.name;
 
@@ -27,7 +32,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             foreach (var material in currentRenderer.materials)
             {
                 MaterialItem materialItem = Instantiate(materialItemPrefab, materialItemsParent).GetComponent<MaterialItem>();
-                materialItem.SetInfo(material);
+                materialItem.SetInfo(material, prefabIdentifier, pathToRend);
             }
         }
 

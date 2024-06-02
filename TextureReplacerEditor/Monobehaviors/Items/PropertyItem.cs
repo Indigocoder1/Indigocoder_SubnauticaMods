@@ -1,4 +1,5 @@
 ﻿using TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers;
+using TextureReplacerEditor.Monobehaviors.Windows;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -14,6 +15,9 @@ namespace TextureReplacerEditor.Monobehaviors.Items
         public PropertyHandler floatModeHandler;
         public PropertyHandler vectorModeHandler;
 
+        public string propertyName { get; private set; }
+        public ShaderPropertyType propertyType { get; private set; }
+
         private void Awake()
         {
             textureModeHandler.gameObject.SetActive(false);
@@ -22,10 +26,21 @@ namespace TextureReplacerEditor.Monobehaviors.Items
             vectorModeHandler.gameObject.SetActive(false);
         }
 
+        private void Start()
+        {
+            textureModeHandler.OnPropertyChanged += TextureReplacerEditorWindow.Instance.materialWindow.OnPropertyChanged;
+            colorModeHander.OnPropertyChanged += TextureReplacerEditorWindow.Instance.materialWindow.OnPropertyChanged;
+            floatModeHandler.OnPropertyChanged += TextureReplacerEditorWindow.Instance.materialWindow.OnPropertyChanged;
+            vectorModeHandler.OnPropertyChanged += TextureReplacerEditorWindow.Instance.materialWindow.OnPropertyChanged;
+        }
+
         public void SetInfo(ShaderPropertyType propertyType, Material material, string propertyName)
         {
             propertyNameText.text = propertyName;
             propertyTypeText.text = propertyType.ToString();
+
+            this.propertyName = propertyName;
+            this.propertyType = propertyType;
 
             switch (propertyType)
             {

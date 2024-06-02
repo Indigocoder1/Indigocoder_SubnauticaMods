@@ -9,7 +9,7 @@ namespace TextureReplacerEditor
 {
     [BepInPlugin(myGUID, pluginName, versionString)]
     [BepInDependency("com.snmodding.nautilus")]
-    [BepInDependency("Indigocoder.TextureReplacer", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency("Indigocoder.TextureReplacer")]
     public class Main_Plugin : BaseUnityPlugin
     {
         private const string myGUID = "Indigocoder.TextureReplacerEditor";

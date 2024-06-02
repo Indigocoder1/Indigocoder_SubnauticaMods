@@ -30,7 +30,7 @@ namespace TextureReplacerEditor.Patches
 
             TextureReplacerEditorWindow editorWindow = Main_Plugin.CurrentEditorWindowInstance.GetComponent<TextureReplacerEditorWindow>();
             editorWindow.prefabInfoWindow.CreateChildHierarchy(prefabIdentifier.transform);
-            editorWindow.prefabInfoWindow.SetPrefabNameText(Utilities.GetNameWithCloneRemoved(prefabIdentifier.name));
+            editorWindow.prefabInfoWindow.SetPrefabIdentifier(prefabIdentifier);
 
             TextureReplacerEditorWindow.Instance.prefabInfoWindow.OpenWindow();
         }

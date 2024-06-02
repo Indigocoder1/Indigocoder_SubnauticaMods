@@ -1,23 +1,31 @@
-﻿using TextureReplacerEditor.Monobehaviors.Windows;
+﻿using System.Collections.Generic;
+using TextureReplacerEditor.Monobehaviors.Windows;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Valve.VR;
+
+using static TextureReplacer.CustomTextureReplacer;
 
 namespace TextureReplacerEditor.Monobehaviors.Items
 {
     internal class MaterialItem : MonoBehaviour
     {
+        public PrefabIdentifier prefabIdentifierRoot { get; private set; }
+        public string pathToRenderer { get; private set; }
+
         public TextMeshProUGUI materialNameText;
         public RawImage texturePreview;
         public Texture2D nullTextureImage;
         public ActiveColorPreview activeColorPreview;
+
         private Material material;
         private Texture2D mainTex;
 
-        public void SetInfo(Material material)
+        public void SetInfo(Material material, PrefabIdentifier prefabIdentifier, string pathToRenderer)
         {
             this.material = material;
+            this.pathToRenderer = pathToRenderer;
+            prefabIdentifierRoot = prefabIdentifier;
             materialNameText.text = material.name;
 
             activeColorPreview.SetActiveColor(material.color);
@@ -40,7 +48,7 @@ namespace TextureReplacerEditor.Monobehaviors.Items
         public void OpenMaterialWindow()
         {
             TextureReplacerEditorWindow.Instance.materialWindow.OpenWindow();
-            TextureReplacerEditorWindow.Instance.materialWindow.SetMaterial(material);
+            TextureReplacerEditorWindow.Instance.materialWindow.SetMaterial(material, transform.GetSiblingIndex(), this);
         }
 
         public void ViewMaterialMainTex()

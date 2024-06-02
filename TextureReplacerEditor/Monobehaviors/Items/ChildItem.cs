@@ -7,14 +7,13 @@ namespace TextureReplacerEditor.Monobehaviors.Items
     internal class ChildItem : MonoBehaviour
     {
         public GameObject originalChild { get; private set; }
+        public string pathToChild { get; private set; }
         public TextMeshProUGUI nameText;
         public RectTransform childIndexRect;
-        private PrefabInfoWindow infoWindow;
 
-        public void SetChildInfo(string name, int childIndex, GameObject originalChild, PrefabInfoWindow infoWindow)
+        public void SetChildInfo(string name, int childIndex, GameObject originalChild, string pathToChild)
         {
             nameText.text = name;
-            this.infoWindow = infoWindow;
             this.originalChild = originalChild;
 
             Vector2 sizeDelta = childIndexRect.sizeDelta;
@@ -24,7 +23,7 @@ namespace TextureReplacerEditor.Monobehaviors.Items
 
         public void SetCurrentSelectedItem()
         {
-            infoWindow.SetCurrentItem(this);
+            TextureReplacerEditorWindow.Instance.prefabInfoWindow.SetCurrentItem(this);
         }
     }
 }

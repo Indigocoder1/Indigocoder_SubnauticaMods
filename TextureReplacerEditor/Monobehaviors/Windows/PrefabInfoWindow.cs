@@ -1,4 +1,5 @@
-﻿using TextureReplacerEditor.Monobehaviors.Items;
+﻿using IndigocoderLib;
+using TextureReplacerEditor.Monobehaviors.Items;
 using TMPro;
 using UnityEngine;
 
@@ -6,35 +7,39 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
 {
     internal class PrefabInfoWindow : DraggableWindow
     {
+        public PrefabIdentifier currentPrefabIdentifier { get; private set; }
         public TextMeshProUGUI prefabNameText;
         public GameObject childItemPrefab;
         public Transform childHierarchyParent;
         public GameObject componentItemPrefab;
         public Transform componentItemsParent;
+
         private ChildItem currentItem;
 
         public void CreateChildHierarchy(Transform parent)
         {
             ClearChildHierarchy();
             ClearComponentItems();
-            RecursivelyGenChildren(parent, 0);
+            RecursivelyGenChildren(parent, 0, "");
         }
 
-        public void SetPrefabNameText(string text)
+        public void SetPrefabIdentifier(PrefabIdentifier prefabIdentifier)
         {
-            prefabNameText.text = text;
+            this.currentPrefabIdentifier = prefabIdentifier;
+            prefabNameText.text = Utilities.GetNameWithCloneRemoved(prefabIdentifier.name);
         }
 
-        private void RecursivelyGenChildren(Transform parent, int previousSiblingIndex)
+        private void RecursivelyGenChildren(Transform parent, int previousSiblingIndex, string pathToParent)
         {
             foreach (Transform child in parent)
             {
                 GameObject childItem = Instantiate(childItemPrefab, childHierarchyParent);
-                childItem.GetComponent<ChildItem>().SetChildInfo(child.name, previousSiblingIndex, child.gameObject, this);
+                string pathToChild = pathToParent + childItem.name;
+                childItem.GetComponent<ChildItem>().SetChildInfo(child.name, previousSiblingIndex, child.gameObject, pathToChild);
 
-                if(child.childCount > 0)
+                if (child.childCount > 0)
                 {
-                    RecursivelyGenChildren(child, previousSiblingIndex + 1);
+                    RecursivelyGenChildren(child, previousSiblingIndex + 1, pathToChild + "/");
                 }
             }
         }
@@ -52,7 +57,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             foreach (var component in currentItem.originalChild.GetComponentsInChildren<Component>())
             {
                 ComponentItem componentItem = Instantiate(componentItemPrefab, componentItemsParent).GetComponent<ComponentItem>();
-                componentItem.SetInfo(component);
+                componentItem.SetInfo(component, currentItem.pathToChild);
             }
         }
 

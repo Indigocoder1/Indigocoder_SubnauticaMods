@@ -20,6 +20,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         public RendererWindow rendererWindow;
         public MaterialWindow materialWindow;
         public TextureViewWindow textureViewWindow;
+        public ConfigViewerWindow configViewerWindow;
         private uGUI_InputGroup inputGroup;
 
         private void Awake()

@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <LangVersion>10.0</LangVersion>
+    <LangVersion>11.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,7 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>10.0</LangVersion>
+    <LangVersion>11.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,7 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>10.0</LangVersion>
+    <LangVersion>11.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
@@ -132,6 +132,13 @@
     <Compile Include="Main_Plugin.cs" />
     <Compile Include="Miscellaneous\TextureLoadSaveHandler.cs" />
     <Compile Include="Monobehaviors\ActiveColorPreview.cs" />
+    <Compile Include="Monobehaviors\ConfigChangeHandlers\ColorChangeHandler.cs" />
+    <Compile Include="Monobehaviors\ConfigChangeHandlers\ConfigChangeHandler.cs" />
+    <Compile Include="Monobehaviors\ConfigChangeHandlers\FloatChangeHandler.cs" />
+    <Compile Include="Monobehaviors\ConfigChangeHandlers\TextureChangeHandler.cs" />
+    <Compile Include="Monobehaviors\ConfigChangeHandlers\VectorChangeHandler.cs" />
+    <Compile Include="Monobehaviors\Items\ConfigChangeItem.cs" />
+    <Compile Include="Monobehaviors\Items\CustomConfigItem.cs" />
     <Compile Include="Monobehaviors\LinkedInputSlider.cs" />
     <Compile Include="Monobehaviors\Items\ChildItem.cs" />
     <Compile Include="Monobehaviors\Items\ComponentItem.cs" />
@@ -142,6 +149,8 @@
     <Compile Include="Monobehaviors\PropertyWindowHandlers\PropertyHandler.cs" />
     <Compile Include="Monobehaviors\PropertyWindowHandlers\TextureModeHandler.cs" />
     <Compile Include="Monobehaviors\PropertyWindowHandlers\VectorModeHandler.cs" />
+    <Compile Include="Monobehaviors\VectorDisplay.cs" />
+    <Compile Include="Monobehaviors\Windows\ConfigViewerWindow.cs" />
     <Compile Include="Monobehaviors\Windows\DraggableWindow.cs" />
     <Compile Include="Monobehaviors\Windows\DraggableWindowHandle.cs" />
     <Compile Include="Monobehaviors\Windows\MaterialWindow.cs" />

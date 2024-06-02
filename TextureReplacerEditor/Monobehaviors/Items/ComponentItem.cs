@@ -8,10 +8,12 @@ namespace TextureReplacerEditor.Monobehaviors.Items
     {
         public Component component {get; private set;}
         public TextMeshProUGUI text;
+        private string pathToComponent;
 
-        public void SetInfo(Component component)
+        public void SetInfo(Component component, string pathToComponent)
         {
             this.component = component;
+            this.pathToComponent = pathToComponent;
             text.text = component.GetType().ToString();
         }
 
@@ -23,7 +25,9 @@ namespace TextureReplacerEditor.Monobehaviors.Items
             }
 
             TextureReplacerEditorWindow.Instance.rendererWindow.OpenWindow();
-            TextureReplacerEditorWindow.Instance.rendererWindow.SetRendererInfo(component as Renderer);
+
+            PrefabIdentifier prefabIdentifier = TextureReplacerEditorWindow.Instance.prefabInfoWindow.currentPrefabIdentifier;
+            TextureReplacerEditorWindow.Instance.rendererWindow.SetRendererInfo(component as Renderer, prefabIdentifier, pathToComponent);
         }
     }
 }
