@@ -1,4 +1,5 @@
 ﻿using TextureReplacerEditor.Monobehaviors.ConfigChangeHandlers;
+using TextureReplacerEditor.Monobehaviors.Windows;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -40,7 +41,8 @@ namespace TextureReplacerEditor.Monobehaviors.Items
 
         public void RemoveChange()
         {
-
+            TextureReplacerEditorWindow.Instance.configViewerWindow.RemoveEdit(transform.GetSiblingIndex());
+            Destroy(gameObject);
         }
     }
 }

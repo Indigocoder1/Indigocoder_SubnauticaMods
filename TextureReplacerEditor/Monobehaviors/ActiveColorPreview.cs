@@ -25,6 +25,7 @@ namespace TextureReplacerEditor.Monobehaviors
             redSlider.SetInitialValue(color.r);
             greenSlider.SetInitialValue(color.g);
             blueSlider.SetInitialValue(color.b);
+            colorPreview.color = color;
             this.color = color;
         }
 

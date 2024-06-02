@@ -69,7 +69,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
         {
             if (texture == null)
             {
-                ErrorMessage.AddMessage("<color=fcff00>Texture is null. Cannot save!</color>");
+                ErrorMessage.AddMessage("<color=#FCFF00>Texture is null. Cannot save!</color>");
                 return;
             }
 

@@ -18,8 +18,8 @@ namespace TextureReplacerEditor.Monobehaviors.Items
 
         public string propertyName { get; private set; }
         public ShaderPropertyType propertyType { get; private set; }
+        public Material material { get; private set; }
         private bool isMainColor;
-        private Material material;
 
         private void Awake()
         {

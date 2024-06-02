@@ -14,6 +14,7 @@ namespace TextureReplacerEditor.Monobehaviors.Items
         public List<PropertyEditData> propertyEdits { get; private set; }
 
         public TextMeshProUGUI configNameText;
+        public TextMeshProUGUI prefabNameText;
         public Toggle isVariationToggle;
         public LinkedInputSlider variationChanceSlider;
 
@@ -26,9 +27,10 @@ namespace TextureReplacerEditor.Monobehaviors.Items
             UpdateSliderInteractable();
         }
 
-        public void SetInfo(ConfigInfo info, List<PropertyEditData> edits)
+        public void SetInfo(ConfigInfo info, List<PropertyEditData> edits, string prefabName)
         {
             configNameText.text = info.configName;
+            prefabNameText.text = prefabName;
             propertyEdits = edits;
             configInfo = info;
             isVariationToggle.isOn = configInfo.isVariation;
@@ -38,6 +40,12 @@ namespace TextureReplacerEditor.Monobehaviors.Items
         public void SetCurrentConfig()
         {
             TextureReplacerEditorWindow.Instance.configViewerWindow.SetCurrentConfig(this);
+        }
+
+        public void DeleteItem()
+        {
+            TextureReplacerEditorWindow.Instance.configViewerWindow.DeleteConfig(this);
+            Destroy(gameObject);
         }
 
         private void UpdateSliderInteractable()

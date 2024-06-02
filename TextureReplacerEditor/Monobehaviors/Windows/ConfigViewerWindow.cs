@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using IndigocoderLib;
+using System.Collections.Generic;
+using System.Drawing.Imaging;
 using TextureReplacerEditor.Monobehaviors.Items;
 using TMPro;
 using UnityEngine;
@@ -36,6 +38,12 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             currentItem = item;
             configNameTextField.text = currentItem.configInfo.configName;
 
+            SpawnEditedItems();
+        }
+
+        public void DeleteConfig(CustomConfigItem item)
+        {
+            addedItems.Remove(item);
             ClearEditedItems();
         }
 
@@ -49,7 +57,8 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             ConfigInfo info = new($"MyCoolConfig{createdItems}", matWindow.currentMaterialItem.prefabIdentifierRoot.ClassId, matWindow.currentMaterialItem.pathToRenderer,
                 false, 0, new List<string>(), GetCurrentWindowTextureEdits());
 
-            configItem.SetInfo(info, matWindow.materialEdits[matWindow.currentMaterialItem]);
+            string prefabName = Utilities.GetNameWithCloneRemoved(matWindow.currentMaterialItem.prefabIdentifierRoot.name);
+            configItem.SetInfo(info, matWindow.materialEdits[matWindow.currentMaterialItem], prefabName);
             addedItems.Add(configItem);
 
             createdItems++;
@@ -62,14 +71,16 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         {
             foreach (Transform child in configChangesParent)
             {
-                Destroy(child);
+                Destroy(child.gameObject);
             }
         }
 
         private void SpawnEditedItems()
         {
+            ClearEditedItems();
+
             MaterialWindow matWindow = TextureReplacerEditorWindow.Instance.materialWindow;
-            foreach (var propertyData in matWindow.materialEdits[matWindow.currentMaterialItem])
+            foreach (var propertyData in currentItem.propertyEdits)
             {
                 ConfigChangeItem changeItem = Instantiate(configChangePrefab, configChangesParent).GetComponent<ConfigChangeItem>();
                 changeItem.SetInfo(propertyData.propertyName, propertyData.originalValue, propertyData.newValue, propertyData.type);
@@ -79,6 +90,8 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         private List<ConfigInfo.TextureEdit> GetCurrentWindowTextureEdits()
         {
             MaterialWindow matWindow = TextureReplacerEditorWindow.Instance.materialWindow;
+            if (!matWindow.materialEdits.ContainsKey(matWindow.currentMaterialItem)) return new();
+
             List<PropertyEditData> propertyData = matWindow.materialEdits[matWindow.currentMaterialItem];
             List<ConfigInfo.TextureEdit> edits = new();
             foreach (var data in propertyData)
@@ -88,11 +101,30 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
 
             return edits;
         }
-
+        
         public void RemoveEdit(int editIndex)
         {
             currentItem.configInfo.textureEdits.RemoveAt(editIndex);
 
+            PropertyEditData editData = currentItem.propertyEdits[editIndex];
+            switch (editData.type)
+            {
+                case ShaderPropertyType.Texture:
+                    editData.propertyItem.material.SetTexture(editData.propertyName, editData.originalValue as Texture);
+                    break;
+                case ShaderPropertyType.Color:
+                    editData.propertyItem.material.SetColor(editData.propertyName, (Color)editData.originalValue);
+                    break;
+                case ShaderPropertyType.Float:
+                    editData.propertyItem.material.SetFloat(editData.propertyName, (float)editData.originalValue);
+                    break;
+                case ShaderPropertyType.Range:
+                    editData.propertyItem.material.SetFloat(editData.propertyName, (float)editData.originalValue);
+                    break;
+                case ShaderPropertyType.Vector:
+                    editData.propertyItem.material.SetVector(editData.propertyName, (Vector4)editData.originalValue);
+                    break;
+            }
         }
 
         private ConfigInfo.TextureEdit GetTextureEdit(PropertyEditData editData)
