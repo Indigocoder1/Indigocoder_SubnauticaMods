@@ -17,6 +17,14 @@ namespace TextureReplacerEditor.Monobehaviors.Items
         public ConfigChangeHandler floatChangeHandler;
         public ConfigChangeHandler vectorChangeHandler;
 
+        public int EditIndex
+        {
+            get
+            {
+                return transform.GetSiblingIndex();
+            }
+        }
+
         private void Awake()
         {
             textureChangeHandler.gameObject.SetActive(false);
@@ -56,7 +64,7 @@ namespace TextureReplacerEditor.Monobehaviors.Items
                 editDataList.Value.Remove(entry);
             }
 
-            TextureReplacerEditorWindow.Instance.configViewerWindow.RemoveEdit(transform.GetSiblingIndex());
+            TextureReplacerEditorWindow.Instance.configViewerWindow.RemoveEdit(this);
             Destroy(gameObject);
         }
     }

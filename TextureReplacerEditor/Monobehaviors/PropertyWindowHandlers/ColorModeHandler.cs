@@ -43,7 +43,14 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
         public void UpdateColor()
         {
             Color color = material.GetColor(colorName);
+            if (activeColorPreview.GetCurrentColor().Equals(color)) return;
+
             activeColorPreview.SetActiveColor(color);
+        }
+
+        public override void UpdateMaterial()
+        {
+            activeColorPreview.SetActiveColor(material.GetColor(colorName));
         }
     }
 }

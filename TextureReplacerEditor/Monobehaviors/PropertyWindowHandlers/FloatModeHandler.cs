@@ -6,9 +6,14 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
     {
         public LinkedInputSlider linkedInputSlider;
         private float originalValue;
+        private Material material;
+        private string floatName;
 
         public override void SetInfo(Material material, string floatName, object overrideOriginal = null)
         {
+            this.material = material;
+            this.floatName = floatName;
+
             float val = 0;
             if (overrideOriginal == null)
             {
@@ -37,6 +42,14 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
             int valueBounds = val / 10 > 1 ? 100 : 5;
             linkedInputSlider.SetSliderMinValue(-valueBounds);
             linkedInputSlider.SetSliderMaxValue(valueBounds);
+        }
+
+        public override void UpdateMaterial()
+        {
+            float val = material.GetFloat(floatName);
+            if (linkedInputSlider.GetCurrentValue() == val) return;
+
+            linkedInputSlider.SetInitialValue(val);
         }
     }
 }

@@ -12,6 +12,7 @@ namespace TextureReplacerEditor.Monobehaviors
         public LinkedInputSlider blueSlider;
         public Image colorPreview;
         private Color color;
+        private int currentIgnoreOnChangeCount;
 
         private void Start()
         {
@@ -22,6 +23,7 @@ namespace TextureReplacerEditor.Monobehaviors
 
         public void SetActiveColor(Color color)
         {
+            currentIgnoreOnChangeCount = 0;
             redSlider.SetInitialValue(color.r);
             greenSlider.SetInitialValue(color.g);
             blueSlider.SetInitialValue(color.b);
@@ -43,6 +45,12 @@ namespace TextureReplacerEditor.Monobehaviors
             if (color == null) return;
 
             colorPreview.color = new Color(redSlider.slider.value, greenSlider.slider.value, blueSlider.slider.value);
+
+            if(currentIgnoreOnChangeCount <= 1)
+            {
+                currentIgnoreOnChangeCount++;
+                return;
+            }
             OnColorChanged?.Invoke();
         }
     }

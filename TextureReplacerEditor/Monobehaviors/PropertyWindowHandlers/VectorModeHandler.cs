@@ -1,5 +1,4 @@
-﻿using rail;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
 {
@@ -10,8 +9,8 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
         public LinkedInputSlider zSlider;
         public LinkedInputSlider wSlider;
 
-        private Material material;
         private Vector4 originalVector;
+        private Material material;
         private string vectorName;
 
         private Vector4 SliderVector
@@ -69,6 +68,17 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
             }
 
             InvokeOnPropertyChanged(new(originalVector, SliderVector, UnityEngine.Rendering.ShaderPropertyType.Vector));
+        }
+
+        public override void UpdateMaterial()
+        {
+            Vector4 vector = material.GetVector(vectorName);
+            if (vector.Equals(SliderVector)) return;
+
+            InitSliderValues(xSlider, vector.x);
+            InitSliderValues(ySlider, vector.y);
+            InitSliderValues(zSlider, vector.z);
+            InitSliderValues(wSlider, vector.w);
         }
     }
 }

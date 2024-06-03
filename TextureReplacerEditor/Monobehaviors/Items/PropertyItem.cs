@@ -19,7 +19,9 @@ namespace TextureReplacerEditor.Monobehaviors.Items
         public string propertyName { get; private set; }
         public ShaderPropertyType propertyType { get; private set; }
         public Material material { get; private set; }
+
         private bool isMainColor;
+        private PropertyHandler activeHandler;
 
         private void Awake()
         {
@@ -32,6 +34,7 @@ namespace TextureReplacerEditor.Monobehaviors.Items
         private void Start()
         {
             PropertyHandler.OnPropertyChanged += TextureReplacerEditorWindow.Instance.materialWindow.OnPropertyChanged;
+            TextureReplacerEditorWindow.Instance.configViewerWindow.OnChangeDeleted += UpdateHandlerValues;
         }
 
         private void Update()
@@ -56,29 +59,18 @@ namespace TextureReplacerEditor.Monobehaviors.Items
             this.propertyType = propertyType;
             this.material = material;
 
-            switch (propertyType)
+            activeHandler = propertyType switch
             {
-                case ShaderPropertyType.Texture:
-                    textureModeHandler.gameObject.SetActive(true);
-                    textureModeHandler.SetInfo(material, propertyName, overrideOriginal);
-                    break;
-                case ShaderPropertyType.Color:
-                    colorModeHander.gameObject.SetActive(true);
-                    colorModeHander.SetInfo(material, propertyName, overrideOriginal);
-                    break;
-                case ShaderPropertyType.Float:
-                    floatModeHandler.gameObject.SetActive(true);
-                    floatModeHandler.SetInfo(material, propertyName, overrideOriginal);
-                    break;
-                case ShaderPropertyType.Range:
-                    floatModeHandler.gameObject.SetActive(true);
-                    floatModeHandler.SetInfo(material, propertyName, overrideOriginal);
-                    break;
-                case ShaderPropertyType.Vector:
-                    vectorModeHandler.gameObject.SetActive(true);
-                    vectorModeHandler.SetInfo(material, propertyName, overrideOriginal);
-                    break;
-            }
+                ShaderPropertyType.Texture => textureModeHandler,
+                ShaderPropertyType.Color => colorModeHander,
+                ShaderPropertyType.Range => floatModeHandler,
+                ShaderPropertyType.Float => floatModeHandler,
+                ShaderPropertyType.Vector => vectorModeHandler,
+                _ => null
+            };
+
+            activeHandler.gameObject.SetActive(true);
+            activeHandler.SetInfo(material, propertyName, overrideOriginal);
 
             if(propertyName == "_Color" && propertyType == ShaderPropertyType.Color)
             {
@@ -89,6 +81,12 @@ namespace TextureReplacerEditor.Monobehaviors.Items
         private void OnDestroy()
         {
             PropertyHandler.OnPropertyChanged -= TextureReplacerEditorWindow.Instance.materialWindow.OnPropertyChanged;
+            TextureReplacerEditorWindow.Instance.configViewerWindow.OnChangeDeleted -= UpdateHandlerValues;
+        }
+
+        private void UpdateHandlerValues()
+        {
+            activeHandler.UpdateMaterial();
         }
     }
 }

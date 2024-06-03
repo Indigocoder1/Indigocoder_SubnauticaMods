@@ -1,11 +1,10 @@
 ﻿using IndigocoderLib;
+using System;
 using System.Collections.Generic;
-using System.Drawing.Imaging;
 using TextureReplacerEditor.Monobehaviors.Items;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
-using Valve.VR;
 using static TextureReplacer.CustomTextureReplacer;
 using static TextureReplacerEditor.Monobehaviors.Windows.MaterialWindow;
 
@@ -13,6 +12,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
 {
     internal class ConfigViewerWindow : DraggableWindow
     {
+        public event Action OnChangeDeleted;
         public List<CustomConfigItem> addedItems { get; private set; } = new();
 
         public TMP_InputField configNameTextField;
@@ -61,8 +61,8 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
                 false, 0, new List<string>(), GetTextureEdits(matWindow.CurrentMaterialEditData));
 
             string prefabName = Utilities.GetNameWithCloneRemoved(matWindow.currentMaterialItem.prefabIdentifierRoot.name);
-            bool hasCurrentItem = matWindow.materialEdits.ContainsKey(matWindow.CurrentMaterialEditData);
-            List<PropertyEditData> edits = hasCurrentItem ? matWindow.materialEdits[matWindow.CurrentMaterialEditData] : new();
+            bool currentWindowHasEdits = matWindow.materialEdits.ContainsKey(matWindow.CurrentMaterialEditData);
+            List<PropertyEditData> edits = currentWindowHasEdits ? matWindow.materialEdits[matWindow.CurrentMaterialEditData] : new();
 
             configItem.SetInfo(info, edits, prefabName, matWindow.CurrentMaterialEditData);
             addedItems.Add(configItem);
@@ -114,12 +114,13 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             return edits;
         }
         
-        public void RemoveEdit(int editIndex)
+        public void RemoveEdit(ConfigChangeItem item)
         {
-            currentItem.configInfo.textureEdits.RemoveAt(editIndex);
-            Main_Plugin.logger.LogInfo($"Property edits length = {currentItem.propertyEdits.Count} | Index = {editIndex}");
+            currentItem.configInfo.textureEdits.RemoveAt(item.EditIndex);
+            currentItem.propertyEdits.Remove(item.propertyEditData);
+            OnChangeDeleted?.Invoke();
 
-            PropertyEditData editData = currentItem.propertyEdits[editIndex];
+            PropertyEditData editData = item.propertyEditData;
             switch (editData.type)
             {
                 case ShaderPropertyType.Texture:

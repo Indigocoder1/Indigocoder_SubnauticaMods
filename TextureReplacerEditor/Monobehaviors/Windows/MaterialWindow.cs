@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TextureReplacerEditor.Monobehaviors.Items;
 using TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers;
@@ -88,14 +87,18 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
                 materialEdits.Add(CurrentMaterialEditData, new List<PropertyEditData>());
             }
 
-            if (e.changedType == ShaderPropertyType.Vector)
+            PropertyItem propertyItem = (sender as MonoBehaviour).GetComponentInParent<PropertyItem>();
+            if (e.originalValue.Equals(e.newValue))
             {
-                Vector4 nVector = (Vector4)e.newValue;
-                Vector4 oVector = (Vector4)e.originalValue;
-                if (nVector == oVector) return;
+                if(materialEdits[CurrentMaterialEditData].Any(i => i.propertyItem.propertyName == propertyItem.propertyName))
+                {
+                    PropertyEditData item = materialEdits[CurrentMaterialEditData].First(i => i.propertyItem.propertyName == propertyItem.propertyName);
+                    materialEdits[CurrentMaterialEditData].Remove(item);
+                }
+
+                return;
             }
 
-            PropertyItem propertyItem = (sender as MonoBehaviour).GetComponentInParent<PropertyItem>();
             if (materialEdits[CurrentMaterialEditData].Any(i => i.propertyItem.propertyName == propertyItem.propertyName))
             {
                 PropertyEditData item = materialEdits[CurrentMaterialEditData].First(i => i.propertyItem.propertyName == propertyItem.propertyName);

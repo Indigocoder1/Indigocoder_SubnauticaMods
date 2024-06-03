@@ -14,6 +14,8 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
         {
             OnPropertyChanged?.Invoke(this, args);
         }
+
+        public abstract void UpdateMaterial();
     }
 
     public class OnPropertyChangedEventArgs : EventArgs

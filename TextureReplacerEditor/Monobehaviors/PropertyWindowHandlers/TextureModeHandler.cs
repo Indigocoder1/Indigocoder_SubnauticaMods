@@ -37,9 +37,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
                 return;
             }
 
-            texturePreview.texture = texture;
-            float texRatio = texture.width / texture.height;
-            texturePreview.rectTransform.sizeDelta = new Vector2(targetPreviewScale * texRatio, targetPreviewScale);
+            UpdateTexturePreview();
         }
 
         public void SetAsViewingTexture()
@@ -76,6 +74,21 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
             }
 
             TextureLoadSaveHandler.SaveTexture(texture);
+        }
+
+        public override void UpdateMaterial()
+        {
+            Texture texture = material.GetTexture(textureName);
+            if(texture == this.texture) return;
+
+            UpdateTexturePreview();
+        }
+
+        private void UpdateTexturePreview()
+        {
+            texturePreview.texture = texture;
+            float texRatio = texture.width / texture.height;
+            texturePreview.rectTransform.sizeDelta = new Vector2(targetPreviewScale * texRatio, targetPreviewScale);
         }
     }
 }

@@ -12,19 +12,32 @@ namespace TextureReplacerEditor.Monobehaviors
         public Slider slider;
         public TMP_InputField preciseInputField;
         public int decimalsToShow;
+        private int bufferedIgnoreChangeCount;
 
         private void Start()
         {
             slider.onValueChanged.AddListener((_) =>
             {
-                OnInputValueChanged?.Invoke();
                 UpdateInputText();
+                if (bufferedIgnoreChangeCount <= 1)
+                {
+                    bufferedIgnoreChangeCount++;
+                    return;
+                }
+
+                OnInputValueChanged?.Invoke();
             });
 
             preciseInputField.onValueChanged.AddListener((_) =>
             {
-                OnInputValueChanged?.Invoke();
                 UpdateSliderVal();
+                if (bufferedIgnoreChangeCount <= 1)
+                {
+                    bufferedIgnoreChangeCount++;
+                    return;
+                }
+
+                OnInputValueChanged?.Invoke();
             });
 
             preciseInputField.text = slider.value.ToString($"F{decimalsToShow}");
@@ -32,6 +45,7 @@ namespace TextureReplacerEditor.Monobehaviors
 
         public void SetInitialValue(float val)
         {
+            bufferedIgnoreChangeCount = 0;
             slider.value = val;
             preciseInputField.text = val.ToString($"F{decimalsToShow}");
         }
