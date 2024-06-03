@@ -14,7 +14,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         public GameObject componentItemPrefab;
         public Transform componentItemsParent;
 
-        private ChildItem currentItem;
+        private ChildItem currentItem;  
 
         public void CreateChildHierarchy(Transform parent)
         {
@@ -34,7 +34,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             foreach (Transform child in parent)
             {
                 GameObject childItem = Instantiate(childItemPrefab, childHierarchyParent);
-                string pathToChild = pathToParent + childItem.name;
+                string pathToChild = pathToParent + child.name;
                 childItem.GetComponent<ChildItem>().SetChildInfo(child.name, previousSiblingIndex, child.gameObject, pathToChild);
 
                 if (child.childCount > 0)
@@ -53,6 +53,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         private void SpawnComponentItems()
         {
             ClearComponentItems();
+            Main_Plugin.logger.LogInfo($"Current item = {currentItem} | Path to child = {currentItem.pathToChild}");
 
             foreach (var component in currentItem.originalChild.GetComponentsInChildren<Component>())
             {

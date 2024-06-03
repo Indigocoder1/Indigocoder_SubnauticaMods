@@ -16,9 +16,18 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
         private Material material;
         string textureName;
 
-        public override void SetInfo(Material material, string textureName)
+        public override void SetInfo(Material material, string textureName, object overrideValue = null)
         {
-            texture = material.GetTexture(textureName);
+            texture = null;
+            if (overrideValue == null)
+            {
+                texture = material.GetTexture(textureName);
+            }
+            else
+            {
+                texture = (Texture)overrideValue;
+            }
+
             this.material = material;
             this.textureName = textureName;
 
@@ -31,8 +40,6 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
             texturePreview.texture = texture;
             float texRatio = texture.width / texture.height;
             texturePreview.rectTransform.sizeDelta = new Vector2(targetPreviewScale * texRatio, targetPreviewScale);
-
-            originalTexture = texture;
         }
 
         public void SetAsViewingTexture()
@@ -57,12 +64,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
             texture = tex;
             material.SetTexture(textureName, texture);
 
-            InvokeOnPropertyChanged(new()
-            {
-                changedType = UnityEngine.Rendering.ShaderPropertyType.Texture,
-                originalValue = originalTexture,
-                newValue = tex
-            });
+            InvokeOnPropertyChanged(new(originalTexture, tex, UnityEngine.Rendering.ShaderPropertyType.Texture));
         }
 
         public void SaveTextureToDisk()

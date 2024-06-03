@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using rail;
+using UnityEngine;
 
 namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
 {
@@ -29,11 +30,19 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
             wSlider.OnInputValueChanged += OnSliderChanged;
         }
 
-        public override void SetInfo(Material material, string vectorName)
+        public override void SetInfo(Material material, string vectorName, object overrideValue = null)
         {
-            Vector4 vector = material.GetVector(vectorName);
-            originalVector = vector;
+            Vector4 vector = Vector4.zero;
+            if (overrideValue != null)
+            {
+                vector = (Vector4)overrideValue;
+            }
+            else
+            {
+                vector = material.GetVector(vectorName);
+            }
 
+            originalVector = vector;
             this.material = material;
             InitSliderValues(xSlider, vector.x);
             InitSliderValues(ySlider, vector.y);
@@ -59,12 +68,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
                 return;
             }
 
-            InvokeOnPropertyChanged(new()
-            {
-                changedType = UnityEngine.Rendering.ShaderPropertyType.Vector,
-                originalValue = originalVector,
-                newValue = SliderVector
-            });
+            InvokeOnPropertyChanged(new(originalVector, SliderVector, UnityEngine.Rendering.ShaderPropertyType.Vector));
         }
     }
 }

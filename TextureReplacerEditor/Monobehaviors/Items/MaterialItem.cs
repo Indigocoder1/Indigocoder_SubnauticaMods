@@ -20,20 +20,22 @@ namespace TextureReplacerEditor.Monobehaviors.Items
             }
         }
 
+        public Material material { get; private set; }
         public TextMeshProUGUI materialNameText;
         public RawImage texturePreview;
         public Texture2D nullTextureImage;
         public ActiveColorPreview activeColorPreview;
 
-        private Material material;
         private Texture2D mainTex;
 
         public void SetInfo(Material material, PrefabIdentifier prefabIdentifier, string pathToRenderer)
         {
+            Main_Plugin.logger.LogInfo($"Setting path to rend to {pathToRenderer} on {gameObject}");
+
             this.material = material;
             this.pathToRenderer = pathToRenderer;
             prefabIdentifierRoot = prefabIdentifier;
-            materialNameText.text = material.name;
+            materialNameText.text = material.name.Remove(material.name.Length - 9) + $"{transform.GetSiblingIndex()})";
 
             activeColorPreview.OnColorChanged += () =>
             {

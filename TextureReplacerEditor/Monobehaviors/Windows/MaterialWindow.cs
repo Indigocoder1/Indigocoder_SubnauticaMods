@@ -14,32 +14,64 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         private const float MIN_SEARCH_BAR_WAIT_TIME = 0.5f;
 
         public MaterialItem currentMaterialItem { get; private set; }
-        public Dictionary<MaterialItem, List<PropertyEditData>> materialEdits { get; private set; } = new();
+        public Dictionary<MaterialEditData, List<PropertyEditData>> materialEdits { get; private set; } = new();
+        public MaterialEditData CurrentMaterialEditData
+        {
+            get
+            {
+                if(currentMaterialItem)
+                {
+                    return new(currentMaterialItem.material, currentMaterialItem.MaterialIndex);
+                }
+
+                return _currentMaterialEditData;
+            }
+            private set
+            {
+                _currentMaterialEditData = value;
+            }
+        }
+
+        private MaterialEditData _currentMaterialEditData;
 
         public TMP_InputField searchBar;
         public GameObject propertyItemPrefab;
         public Transform propertyItemsParent;
 
         private Material material;
-        private float searchCallDelay;
+        private float currentSearchCallDelay;
         private bool hasSearched;
+        private bool overrideEditData;
 
         public void SetMaterial(Material material, MaterialItem item)
         {
             this.material = material;
             currentMaterialItem = item;
+            overrideEditData = false;
             SpawnPropertyItems();
 
+            CurrentMaterialEditData = new(item.material, item.MaterialIndex);
+            searchBar.onValueChanged.AddListener((_) => OnSearchBarValueChanged());
+        }
+
+        public void SetMaterial(Material material, MaterialEditData editData)
+        {
+            this.material = material;
+            currentMaterialItem = null;
+            overrideEditData = true;
+            SpawnPropertyItems();
+
+            CurrentMaterialEditData = new(editData.material, editData.materialIndex);
             searchBar.onValueChanged.AddListener((_) => OnSearchBarValueChanged());
         }
 
         private void Update()
         {
-            if(searchCallDelay > 0)
+            if(currentSearchCallDelay > 0)
             {
-                searchCallDelay -= Time.unscaledDeltaTime;
+                currentSearchCallDelay -= Time.unscaledDeltaTime;
             }
-            else if(searchCallDelay <= 0 && !hasSearched)
+            else if(currentSearchCallDelay <= 0 && !hasSearched)
             {
                 Search();
 
@@ -49,11 +81,11 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
 
         public void OnPropertyChanged(object sender, OnPropertyChangedEventArgs e)
         {
-            if (currentMaterialItem == null) return;
+            if (currentMaterialItem == null && !overrideEditData) return;
 
-            if (!materialEdits.ContainsKey(currentMaterialItem))
+            if (!materialEdits.ContainsKey(CurrentMaterialEditData))
             {
-                materialEdits.Add(currentMaterialItem, new List<PropertyEditData>());
+                materialEdits.Add(CurrentMaterialEditData, new List<PropertyEditData>());
             }
 
             if (e.changedType == ShaderPropertyType.Vector)
@@ -64,22 +96,32 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             }
 
             PropertyItem propertyItem = (sender as MonoBehaviour).GetComponentInParent<PropertyItem>();
-            if (materialEdits[currentMaterialItem].Any(i => i.propertyItem == propertyItem))
+            if (materialEdits[CurrentMaterialEditData].Any(i => i.propertyItem.propertyName == propertyItem.propertyName))
             {
-                PropertyEditData item = materialEdits[currentMaterialItem].First(i => i.propertyItem == propertyItem);
-                int index = materialEdits[currentMaterialItem].IndexOf(item);
-                materialEdits[currentMaterialItem][index] = new PropertyEditData(propertyItem, e.originalValue, e.newValue, propertyItem.propertyName, e.changedType);
+                PropertyEditData item = materialEdits[CurrentMaterialEditData].First(i => i.propertyItem.propertyName == propertyItem.propertyName);
+                int index = materialEdits[CurrentMaterialEditData].IndexOf(item);
+                materialEdits[CurrentMaterialEditData][index] = new PropertyEditData(propertyItem, e.originalValue, e.newValue, propertyItem.propertyName, e.changedType);
             }
             else
             {
-                materialEdits[currentMaterialItem].Add(new PropertyEditData(propertyItem, e.originalValue, e.newValue, propertyItem.propertyName, e.changedType));
+                materialEdits[CurrentMaterialEditData].Add(new PropertyEditData(propertyItem, e.originalValue, e.newValue, propertyItem.propertyName, e.changedType));
             }
         }
 
         public void OpenConfigWindow()
         {
-            TextureReplacerEditorWindow.Instance.configViewerWindow.OpenWindow();
-            TextureReplacerEditorWindow.Instance.configViewerWindow.AddConfigItem();
+            ConfigViewerWindow configWindow = TextureReplacerEditorWindow.Instance.configViewerWindow;
+            configWindow.OpenWindow();
+
+            if(!configWindow.addedItems.Any(i => i.materialEditData.Equals(CurrentMaterialEditData)))
+            {
+                configWindow.AddConfigItem();
+            }
+            else
+            {
+                CustomConfigItem item = configWindow.addedItems.First(i => i.materialEditData.Equals(CurrentMaterialEditData));
+                configWindow.UpdateConfigItem(item);
+            }
         }
 
         private void ClearPropertyItems()
@@ -100,14 +142,24 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
                 ShaderPropertyType type = material.shader.GetPropertyType(i);
                 string propertyName = material.shader.GetPropertyName(i);
                 PropertyItem propertyItem = Instantiate(propertyItemPrefab, propertyItemsParent).GetComponent<PropertyItem>();
-                propertyItem.SetInfo(type, material, propertyName);
+
+                if(materialEdits.Any(i => i.Value.Any(a => a.propertyName == propertyName)))
+                {
+                    List<PropertyEditData> editDatas = materialEdits.FirstOrDefault(i => i.Value.Any(a => a.propertyName == propertyName)).Value;
+                    PropertyEditData data = editDatas.FirstOrDefault(i => i.propertyName == propertyName);
+                    propertyItem.SetInfo(type, material, propertyName, data.originalValue);
+                }
+                else
+                {
+                    propertyItem.SetInfo(type, material, propertyName);
+                }
             }
         }
 
         private void OnSearchBarValueChanged()
         {
             Main_Plugin.logger.LogInfo($"Search bar value changed!");
-            searchCallDelay = MIN_SEARCH_BAR_WAIT_TIME;
+            currentSearchCallDelay = MIN_SEARCH_BAR_WAIT_TIME;
             hasSearched = false;
         }
 
@@ -147,6 +199,18 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
                 this.newValue = newValue;
                 this.propertyName = propertyName;
                 this.type = type;
+            }
+        }
+
+        public struct MaterialEditData
+        {
+            public Material material;
+            public int materialIndex;
+
+            public MaterialEditData(Material material, int index)
+            {
+                this.material = material;
+                this.materialIndex = index;
             }
         }
     }

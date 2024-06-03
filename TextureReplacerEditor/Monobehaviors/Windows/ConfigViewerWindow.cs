@@ -5,6 +5,7 @@ using TextureReplacerEditor.Monobehaviors.Items;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Valve.VR;
 using static TextureReplacer.CustomTextureReplacer;
 using static TextureReplacerEditor.Monobehaviors.Windows.MaterialWindow;
 
@@ -12,6 +13,8 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
 {
     internal class ConfigViewerWindow : DraggableWindow
     {
+        public List<CustomConfigItem> addedItems { get; private set; } = new();
+
         public TMP_InputField configNameTextField;
         public GameObject configItemPrefab;
         public Transform configsParent;
@@ -19,7 +22,6 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         public Transform configChangesParent;
 
         private CustomConfigItem currentItem;
-        private List<CustomConfigItem> addedItems = new();
         private int createdItems;
 
         private void Start()
@@ -44,6 +46,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         public void DeleteConfig(CustomConfigItem item)
         {
             addedItems.Remove(item);
+            createdItems--;
             ClearEditedItems();
         }
 
@@ -55,16 +58,25 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             MaterialWindow matWindow = TextureReplacerEditorWindow.Instance.materialWindow;
 
             ConfigInfo info = new($"MyCoolConfig{createdItems}", matWindow.currentMaterialItem.prefabIdentifierRoot.ClassId, matWindow.currentMaterialItem.pathToRenderer,
-                false, 0, new List<string>(), GetCurrentWindowTextureEdits());
+                false, 0, new List<string>(), GetTextureEdits(matWindow.CurrentMaterialEditData));
 
             string prefabName = Utilities.GetNameWithCloneRemoved(matWindow.currentMaterialItem.prefabIdentifierRoot.name);
-            configItem.SetInfo(info, matWindow.materialEdits[matWindow.currentMaterialItem], prefabName);
+            bool hasCurrentItem = matWindow.materialEdits.ContainsKey(matWindow.CurrentMaterialEditData);
+            List<PropertyEditData> edits = hasCurrentItem ? matWindow.materialEdits[matWindow.CurrentMaterialEditData] : new();
+
+            configItem.SetInfo(info, edits, prefabName, matWindow.CurrentMaterialEditData);
             addedItems.Add(configItem);
 
             createdItems++;
 
             SetCurrentConfig(currentItem);
             SpawnEditedItems();
+        }
+
+        public void UpdateConfigItem(CustomConfigItem item)
+        {
+            item.configInfo.textureEdits = GetTextureEdits(item.materialEditData);
+            SetCurrentConfig(item);
         }
 
         private void ClearEditedItems()
@@ -87,16 +99,16 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             }
         }
 
-        private List<ConfigInfo.TextureEdit> GetCurrentWindowTextureEdits()
+        private List<ConfigInfo.TextureEdit> GetTextureEdits(MaterialEditData editMaterialData)
         {
             MaterialWindow matWindow = TextureReplacerEditorWindow.Instance.materialWindow;
-            if (!matWindow.materialEdits.ContainsKey(matWindow.currentMaterialItem)) return new();
+            if (!matWindow.materialEdits.ContainsKey(editMaterialData)) return new();
 
-            List<PropertyEditData> propertyData = matWindow.materialEdits[matWindow.currentMaterialItem];
+            List<PropertyEditData> propertyData = matWindow.materialEdits[editMaterialData];
             List<ConfigInfo.TextureEdit> edits = new();
             foreach (var data in propertyData)
             {
-                edits.Add(GetTextureEdit(data));
+                edits.Add(GetTextureEdit(data, editMaterialData));
             }
 
             return edits;
@@ -127,7 +139,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             }
         }
 
-        private ConfigInfo.TextureEdit GetTextureEdit(PropertyEditData editData)
+        private ConfigInfo.TextureEdit GetTextureEdit(PropertyEditData editData, MaterialEditData materialData)
         {
             TextureEditType type = editData.type switch
             {
@@ -149,8 +161,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
                 _ => "INVALID INPUT"
             };
 
-            MaterialWindow matWindow = TextureReplacerEditorWindow.Instance.materialWindow;
-            return new(matWindow.currentMaterialItem.MaterialIndex, type, editData.propertyName, data);
+            return new(materialData.materialIndex, type, editData.propertyName, data);
         }
 
         private string FormatColor(object val)

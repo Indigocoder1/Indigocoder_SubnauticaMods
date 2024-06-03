@@ -21,16 +21,11 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         public MaterialWindow materialWindow;
         public TextureViewWindow textureViewWindow;
         public ConfigViewerWindow configViewerWindow;
-        private uGUI_InputGroup inputGroup;
+        public InfoMessageWindow messageWindow;
 
         private void Awake()
         {
             Instance = this;
-        }
-
-        private void Start()
-        {
-            inputGroup = GetComponent<uGUI_InputGroup>();
         }
 
         public void SetWindowActive(DraggableWindow window, bool active)

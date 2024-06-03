@@ -9,12 +9,21 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
         private Material material;
         private string colorName;
 
-        public override void SetInfo(Material material, string colorName)
+        public override void SetInfo(Material material, string colorName, object overrideOriginal = null)
         {
             this.material = material;
             this.colorName = colorName;
 
-            Color color = material.GetColor(colorName);
+            Color color = Color.white;
+            if (overrideOriginal == null)
+            {
+                color = material.GetColor(colorName);
+            }
+            else
+            {
+                color = (Color)overrideOriginal;
+            }
+             
             activeColorPreview.SetActiveColor(color);
             originalColor = color;
 
@@ -27,12 +36,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
                 }
 
                 material.SetColor(colorName, activeColorPreview.GetCurrentColor());
-                InvokeOnPropertyChanged(new()
-                {
-                    changedType = UnityEngine.Rendering.ShaderPropertyType.Color,
-                    originalValue = originalColor,
-                    newValue = activeColorPreview.GetCurrentColor()
-                });
+                InvokeOnPropertyChanged(new(originalColor, activeColorPreview.GetCurrentColor(), UnityEngine.Rendering.ShaderPropertyType.Color));
             };
         }
 

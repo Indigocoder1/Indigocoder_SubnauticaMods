@@ -7,9 +7,18 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
         public LinkedInputSlider linkedInputSlider;
         private float originalValue;
 
-        public override void SetInfo(Material material, string floatName)
+        public override void SetInfo(Material material, string floatName, object overrideOriginal = null)
         {
-            float val = material.GetFloat(floatName);
+            float val = 0;
+            if (overrideOriginal == null)
+            {
+                val = material.GetFloat(floatName);
+            }
+            else
+            {
+                val = (float)overrideOriginal;
+            }
+            
             linkedInputSlider.SetInitialValue(val);
             originalValue = val;
 
@@ -22,12 +31,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
                 }
 
                 material.SetFloat(floatName, linkedInputSlider.GetCurrentValue());
-                InvokeOnPropertyChanged(new()
-                {
-                    changedType = UnityEngine.Rendering.ShaderPropertyType.Float,
-                    originalValue = originalValue,
-                    newValue = linkedInputSlider.GetCurrentValue()
-                });
+                InvokeOnPropertyChanged(new(originalValue, linkedInputSlider.GetCurrentValue(), UnityEngine.Rendering.ShaderPropertyType.Float));
             };
 
             int valueBounds = val / 10 > 1 ? 100 : 5;

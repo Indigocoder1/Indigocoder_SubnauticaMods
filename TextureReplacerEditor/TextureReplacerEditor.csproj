@@ -137,6 +137,7 @@
     <Compile Include="Monobehaviors\ConfigChangeHandlers\FloatChangeHandler.cs" />
     <Compile Include="Monobehaviors\ConfigChangeHandlers\TextureChangeHandler.cs" />
     <Compile Include="Monobehaviors\ConfigChangeHandlers\VectorChangeHandler.cs" />
+    <Compile Include="Monobehaviors\ConfigExporter.cs" />
     <Compile Include="Monobehaviors\Items\ConfigChangeItem.cs" />
     <Compile Include="Monobehaviors\Items\CustomConfigItem.cs" />
     <Compile Include="Monobehaviors\LinkedInputSlider.cs" />
@@ -153,6 +154,7 @@
     <Compile Include="Monobehaviors\Windows\ConfigViewerWindow.cs" />
     <Compile Include="Monobehaviors\Windows\DraggableWindow.cs" />
     <Compile Include="Monobehaviors\Windows\DraggableWindowHandle.cs" />
+    <Compile Include="Monobehaviors\Windows\InfoMessageWindow.cs" />
     <Compile Include="Monobehaviors\Windows\MaterialWindow.cs" />
     <Compile Include="Monobehaviors\Windows\PrefabInfoWindow.cs" />
     <Compile Include="Monobehaviors\SNFontApplier.cs" />

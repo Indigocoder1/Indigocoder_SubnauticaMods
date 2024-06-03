@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Nautilus.Utility;
+using System.Collections.Generic;
 using TextureReplacerEditor.Monobehaviors.Windows;
 using TMPro;
 using UnityEngine;
@@ -12,6 +13,7 @@ namespace TextureReplacerEditor.Monobehaviors.Items
     {
         public ConfigInfo configInfo { get; private set; }
         public List<PropertyEditData> propertyEdits { get; private set; }
+        public MaterialEditData materialEditData { get; private set; }
 
         public TextMeshProUGUI configNameText;
         public TextMeshProUGUI prefabNameText;
@@ -27,8 +29,9 @@ namespace TextureReplacerEditor.Monobehaviors.Items
             UpdateSliderInteractable();
         }
 
-        public void SetInfo(ConfigInfo info, List<PropertyEditData> edits, string prefabName)
+        public void SetInfo(ConfigInfo info, List<PropertyEditData> edits, string prefabName, MaterialEditData materialEditData)
         {
+            this.materialEditData = materialEditData;
             configNameText.text = info.configName;
             prefabNameText.text = prefabName;
             propertyEdits = edits;
@@ -46,6 +49,14 @@ namespace TextureReplacerEditor.Monobehaviors.Items
         {
             TextureReplacerEditorWindow.Instance.configViewerWindow.DeleteConfig(this);
             Destroy(gameObject);
+        }
+
+        public void SetMaterialWindowValues()
+        {
+            MaterialWindow matWindow = TextureReplacerEditorWindow.Instance.materialWindow;
+            matWindow.OpenWindow();
+            matWindow.SetMaterial(materialEditData.material, materialEditData);
+            SetCurrentConfig();
         }
 
         private void UpdateSliderInteractable()

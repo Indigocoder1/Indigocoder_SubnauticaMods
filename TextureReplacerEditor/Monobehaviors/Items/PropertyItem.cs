@@ -47,7 +47,7 @@ namespace TextureReplacerEditor.Monobehaviors.Items
             }
         }
 
-        public void SetInfo(ShaderPropertyType propertyType, Material material, string propertyName)
+        public void SetInfo(ShaderPropertyType propertyType, Material material, string propertyName, object overrideOriginal = null)
         {
             propertyNameText.text = propertyName;
             propertyTypeText.text = propertyType.ToString();
@@ -60,23 +60,23 @@ namespace TextureReplacerEditor.Monobehaviors.Items
             {
                 case ShaderPropertyType.Texture:
                     textureModeHandler.gameObject.SetActive(true);
-                    textureModeHandler.SetInfo(material, propertyName);
+                    textureModeHandler.SetInfo(material, propertyName, overrideOriginal);
                     break;
                 case ShaderPropertyType.Color:
                     colorModeHander.gameObject.SetActive(true);
-                    colorModeHander.SetInfo(material, propertyName);
+                    colorModeHander.SetInfo(material, propertyName, overrideOriginal);
                     break;
                 case ShaderPropertyType.Float:
                     floatModeHandler.gameObject.SetActive(true);
-                    floatModeHandler.SetInfo(material, propertyName);
+                    floatModeHandler.SetInfo(material, propertyName, overrideOriginal);
                     break;
                 case ShaderPropertyType.Range:
                     floatModeHandler.gameObject.SetActive(true);
-                    floatModeHandler.SetInfo(material, propertyName);
+                    floatModeHandler.SetInfo(material, propertyName, overrideOriginal);
                     break;
                 case ShaderPropertyType.Vector:
                     vectorModeHandler.gameObject.SetActive(true);
-                    vectorModeHandler.SetInfo(material, propertyName);
+                    vectorModeHandler.SetInfo(material, propertyName, overrideOriginal);
                     break;
             }
 
