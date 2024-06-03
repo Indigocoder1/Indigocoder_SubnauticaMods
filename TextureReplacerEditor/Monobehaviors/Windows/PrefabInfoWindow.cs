@@ -1,7 +1,9 @@
 ﻿using IndigocoderLib;
+using System.Collections;
 using TextureReplacerEditor.Monobehaviors.Items;
 using TMPro;
 using UnityEngine;
+using UWE;
 
 namespace TextureReplacerEditor.Monobehaviors.Windows
 {
@@ -14,7 +16,8 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         public GameObject componentItemPrefab;
         public Transform componentItemsParent;
 
-        private ChildItem currentItem;  
+        private ChildItem currentItem;
+        private bool initialized;
 
         public void CreateChildHierarchy(Transform parent)
         {
@@ -53,7 +56,6 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         private void SpawnComponentItems()
         {
             ClearComponentItems();
-            Main_Plugin.logger.LogInfo($"Current item = {currentItem} | Path to child = {currentItem.pathToChild}");
 
             foreach (var component in currentItem.originalChild.GetComponentsInChildren<Component>())
             {
@@ -76,6 +78,25 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             {
                 Destroy(child.gameObject);
             }
+        }
+
+        public override void OpenWindow()
+        {
+            base.OpenWindow();
+            if (!initialized)
+            {
+                gameObject.SetActive(false);
+                CoroutineHost.StartCoroutine(ReEnableWindow());
+            }
+        }
+
+        private IEnumerator ReEnableWindow()
+        {
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+
+            gameObject.SetActive(true);
+            initialized = true;
         }
     }
 }

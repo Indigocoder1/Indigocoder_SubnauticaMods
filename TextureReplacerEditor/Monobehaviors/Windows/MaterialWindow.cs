@@ -158,7 +158,6 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
 
         private void OnSearchBarValueChanged()
         {
-            Main_Plugin.logger.LogInfo($"Search bar value changed!");
             currentSearchCallDelay = MIN_SEARCH_BAR_WAIT_TIME;
             hasSearched = false;
         }

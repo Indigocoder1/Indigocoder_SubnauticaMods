@@ -12,8 +12,6 @@ namespace TextureReplacerEditor.Monobehaviors.Items
 
         public void SetInfo(Component component, string pathToComponent)
         {
-            Main_Plugin.logger.LogInfo($"Setting path to component to {pathToComponent} on {gameObject}");
-
             this.component = component;
             this.pathToComponent = pathToComponent;
             text.text = component.GetType().ToString();

@@ -95,7 +95,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             foreach (var propertyData in currentItem.propertyEdits)
             {
                 ConfigChangeItem changeItem = Instantiate(configChangePrefab, configChangesParent).GetComponent<ConfigChangeItem>();
-                changeItem.SetInfo(propertyData.propertyName, propertyData.originalValue, propertyData.newValue, propertyData.type);
+                changeItem.SetInfo(propertyData);
             }
         }
 
@@ -117,6 +117,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         public void RemoveEdit(int editIndex)
         {
             currentItem.configInfo.textureEdits.RemoveAt(editIndex);
+            Main_Plugin.logger.LogInfo($"Property edits length = {currentItem.propertyEdits.Count} | Index = {editIndex}");
 
             PropertyEditData editData = currentItem.propertyEdits[editIndex];
             switch (editData.type)

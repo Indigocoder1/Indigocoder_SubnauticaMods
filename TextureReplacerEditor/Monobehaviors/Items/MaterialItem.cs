@@ -30,8 +30,6 @@ namespace TextureReplacerEditor.Monobehaviors.Items
 
         public void SetInfo(Material material, PrefabIdentifier prefabIdentifier, string pathToRenderer)
         {
-            Main_Plugin.logger.LogInfo($"Setting path to rend to {pathToRenderer} on {gameObject}");
-
             this.material = material;
             this.pathToRenderer = pathToRenderer;
             prefabIdentifierRoot = prefabIdentifier;

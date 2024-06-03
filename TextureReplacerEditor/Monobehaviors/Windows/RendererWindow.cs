@@ -20,8 +20,6 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             this.pathToRend = pathToRend;
             this.prefabIdentifier = prefabIdentifier;
 
-            Main_Plugin.logger.LogInfo($"Setting path to rend to {pathToRend} on {gameObject}");
-
             rendererNameText.text = rend.name;
 
             SpawnMaterialItems();

@@ -1,13 +1,16 @@
-﻿using TextureReplacerEditor.Monobehaviors.ConfigChangeHandlers;
+﻿using System.Linq;
+using TextureReplacerEditor.Monobehaviors.ConfigChangeHandlers;
 using TextureReplacerEditor.Monobehaviors.Windows;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
+using static TextureReplacerEditor.Monobehaviors.Windows.MaterialWindow;
 
 namespace TextureReplacerEditor.Monobehaviors.Items
 {
     internal class ConfigChangeItem : MonoBehaviour
     {
+        public PropertyEditData propertyEditData { get; private set; }
         public TextMeshProUGUI propertyNameText;
         public ConfigChangeHandler textureChangeHandler;
         public ConfigChangeHandler colorChangeHandler;
@@ -22,10 +25,12 @@ namespace TextureReplacerEditor.Monobehaviors.Items
             vectorChangeHandler.gameObject.SetActive(false);
         }
 
-        public void SetInfo(string propertyName, object originalValue, object newValue, ShaderPropertyType type)
+        public void SetInfo(PropertyEditData propertyEditData)
         {
-            propertyNameText.text = propertyName;
-            ConfigChangeHandler handler = type switch
+            this.propertyEditData = propertyEditData;
+
+            propertyNameText.text = propertyEditData.propertyName;
+            ConfigChangeHandler handler = propertyEditData.type switch
             {
                 ShaderPropertyType.Texture => textureChangeHandler,
                 ShaderPropertyType.Color => colorChangeHandler,
@@ -36,11 +41,21 @@ namespace TextureReplacerEditor.Monobehaviors.Items
             };
 
             handler.gameObject.SetActive(true);
-            handler.SetInfo(originalValue, newValue);
+            handler.SetInfo(propertyEditData.originalValue, propertyEditData.newValue);
         }
 
         public void RemoveChange()
         {
+            MaterialWindow matWindow = TextureReplacerEditorWindow.Instance.materialWindow;
+            if(matWindow.materialEdits.Any(i => i.Value.Any(a => a.Equals(propertyEditData))))
+            {
+                var editDataList = matWindow.materialEdits.FirstOrDefault(i => i.Value.Any(a => a.Equals(propertyEditData)));
+                Main_Plugin.logger.LogInfo($"Edit data list = {editDataList}");
+                PropertyEditData entry = editDataList.Value.FirstOrDefault(i => i.Equals(propertyEditData));
+                Main_Plugin.logger.LogInfo($"Entry = {entry}");
+                editDataList.Value.Remove(entry);
+            }
+
             TextureReplacerEditorWindow.Instance.configViewerWindow.RemoveEdit(transform.GetSiblingIndex());
             Destroy(gameObject);
         }

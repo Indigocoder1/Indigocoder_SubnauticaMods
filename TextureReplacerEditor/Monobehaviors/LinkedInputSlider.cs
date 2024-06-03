@@ -38,7 +38,12 @@ namespace TextureReplacerEditor.Monobehaviors
 
         public float GetCurrentValue()
         {
-            return float.Parse(preciseInputField.text);
+            if(float.TryParse(preciseInputField.text, out float val))
+            {
+                return val;
+            }
+
+            return slider.value;
         }
 
         public void SetSliderMaxValue(float max)

@@ -21,12 +21,16 @@ namespace TextureReplacerEditor
 
         public static string AssetsFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
         public static AssetBundle AssetBundle = AssetBundle.LoadFromFile(Path.Combine(AssetsFolderPath, "texturereplacereditor"));
+        public static string TextureReplacerAssetsFolderPath;
 
         internal static GameObject CurrentEditorWindowInstance;
 
         private void Awake()
         {
             logger = Logger;
+
+            string parentFolderName = Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName;
+            TextureReplacerAssetsFolderPath = Path.Combine(new string[] { parentFolderName, "TextureReplacer", "Assets" });
 
             harmony.PatchAll();
 
