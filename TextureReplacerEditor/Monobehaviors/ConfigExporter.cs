@@ -26,7 +26,6 @@ namespace TextureReplacerEditor.Monobehaviors
             List<CustomConfigItem> items = TextureReplacerEditorWindow.Instance.configViewerWindow.addedItems;
             if(items.Count <= 0)
             {
-                messageWindow.OpenWindow();
                 messageWindow.OpenMessage(NO_ITEMS_ERROR, Color.black);
             }
 
@@ -36,7 +35,6 @@ namespace TextureReplacerEditor.Monobehaviors
             {
                 if(configInfos.Any(i => i.prefabClassID == configItem.configInfo.prefabClassID))
                 {
-                    messageWindow.OpenWindow();
                     messageWindow.OpenMessage(DUPLICATE_PREFAB_ERRROR, Color.red);
                     return;
                 }
@@ -66,7 +64,6 @@ namespace TextureReplacerEditor.Monobehaviors
                 string jsonData = JsonConvert.SerializeObject(configInfos, Formatting.Indented, new CustomEnumConverter());
                 File.WriteAllText(path, jsonData);
 
-                messageWindow.OpenWindow();
                 string message = $"Saved config to {path}";
                 if(textureSavedToAssets)
                 {

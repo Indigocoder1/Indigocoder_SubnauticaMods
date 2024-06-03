@@ -24,6 +24,8 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
 
         public void OpenMessage(string text, Color color)
         {
+            OpenWindow();
+
             messageText.text = text;
             messageText.color = color;
 
@@ -35,6 +37,8 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
 
         public void OpenPrompt(string text, Color color, string confirmText, string denyText, Action onConfirm, Action onDeny)
         {
+            OpenWindow();
+
             this.onConfirm = onConfirm;
             this.onDeny = onDeny;
 

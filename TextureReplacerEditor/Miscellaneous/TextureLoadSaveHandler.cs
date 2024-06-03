@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using TextureReplacerEditor.Monobehaviors.Windows;
 using UnityEngine;
 
 namespace TextureReplacerEditor.Miscellaneous
@@ -18,15 +19,18 @@ namespace TextureReplacerEditor.Miscellaneous
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 string path = sfd.FileName;
+                InfoMessageWindow messageWindow = TextureReplacerEditorWindow.Instance.messageWindow;
 
                 if (string.IsNullOrEmpty(path))
                 {
-                    ErrorMessage.AddError("<color=ff0000>Invalid texture save path!</color>");
+                    messageWindow.OpenMessage("Invalid texture save path!", Color.red);
                     return;
                 }
 
                 byte[] texBytes = texture.BasedEncoteToPNG();
                 File.WriteAllBytes(path, texBytes);
+                
+                messageWindow.OpenMessage($"{texture.name} saved to {path}", Color.black);
             }
         }
 

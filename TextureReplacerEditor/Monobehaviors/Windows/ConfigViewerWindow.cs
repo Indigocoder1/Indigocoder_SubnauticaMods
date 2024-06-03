@@ -46,7 +46,6 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         public void DeleteConfig(CustomConfigItem item)
         {
             InfoMessageWindow messageWindow = TextureReplacerEditorWindow.Instance.messageWindow;
-            messageWindow.OpenWindow();
             messageWindow.OpenPrompt($"Are you sure you want to delete {item.configInfo.configName}?", Color.red, "Yes", "No", () =>
             {
                 addedItems.Remove(item);
