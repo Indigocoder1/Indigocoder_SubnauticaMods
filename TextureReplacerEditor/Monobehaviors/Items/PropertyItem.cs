@@ -84,8 +84,10 @@ namespace TextureReplacerEditor.Monobehaviors.Items
             TextureReplacerEditorWindow.Instance.configViewerWindow.OnChangeDeleted -= UpdateHandlerValues;
         }
 
-        private void UpdateHandlerValues()
+        private void UpdateHandlerValues(object sender, ConfigViewerWindow.OnChangeDeleteArgs e)
         {
+            if (activeHandler.propertyName != e.propertyName) return;
+
             activeHandler.UpdateMaterial();
         }
     }

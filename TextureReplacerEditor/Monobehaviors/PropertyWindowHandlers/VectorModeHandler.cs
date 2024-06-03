@@ -11,7 +11,6 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
 
         private Vector4 originalVector;
         private Material material;
-        private string vectorName;
 
         private Vector4 SliderVector
         {
@@ -31,6 +30,8 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
 
         public override void SetInfo(Material material, string vectorName, object overrideValue = null)
         {
+            propertyName = vectorName;
+
             Vector4 vector = Vector4.zero;
             if (overrideValue != null)
             {
@@ -56,7 +57,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
             slider.SetSliderMaxValue(valueBounds);
             slider.SetSliderMinValue(-valueBounds);
             slider.SetInitialValue(initialValue);
-            slider.OnInputValueChanged += () => material.SetVector(vectorName, SliderVector);
+            slider.OnInputValueChanged += () => material.SetVector(propertyName, SliderVector);
         }
 
         private void OnSliderChanged()
@@ -72,7 +73,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
 
         public override void UpdateMaterial()
         {
-            Vector4 vector = material.GetVector(vectorName);
+            Vector4 vector = material.GetVector(propertyName);
             if (vector.Equals(SliderVector)) return;
 
             InitSliderValues(xSlider, vector.x);

@@ -58,9 +58,7 @@ namespace TextureReplacerEditor.Monobehaviors.Items
             if(matWindow.materialEdits.Any(i => i.Value.Any(a => a.Equals(propertyEditData))))
             {
                 var editDataList = matWindow.materialEdits.FirstOrDefault(i => i.Value.Any(a => a.Equals(propertyEditData)));
-                Main_Plugin.logger.LogInfo($"Edit data list = {editDataList}");
                 PropertyEditData entry = editDataList.Value.FirstOrDefault(i => i.Equals(propertyEditData));
-                Main_Plugin.logger.LogInfo($"Entry = {entry}");
                 editDataList.Value.Remove(entry);
             }
 

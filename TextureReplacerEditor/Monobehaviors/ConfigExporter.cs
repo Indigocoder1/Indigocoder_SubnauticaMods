@@ -27,7 +27,7 @@ namespace TextureReplacerEditor.Monobehaviors
             if(items.Count <= 0)
             {
                 messageWindow.OpenWindow();
-                messageWindow.SetMessage(NO_ITEMS_ERROR, Color.black);
+                messageWindow.OpenMessage(NO_ITEMS_ERROR, Color.black);
             }
 
             List<ConfigInfo> configInfos = new();
@@ -37,7 +37,7 @@ namespace TextureReplacerEditor.Monobehaviors
                 if(configInfos.Any(i => i.prefabClassID == configItem.configInfo.prefabClassID))
                 {
                     messageWindow.OpenWindow();
-                    messageWindow.SetMessage(DUPLICATE_PREFAB_ERRROR, Color.red);
+                    messageWindow.OpenMessage(DUPLICATE_PREFAB_ERRROR, Color.red);
                     return;
                 }
 
@@ -73,7 +73,7 @@ namespace TextureReplacerEditor.Monobehaviors
                     message += "\nChanged textures saved to TextureReplacer/Assets";
                 }
 
-                messageWindow.SetMessage(message, Color.black);
+                messageWindow.OpenMessage(message, Color.black);
             }
         }
     }

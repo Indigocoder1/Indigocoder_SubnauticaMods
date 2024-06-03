@@ -12,7 +12,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
 {
     internal class ConfigViewerWindow : DraggableWindow
     {
-        public event Action OnChangeDeleted;
+        public event EventHandler<OnChangeDeleteArgs> OnChangeDeleted;
         public List<CustomConfigItem> addedItems { get; private set; } = new();
 
         public TMP_InputField configNameTextField;
@@ -45,9 +45,20 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
 
         public void DeleteConfig(CustomConfigItem item)
         {
-            addedItems.Remove(item);
-            createdItems--;
-            ClearEditedItems();
+            InfoMessageWindow messageWindow = TextureReplacerEditorWindow.Instance.messageWindow;
+            messageWindow.OpenWindow();
+            messageWindow.OpenPrompt($"Are you sure you want to delete {item.configInfo.configName}?", Color.red, "Yes", "No", () =>
+            {
+                addedItems.Remove(item);
+                createdItems--;
+                ClearEditedItems();
+                Destroy(item.gameObject);
+
+                if (addedItems.Count > 0)
+                {
+                    SetCurrentConfig(addedItems[addedItems.Count - 1]);
+                }
+            }, null);
         }
 
         public void AddConfigItem()
@@ -118,7 +129,8 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         {
             currentItem.configInfo.textureEdits.RemoveAt(item.EditIndex);
             currentItem.propertyEdits.Remove(item.propertyEditData);
-            OnChangeDeleted?.Invoke();
+
+            Main_Plugin.logger.LogInfo($"Removing edit for {item} | Prop name = {item.propertyEditData.propertyName}");
 
             PropertyEditData editData = item.propertyEditData;
             switch (editData.type)
@@ -127,6 +139,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
                     editData.propertyItem.material.SetTexture(editData.propertyName, editData.originalValue as Texture);
                     break;
                 case ShaderPropertyType.Color:
+                    Main_Plugin.logger.LogInfo($"Setting color {editData.propertyName}");
                     editData.propertyItem.material.SetColor(editData.propertyName, (Color)editData.originalValue);
                     break;
                 case ShaderPropertyType.Float:
@@ -139,6 +152,8 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
                     editData.propertyItem.material.SetVector(editData.propertyName, (Vector4)editData.originalValue);
                     break;
             }
+
+            OnChangeDeleted?.Invoke(this, new(editData.propertyName));
         }
 
         private ConfigInfo.TextureEdit GetTextureEdit(PropertyEditData editData, MaterialEditData materialData)
@@ -176,6 +191,16 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         {
             Vector4 vector = (Vector4)val;
             return $"{vector.x},{vector.y},{vector.z},{vector.w}";
+        }
+
+        public class OnChangeDeleteArgs : EventArgs
+        {
+            public string propertyName;
+
+            public OnChangeDeleteArgs(string propertyName)
+            {
+                this.propertyName = propertyName;
+            }
         }
     }
 }

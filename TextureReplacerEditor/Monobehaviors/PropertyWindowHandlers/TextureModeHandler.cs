@@ -14,7 +14,6 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
         private Texture texture;
         private Texture originalTexture;
         private Material material;
-        string textureName;
 
         public override void SetInfo(Material material, string textureName, object overrideValue = null)
         {
@@ -29,7 +28,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
             }
 
             this.material = material;
-            this.textureName = textureName;
+            propertyName = textureName;
 
             if (texture == null)
             {
@@ -60,7 +59,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
             if (tex == null) return;
 
             texture = tex;
-            material.SetTexture(textureName, texture);
+            material.SetTexture(propertyName, texture);
 
             InvokeOnPropertyChanged(new(originalTexture, tex, UnityEngine.Rendering.ShaderPropertyType.Texture));
         }
@@ -78,7 +77,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
 
         public override void UpdateMaterial()
         {
-            Texture texture = material.GetTexture(textureName);
+            Texture texture = material.GetTexture(propertyName);
             if(texture == this.texture) return;
 
             UpdateTexturePreview();

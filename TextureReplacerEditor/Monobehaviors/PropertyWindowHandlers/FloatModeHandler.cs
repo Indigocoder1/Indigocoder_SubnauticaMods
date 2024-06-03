@@ -7,12 +7,11 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
         public LinkedInputSlider linkedInputSlider;
         private float originalValue;
         private Material material;
-        private string floatName;
 
         public override void SetInfo(Material material, string floatName, object overrideOriginal = null)
         {
             this.material = material;
-            this.floatName = floatName;
+            propertyName = floatName;
 
             float val = 0;
             if (overrideOriginal == null)
@@ -46,7 +45,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
 
         public override void UpdateMaterial()
         {
-            float val = material.GetFloat(floatName);
+            float val = material.GetFloat(propertyName);
             if (linkedInputSlider.GetCurrentValue() == val) return;
 
             linkedInputSlider.SetInitialValue(val);

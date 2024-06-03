@@ -7,12 +7,11 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
         public ActiveColorPreview activeColorPreview;
         private Color originalColor;
         private Material material;
-        private string colorName;
 
         public override void SetInfo(Material material, string colorName, object overrideOriginal = null)
         {
             this.material = material;
-            this.colorName = colorName;
+            propertyName = colorName;
 
             Color color = Color.white;
             if (overrideOriginal == null)
@@ -42,7 +41,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
 
         public void UpdateColor()
         {
-            Color color = material.GetColor(colorName);
+            Color color = material.GetColor(propertyName);
             if (activeColorPreview.GetCurrentColor().Equals(color)) return;
 
             activeColorPreview.SetActiveColor(color);
@@ -50,7 +49,10 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
 
         public override void UpdateMaterial()
         {
-            activeColorPreview.SetActiveColor(material.GetColor(colorName));
+            Color color = material.GetColor(propertyName);
+            if (activeColorPreview.GetCurrentColor().Equals(color)) return;
+
+            activeColorPreview.SetActiveColor(color);
         }
     }
 }

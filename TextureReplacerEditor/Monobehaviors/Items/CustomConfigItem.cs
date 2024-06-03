@@ -48,7 +48,6 @@ namespace TextureReplacerEditor.Monobehaviors.Items
         public void DeleteItem()
         {
             TextureReplacerEditorWindow.Instance.configViewerWindow.DeleteConfig(this);
-            Destroy(gameObject);
         }
 
         public void SetMaterialWindowValues()

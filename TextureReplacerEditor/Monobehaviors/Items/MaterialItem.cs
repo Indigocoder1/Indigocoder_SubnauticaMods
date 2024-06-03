@@ -40,11 +40,18 @@ namespace TextureReplacerEditor.Monobehaviors.Items
                 material.color = activeColorPreview.GetCurrentColor();
             };
 
-            UpdatePreviews(null, null);
-            PropertyHandler.OnPropertyChanged += UpdatePreviews;
+            UpdatePreviews();
         }
 
-        private void UpdatePreviews(object sender, OnPropertyChangedEventArgs e)
+        private void Update()
+        {
+            if(material.color != activeColorPreview.GetCurrentColor())
+            {
+                activeColorPreview.SetActiveColor(material.color);
+            }
+        }
+
+        private void UpdatePreviews()
         {
             activeColorPreview.SetActiveColor(material.color);
 
