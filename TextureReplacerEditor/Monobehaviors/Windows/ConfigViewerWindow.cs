@@ -130,8 +130,6 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             currentItem.configInfo.textureEdits.RemoveAt(item.EditIndex);
             currentItem.propertyEdits.Remove(item.propertyEditData);
 
-            Main_Plugin.logger.LogInfo($"Removing edit for {item} | Prop name = {item.propertyEditData.propertyName}");
-
             PropertyEditData editData = item.propertyEditData;
             switch (editData.type)
             {
@@ -139,7 +137,6 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
                     editData.propertyItem.material.SetTexture(editData.propertyName, editData.originalValue as Texture);
                     break;
                 case ShaderPropertyType.Color:
-                    Main_Plugin.logger.LogInfo($"Setting color {editData.propertyName}");
                     editData.propertyItem.material.SetColor(editData.propertyName, (Color)editData.originalValue);
                     break;
                 case ShaderPropertyType.Float:
