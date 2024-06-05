@@ -36,6 +36,8 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         public TMP_InputField searchBar;
         public GameObject propertyItemPrefab;
         public Transform propertyItemsParent;
+        public Transform tutorialLineTarget;
+        public GameObject tutorialHighlight;
 
         private Material material;
         private float currentSearchCallDelay;
@@ -125,6 +127,13 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
                 CustomConfigItem item = configWindow.addedItems.First(i => i.materialEditData.Equals(CurrentMaterialEditData));
                 configWindow.UpdateConfigItem(item);
             }
+
+            TextureReplacerEditorWindow.Instance.tutorialHandler.TriggerTutorialItem("OnConfigWindowOpened");
+        }
+
+        public void SetTutorialHighlightActive(bool active)
+        {
+            tutorialHighlight.SetActive(active);
         }
 
         private void ClearPropertyItems()

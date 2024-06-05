@@ -8,6 +8,9 @@ namespace TextureReplacerEditor.Monobehaviors.Items
     {
         public Component component { get; private set; }
         public TextMeshProUGUI text;
+        public GameObject tutorialHighlight;
+        public Transform tutorialLineTarget;
+
         private string pathToComponent;
 
         public void SetInfo(Component component, string pathToComponent)
@@ -28,6 +31,13 @@ namespace TextureReplacerEditor.Monobehaviors.Items
 
             PrefabIdentifier prefabIdentifier = TextureReplacerEditorWindow.Instance.prefabInfoWindow.currentPrefabIdentifier;
             TextureReplacerEditorWindow.Instance.rendererWindow.SetRendererInfo(component as Renderer, prefabIdentifier, pathToComponent);
+
+            TextureReplacerEditorWindow.Instance.tutorialHandler.TriggerTutorialItem("OnRendererSelected");
+        }
+
+        public void SetTutorialHighlightActive(bool active)
+        {
+            tutorialHighlight.SetActive(active);
         }
     }
 }

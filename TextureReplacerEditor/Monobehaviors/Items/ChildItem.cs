@@ -10,6 +10,8 @@ namespace TextureReplacerEditor.Monobehaviors.Items
         public string pathToChild { get; private set; }
         public TextMeshProUGUI nameText;
         public RectTransform childIndexRect;
+        public GameObject tutorialHighlight;
+        public Transform tutorialLRTarget;
 
         public void SetChildInfo(string name, int childIndex, GameObject originalChild, string pathToChild)
         {
@@ -25,6 +27,11 @@ namespace TextureReplacerEditor.Monobehaviors.Items
         public void SetCurrentSelectedItem()
         {
             TextureReplacerEditorWindow.Instance.prefabInfoWindow.SetCurrentItem(this);
+        }
+
+        public void SetTutorialHighlightActive(bool active)
+        {
+            tutorialHighlight.gameObject.SetActive(active);
         }
     }
 }

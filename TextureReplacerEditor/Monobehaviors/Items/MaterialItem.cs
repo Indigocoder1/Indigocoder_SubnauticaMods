@@ -25,6 +25,8 @@ namespace TextureReplacerEditor.Monobehaviors.Items
         public RawImage texturePreview;
         public Texture2D nullTextureImage;
         public ActiveColorPreview activeColorPreview;
+        public GameObject tutorialHighlight;
+        public Transform tutorialLineTarget;
 
         private Texture2D mainTex;
 
@@ -70,12 +72,19 @@ namespace TextureReplacerEditor.Monobehaviors.Items
         {
             TextureReplacerEditorWindow.Instance.materialWindow.OpenWindow();
             TextureReplacerEditorWindow.Instance.materialWindow.SetMaterial(material, this);
+
+            TextureReplacerEditorWindow.Instance.tutorialHandler.TriggerTutorialItem("OnMaterialWindowOpened");
         }
 
         public void ViewMaterialMainTex()
         {
             TextureReplacerEditorWindow.Instance.textureViewWindow.OpenWindow();
             TextureReplacerEditorWindow.Instance.textureViewWindow.SetViewingTexture(mainTex);
+        }
+
+        public void SetHighlightActive(bool active)
+        {
+            tutorialHighlight.SetActive(active);
         }
     }
 }

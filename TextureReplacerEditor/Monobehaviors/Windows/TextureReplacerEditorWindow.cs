@@ -22,6 +22,8 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         public TextureViewWindow textureViewWindow;
         public ConfigViewerWindow configViewerWindow;
         public InfoMessageWindow messageWindow;
+        public TutorialWindow tutorialWindow;
+        public TutorialHandler tutorialHandler;
 
         private void Awake()
         {

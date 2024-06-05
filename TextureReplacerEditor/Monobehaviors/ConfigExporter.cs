@@ -71,6 +71,7 @@ namespace TextureReplacerEditor.Monobehaviors
                 }
 
                 messageWindow.OpenMessage(message, Color.black);
+                TextureReplacerEditorWindow.Instance.tutorialHandler.TriggerTutorialItem("OnConfigSaved");
             }
         }
     }

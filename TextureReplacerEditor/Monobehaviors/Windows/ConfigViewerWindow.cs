@@ -20,6 +20,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         public Transform configsParent;
         public GameObject configChangePrefab;
         public Transform configChangesParent;
+        public GameObject tutorialHighlight;
 
         private CustomConfigItem currentItem;
         private int createdItems;
@@ -87,6 +88,11 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         {
             item.configInfo.textureEdits = GetTextureEdits(item.materialEditData);
             SetCurrentConfig(item);
+        }
+
+        public void SetHighlightActive(bool active)
+        {
+            tutorialHighlight.SetActive(active);
         }
 
         private void ClearEditedItems()

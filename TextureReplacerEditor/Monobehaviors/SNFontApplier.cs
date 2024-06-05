@@ -8,7 +8,7 @@ namespace TextureReplacerEditor.Monobehaviors
     {
         private void Start()
         {
-            foreach (var item in GetComponentsInChildren<TextMeshProUGUI>())
+            foreach (var item in GetComponentsInChildren<TextMeshProUGUI>(true))
             {
                 item.font = FontUtils.Aller_Rg;
             }
