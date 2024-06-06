@@ -316,30 +316,21 @@ namespace SuitLib.Patches
                 {
                     Texture2D tex = (Texture2D)radiationSuitTextures[key];
                     Renderer rend = radiationSuitGO.GetComponent<Renderer>();
-                    for (int i = 0; i < rend.materials.Length; i++)
-                    {
-                        rend.materials[i].SetTexture(key, tex);
-                    }
+                    rend.materials[0].SetTexture(key, tex);
                 }
 
                 foreach (string key in reinforcedSuitTextures.Keys)
                 {
                     Texture2D tex = (Texture2D)reinforcedSuitTextures[key];
                     Renderer rend = reinforcedSuitGO.GetComponent<Renderer>();
-                    for (int i = 0; i < rend.materials.Length; i++)
-                    {
-                        rend.materials[i].SetTexture(key, tex);
-                    }
+                    rend.materials[0].SetTexture(key, tex);
                 }
 
                 foreach (string key in filtrationSuitTextures.Keys)
                 {
                     Texture2D tex = (Texture2D)filtrationSuitTextures[key];
                     Renderer rend = filtrationSuitGO.GetComponent<Renderer>();
-                    for (int i = 0; i < rend.materials.Length; i++)
-                    {
-                        rend.materials[i].SetTexture(key, tex);
-                    }
+                    rend.materials[0].SetTexture(key, tex);
                 }
             }
         }
@@ -384,12 +375,14 @@ namespace SuitLib.Patches
                 {
                     Texture2D tex = (Texture2D)radiationGlovesTextures[key];
                     radiationGlovesGO.GetComponent<Renderer>().material.SetTexture(key, tex);
+                    radiationSuitGO.GetComponent<Renderer>().materials[1].SetTexture(key, tex);
                 }
 
                 foreach (string key in reinforcedGlovesTextures.Keys)
                 {
                     Texture2D tex = (Texture2D)reinforcedGlovesTextures[key];
                     reinforcedGlovesGO.GetComponent<Renderer>().material.SetTexture(key, tex);
+                    reinforcedSuitGO.GetComponent<Renderer>().materials[1].SetTexture(key, tex);
                 }
             }
         }
