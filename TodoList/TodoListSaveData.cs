@@ -3,6 +3,7 @@ using Nautilus.Json.Attributes;
 using System;
 using System.Collections.Generic;
 using TodoList.Monobehaviors;
+using static TodoList.Main_Plugin;
 
 namespace TodoList
 {
@@ -11,13 +12,15 @@ namespace TodoList
     {
         public string itemBody;
         public bool isCompleted;
-        public bool isHintItem;
+        public bool isHint;
+        public EntryInfo entryInfo;
 
-        public ItemSaveData(string itemBody, bool isCompleted, bool isHintItem)
+        public ItemSaveData(string itemBody, bool isCompleted, bool isHint, EntryInfo entryInfo)
         {
             this.itemBody = itemBody;
             this.isCompleted = isCompleted;
-            this.isHintItem = isHintItem;
+            this.isHint = isHint;
+            this.entryInfo = entryInfo;
         }
     }
 

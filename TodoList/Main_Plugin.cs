@@ -5,10 +5,12 @@ using HarmonyLib;
 using Nautilus.Handlers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Reflection;
 using TodoList.Patches;
 using UnityEngine;
+using static TodoList.Main_Plugin;
 
 namespace TodoList
 {
@@ -87,37 +89,51 @@ namespace TodoList
 
         public static List<StoryGoalTodoEntry> StoryGoalTodoEntries { get; internal set; } = new()
         {
-            new("Trigger_PDAIntroEnd", new[] { "OnPDAIntroEnd1", "OnPDAIntroEnd2", "OnPDAIntroEnd3" }, true),
-            new("Story_AuroraWarning4", new[] { "OnAuroraExplode1", "OnAuroraExplode2" }, true),
-            new("OnPlayRadioBloodKelp29", new[] { "OnLifepod2RadioFinished" }, true),
-            new("OnPlayRadioGrassy25", new[] { "OnLifepod3RadioFinished" }, true),
-            new("OnPlayRadioRadiationSuit", new[] { "OnLifepod4RadioFinished" }, true),
-            new("OnPlayRadioShallows22", new[] { "OnLifepod6RadioFinished" }, true),
-            new("OnPlayRadioKelp28", new[] { "OnLifepod7RadioFinished" }, true),
-            new("OnPlayRadioKoosh26", new[] { "OnLifepod12RadioFinished" }, true),
-            new("OnPlayRadioMushroom24", new[] { "OnLifepod13RadioFinished" }, true),
-            new("OnPlayRadioGrassy21", new[] { "OnLifepod17RadioFinished" }, true),
-            new("OnPlayRadioSecondOfficer", new[] { "OnLifepod19RadioFinished" }, true),
-            new("OnPlayRadioGrassy21", new[] { "OnLifepod17RadioFinished" }, true),
-            new("OnPlayRadioSecondOfficer", new[] { "OnCaptainsCodeRadioFinished1", "OnCaptainsCodeRadioFinished2" }, true),
-            new("OnPlayRadioSunbeam4", new[] { "OnSunbeamPreparingToLand" }, true),
-            new("Precursor_Gun_DataDownload3", new[] { "OnLostRiverHintDownloaded1", "OnLostRiverHintDownloaded2" }, true),
-            new("Emperor_Telepathic_Contact1", new[] { "OnEmperorFirstTelepathy" }, true),
-            new("Goal_SecondarySystems", new[] { "OnLifepodRepaired1", "OnLifepodRepaired2" }, true),
-            new("Goal_JellyCaveEntrance", new[] { "OnJellyHintGiven" }, true),
-            new("AdviseSelfScan", new[] { "OnAdviseSelfScan" }, true)
+            new("Trigger_PDAIntroEnd", new EntryInfo[] { 
+                new("OnPDAIntroEnd1", "Goal_Scanner", true), 
+                new("OnPDAIntroEnd2", "RepairLifepod", true), 
+                new("OnPDAIntroEnd3", null, true)}),
+            new("Story_AuroraWarning4", new EntryInfo[] { new("OnAuroraExplode1", null, true), new("OnAuroraExplode2", null, true)}),
+            new("OnPlayRadioBloodKelp29", new EntryInfo[] { new("OnLifepod2RadioFinished", null, true)}),
+            new("OnPlayRadioGrassy25", new EntryInfo[] { new("OnLifepod3RadioFinished", null, true)}),
+            new("OnPlayRadioRadiationSuit", new EntryInfo[] { new("OnLifepod4RadioFinished", null, true)}),
+            new("OnPlayRadioShallows22", new EntryInfo[] { new("OnLifepod6RadioFinished", null, true)}),
+            new("OnPlayRadioKelp28", new EntryInfo[] { new("OnLifepod7RadioFinished", null, true)}),
+            new("OnPlayRadioKoosh26", new EntryInfo[] { new("OnLifepod12RadioFinished", null, true)}),
+            new("OnPlayRadioMushroom24", new EntryInfo[] { new("OnLifepod13RadioFinished", null, true)}),
+            new("OnPlayRadioGrassy21", new EntryInfo[] { new("OnLifepod17RadioFinished", null, true)}),
+            new("OnPlayRadioSecondOfficer", new EntryInfo[] { new("OnLifepod19RadioFinished", null, true)}),
+            new("OnPlayRadioSecondOfficer", new EntryInfo[] { new("OnCaptainsCodeRadioFinished1", null, true), new("OnCaptainsCodeRadioFinished2", null, true)}),
+            new("OnPlayRadioSunbeam4", new EntryInfo[] { new("OnSunbeamPreparingToLand", null, true)}),
+            new("Precursor_Gun_DataDownload3", new EntryInfo[] { new("OnLostRiverHintDownloaded1", null, true), new("OnLostRiverHintDownloaded2", null, true)}),
+            new("Emperor_Telepathic_Contact1", new EntryInfo[] { new("OnEmperorFirstTelepathy", null, true)}),
+            new("Goal_SecondarySystems", new EntryInfo[] { new("OnLifepodRepaired1", null, true), new("OnLifepodRepaired2", null, true)}),
+            new("Goal_JellyCaveEntrance", new EntryInfo[] { new("OnJellyHintGiven", null, true)}),
+            new("AdviseSelfScan", new EntryInfo[] { new("OnAdviseSelfScan", null, true)})
         };
 
         public struct StoryGoalTodoEntry
         {
             public string key;
-            public string[] entries;
-            public bool localized;
+            public EntryInfo[] entryInfos;
 
-            public StoryGoalTodoEntry(string key, string[] entries, bool localized)
+            public StoryGoalTodoEntry(string key, EntryInfo[] entryInfos)
             {
                 this.key = key;
-                this.entries = entries;
+                this.entryInfos = entryInfos;
+            }
+        }
+
+        public struct EntryInfo
+        {
+            public string entry;
+            public string completeKey;
+            public bool localized;
+
+            public EntryInfo(string entry, string completeKey, bool localized)
+            {
+                this.entry = entry;
+                this.completeKey = completeKey;
                 this.localized = localized;
             }
         }

@@ -19,12 +19,14 @@ namespace TodoList.Monobehaviors
         public Image checkmarkCheck;
 
         public bool isHintItem { get; private set; }
+        public string hintCompleteKey { get; private set; }
+        public Main_Plugin.EntryInfo entryInfo { get; private set; }
 
         public ItemSaveData saveData
         {
             get
             {
-                return new(itemText, isCompleted, isHintItem);
+                return new(itemText, isCompleted, isHintItem, entryInfo);
             }
             set
             {
@@ -65,6 +67,13 @@ namespace TodoList.Monobehaviors
             toggle = GetComponentInChildren<Toggle>();
         }
 
+        public void SetEntryInfo(Main_Plugin.EntryInfo entryInfo)
+        {
+            this.entryInfo = entryInfo;
+            itemText = entryInfo.entry;
+            hintCompleteKey = entryInfo.completeKey;
+        }
+
         public void SetIsHintItem(bool isHintItem)
         {
             this.isHintItem = isHintItem;
@@ -72,6 +81,11 @@ namespace TodoList.Monobehaviors
             backgroundImage.color = isHintItem ? hintCheckmarkColor : Color.white;
             checkmarkBox.color = checkboxColor;
             checkmarkCheck.color = checkboxColor;
+        }
+
+        public void DeleteItem()
+        {
+            Destroy(gameObject);
         }
 
         private void OnEnable()

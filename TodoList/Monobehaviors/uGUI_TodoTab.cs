@@ -120,7 +120,8 @@ namespace TodoList.Monobehaviors
                 GameObject newItem = CreateNewItem();
                 var todoItem = newItem.GetComponent<TodoItem>();
                 todoItem.saveData = saveData;
-                todoItem.SetIsHintItem(saveData.isHintItem);
+                todoItem.SetEntryInfo(saveData.entryInfo);
+                todoItem.SetIsHintItem(saveData.isHint);
             }
         }
 
@@ -129,11 +130,11 @@ namespace TodoList.Monobehaviors
             return Instantiate(Main_Plugin.NewItemPrefab, scrollCanvas);
         }
 
-        public GameObject CreateNewItem(string content, bool isHintItem)
+        public GameObject CreateNewItem(Main_Plugin.EntryInfo entryInfo, bool isHintItem)
         {
             GameObject newItem = CreateNewItem();
             var todoItem = newItem.GetComponent<TodoItem>();
-            todoItem.itemText = content;
+            todoItem.SetEntryInfo(entryInfo);
             todoItem.SetIsHintItem(isHintItem);
 
             if(isHintItem)
@@ -144,11 +145,11 @@ namespace TodoList.Monobehaviors
             return newItem;
         }
 
-        public void CreateNewItems(string[] contents, bool areHintItems)
+        public void CreateNewItems(Main_Plugin.EntryInfo[] entryInfos, bool areHintItems = false)
         {
-            foreach (string entry in contents)
+            foreach (var entryInfo in entryInfos)
             {
-                GameObject newItem = CreateNewItem(entry, areHintItems);
+                GameObject newItem = CreateNewItem(entryInfo, areHintItems);
             }
         }
 
@@ -169,6 +170,16 @@ namespace TodoList.Monobehaviors
             {
                 Destroy(checkedInputFields[i].gameObject);
             }
+        }
+
+        public void CompleteTodoItem(Main_Plugin.EntryInfo entryInfo)
+        {
+            Main_Plugin.logger.LogInfo($"Attempting to complete todo item for {entryInfo.completeKey}");
+
+            TodoItem item = TodoItem.todoItems.FirstOrDefault(i => i.entryInfo.completeKey == entryInfo.completeKey);
+            if (item == null) return;
+
+            Destroy(item.gameObject);
         }
 
         private void SortTodoItems()
