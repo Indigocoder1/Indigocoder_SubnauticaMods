@@ -5,12 +5,10 @@ using HarmonyLib;
 using Nautilus.Handlers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Reflection;
 using TodoList.Patches;
 using UnityEngine;
-using static TodoList.Main_Plugin;
 
 namespace TodoList
 {
@@ -21,7 +19,7 @@ namespace TodoList
     {
         private const string myGUID = "Indigocoder.TodoList";
         private const string pluginName = "Todo List";
-        private const string versionString = "1.0.1";
+        private const string versionString = "1.1.0";
 
         public static ManualLogSource logger;
 
@@ -82,9 +80,9 @@ namespace TodoList
         {
             Type mapControllerType = Type.GetType("SubnauticaMap.Controller, SubnauticaMap");
             MethodBase methodBase = mapControllerType.GetMethod("Update", BindingFlags.NonPublic | BindingFlags.Instance);
-            MethodInfo transpilerInfo = AccessTools.Method(typeof(MapModCompatibilityPatches), 
+            MethodInfo transpilerInfo = AccessTools.Method(typeof(MapModCompatibilityPatches),
                 nameof(MapModCompatibilityPatches.ControllerUpdate_Transpiler));
-            
+
             harmony.Patch(methodBase, null, null, new HarmonyMethod(transpilerInfo));
         }
 
@@ -106,9 +104,9 @@ namespace TodoList
 
         public static List<StoryGoalTodoEntry> StoryGoalTodoEntries { get; internal set; } = new()
         {
-            new("Trigger_PDAIntroEnd", new EntryInfo[] { 
-                new("OnPDAIntroEnd1", "Goal_Scanner", true), 
-                new("OnPDAIntroEnd2", "RepairLifepod", true), 
+            new("Trigger_PDAIntroEnd", new EntryInfo[] {
+                new("OnPDAIntroEnd1", "Goal_Scanner", true),
+                new("OnPDAIntroEnd2", "RepairLifepod", true),
                 new("OnPDAIntroEnd3", "OnRadioRepair", true)}),
             new("Goal_UnlockRadSuit", new EntryInfo[] { new("OnAuroraExplode1", "AuroraRadiationFixed", true), new("OnAuroraExplode2", "Goal_RadiationSuit", true)}),
             new("OnPlayRadioBloodKelp29", new EntryInfo[] { new("OnLifepod2RadioFinished", "OnVisitLifepod2", true)}),
@@ -120,16 +118,16 @@ namespace TodoList
             new("OnPlayRadioMushroom24", new EntryInfo[] { new("OnLifepod13RadioFinished", "OnVisitLifepod13", true)}),
             new("OnPlayRadioGrassy21", new EntryInfo[] { new("OnLifepod17RadioFinished", "OnVisitLifepod17", true)}),
             new("OnPlayRadioSecondOfficer", new EntryInfo[] { new("OnLifepod19RadioFinished", "OnVisitLifepod19", true)}),
-            new("OnPlayRadioSecondOfficer", new EntryInfo[] { 
+            new("OnPlayRadioSecondOfficer", new EntryInfo[] {
                 new("OnCaptainsCodeRadioFinished1", "Aurora_RingRoom_Terminal13", true),
                 new("OnCaptainsCodeRadioFinished2", null, true)}),
             new("OnPlayRadioSunbeam4", new EntryInfo[] { new("OnSunbeamPreparingToLand", "OnVisitSunbeamSite", true)}),
-            new("Precursor_Gun_DataDownload3", new EntryInfo[] { 
-                new("OnLostRiverHintDownloaded1", "Precursor_LostRiverBase_Log1", true), 
+            new("Precursor_Gun_DataDownload3", new EntryInfo[] {
+                new("OnLostRiverHintDownloaded1", "Precursor_LostRiverBase_Log1", true),
                 new("OnLostRiverHintDownloaded2", "FindPrecursorLavaCastleFacility", true)}),
             new("Emperor_Telepathic_Contact1", new EntryInfo[] { new("OnEmperorFirstTelepathy", "Precursor_Prison_Aquarium_EmperorLog1", true)}),
-            new("Goal_SecondarySystems", new EntryInfo[] { 
-                new("OnLifepodRepaired1", "Goal_Seaglide", true), 
+            new("Goal_SecondarySystems", new EntryInfo[] {
+                new("OnLifepodRepaired1", "Goal_Seaglide", true),
                 new("OnLifepodRepaired2", "Goal_Builder", true)}),
             new("Goal_JellyCaveEntrance", new EntryInfo[] { new( "OnJellyHintGiven", "Goal_BiomeJellyCave", true)}),
             new("AdviseSelfScan", new EntryInfo[] { new("OnAdviseSelfScan", "SelfScan2", true)})
