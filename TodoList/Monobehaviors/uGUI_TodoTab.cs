@@ -172,14 +172,15 @@ namespace TodoList.Monobehaviors
             }
         }
 
-        public void CompleteTodoItem(Main_Plugin.EntryInfo entryInfo)
+        public bool CompleteTodoItem(Main_Plugin.EntryInfo entryInfo)
         {
             Main_Plugin.logger.LogInfo($"Attempting to complete todo item for {entryInfo.completeKey}");
 
             TodoItem item = TodoItem.todoItems.FirstOrDefault(i => i.entryInfo.completeKey == entryInfo.completeKey);
-            if (item == null) return;
+            if (item == null) return false;
 
             Destroy(item.gameObject);
+            return true;
         }
 
         private void SortTodoItems()

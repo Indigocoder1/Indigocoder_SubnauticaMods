@@ -107,7 +107,7 @@
     <Compile Include="Monobehaviors\TodoInputField.cs" />
     <Compile Include="Monobehaviors\TodoItem.cs" />
     <Compile Include="Monobehaviors\uGUI_TodoTab.cs" />
-    <Compile Include="Patches\AutoTodoItems\CompoundGoalPatches.cs" />
+    <Compile Include="Patches\AutoTodoItems\RadioPatches.cs" />
     <Compile Include="Patches\AutoTodoItems\StoryGoalManagerPatches.cs" />
     <Compile Include="Patches\AutoTodoItems\uGUI_SceneIntroPatches.cs" />
     <Compile Include="Patches\MapModCompatibilityPatches.cs" />
