@@ -19,7 +19,7 @@ namespace TodoList
     {
         private const string myGUID = "Indigocoder.TodoList";
         private const string pluginName = "Todo List";
-        private const string versionString = "1.1.0";
+        private const string versionString = "1.1.1";
 
         public static ManualLogSource logger;
 
