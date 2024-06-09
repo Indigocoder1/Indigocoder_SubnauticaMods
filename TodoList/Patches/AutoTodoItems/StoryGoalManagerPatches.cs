@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using Story;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using TodoList.Monobehaviors;
 
@@ -15,8 +14,6 @@ namespace TodoList.Patches.AutoTodoItems
             if (!__result) return;
 
             if (!Main_Plugin.CreateHintTodoItems.Value) return;
-
-            Main_Plugin.logger.LogInfo($"On goal complete for {key}");
 
             TryCompleteHintEntries(key);
             if (!Main_Plugin.StoryGoalTodoEntries.Any(i => i.key == key)) return;
@@ -42,10 +39,10 @@ namespace TodoList.Patches.AutoTodoItems
 
             Main_Plugin.StoryGoalTodoEntry storyEntry = Main_Plugin.StoryGoalTodoEntries.First(i => i.entryInfos.Any(j => j.completeKey == key));
             Main_Plugin.EntryInfo entryInfo = storyEntry.entryInfos.FirstOrDefault(i => i.completeKey == key);
-            if(uGUI_TodoTab.Instance.CompleteTodoItem(entryInfo))
+            if (uGUI_TodoTab.Instance.CompleteTodoItem(entryInfo))
             {
                 ErrorMessage.AddMessage($"<color=#00FF00>{Language.main.Get("TODO_ItemComplete")}</color>");
-            }            
+            }
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 namespace TodoList.Monobehaviors
@@ -9,7 +8,7 @@ namespace TodoList.Monobehaviors
         private const float ALPHA_TRANSITION_SPEED = 12f;
 
         public TMP_InputField inputField;
-        
+
         private TextMeshProUGUI text;
         private bool wasFocusedLastFrame;
 

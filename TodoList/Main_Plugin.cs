@@ -118,7 +118,7 @@ namespace TodoList
             new("OnPlayRadioMushroom24", new EntryInfo[] { new("OnLifepod13RadioFinished", "OnVisitLifepod13", true)}),
             new("OnPlayRadioGrassy21", new EntryInfo[] { new("OnLifepod17RadioFinished", "OnVisitLifepod17", true)}),
             new("OnPlayRadioSecondOfficer", new EntryInfo[] { new("OnLifepod19RadioFinished", "OnVisitLifepod19", true)}),
-            new("OnPlayRadioSecondOfficer", new EntryInfo[] {
+            new("CaptainCode", new EntryInfo[] {
                 new("OnCaptainsCodeRadioFinished1", "Aurora_RingRoom_Terminal13", true),
                 new("OnCaptainsCodeRadioFinished2", null, true)}),
             new("OnPlayRadioSunbeam4", new EntryInfo[] { new("OnSunbeamPreparingToLand", "OnVisitSunbeamSite", true)}),

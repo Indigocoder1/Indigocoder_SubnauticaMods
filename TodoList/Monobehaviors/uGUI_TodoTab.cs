@@ -1,8 +1,8 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace TodoList.Monobehaviors
 {
@@ -16,7 +16,7 @@ namespace TodoList.Monobehaviors
             }
             set
             {
-                if(_instance != null && value != null)
+                if (_instance != null && value != null)
                 {
                     Main_Plugin.logger.LogError($"More than 1 uGUI_TodoTab in the scene! Attempted to set {value} to _Instance");
                     return;
@@ -48,7 +48,7 @@ namespace TodoList.Monobehaviors
 
             GameObject label = transform.Find("Content/LogLabel").gameObject;
             label.name = "TodoLabel";
-            label.GetComponent<TextMeshProUGUI>().text = "TODO LIST";
+            label.GetComponent<TextMeshProUGUI>().text = Language.main.Get("TODO_Header");
 
             GetComponentInChildren<RectMask2D>().enabled = true;
 
@@ -137,7 +137,7 @@ namespace TodoList.Monobehaviors
             todoItem.SetEntryInfo(entryInfo);
             todoItem.SetIsHintItem(isHintItem);
 
-            if(isHintItem)
+            if (isHintItem)
             {
                 SortTodoItems();
             }
@@ -190,7 +190,7 @@ namespace TodoList.Monobehaviors
 
             foreach (var item in TodoItem.todoItems)
             {
-                if(item.isHintItem)
+                if (item.isHintItem)
                 {
                     item.transform.SetSiblingIndex(sortedHintItemIndex);
                     sortedHintItemIndex++;
