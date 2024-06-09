@@ -200,11 +200,13 @@ namespace CustomCraftGUI.Monobehaviors
 
         private void UpdateUnlockedItemsList()
         {
+            if (currentItem.unlockedItems == null) return;
+
             foreach (Ingredient ingredient in currentItem.unlockedItems)
             {
                 GameObject newUnlock = Instantiate(ingredientPrefab, unlocksParent);
                 var ingredientItem = newUnlock.GetComponent<IngredientItem>();
-                ingredientItem.SetInfo(SpriteManager.Get(ingredient.techType), ingredient.techType, ingredient.amount, this);
+                ingredientItem.SetInfo(SpriteManager.Get(ingredient.techType), ingredient.techType, ingredient.amount);
                 ingredientItem.SetInfoPanel(infoPanel);
             }
         }
@@ -254,7 +256,7 @@ namespace CustomCraftGUI.Monobehaviors
 
         public override List<Ingredient> GetActiveList(out string listName)
         {
-            if(currentItem.unlockedItems == null)
+            if(currentItem == null || currentItem.unlockedItems == null)
             {
                 return base.GetActiveList(out listName);
             }

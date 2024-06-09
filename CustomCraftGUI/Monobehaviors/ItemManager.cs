@@ -4,7 +4,6 @@ using UnityEngine;
 using Ingredient = CraftData.Ingredient;
 using UnityEngine.UI;
 using System;
-using CustomCraftGUI.Structs;
 
 namespace CustomCraftGUI.Monobehaviors
 {
@@ -40,6 +39,14 @@ namespace CustomCraftGUI.Monobehaviors
         protected Item currentItem;
         protected int itemsCreated = 1;
 
+        private void Awake()
+        {
+            if (!infoPanel.ItemManagers.Contains(this))
+            {
+                infoPanel.ItemManagers.Add(this);
+            }
+        }
+
         public virtual void Start()
         {
             ClearAllIngredientItems();
@@ -72,7 +79,7 @@ namespace CustomCraftGUI.Monobehaviors
         {
             List<Ingredient> newList = GetActiveList(out _);
 
-            if(currentItem.Equals(null))
+            if(currentItem == null)
             {
                 return null;
             }
@@ -113,9 +120,6 @@ namespace CustomCraftGUI.Monobehaviors
             ClearAllIngredientItems();
             UpdateIngredientsList();
             UpdateLinkedItemsList();
-
-            //currentItem.SetIngredients(currentItem.ingredients);
-            //currentItem.SetLinkedItems(currentItem.linkedItems);
 
             return newList;
         }
@@ -169,6 +173,7 @@ namespace CustomCraftGUI.Monobehaviors
             if (Items.Count > 0)
             {
                 SetCurrentItem(Items[Items.Count - 1]);
+                return;
             }
 
             currentItem = null;
@@ -186,24 +191,26 @@ namespace CustomCraftGUI.Monobehaviors
         
         protected virtual void UpdateIngredientsList()
         {
+            if (currentItem.customItemInfo.ingredients == null) return;
+
             foreach (Ingredient ingredient in currentItem.customItemInfo.ingredients)
             {
                 GameObject newIngredient = Instantiate(ingredientPrefab, ingredientsParent);
                 var ingredientItem = newIngredient.GetComponent<IngredientItem>();
-                ModifiedItemsManager modifiedManager = this is ModifiedItemsManager ? (ModifiedItemsManager)this : null;
-                ingredientItem.SetInfo(SpriteManager.Get(ingredient.techType), ingredient.techType, ingredient.amount, modifiedManager);
+                ingredientItem.SetInfo(SpriteManager.Get(ingredient.techType), ingredient.techType, ingredient.amount);
                 ingredientItem.SetInfoPanel(infoPanel);
             }
         }
 
         protected virtual void UpdateLinkedItemsList()
         {
+            if (currentItem.customItemInfo.linkedItems == null) return;
+
             foreach (Ingredient linkedItem in currentItem.customItemInfo.linkedItems)
             {
                 GameObject newIngredient = Instantiate(ingredientPrefab, linkedItemsParent);
                 var ingredientItem = newIngredient.GetComponent<IngredientItem>();
-                ModifiedItemsManager modifiedManager = this is ModifiedItemsManager ? (ModifiedItemsManager)this : null;
-                ingredientItem.SetInfo(SpriteManager.Get(linkedItem.techType), linkedItem.techType, linkedItem.amount, modifiedManager);
+                ingredientItem.SetInfo(SpriteManager.Get(linkedItem.techType), linkedItem.techType, linkedItem.amount);
                 ingredientItem.SetInfoPanel(infoPanel);
             }
         }
@@ -236,6 +243,11 @@ namespace CustomCraftGUI.Monobehaviors
         private void OnEnable()
         {
             OnActiveManagerChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnDestroy()
+        {
+            infoPanel.ItemManagers.Remove(this);
         }
 
         protected readonly Dictionary<string, string[]> fabricatorPaths = new()

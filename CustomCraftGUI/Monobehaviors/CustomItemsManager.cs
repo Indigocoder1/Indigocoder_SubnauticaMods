@@ -130,6 +130,7 @@ namespace CustomCraftGUI.Monobehaviors
             currentItem.SetNameText($"MyAmazingCoolItem{itemsCreated}");
             currentItem.SetDisplayName($"My amazing cool item {itemsCreated}");
             currentItem.SetFabricatorPath(fabricatorPaths["Fabricator Basic Materials"]);
+            currentItem.SetManager(this);
             currentItem.customItemInfo.SetItemID($"MyAmazingCoolItem{itemsCreated}");
 
             currentItem.customItemInfo.SetIngredients(new());

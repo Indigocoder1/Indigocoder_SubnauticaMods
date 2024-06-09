@@ -19,6 +19,8 @@ namespace CustomCraftGUI.Monobehaviors
 
         public void SpawnIcons()
         {
+            itemIcons.Clear();
+
             foreach (TechType techType in Enum.GetValues(typeof(TechType)))
             {
                 Atlas.Sprite atlasSprite = SpriteManager.Get(techType);

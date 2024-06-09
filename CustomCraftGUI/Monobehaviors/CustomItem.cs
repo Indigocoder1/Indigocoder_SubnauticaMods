@@ -8,6 +8,7 @@ namespace CustomCraftGUI.Monobehaviors
         public string[] fabricatorPath { get; private set; }
         public Vector2Int itemSize { get; private set; }
         public string tooltip { get; private set; }
+        private CustomItemsManager manager;
 
         public void SetDisplayName(string displayName)
         {
@@ -24,6 +25,14 @@ namespace CustomCraftGUI.Monobehaviors
         public void SetTooltip(string tooltip)
         {
             this.tooltip = tooltip;
+        }
+        public void SetManager(CustomItemsManager manager)
+        {
+            this.manager = manager;
+        }
+        public void SetCurrentItem()
+        {
+            manager.SetCurrentItem(this);
         }
     }
 }

@@ -11,9 +11,8 @@ namespace CustomCraftGUI.Monobehaviors
         public TextMeshProUGUI amountText;
         public TechType techType { get; private set; }
         public InfoPanel infoPanel { get; private set; }
-        public ModifiedItemsManager modifiedItemsManager { get; private set; }
 
-        public void SetInfo(Atlas.Sprite icon, TechType techType, int amount, ModifiedItemsManager modifiedItemsManager)
+        public void SetInfo(Atlas.Sprite icon, TechType techType, int amount)
         {
             iconImage.SetForegroundSprite(icon);
             iconImage.foreground.transform.localScale = Vector3.one * 0.3f * SpriteSizeFormatter.GetSpriteShrinkScalar(icon);
@@ -22,7 +21,6 @@ namespace CustomCraftGUI.Monobehaviors
             amountText.text = $"x{amount}";
 
             this.techType = techType;
-            this.modifiedItemsManager = modifiedItemsManager;
         }
 
         public void SetInfoPanel(InfoPanel infoPanel)
@@ -35,11 +33,6 @@ namespace CustomCraftGUI.Monobehaviors
             ItemIcon icon = ItemIconSpawner.itemIcons[techType];
 
             infoPanel.SetCurrentItem(icon);
-
-            if(modifiedItemsManager != null)
-            {
-                modifiedItemsManager.SetCurrentIcon(icon);
-            }
         }
     }
 }
