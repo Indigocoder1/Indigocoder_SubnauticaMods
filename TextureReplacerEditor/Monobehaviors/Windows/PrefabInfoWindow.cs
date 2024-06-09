@@ -158,9 +158,9 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         private void OnConfigSaved()
         {
             TextureReplacerEditorWindow.Instance.tutorialWindow.SetMessage("Congrats, you've finished the tutorial! Here's a few extra tips on things not covered:\n" +
-                "You can click on texture previews to a larger version, and save them to disk.\n" +
-                "You can click the open file button to replace textures with ones you've saved to your computer.\n" +
-                "You can click the popup button on configs to open the material window with their changes.");
+                "- You can click on texture previews to view a larger version and save them to disk.\n" +
+                "- You can click the open file button to replace textures with ones you've saved to your computer.\n" +
+                "- You can click the popup button on configs to open the material window with their changes.");
 
             TextureReplacerEditorWindow.Instance.configViewerWindow.SetHighlightActive(false);
         }
