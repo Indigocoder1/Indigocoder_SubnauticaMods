@@ -19,7 +19,7 @@ namespace TodoList
     {
         private const string myGUID = "Indigocoder.TodoList";
         private const string pluginName = "Todo List";
-        private const string versionString = "1.1.1";
+        private const string versionString = "1.1.2";
 
         public static ManualLogSource logger;
 
@@ -150,12 +150,25 @@ namespace TodoList
             public string entry;
             public string completeKey;
             public bool localized;
+            public string localizationKey;
 
-            public EntryInfo(string entry, string completeKey, bool localized)
+            public EntryInfo(string entry, string completeKey, bool localized, string localizationKey = "")
             {
                 this.entry = entry;
                 this.completeKey = completeKey;
                 this.localized = localized;
+                this.localizationKey = localizationKey;
+            }
+
+            public void SetEntry(string entry)
+            {
+                this.entry = entry;
+            }
+
+            public void SetLocalizationKey(string key)
+            {
+                Main_Plugin.logger.LogInfo($"Setting localizaton key to {key}");
+                this.localizationKey = key;
             }
         }
     }

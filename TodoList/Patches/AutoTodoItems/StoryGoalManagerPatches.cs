@@ -23,9 +23,12 @@ namespace TodoList.Patches.AutoTodoItems
             Main_Plugin.EntryInfo[] entryInfos = entry.entryInfos;
             for (int i = 0; i < entryInfos.Length; i++)
             {
-                if (!entryInfos[i].localized) continue;
+                Main_Plugin.EntryInfo info = entryInfos[i];
+                if (!info.localized) continue;
 
-                entryInfos[i].entry = Language.main.Get(entryInfos[i].entry);
+                info.SetLocalizationKey(info.entry);
+                info.entry = Language.main.Get(info.entry);
+                entryInfos[i] = info;
             }
 
             uGUI_TodoTab.Instance.CreateNewItems(entryInfos, true);

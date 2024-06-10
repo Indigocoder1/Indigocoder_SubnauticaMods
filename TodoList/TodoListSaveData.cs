@@ -10,14 +10,14 @@ namespace TodoList
     [Serializable]
     public struct ItemSaveData
     {
-        public string itemBody;
         public bool isCompleted;
         public bool isHint;
+        public bool isModified;
         public EntryInfo entryInfo;
 
-        public ItemSaveData(string itemBody, bool isCompleted, bool isHint, EntryInfo entryInfo)
+        public ItemSaveData(bool isModified, bool isCompleted, bool isHint, EntryInfo entryInfo)
         {
-            this.itemBody = itemBody;
+            this.isModified = isModified;
             this.isCompleted = isCompleted;
             this.isHint = isHint;
             this.entryInfo = entryInfo;
@@ -36,8 +36,7 @@ namespace TodoList
                 List<ItemSaveData> data = new();
                 foreach (var item in TodoItem.todoItems)
                 {
-                    Main_Plugin.logger.LogInfo($"Saving data for {item}");
-                    data.Add(item.saveData);
+                    data.Add(item.SaveData);
                 }
 
                 saveData = data;

@@ -21,24 +21,28 @@ namespace TodoList.Monobehaviors
         public string hintCompleteKey { get; private set; }
         public Main_Plugin.EntryInfo entryInfo { get; private set; }
 
-        public ItemSaveData saveData
+        private bool isModified;
+        private bool ignoreInitialTextSet;
+        private string localizationKey;
+
+        public ItemSaveData SaveData
         {
             get
             {
-                return new(itemText, isCompleted, isHintItem, entryInfo);
+                return new(isModified, IsCompleted, isHintItem, new(ItemText, entryInfo.completeKey, entryInfo.localized, localizationKey));
             }
             set
             {
-                itemText = value.itemBody;
-                isCompleted = value.isCompleted;
+                ItemText = value.entryInfo.entry;
+                IsCompleted = value.isCompleted;
             }
         }
 
-        public string itemText
+        public string ItemText
         {
             get
             {
-                return todoInputField.inputField.textComponent.text;
+                return todoInputField.inputField.text;
             }
             set
             {
@@ -46,7 +50,7 @@ namespace TodoList.Monobehaviors
             }
         }
 
-        public bool isCompleted
+        public bool IsCompleted
         {
             get
             {
@@ -66,11 +70,19 @@ namespace TodoList.Monobehaviors
             toggle = GetComponentInChildren<Toggle>();
         }
 
-        public void SetEntryInfo(Main_Plugin.EntryInfo entryInfo)
+        public void SetEntryInfo(Main_Plugin.EntryInfo entryInfo, bool modified = false)
         {
             this.entryInfo = entryInfo;
-            itemText = entryInfo.entry;
             hintCompleteKey = entryInfo.completeKey;
+            localizationKey = entryInfo.localizationKey;
+
+            string text = entryInfo.entry;
+            if (entryInfo.localized && !modified)
+            {
+                text = Language.main.Get(entryInfo.localizationKey);
+                ignoreInitialTextSet = true;
+            }
+            ItemText = text;
         }
 
         public void SetIsHintItem(bool isHintItem)
@@ -85,6 +97,18 @@ namespace TodoList.Monobehaviors
         public void DeleteItem()
         {
             Destroy(gameObject);
+        }
+
+        public void OnInputChanged()
+        {
+            entryInfo.SetEntry(ItemText);
+            if(ignoreInitialTextSet)
+            {
+                ignoreInitialTextSet = false;
+                return;
+            }
+
+            isModified = true;
         }
 
         private void OnEnable()

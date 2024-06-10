@@ -55,9 +55,6 @@ namespace TodoList.Monobehaviors
             UpdateViewportSize();
             SpawnNewItemButton();
             SpawnClearItemsButton();
-
-            //USE THIS FOR THE SAVE SYSTEM \/
-            Main_Plugin.logger.LogInfo($"Current save slot = {SaveLoadManager.main.GetCurrentSlot()}");
         }
 
         private void InitVerticalLayoutGroup()
@@ -119,8 +116,8 @@ namespace TodoList.Monobehaviors
             {
                 GameObject newItem = CreateNewItem();
                 var todoItem = newItem.GetComponent<TodoItem>();
-                todoItem.saveData = saveData;
-                todoItem.SetEntryInfo(saveData.entryInfo);
+                todoItem.SaveData = saveData;
+                todoItem.SetEntryInfo(saveData.entryInfo, saveData.isModified);
                 todoItem.SetIsHintItem(saveData.isHint);
             }
         }
@@ -165,7 +162,7 @@ namespace TodoList.Monobehaviors
 
         private void ClearCompletedItems()
         {
-            List<TodoItem> checkedInputFields = TodoItem.todoItems.Where(i => i.isCompleted).ToList();
+            List<TodoItem> checkedInputFields = TodoItem.todoItems.Where(i => i.IsCompleted).ToList();
             for (int i = checkedInputFields.Count - 1; i >= 0; i--)
             {
                 Destroy(checkedInputFields[i].gameObject);
@@ -174,8 +171,6 @@ namespace TodoList.Monobehaviors
 
         public bool CompleteTodoItem(Main_Plugin.EntryInfo entryInfo)
         {
-            Main_Plugin.logger.LogInfo($"Attempting to complete todo item for {entryInfo.completeKey}");
-
             TodoItem item = TodoItem.todoItems.FirstOrDefault(i => i.entryInfo.completeKey == entryInfo.completeKey);
             if (item == null) return false;
 
