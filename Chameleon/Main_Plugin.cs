@@ -1,20 +1,16 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
-using BepInEx.Configuration;
 using BepInEx.Logging;
 using Chameleon.Attributes;
 using Chameleon.Craftables;
 using Chameleon.Monobehaviors;
-using Chameleon.Patches;
 using Chameleon.Prefabs;
 using HarmonyLib;
-using IndigocoderLib;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
 using Nautilus.Crafting;
 using Nautilus.Handlers;
-using Nautilus.Utility;
 using System;
 using System.IO;
 using System.Reflection;
@@ -29,7 +25,7 @@ namespace Chameleon
     {
         private const string myGUID = "Indigocoder.Chameleon";
         private const string pluginName = "Chameleon Sub";
-        private const string versionString = "1.0.0";
+        private const string versionString = "1.0.1";
 
         public static ManualLogSource logger;
 
@@ -92,7 +88,7 @@ namespace Chameleon
         {
             //UseLegacyCloakEffect = Config.Bind("Chamleon", "Use legacy cloaking effect", false);
 
-            new ChameleonOptions();
+            //new ChameleonOptions();
         }
 
         private void InitializeSlotMapping()
@@ -117,7 +113,7 @@ namespace Chameleon
             PrefabInfo thermalModule = PrefabInfo.WithTechType("ChameleonThermalModule", null, null)
                 .WithIcon(SpriteManager.Get(TechType.CyclopsThermalReactorModule));
 
-            CreateUpgradeModulePrefab(depthModuleMk1Info, Chameleon_Craftable.PrefabInfo.TechType);
+            CreateUpgradeModulePrefab(depthModuleMk1Info, TechType.CyclopsHullModule1);
             CreateUpgradeModulePrefab(depthModuleMk2Info, TechType.CyclopsHullModule2);
             CreateUpgradeModulePrefab(depthModuleMk3Info, TechType.CyclopsHullModule3);
             CreateUpgradeModulePrefab(thermalModule, TechType.CyclopsThermalReactorModule);
@@ -128,7 +124,7 @@ namespace Chameleon
             CustomPrefab prefab = new(info);
             prefab.SetGameObject(new CloneTemplate(info, TechType.CyclopsHullModule1));
             prefab.SetPdaGroupCategory(ChameleonGroup, ChameleonModuleCategory);
-            prefab.SetUnlock(unlock);
+            prefab.SetUnlock(unlock).WithAnalysisTech(null);
 
             if (recipe == null) recipe = RecipeUtils.TryGetRecipeFromJson(info.TechType);
             prefab.SetRecipe(recipe).WithFabricatorType(ChameleonFabricatorTree);

@@ -170,6 +170,7 @@ namespace Chameleon.Monobehaviors.UI
 
             newBodyMaterials[0] = subDefaultMaterial;
             newBodyMaterials[1] = subAccentMaterial;
+            newBodyMaterials[2] = subDefaultMaterial;
 
             newTowerMaterials[0] = subDefaultMaterial;
             newTowerMaterials[1] = subAccentMaterial;

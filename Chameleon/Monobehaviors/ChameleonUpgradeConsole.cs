@@ -85,6 +85,11 @@ namespace Chameleon.Monobehaviors
 
         private IEnumerator SpawnSavedModules(Dictionary<string, TechType> cachedModules)
         {
+            if (modules == null)
+            {
+                InitializeModules();
+            }
+
             foreach (var module in cachedModules)
             {
                 if (module.Value == TechType.None) continue;

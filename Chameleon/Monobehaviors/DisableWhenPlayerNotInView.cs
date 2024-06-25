@@ -13,7 +13,12 @@ namespace Chameleon.Monobehaviors
         private void Start ()
         {
             rend = GetComponent<MeshRenderer>();
-            SubEnterHandTarget.OnHatchUsed += UpdateHatchVisibility;
+            //SubEnterHandTarget.OnHatchUsed += UpdateHatchVisibility;
+        }
+
+        private void Update()
+        {
+            UpdateHatchVisibility();
         }
 
         private void UpdateHatchVisibility()
@@ -33,7 +38,7 @@ namespace Chameleon.Monobehaviors
 
         private void OnDestroy()
         {
-            SubEnterHandTarget.OnHatchUsed -= UpdateHatchVisibility;
+            //SubEnterHandTarget.OnHatchUsed -= UpdateHatchVisibility;
         }
     }
 }
