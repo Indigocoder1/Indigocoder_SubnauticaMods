@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Nautilus.Json.Converters;
 
 namespace ImprovedGravTrap
 {
@@ -20,7 +18,7 @@ namespace ImprovedGravTrap
                 }
             }
 
-            var textureConfigJson = JsonConvert.SerializeObject(saveData, Formatting.Indented);
+            var textureConfigJson = JsonConvert.SerializeObject(saveData, Formatting.Indented, new CustomEnumConverter());
             File.WriteAllText(filePath, textureConfigJson);
             Console.WriteLine($"Data saved to JSON at {filePath}");
         }
@@ -33,7 +31,7 @@ namespace ImprovedGravTrap
             }
 
             string data = File.ReadAllText(filePath);
-            return JsonConvert.DeserializeObject<List<TechTypeList>>(data);
+            return JsonConvert.DeserializeObject<List<TechTypeList>>(data, new CustomEnumConverter());
         }
     }
 }
