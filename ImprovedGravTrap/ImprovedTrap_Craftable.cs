@@ -58,7 +58,7 @@ namespace ImprovedGravTrap
                     storageContainer.errorSound = null;
 
                     gameObject.SetActive(true);
-                    enhanced.container = storageContainer;
+                    enhanced.storageContainer = storageContainer;
                 }
                 else
                 {
