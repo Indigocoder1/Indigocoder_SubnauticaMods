@@ -75,6 +75,10 @@ namespace ImprovedGravTrap.Patches
                     pda.ui.OnOpenPDA(PDATab.Inventory);
                     pda.ui.Select();
                     pda.ui.OnPDAOpened();
+                    pda.onCloseCallback = pda =>
+                    {
+                        container.OnClosePDA(pda);
+                    };
                 }
                 else
                 {
