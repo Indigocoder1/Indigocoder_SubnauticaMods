@@ -152,6 +152,9 @@ namespace ImprovedGravTrap
             }
             else if (gravSphere.trigger.enabled)
             {
+                var heldItem = Inventory.main.quickSlots.heldItem;
+                if (heldItem == null || !heldItem.techType.IsEnhancedGravTrap() || heldItem.item != gravSphere.pickupable) return;
+
                 gravSphere.DeactivatePads();
                 gravSphere.trigger.enabled = false;
                 gravSphere.gameObject.GetComponent<Pickupable>().attached = true;
