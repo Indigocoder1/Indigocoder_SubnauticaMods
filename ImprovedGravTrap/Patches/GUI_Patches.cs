@@ -123,7 +123,8 @@ namespace ImprovedGravTrap.Patches
             if (!__instance.GetTechType().IsEnhancedGravTrap())
                 return;
 
-            HandReticle.main.SetText(HandReticle.TextType.Use, __instance.gameObject.GetComponent<GravTrapObjectsType>().GetCurrentListName(), true);
+            string currentMode = __instance.gameObject.GetComponent<GravTrapObjectsType>().GetCurrentListName();
+            HandReticle.main.SetText(HandReticle.TextType.Use, $"Advance mode ({currentMode})", false, GameInput.Button.Deconstruct);
         }
     }
 }

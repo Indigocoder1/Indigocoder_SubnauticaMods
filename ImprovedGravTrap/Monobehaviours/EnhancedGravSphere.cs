@@ -38,7 +38,7 @@ namespace ImprovedGravTrap
             Player.main.pda.onCloseCallback += (pda) =>
             {
                 storageContainer.OnClosePDA(pda);
-                Main_Plugin.logger.LogInfo("Closing storage");
+
             };
 
             UpdateRange();
@@ -182,6 +182,8 @@ namespace ImprovedGravTrap
         {
             if (Inventory.main.quickSlots.heldItem == null) return;
 
+            if (!Inventory.main.quickSlots.heldItem.techType.IsEnhancedGravTrap()) return;
+
             if (!Inventory.main.quickSlots.heldItem.item == gravSphere.pickupable)
             {
                 return;
@@ -190,7 +192,7 @@ namespace ImprovedGravTrap
             GravTrapObjectsType objectsType = gravSphere.GetComponent<GravTrapObjectsType>();
 
             string primaryString =
-                $"{Language.main.GetFormat("HandReticleAddButtonFormat", "Deploy gravtrap", uGUI.FormatButton(GameInput.Button.RightHand))}";
+                $"{Language.main.GetFormat("HandReticleAddButtonFormat", "Deploy gravtrap", uGUI.FormatButton(GameInput.Button.RightHand))}"; 
 
             string gravtrapactivate =
                     storageContainer.container.IsFull() ? "Cannot activate; storage is full" :
@@ -254,6 +256,9 @@ namespace ImprovedGravTrap
             GameObject rootTarget = UWE.Utils.GetEntityRoot(target) ?? target;
 
             var targetTechType = CraftData.GetTechType(rootTarget);
+
+            if (targetTechType == TechType.Player) return;
+
             string trimmedName = Utilities.GetNameWithCloneRemoved(rootTarget.name);
             targetStorageName = targetTechType == TechType.None ? trimmedName : Language.main.Get(targetTechType);
 
@@ -325,7 +330,8 @@ namespace ImprovedGravTrap
             else
             {
                 var escapePod = target.GetComponentInParent<EscapePod>();
-                if (escapePod != null)
+                var handTarget = target.GetComponent<GenericHandTarget>();
+                if (escapePod && handTarget)
                 {
                     var container = escapePod.storageContainer.container;
                     targetingStorage = true;
@@ -339,6 +345,8 @@ namespace ImprovedGravTrap
 
             if (targetContainer == null) return;
             if (!GameInput.GetButtonDown(GameInput.Button.AltTool)) return;
+
+            Main_Plugin.logger.LogInfo($"Target container = {targetContainer.tr.name}");
 
             foreach (var itemGroup in new List<ItemsContainer.ItemGroup>(storageContainer.container._items.Values))
             {
@@ -369,6 +377,7 @@ namespace ImprovedGravTrap
                 }
             }
         }
+
         private void UpdateRange()
         {
             SphereCollider[] sphereColliders = gameObject.GetComponents<SphereCollider>();
