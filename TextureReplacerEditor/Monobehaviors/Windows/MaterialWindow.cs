@@ -34,6 +34,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         private MaterialEditData _currentMaterialEditData;
 
         public TMP_InputField searchBar;
+        public TextMeshProUGUI matNameText;
         public GameObject propertyItemPrefab;
         public Transform propertyItemsParent;
         public Transform tutorialLineTarget;
@@ -49,6 +50,8 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             this.material = material;
             currentMaterialItem = item;
             overrideEditData = false;
+            matNameText.text = material.name;
+
             SpawnPropertyItems();
 
             CurrentMaterialEditData = new(item.material, item.MaterialIndex);
@@ -90,9 +93,10 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             }
 
             PropertyItem propertyItem = (sender as MonoBehaviour).GetComponentInParent<PropertyItem>();
+
             if (e.originalValue.Equals(e.newValue))
             {
-                if(materialEdits[CurrentMaterialEditData].Any(i => i.propertyItem.propertyName == propertyItem.propertyName))
+                if (materialEdits[CurrentMaterialEditData].Any(i => i.propertyItem.propertyName == propertyItem.propertyName))
                 {
                     PropertyEditData item = materialEdits[CurrentMaterialEditData].First(i => i.propertyItem.propertyName == propertyItem.propertyName);
                     materialEdits[CurrentMaterialEditData].Remove(item);

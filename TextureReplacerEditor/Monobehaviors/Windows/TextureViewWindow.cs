@@ -19,7 +19,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             textureNameText.text = tex.name;
             textureView.texture = tex;
 
-            float textureRatio = tex.width / tex.height;
+            float textureRatio = (float)tex.width / tex.height;
             textureView.rectTransform.sizeDelta = new Vector2(targetWidth, targetWidth / textureRatio);
         }
 

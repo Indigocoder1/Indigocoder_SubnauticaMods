@@ -29,7 +29,7 @@ namespace TextureReplacerEditor
         {
             logger = Logger;
 
-            string parentFolderName = Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName;
+            string parentFolderName = Directory.GetParent(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName).FullName;
             TextureReplacerAssetsFolderPath = Path.Combine(new string[] { parentFolderName, "TextureReplacer", "Assets" });
 
             harmony.PatchAll();

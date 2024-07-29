@@ -90,7 +90,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             SetCurrentConfig(item);
         }
 
-        public void SetHighlightActive(bool active)
+        public void SetTutorialHighlightActive(bool active)
         {
             tutorialHighlight.SetActive(active);
         }

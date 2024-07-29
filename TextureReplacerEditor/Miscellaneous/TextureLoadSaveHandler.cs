@@ -30,7 +30,7 @@ namespace TextureReplacerEditor.Miscellaneous
                 byte[] texBytes = texture.BasedEncoteToPNG();
                 File.WriteAllBytes(path, texBytes);
                 
-                messageWindow.OpenMessage($"{texture.name} saved to {path}", Color.black);
+                messageWindow.OpenMessage($"{texture.name} saved to {path}", Color.white);
             }
         }
 
@@ -48,7 +48,10 @@ namespace TextureReplacerEditor.Miscellaneous
                     return null;
                 }
 
-                return ImageUtils.LoadTextureFromFile(ofd.FileName);
+                var tex = ImageUtils.LoadTextureFromFile(ofd.FileName);
+                string[] splits = ofd.FileName.Split('\\');
+                tex.name = splits[splits.Length - 1];
+                return tex;
             }
 
             return null;

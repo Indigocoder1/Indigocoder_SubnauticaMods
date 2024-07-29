@@ -47,7 +47,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         public override void CloseWindow()
         {
             InfoMessageWindow messageWindow = TextureReplacerEditorWindow.Instance.messageWindow;
-            messageWindow.OpenPrompt($"Are you sure you want to close the tutorial? All progress will be reset.", Color.black, "Yes", "No", OnCloseConfirmed, null);
+            messageWindow.OpenPrompt($"Are you sure you want to close the tutorial? All progress will be reset.", Color.white, "Yes", "No", OnCloseConfirmed, null);
         }
 
         private void OnCloseConfirmed()
@@ -55,6 +55,9 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             TutorialHandler tutorialHandler = TextureReplacerEditorWindow.Instance.tutorialHandler;
             tutorialHandler.RemoveAllItems();
             TextureReplacerEditorWindow.Instance.prefabInfoWindow.EndTutorial();
+
+            TextureReplacerEditorWindow.Instance.materialWindow.SetTutorialHighlightActive(false);
+            TextureReplacerEditorWindow.Instance.configViewerWindow.SetTutorialHighlightActive(false);
 
             base.CloseWindow();
         }

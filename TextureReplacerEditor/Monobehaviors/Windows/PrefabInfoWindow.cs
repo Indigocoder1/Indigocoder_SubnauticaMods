@@ -73,7 +73,8 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         {
             if(childHierarchyParent.childCount == 0)
             {
-                TextureReplacerEditorWindow.Instance.messageWindow.OpenMessage("This object has no children to edit. Select a different object and try again.", Color.black);
+                TextureReplacerEditorWindow.Instance.messageWindow.OpenMessage("This object has no children to edit. Select a different object and try again.", 
+                    Color.white);
                 return;
             }
 
@@ -97,7 +98,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         {
             childHierarchyParent.GetChild(0).GetComponent<ChildItem>().SetTutorialHighlightActive(false);
 
-            ComponentItem componentItem = componentItemsParent.GetComponentsInChildren<ComponentItem>(true).First(i => i.component is Renderer);
+            ComponentItem componentItem = componentItemsParent.GetComponentsInChildren<ComponentItem>(true).FirstOrDefault(i => i.component is Renderer);
             if(componentItem == null)
             {
                 currentTutorialChildIndex++;
@@ -150,7 +151,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
                 "Once you're done, click the save icon to save your configs.");
 
             ConfigViewerWindow configWindow = TextureReplacerEditorWindow.Instance.configViewerWindow;
-            configWindow.SetHighlightActive(true);
+            configWindow.SetTutorialHighlightActive(true);
 
             TextureReplacerEditorWindow.Instance.tutorialWindow.SetLRTarget(null);
         }
@@ -162,7 +163,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
                 "- You can click the open file button to replace textures with ones you've saved to your computer.\n" +
                 "- You can click the popup button on configs to open the material window with their changes.");
 
-            TextureReplacerEditorWindow.Instance.configViewerWindow.SetHighlightActive(false);
+            TextureReplacerEditorWindow.Instance.configViewerWindow.SetTutorialHighlightActive(false);
         }
 
         public void EndTutorial()

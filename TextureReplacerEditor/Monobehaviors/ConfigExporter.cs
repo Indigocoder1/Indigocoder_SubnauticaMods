@@ -26,7 +26,7 @@ namespace TextureReplacerEditor.Monobehaviors
             List<CustomConfigItem> items = TextureReplacerEditorWindow.Instance.configViewerWindow.addedItems;
             if(items.Count <= 0)
             {
-                messageWindow.OpenMessage(NO_ITEMS_ERROR, Color.black);
+                messageWindow.OpenMessage(NO_ITEMS_ERROR, Color.white);
             }
 
             List<ConfigInfo> configInfos = new();
@@ -70,7 +70,7 @@ namespace TextureReplacerEditor.Monobehaviors
                     message += "\nChanged textures saved to TextureReplacer/Assets";
                 }
 
-                messageWindow.OpenMessage(message, Color.black);
+                messageWindow.OpenMessage(message, Color.white);
                 TextureReplacerEditorWindow.Instance.tutorialHandler.TriggerTutorialItem("OnConfigSaved");
             }
         }

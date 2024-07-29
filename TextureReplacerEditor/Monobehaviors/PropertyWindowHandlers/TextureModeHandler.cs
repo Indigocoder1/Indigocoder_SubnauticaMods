@@ -36,6 +36,8 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
                 return;
             }
 
+            originalTexture = texture;
+
             UpdateTexturePreview();
         }
 
@@ -61,6 +63,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
             texture = tex;
             material.SetTexture(propertyName, texture);
 
+            UpdateTexturePreview();
             InvokeOnPropertyChanged(new(originalTexture, tex, UnityEngine.Rendering.ShaderPropertyType.Texture));
         }
 
@@ -86,7 +89,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
         private void UpdateTexturePreview()
         {
             texturePreview.texture = texture;
-            float texRatio = texture.width / texture.height;
+            float texRatio = (float)texture.width / texture.height;
             texturePreview.rectTransform.sizeDelta = new Vector2(targetPreviewScale * texRatio, targetPreviewScale);
         }
     }

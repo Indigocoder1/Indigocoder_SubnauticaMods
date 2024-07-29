@@ -20,11 +20,11 @@ namespace TextureReplacerEditor.Monobehaviors.ConfigChangeHandlers
             }
 
             originalImage.texture = oldTex;
-            float oldTexRatio = oldTex.width / oldTex.height;
+            float oldTexRatio = (float)oldTex.width / oldTex.height;
             originalImage.rectTransform.sizeDelta = new Vector2(originalImage.rectTransform.sizeDelta.y * oldTexRatio, originalImage.rectTransform.sizeDelta.y);
 
             newImage.texture = newTex;
-            float newTexRatio = newTex.width / newTex.height;
+            float newTexRatio = (float)newTex.width / newTex.height;
             newImage.rectTransform.sizeDelta = new Vector2(newImage.rectTransform.sizeDelta.y * newTexRatio, newImage.rectTransform.sizeDelta.y);
         }
     }
