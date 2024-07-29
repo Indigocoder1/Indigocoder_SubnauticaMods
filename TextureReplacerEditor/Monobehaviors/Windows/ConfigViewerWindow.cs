@@ -68,10 +68,13 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
 
             MaterialWindow matWindow = TextureReplacerEditorWindow.Instance.materialWindow;
 
-            ConfigInfo info = new($"MyCoolConfig{createdItems}", matWindow.currentMaterialItem.prefabIdentifierRoot.ClassId, matWindow.currentMaterialItem.pathToRenderer,
+            string classID = matWindow.CurrentMaterialEditData.prefabIdentifier.classId;
+            string pathToRend = matWindow.CurrentMaterialEditData.pathToRend;
+
+            ConfigInfo info = new($"MyCoolConfig{createdItems}", classID, pathToRend,
                 false, 0, new List<string>(), GetTextureEdits(matWindow.CurrentMaterialEditData));
 
-            string prefabName = Utilities.GetNameWithCloneRemoved(matWindow.currentMaterialItem.prefabIdentifierRoot.name);
+            string prefabName = Utilities.GetNameWithCloneRemoved(matWindow.CurrentMaterialEditData.prefabIdentifier.name);
             bool currentWindowHasEdits = matWindow.materialEdits.ContainsKey(matWindow.CurrentMaterialEditData);
             List<PropertyEditData> edits = currentWindowHasEdits ? matWindow.materialEdits[matWindow.CurrentMaterialEditData] : new();
 

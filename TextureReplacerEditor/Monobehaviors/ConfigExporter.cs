@@ -67,7 +67,7 @@ namespace TextureReplacerEditor.Monobehaviors
                 string message = $"Saved config to {path}";
                 if(textureSavedToAssets)
                 {
-                    message += "\nChanged textures saved to TextureReplacer/Assets";
+                    message += "\nEdited textures saved to TextureReplacer/Assets";
                 }
 
                 messageWindow.OpenMessage(message, Color.white);

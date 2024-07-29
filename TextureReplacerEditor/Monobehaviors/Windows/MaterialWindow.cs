@@ -20,7 +20,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             {
                 if(currentMaterialItem)
                 {
-                    return new(currentMaterialItem.material, currentMaterialItem.MaterialIndex);
+                    return new(currentMaterialItem.material, currentMaterialItem.MaterialIndex, currentMaterialItem.prefabIdentifierRoot, currentMaterialItem.pathToRenderer);
                 }
 
                 return _currentMaterialEditData;
@@ -54,7 +54,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
 
             SpawnPropertyItems();
 
-            CurrentMaterialEditData = new(item.material, item.MaterialIndex);
+            CurrentMaterialEditData = new(item.material, item.MaterialIndex, item.prefabIdentifierRoot, item.pathToRenderer);
             searchBar.onValueChanged.AddListener((_) => OnSearchBarValueChanged());
         }
 
@@ -65,7 +65,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             overrideEditData = true;
             SpawnPropertyItems();
 
-            CurrentMaterialEditData = new(editData.material, editData.materialIndex);
+            CurrentMaterialEditData = new(editData.material, editData.materialIndex, editData.prefabIdentifier, editData.pathToRend);
             searchBar.onValueChanged.AddListener((_) => OnSearchBarValueChanged());
         }
 
@@ -221,11 +221,15 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         {
             public Material material;
             public int materialIndex;
+            public PrefabIdentifier prefabIdentifier;
+            public string pathToRend;
 
-            public MaterialEditData(Material material, int index)
+            public MaterialEditData(Material material, int index, PrefabIdentifier identifier, string pathToRend)
             {
                 this.material = material;
                 this.materialIndex = index;
+                prefabIdentifier = identifier;
+                this.pathToRend = pathToRend;
             }
         }
     }

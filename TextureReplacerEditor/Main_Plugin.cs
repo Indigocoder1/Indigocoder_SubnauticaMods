@@ -14,7 +14,7 @@ namespace TextureReplacerEditor
     {
         private const string myGUID = "Indigocoder.TextureReplacerEditor";
         private const string pluginName = "Texture Replacer Editor";
-        private const string versionString = "1.0.0";
+        private const string versionString = "1.0.1";
 
         public static ManualLogSource logger;
         private static readonly Harmony harmony = new Harmony(myGUID);
