@@ -177,7 +177,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         {
             ClearComponentItems();
 
-            foreach (var component in currentItem.originalChild.GetComponentsInChildren<Component>())
+            foreach (var component in currentItem.originalChild.GetComponents<Component>())
             {
                 ComponentItem componentItem = Instantiate(componentItemPrefab, componentItemsParent).GetComponent<ComponentItem>();
                 componentItem.SetInfo(component, currentItem.pathToChild);
