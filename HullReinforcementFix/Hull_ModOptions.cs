@@ -8,8 +8,12 @@ namespace HullReinforcementFix
         public Hull_ModOptions() : base("Hull Reinforcement Fix Options")
         {
             var writeLogsOption = Main_Plugin.WriteLogs.ToModToggleOption();
-            writeLogsOption.OnChanged += WriteLogsOption_OnChanged; ;
+            writeLogsOption.OnChanged += WriteLogsOption_OnChanged;
             AddItem(writeLogsOption);
+
+            var mk1And2Modules = Main_Plugin.EnableBetterUpgradeModules.ToModToggleOption();
+            mk1And2Modules.OnChanged += (s, e) => Main_Plugin.EnableBetterUpgradeModules.Value = e.Value;
+            AddItem(mk1And2Modules);
 
             var mk1DamageReductionOption = Main_Plugin.MK1DamageReductionMultiplier.ToModSliderOption(step: 0.1f, floatFormat: "{0:F1}");
             mk1DamageReductionOption.OnChanged += MK1DamageReductionOption_OnChanged;

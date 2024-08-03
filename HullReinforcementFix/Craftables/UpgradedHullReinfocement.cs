@@ -63,16 +63,22 @@ namespace HullReinforcementFix.Craftables
             prefab.SetGameObject(cloneTemplate);
             prefab.SetUnlock(TechType.CyclopsHullModule1);
             prefab.SetEquipment(EquipmentType.VehicleModule).WithQuickSlotType(QuickSlotType.Passive);
-                  
-            prefab.SetRecipe(recipe)
+            
+            if(Main_Plugin.EnableBetterUpgradeModules.Value)
+            {
+                prefab.SetRecipe(recipe)
                 .WithFabricatorType(CraftTree.Type.SeamothUpgrades)
                 .WithStepsToFabricatorTab("CommonModules")
                 .WithCraftingTime(5f);
+            }
 
             prefab.Register();
 
-            CraftDataHandler.RemoveFromGroup(TechGroup.Resources, TechCategory.BasicMaterials, prefabInfo.TechType);
-            CraftDataHandler.AddToGroup(TechGroup.VehicleUpgrades, TechCategory.VehicleUpgrades, prefabInfo.TechType);
+            if(Main_Plugin.EnableBetterUpgradeModules.Value)
+            {
+                CraftDataHandler.RemoveFromGroup(TechGroup.Resources, TechCategory.BasicMaterials, prefabInfo.TechType);
+                CraftDataHandler.AddToGroup(TechGroup.VehicleUpgrades, TechCategory.VehicleUpgrades, prefabInfo.TechType);
+            }
         }
     }
 }

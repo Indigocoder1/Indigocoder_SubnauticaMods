@@ -11,11 +11,12 @@ namespace HullReinforcementFix
     {
         private const string myGUID = "Indigocoder.HullReinforcementFix";
         private const string pluginName = "Hull Reinforcement Fix";
-        private const string versionString = "1.2.4";
+        private const string versionString = "1.2.6";
 
         private static readonly Harmony harmony = new Harmony(myGUID);
 
         public static ConfigEntry<bool> WriteLogs;
+        public static ConfigEntry<bool> EnableBetterUpgradeModules;
         public static ConfigEntry<float> MK1DamageReductionMultiplier;
         public static ConfigEntry<float> MK2DamageReductionMultiplier;
         public static ConfigEntry<float> MK3DamageReductionMultiplier;
@@ -26,12 +27,12 @@ namespace HullReinforcementFix
         {
             logger = Logger;
 
+            SetupConfigs();
             UpgradedHullReinfocement.Patch(2);
             UpgradedHullReinfocement.Patch(3);
 
             harmony.PatchAll();
-
-            SetupConfigs();
+   
             new Hull_ModOptions();
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
@@ -39,6 +40,9 @@ namespace HullReinforcementFix
         private void SetupConfigs()
         {
             WriteLogs = Config.Bind("Hull Reinforcement Fix", "Write Logs", false);
+
+            EnableBetterUpgradeModules = Config.Bind("Hull Reinforcement Fix", "Enable Mk 2 and 3 modules", true,
+                new ConfigDescription("Requires game restart"));
 
             MK1DamageReductionMultiplier = Config.Bind("Hull Reinforcement Fix", "MK1 Damage Reduction Multiplier", 1f,
                 new ConfigDescription("The damage reduction multiplier for the mk1 module", acceptableValues: new AcceptableValueRange<float>(1f, 2.5f)));
