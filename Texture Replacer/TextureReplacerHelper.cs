@@ -22,6 +22,8 @@ namespace TextureReplacer
         [SerializeField] public static Dictionary<string, bool> configIsPrefab { get; private set; } = new();
         private List<ConfigInfo> nonPrefabConfigInfos = new();
 
+        private PrefabIdentifier identifier;
+
         private IEnumerator Start()
         {
             yield return new WaitForEndOfFrame();
@@ -68,7 +70,7 @@ namespace TextureReplacer
 
         private void SetUpTextures()
         {
-            PrefabIdentifier identifier = GetComponent<PrefabIdentifier>();
+            identifier = GetComponent<PrefabIdentifier>();
             List<ConfigInfo> infos = configIsPrefab[identifier.ClassId] ? configInfos[identifier.ClassId] : nonPrefabConfigInfos;
 
             foreach (ConfigInfo configInfo in infos)
@@ -77,19 +79,27 @@ namespace TextureReplacer
             }
         }
 
-        private void SwapTextures(ConfigInfo configInfo)
+        private void SwapTextures(ConfigInfo configInfo, bool checkForLinkedConfigs = true)
         {
             if(Main.WriteLogs.Value)
             {
                 Main.logger.LogInfo($"Loading config ({configInfo}) | Hierarchy path = {configInfo?.rendererHierarchyPath}");
             }
 
-            if (Random.Range(0f, 1f) > configInfo.variationChance && configInfo.isVariation && !configInfo.variationAccepted)
+            if (configInfo.isVariation && Random.Range(0f, 1f) > configInfo.variationChance)
             {
                 return;
             }
 
-            EnsureLinkedConfigs(configInfo);
+            if(checkForLinkedConfigs)
+            {
+                var linkedConfigs = GetLinkedConfigs(configInfo);
+                foreach (var config in linkedConfigs)
+                {
+                    SwapTextures(config, false);
+                }
+            }
+
             Renderer targetRenderer = transform.Find(configInfo.rendererHierarchyPath)?.GetComponent<Renderer>();
             if (targetRenderer == null && !configInfo.textureEdits.Any(i => i.editType == TextureEditType.Light))
             {
@@ -167,28 +177,27 @@ namespace TextureReplacer
             image.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), image.sprite.pivot);
         }
 
-        private void EnsureLinkedConfigs(ConfigInfo configData)
+        private List<ConfigInfo> GetLinkedConfigs(ConfigInfo configData)
         {
-            for (int i = 0; i < CustomTextureReplacer.textureConfigs.Count; i++)
+            var linkedConfigs = new List<ConfigInfo>();
+
+            for (int i = 0; i < textureConfigs.Count; i++)
             {
-                ConfigInfo info = CustomTextureReplacer.textureConfigs[i];
+                ConfigInfo info = textureConfigs[i];
 
-                if (!info.isVariation || info.variationChance == 1)
+                if (configData.prefabClassID == info.prefabClassID && configData.linkedConfigNames.Count == 0 && info.linkedConfigNames.Count == 0)
                 {
+                    linkedConfigs.Add(info);
                     continue;
                 }
 
-                if (info.linkedConfigNames.Contains(configData.configName))
+                if(configData.linkedConfigNames.Contains(info.configName) || info.linkedConfigNames.Contains(configData.configName))
                 {
-                    info.variationAccepted = true;
-                    continue;
-                }
-
-                if (info.prefabClassID == configData.prefabClassID && info.linkedConfigNames.Count == 0 && configData.linkedConfigNames.Count == 0)
-                {
-                    info.variationAccepted = true;
+                    linkedConfigs.Add(info);
                 }
             }
+
+            return linkedConfigs;
         }
 
         private Vector4 ParseV4FromString(string v4String, char separatorChar, int wFallbackValue = 1)

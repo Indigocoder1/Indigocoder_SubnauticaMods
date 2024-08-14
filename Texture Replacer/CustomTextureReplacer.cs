@@ -233,9 +233,6 @@ namespace TextureReplacer
             [SerializeField] public List<string> linkedConfigNames;
             [SerializeField] public List<TextureEdit> textureEdits;
 
-            [JsonIgnore]
-            [SerializeField] public bool variationAccepted;
-
             public ConfigInfo() { }
 
             [JsonConstructor]
