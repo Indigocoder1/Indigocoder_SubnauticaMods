@@ -29,7 +29,7 @@ namespace TextureReplacerEditor.Monobehaviors
             blueSlider.SetInitialValue(color.b);
             this.color = color;
 
-            if(colorPreview)
+            if (colorPreview)
             {
                 colorPreview.color = color;
             }
@@ -46,7 +46,7 @@ namespace TextureReplacerEditor.Monobehaviors
 
             colorPreview.color = new Color(redSlider.slider.value, greenSlider.slider.value, blueSlider.slider.value);
 
-            if(currentIgnoreOnChangeCount <= 1)
+            if (currentIgnoreOnChangeCount <= 1)
             {
                 currentIgnoreOnChangeCount++;
                 return;

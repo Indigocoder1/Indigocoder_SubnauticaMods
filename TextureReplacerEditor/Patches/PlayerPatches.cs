@@ -21,7 +21,7 @@ namespace TextureReplacerEditor.Patches
         {
             if (!Input.GetMouseButtonDown(2)) return;
 
-            if(TextureReplacerEditorWindow.Instance && TextureReplacerEditorWindow.Instance.IsWindowActive)
+            if (TextureReplacerEditorWindow.Instance && TextureReplacerEditorWindow.Instance.IsWindowActive)
             {
                 return;
             }

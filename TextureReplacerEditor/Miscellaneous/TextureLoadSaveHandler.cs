@@ -29,7 +29,7 @@ namespace TextureReplacerEditor.Miscellaneous
 
                 byte[] texBytes = texture.BasedEncoteToPNG();
                 File.WriteAllBytes(path, texBytes);
-                
+
                 messageWindow.OpenMessage($"{texture.name} saved to {path}", Color.white);
             }
         }

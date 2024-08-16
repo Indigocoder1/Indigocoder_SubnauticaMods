@@ -52,7 +52,7 @@ namespace TextureReplacerEditor.Monobehaviors
 
         public float GetCurrentValue()
         {
-            if(float.TryParse(preciseInputField.text, out float val))
+            if (float.TryParse(preciseInputField.text, out float val))
             {
                 return val;
             }
@@ -72,7 +72,7 @@ namespace TextureReplacerEditor.Monobehaviors
 
         private void UpdateSliderVal()
         {
-            if(float.TryParse(preciseInputField.text, out float val))
+            if (float.TryParse(preciseInputField.text, out float val))
             {
                 slider.value = val;
             }

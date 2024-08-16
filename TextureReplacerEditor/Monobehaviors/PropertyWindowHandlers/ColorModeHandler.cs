@@ -22,7 +22,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
             {
                 color = (Color)overrideOriginal;
             }
-             
+
             activeColorPreview.SetActiveColor(color);
             originalColor = color;
 

@@ -1,9 +1,7 @@
 ﻿using Nautilus.Json.Converters;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using TextureReplacerEditor.Monobehaviors.Items;
 using TextureReplacerEditor.Monobehaviors.Windows;
@@ -16,7 +14,6 @@ namespace TextureReplacerEditor.Monobehaviors
     internal class ConfigExporter : MonoBehaviour
     {
         private const string NO_ITEMS_ERROR = "You do not have any items to save!";
-        private const string DUPLICATE_PREFAB_ERRROR = "Configs with shared prefab detected!\r\nDelete all but one config per prefab and retry.";
         private bool textureSavedToAssets;
 
         public void TryExportFiles()
@@ -24,7 +21,7 @@ namespace TextureReplacerEditor.Monobehaviors
             textureSavedToAssets = false;
             InfoMessageWindow messageWindow = TextureReplacerEditorWindow.Instance.messageWindow;
             List<CustomConfigItem> items = TextureReplacerEditorWindow.Instance.configViewerWindow.addedItems;
-            if(items.Count <= 0)
+            if (items.Count <= 0)
             {
                 messageWindow.OpenMessage(NO_ITEMS_ERROR, Color.white);
             }
@@ -33,12 +30,6 @@ namespace TextureReplacerEditor.Monobehaviors
 
             foreach (var configItem in items)
             {
-                if(configInfos.Any(i => i.prefabClassID == configItem.configInfo.prefabClassID))
-                {
-                    messageWindow.OpenMessage(DUPLICATE_PREFAB_ERRROR, Color.red);
-                    return;
-                }
-
                 configInfos.Add(configItem.configInfo);
 
                 foreach (var propertyEdit in configItem.propertyEdits)
@@ -65,7 +56,7 @@ namespace TextureReplacerEditor.Monobehaviors
                 File.WriteAllText(path, jsonData);
 
                 string message = $"Saved config to {path}";
-                if(textureSavedToAssets)
+                if (textureSavedToAssets)
                 {
                     message += "\nEdited textures saved to TextureReplacer/Assets";
                 }

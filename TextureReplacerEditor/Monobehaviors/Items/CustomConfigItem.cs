@@ -1,5 +1,4 @@
-﻿using Nautilus.Utility;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TextureReplacerEditor.Monobehaviors.Windows;
 using TMPro;
 using UnityEngine;

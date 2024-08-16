@@ -57,7 +57,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             onConfirm?.Invoke();
         }
 
-        private void OnDenyClick() 
+        private void OnDenyClick()
         {
             onDeny?.Invoke();
         }

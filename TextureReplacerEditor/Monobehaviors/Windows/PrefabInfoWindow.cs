@@ -40,7 +40,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
 
         public void SetPrefabIdentifier(PrefabIdentifier prefabIdentifier)
         {
-            this.currentPrefabIdentifier = prefabIdentifier;
+            currentPrefabIdentifier = prefabIdentifier;
             prefabNameText.text = Utilities.GetNameWithCloneRemoved(prefabIdentifier.name);
         }
 
@@ -71,9 +71,9 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
 
         public void StartTutorial()
         {
-            if(childHierarchyParent.childCount == 0)
+            if (childHierarchyParent.childCount == 0)
             {
-                TextureReplacerEditorWindow.Instance.messageWindow.OpenMessage("This object has no children to edit. Select a different object and try again.", 
+                TextureReplacerEditorWindow.Instance.messageWindow.OpenMessage("This object has no children to edit. Select a different object and try again.",
                     Color.white);
                 return;
             }
@@ -99,7 +99,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             childHierarchyParent.GetChild(0).GetComponent<ChildItem>().SetTutorialHighlightActive(false);
 
             ComponentItem componentItem = componentItemsParent.GetComponentsInChildren<ComponentItem>(true).FirstOrDefault(i => i.component is Renderer);
-            if(componentItem == null)
+            if (componentItem == null)
             {
                 currentTutorialChildIndex++;
                 ChildItem childItem = childHierarchyParent.GetChild(currentTutorialChildIndex).GetComponent<ChildItem>();
@@ -212,7 +212,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
 
         public override void CloseWindow()
         {
-            if(tutorialStarted)
+            if (tutorialStarted)
             {
                 TextureReplacerEditorWindow.Instance.messageWindow.OpenPrompt("Are you sure you want to close this window? The tutorial will reset.", Color.red,
                     "Yes", "No", base.CloseWindow, null);

@@ -1,6 +1,4 @@
-﻿using System;
-using TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers;
-using TextureReplacerEditor.Monobehaviors.Windows;
+﻿using TextureReplacerEditor.Monobehaviors.Windows;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -47,7 +45,7 @@ namespace TextureReplacerEditor.Monobehaviors.Items
 
         private void Update()
         {
-            if(material.color != activeColorPreview.GetCurrentColor())
+            if (material.color != activeColorPreview.GetCurrentColor())
             {
                 activeColorPreview.SetActiveColor(material.color);
             }

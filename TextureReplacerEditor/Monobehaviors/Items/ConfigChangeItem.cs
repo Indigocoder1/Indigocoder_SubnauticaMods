@@ -55,7 +55,7 @@ namespace TextureReplacerEditor.Monobehaviors.Items
         public void RemoveChange()
         {
             MaterialWindow matWindow = TextureReplacerEditorWindow.Instance.materialWindow;
-            if(matWindow.materialEdits.Any(i => i.Value.Any(a => a.Equals(propertyEditData))))
+            if (matWindow.materialEdits.Any(i => i.Value.Any(a => a.Equals(propertyEditData))))
             {
                 var editDataList = matWindow.materialEdits.FirstOrDefault(i => i.Value.Any(a => a.Equals(propertyEditData)));
                 PropertyEditData entry = editDataList.Value.FirstOrDefault(i => i.Equals(propertyEditData));

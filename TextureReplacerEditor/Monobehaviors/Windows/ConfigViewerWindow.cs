@@ -132,7 +132,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
 
             return edits;
         }
-        
+
         public void RemoveEdit(ConfigChangeItem item)
         {
             currentItem.configInfo.textureEdits.RemoveAt(item.EditIndex);

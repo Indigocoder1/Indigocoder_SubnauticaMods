@@ -81,7 +81,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
         public override void UpdateMaterial()
         {
             Texture texture = material.GetTexture(propertyName);
-            if(texture == this.texture) return;
+            if (texture == this.texture) return;
 
             UpdateTexturePreview();
         }

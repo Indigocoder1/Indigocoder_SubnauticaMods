@@ -1,5 +1,4 @@
-﻿using System;
-using TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers;
+﻿using TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers;
 using TextureReplacerEditor.Monobehaviors.Windows;
 using TMPro;
 using UnityEngine;
@@ -72,7 +71,7 @@ namespace TextureReplacerEditor.Monobehaviors.Items
             activeHandler.gameObject.SetActive(true);
             activeHandler.SetInfo(material, propertyName, overrideOriginal);
 
-            if(propertyName == "_Color" && propertyType == ShaderPropertyType.Color)
+            if (propertyName == "_Color" && propertyType == ShaderPropertyType.Color)
             {
                 isMainColor = true;
             }

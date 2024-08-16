@@ -51,7 +51,7 @@ namespace TextureReplacerEditor.Monobehaviors
         {
             if (queuedActions.Count <= 0) return;
 
-            if(currentItemDelay < minItemDelay)
+            if (currentItemDelay < minItemDelay)
             {
                 currentItemDelay += Time.unscaledDeltaTime;
                 return;

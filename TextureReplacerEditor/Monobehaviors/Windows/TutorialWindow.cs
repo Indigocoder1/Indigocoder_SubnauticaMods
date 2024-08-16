@@ -19,7 +19,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
                 return;
             }
 
-            if(!linePivot.gameObject.activeSelf) linePivot.gameObject.SetActive(true);
+            if (!linePivot.gameObject.activeSelf) linePivot.gameObject.SetActive(true);
 
             float deltaX = linePivot.position.x - lrTarget.position.x;
             float deltaY = linePivot.position.y - lrTarget.position.y;
@@ -29,7 +29,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
 
             linePivot.transform.eulerAngles = new Vector3(0, 0, angle);
 
-            float distToTarget = Mathf.Sqrt(deltaX * deltaX + deltaY * deltaY) * 0.746f;
+            float distToTarget = Mathf.Sqrt((deltaX * deltaX) + (deltaY * deltaY)) * 0.746f;
             lineImage.sizeDelta = new Vector2(lineImage.sizeDelta.x, distToTarget);
         }
 

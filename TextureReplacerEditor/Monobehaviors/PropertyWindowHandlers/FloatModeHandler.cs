@@ -22,7 +22,7 @@ namespace TextureReplacerEditor.Monobehaviors.PropertyWindowHandlers
             {
                 val = (float)overrideOriginal;
             }
-            
+
             linkedInputSlider.SetInitialValue(val);
             originalValue = val;
 

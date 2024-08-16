@@ -18,7 +18,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
         {
             get
             {
-                if(currentMaterialItem)
+                if (currentMaterialItem)
                 {
                     return new(currentMaterialItem.material, currentMaterialItem.MaterialIndex, currentMaterialItem.prefabIdentifierRoot, currentMaterialItem.pathToRenderer);
                 }
@@ -71,11 +71,11 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
 
         private void Update()
         {
-            if(currentSearchCallDelay > 0)
+            if (currentSearchCallDelay > 0)
             {
                 currentSearchCallDelay -= Time.unscaledDeltaTime;
             }
-            else if(currentSearchCallDelay <= 0 && !hasSearched)
+            else if (currentSearchCallDelay <= 0 && !hasSearched)
             {
                 Search();
 
@@ -122,7 +122,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             ConfigViewerWindow configWindow = TextureReplacerEditorWindow.Instance.configViewerWindow;
             configWindow.OpenWindow();
 
-            if(!configWindow.addedItems.Any(i => i.materialEditData.Equals(CurrentMaterialEditData)))
+            if (!configWindow.addedItems.Any(i => i.materialEditData.Equals(CurrentMaterialEditData)))
             {
                 configWindow.AddConfigItem();
             }
@@ -159,7 +159,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
                 string propertyName = material.shader.GetPropertyName(i);
                 PropertyItem propertyItem = Instantiate(propertyItemPrefab, propertyItemsParent).GetComponent<PropertyItem>();
 
-                if(materialEdits.Any(i => i.Value.Any(a => a.propertyName == propertyName)))
+                if (materialEdits.Any(i => i.Value.Any(a => a.propertyName == propertyName)))
                 {
                     List<PropertyEditData> editDatas = materialEdits.FirstOrDefault(i => i.Value.Any(a => a.propertyName == propertyName)).Value;
                     PropertyEditData data = editDatas.FirstOrDefault(i => i.propertyName == propertyName);
@@ -227,7 +227,7 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
             public MaterialEditData(Material material, int index, PrefabIdentifier identifier, string pathToRend)
             {
                 this.material = material;
-                this.materialIndex = index;
+                materialIndex = index;
                 prefabIdentifier = identifier;
                 this.pathToRend = pathToRend;
             }
