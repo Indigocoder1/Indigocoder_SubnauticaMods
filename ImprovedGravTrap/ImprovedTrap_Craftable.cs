@@ -33,7 +33,9 @@ namespace ImprovedGravTrap
                 Renderer[] renderers = gameObject.GetComponentsInChildren<Renderer>();
                 foreach (Renderer rend in renderers)
                 {
-                    rend.material.color = new Color(55 / 255f, 178 / 255f, 212 / 255f);
+                    Color color = new Color(55 / 255f, 178 / 255f, 212 / 255f);
+                    rend.material.color = color;
+                    rend.material.SetColor("_SpecColor", color);
                 }
                 EnhancedGravSphere enhanced = gameObject.EnsureComponent<EnhancedGravSphere>();
 

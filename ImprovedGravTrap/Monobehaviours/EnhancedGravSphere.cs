@@ -152,8 +152,7 @@ namespace ImprovedGravTrap
             }
             else if (gravSphere.trigger.enabled)
             {
-                var heldItem = Inventory.main.quickSlots.heldItem;
-                if (heldItem == null || !heldItem.techType.IsEnhancedGravTrap() || heldItem.item != gravSphere.pickupable) return;
+                if (!HoldingItem()) return;
 
                 gravSphere.DeactivatePads();
                 gravSphere.trigger.enabled = false;
@@ -165,15 +164,15 @@ namespace ImprovedGravTrap
             if (targetingStorage) return;
 
             //If deployed, in range and open key pressed: open storage
-            bool inRange = Vector3.Distance(gravSphere.transform.position, Player.main.transform.position) <= Main_Plugin.GravStorageOpenDistance.Value;
-
-            if (inRange && GameInput.GetButtonDown(GameInput.Button.AltTool) && !Player.main.pda.isOpen)
+            if (PlayerInRange() && GameInput.GetButtonDown(GameInput.Button.AltTool) && !Player.main.pda.isOpen)
             {
                 storageContainer.Open();
             }
         }
         private void HandleModeAdvancing()
         {
+            if (!HoldingItem() && !PlayerInRange()) return;
+
             GravTrapObjectsType objectsType = gravSphere.GetComponent<GravTrapObjectsType>();
 
             int indexDelta = GameInput.GetButtonDown(GameInput.Button.Deconstruct) ? 1 : 0;
@@ -183,14 +182,7 @@ namespace ImprovedGravTrap
         }
         private void HandleHandText()
         {
-            if (Inventory.main.quickSlots.heldItem == null) return;
-
-            if (!Inventory.main.quickSlots.heldItem.techType.IsEnhancedGravTrap()) return;
-
-            if (!Inventory.main.quickSlots.heldItem.item == gravSphere.pickupable)
-            {
-                return;
-            }
+            if (!HoldingItem()) return;
 
             GravTrapObjectsType objectsType = gravSphere.GetComponent<GravTrapObjectsType>();
 
@@ -246,7 +238,7 @@ namespace ImprovedGravTrap
             targetingStorage = false;
             targetStorageHasSpace = false;
 
-            if (Inventory.main.quickSlots.heldItem?.item != gravSphere.pickupable) return;
+            if (!HoldingItem()) return;
 
             Transform mainCamTransform = MainCamera.camera.transform;
             Vector3 camForward = mainCamTransform.forward;
@@ -389,6 +381,22 @@ namespace ImprovedGravTrap
             {
                 sphere.radius = Main_Plugin.EnhancedRange.Value;
             }
+        }
+
+        private bool HoldingItem()
+        {
+            if (Inventory.main.quickSlots.heldItem == null) return false;
+
+            if (!Inventory.main.quickSlots.heldItem.techType.IsEnhancedGravTrap()) return false;
+
+            if (!Inventory.main.quickSlots.heldItem.item == gravSphere.pickupable) return false;
+
+            return true;
+        }
+
+        private bool PlayerInRange()
+        {
+            return Vector3.Distance(gravSphere.transform.position, Player.main.transform.position) <= Main_Plugin.GravStorageOpenDistance.Value;
         }
     }
 }
