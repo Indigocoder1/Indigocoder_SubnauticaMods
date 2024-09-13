@@ -48,11 +48,20 @@ namespace StasisRifleFixMod_BepInEx
         {
             previousAggression = creature.Aggression.Value;
             creature.Aggression.Value = 0;
-            creature.GetAnimator().enabled = false;
+            if (creature.GetAnimator() != null)
+            {
+                creature.GetAnimator().enabled = false;
+            }
+
             isFrozen = true;
 
             foreach (FMOD_CustomEmitter emitter in emitters)
             {
+                if (!emitterStates.ContainsKey(emitter))
+                {
+                    emitterStates.Add(emitter, false);
+                }
+
                 emitterStates[emitter] = emitter.enabled;
                 emitter.enabled = false;
             }
@@ -69,6 +78,7 @@ namespace StasisRifleFixMod_BepInEx
             foreach (FMOD_CustomEmitter emitter in emitters)
             {
                 emitter.enabled = emitterStates[emitter];
+                emitterStates.Remove(emitter);
             }
         }
 

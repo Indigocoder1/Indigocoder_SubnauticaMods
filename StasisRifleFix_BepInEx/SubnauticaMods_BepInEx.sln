@@ -37,6 +37,27 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SealGrapplingTurret", "..\S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerrainEditorSensFix", "..\TerrainEditorSensFix\TerrainEditorSensFix.csproj", "{5762BF98-E17D-44D4-AF18-68480513F3CE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevCommands", "..\DevCommands\DevCommands.csproj", "{EDA14971-4FEC-4462-9244-EEFBADD547D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VariableGravityCannon", "..\VariableGravityCannon\VariableGravityCannon.csproj", "{6E8A3CB1-2214-47EC-9FC9-9EE0F8E5157D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReinforcedRadiationSuit", "..\ReinforcedRadiationSuit\ReinforcedRadiationSuit.csproj", "{36EB8151-D15B-4B4C-87EE-7C2189845D17}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chameleon", "..\Chameleon\Chameleon.csproj", "{CA258A40-450B-4953-A699-1EB84F96C3DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomCraftGUI", "..\CustomCraftGUI\CustomCraftGUI.csproj", "{A019D4F8-37AE-4D71-8A9E-E08F69686004}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoList", "..\TodoList\TodoList.csproj", "{0B81C019-F41E-44AD-9FA7-018EA565D8AA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{47B709C2-7F80-40CC-B611-438803A8EEA9}"
+	ProjectSection(SolutionItems) = preProject
+		..\TextureReplacerEditor\TextureReplacerEditor.csproj = ..\TextureReplacerEditor\TextureReplacerEditor.csproj
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextureReplacerEditor", "..\TextureReplacerEditor\TextureReplacerEditor.csproj", "{8A9E0E5F-5BEC-496F-A925-719BFC255A66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameObjectSpawner", "..\GameObjectSpawner\GameObjectSpawner.csproj", "{077CE10C-26CE-462A-A388-FD028D57096E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +128,38 @@ Global
 		{5762BF98-E17D-44D4-AF18-68480513F3CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5762BF98-E17D-44D4-AF18-68480513F3CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5762BF98-E17D-44D4-AF18-68480513F3CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDA14971-4FEC-4462-9244-EEFBADD547D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDA14971-4FEC-4462-9244-EEFBADD547D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDA14971-4FEC-4462-9244-EEFBADD547D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDA14971-4FEC-4462-9244-EEFBADD547D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E8A3CB1-2214-47EC-9FC9-9EE0F8E5157D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E8A3CB1-2214-47EC-9FC9-9EE0F8E5157D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E8A3CB1-2214-47EC-9FC9-9EE0F8E5157D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E8A3CB1-2214-47EC-9FC9-9EE0F8E5157D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36EB8151-D15B-4B4C-87EE-7C2189845D17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36EB8151-D15B-4B4C-87EE-7C2189845D17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36EB8151-D15B-4B4C-87EE-7C2189845D17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36EB8151-D15B-4B4C-87EE-7C2189845D17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA258A40-450B-4953-A699-1EB84F96C3DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA258A40-450B-4953-A699-1EB84F96C3DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA258A40-450B-4953-A699-1EB84F96C3DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA258A40-450B-4953-A699-1EB84F96C3DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A019D4F8-37AE-4D71-8A9E-E08F69686004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A019D4F8-37AE-4D71-8A9E-E08F69686004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A019D4F8-37AE-4D71-8A9E-E08F69686004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A019D4F8-37AE-4D71-8A9E-E08F69686004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B81C019-F41E-44AD-9FA7-018EA565D8AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B81C019-F41E-44AD-9FA7-018EA565D8AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B81C019-F41E-44AD-9FA7-018EA565D8AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B81C019-F41E-44AD-9FA7-018EA565D8AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A9E0E5F-5BEC-496F-A925-719BFC255A66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A9E0E5F-5BEC-496F-A925-719BFC255A66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A9E0E5F-5BEC-496F-A925-719BFC255A66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A9E0E5F-5BEC-496F-A925-719BFC255A66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{077CE10C-26CE-462A-A388-FD028D57096E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{077CE10C-26CE-462A-A388-FD028D57096E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{077CE10C-26CE-462A-A388-FD028D57096E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{077CE10C-26CE-462A-A388-FD028D57096E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,11 +170,16 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\IndigocoderLib\IndigocoderLib.projitems*{0268da43-5ba4-4278-aa2b-75b5d3281999}*SharedItemsImports = 4
 		..\IndigocoderLib\IndigocoderLib.projitems*{08f2b460-b3d6-44bc-9478-443fc73c8ada}*SharedItemsImports = 4
+		..\IndigocoderLib\IndigocoderLib.projitems*{0b81c019-f41e-44ad-9fa7-018ea565d8aa}*SharedItemsImports = 4
+		..\IndigocoderLib\IndigocoderLib.projitems*{36eb8151-d15b-4b4c-87ee-7c2189845d17}*SharedItemsImports = 4
+		..\IndigocoderLib\IndigocoderLib.projitems*{6e8a3cb1-2214-47ec-9fc9-9ee0f8e5157d}*SharedItemsImports = 4
 		..\IndigocoderLib\IndigocoderLib.projitems*{88a577cc-acdd-4e1d-9c80-5942a17dbbae}*SharedItemsImports = 4
+		..\IndigocoderLib\IndigocoderLib.projitems*{8a9e0e5f-5bec-496f-a925-719bfc255a66}*SharedItemsImports = 4
 		..\IndigocoderLib\IndigocoderLib.projitems*{8fcd9d90-3d39-446a-8a1c-0157dd552ef3}*SharedItemsImports = 4
 		..\IndigocoderLib\IndigocoderLib.projitems*{955f100e-9cac-45dd-ac4e-ad66414d9a31}*SharedItemsImports = 13
 		..\IndigocoderLib\IndigocoderLib.projitems*{b4251089-0ede-4464-b7d0-2b986d5b4d73}*SharedItemsImports = 4
 		..\IndigocoderLib\IndigocoderLib.projitems*{b7853954-5e14-4a93-bd13-c3f91d265008}*SharedItemsImports = 4
+		..\IndigocoderLib\IndigocoderLib.projitems*{ca258a40-450b-4953-a699-1eb84f96c3df}*SharedItemsImports = 4
 		..\IndigocoderLib\IndigocoderLib.projitems*{d1179e80-fd2a-4213-9007-b7d6d7f63d7f}*SharedItemsImports = 4
 		..\IndigocoderLib\IndigocoderLib.projitems*{ebc8c909-b5b2-46b1-88c5-e29bb6479a6b}*SharedItemsImports = 4
 	EndGlobalSection
