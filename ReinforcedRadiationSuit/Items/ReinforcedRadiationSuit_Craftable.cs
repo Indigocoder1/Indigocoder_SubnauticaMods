@@ -36,7 +36,6 @@ namespace ReinforcedRadiationSuit.Items
 
             prefab.SetRecipe(Main_Plugin.SuitRecipe)
                 .WithFabricatorType(CraftTree.Type.Workbench)
-                .WithStepsToFabricatorTab("ModdedWorkbench")
                 .WithCraftingTime(6f);
 
             prefab.SetPdaGroupCategory(TechGroup.Workbench, TechCategory.Workbench);

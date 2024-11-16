@@ -12,10 +12,14 @@ namespace ReinforcedRadiationSuit.Patches
         {
             if (Inventory.main.equipment != __instance) return;
 
-            if(techType == TechType.Rebreather)
+            __result = techType switch
             {
-                __result = Mathf.Max(__result, __instance.GetCount(RebreatherRadiationHelmet_Craftable.techType));
-            }
+                TechType.Rebreather => Mathf.Max(__result, __instance.GetCount(RebreatherRadiationHelmet_Craftable.techType)),
+                TechType.RadiationSuit => __result = Mathf.Max(__result, __instance.GetCount(ReinforcedRadiationSuit_Craftable.techType)),
+                TechType.RadiationGloves => __result = Mathf.Max(__result, __instance.GetCount(ReinforcedRadiationGloves_Craftable.techType)),
+                TechType.RadiationHelmet => __result = Mathf.Max(__result, __instance.GetCount(RebreatherRadiationHelmet_Craftable.techType)),
+                _ => __result
+            };
         }
     }
 }
