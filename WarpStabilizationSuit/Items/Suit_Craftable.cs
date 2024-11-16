@@ -43,7 +43,6 @@ namespace WarpStabilizationSuit.Items
             
             prefab.SetRecipe(Main_Plugin.UseHardRecipe.Value ? Main_Plugin.hardSuitRecipe : Main_Plugin.easySuitRecipe)
                 .WithFabricatorType(CraftTree.Type.Workbench)
-                .WithStepsToFabricatorTab("ModdedWorkbench")
                 .WithCraftingTime(6f);
 
             prefab.SetPdaGroupCategory(TechGroup.Workbench, TechCategory.Workbench);
