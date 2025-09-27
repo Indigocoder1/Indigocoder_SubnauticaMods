@@ -11,7 +11,7 @@ namespace HullReinforcementFix
     {
         private const string myGUID = "Indigocoder.HullReinforcementFix";
         private const string pluginName = "Hull Reinforcement Fix";
-        private const string versionString = "1.2.6";
+        private const string versionString = "1.2.7";
 
         private static readonly Harmony harmony = new Harmony(myGUID);
 

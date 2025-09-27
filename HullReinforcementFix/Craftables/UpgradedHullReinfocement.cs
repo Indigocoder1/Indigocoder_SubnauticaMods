@@ -6,7 +6,7 @@ using Nautilus.Crafting;
 using Nautilus.Handlers;
 using System;
 using System.Collections.Generic;
-using Ingredient = CraftData.Ingredient;
+using UnityEngine;
 
 namespace HullReinforcementFix.Craftables
 {
@@ -17,7 +17,7 @@ namespace HullReinforcementFix.Craftables
 
         public static void Patch(int markNumber)
         {
-            Atlas.Sprite sprite = ImageHelper.GetSpriteFromAssetsFolder($"hullReinforcementMK{markNumber}.png");
+            Sprite sprite = ImageHelper.GetSpriteFromAssetsFolder($"hullReinforcementMK{markNumber}.png");
 
             PrefabInfo prefabInfo = PrefabInfo.WithTechType($"HullReinforcementMK{markNumber}", $"Hull Reinforcement MK{markNumber}",
                 "Gives even further damage reduction")
@@ -36,7 +36,7 @@ namespace HullReinforcementFix.Craftables
 
             var cloneTemplate = new CloneTemplate(prefabInfo, TechType.VehicleArmorPlating);
 
-            TechType previousTechType = TechType.None;
+            TechType previousTechType;
             if(markNumber <= 2)
             {
                 previousTechType = TechType.VehicleArmorPlating;
