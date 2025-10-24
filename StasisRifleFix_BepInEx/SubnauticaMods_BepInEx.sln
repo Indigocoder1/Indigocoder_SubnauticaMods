@@ -56,7 +56,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextureReplacerEditor", "..\TextureReplacerEditor\TextureReplacerEditor.csproj", "{8A9E0E5F-5BEC-496F-A925-719BFC255A66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameObjectSpawner", "..\GameObjectSpawner\GameObjectSpawner.csproj", "{077CE10C-26CE-462A-A388-FD028D57096E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameObjectSpawner", "..\GameObjectSpawner\GameObjectSpawner.csproj", "{077CE10C-26CE-462A-A388-FD028D57096E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrineUIFix", "..\BrineUIFix\BrineUIFix.csproj", "{4610FFA1-2017-4C2F-B8A1-5B9A7BF75BF6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -160,6 +162,10 @@ Global
 		{077CE10C-26CE-462A-A388-FD028D57096E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{077CE10C-26CE-462A-A388-FD028D57096E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{077CE10C-26CE-462A-A388-FD028D57096E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4610FFA1-2017-4C2F-B8A1-5B9A7BF75BF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4610FFA1-2017-4C2F-B8A1-5B9A7BF75BF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4610FFA1-2017-4C2F-B8A1-5B9A7BF75BF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4610FFA1-2017-4C2F-B8A1-5B9A7BF75BF6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

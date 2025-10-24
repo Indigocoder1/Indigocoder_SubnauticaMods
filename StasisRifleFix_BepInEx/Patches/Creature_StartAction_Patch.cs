@@ -9,14 +9,17 @@ namespace StasisRifleFixMod_BepInEx
         [HarmonyPatch(nameof(Creature.TryStartAction)), HarmonyPrefix]
         private static bool Patch(CreatureAction action)
         {
-            if(Main_Plugin.WriteLogs.Value)
+            var component = action.creature.GetComponent<StasisRifleFix_Component>();
+            if (!component) return false;
+
+            if (Main_Plugin.WriteLogs.Value)
             {
-                bool isFrozen = action.creature.GetComponent<StasisRifleFix_Component>().IsFrozen();
+                bool isFrozen = component.IsFrozen();
                 Main_Plugin.logger.LogInfo($"Creature {action.creature.name}.IsFrozen() = {isFrozen}");
             }
                 
 
-            if(action.creature.GetComponent<StasisRifleFix_Component>().IsFrozen())
+            if(component.IsFrozen())
             {
                 return false;
             }

@@ -78,6 +78,7 @@
     <Compile Include="Patches\Creature_Start_Patch.cs" />
     <Compile Include="Patches\Creature_StartAction_Patch.cs" />
     <Compile Include="Patches\CuteFishHandTarget_Patch.cs" />
+    <Compile Include="Patches\GasPod_Patch.cs" />
     <Compile Include="Patches\MushroomAttack_Patch.cs" />
     <Compile Include="StasisRifleFixModOptions.cs" />
     <Compile Include="StasisRifleFixPlugin.cs" />

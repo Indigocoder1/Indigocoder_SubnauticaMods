@@ -26,6 +26,10 @@ namespace StasisRifleFixMod_BepInEx
                 return false;
             }
 
+            if (!StasisRifle.sphere) return false;
+
+            if (StasisRifle.sphere.targets == null) return false;
+
             if (StasisRifle.sphere.targets.Contains(instanceRB))
             {
                 return true;
