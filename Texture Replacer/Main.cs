@@ -35,23 +35,9 @@ namespace TextureReplacer
             harmony.PatchAll();
             
             new TextureReplacerOptions();
-            WaitScreenHandler.RegisterAsyncLoadTask("Texture replacer", LoadConfigs, "Loading textures");
+            WaitScreenHandler.RegisterAsyncLoadTask("Texture replacer", CustomTextureReplacer.Initialize, "Loading textures");
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
-        }
-
-        private IEnumerator LoadConfigs(WaitScreenHandler.WaitScreenTask task)
-        {
-            if (CustomTextureReplacer.textureConfigs.Count == 0) yield break;
-            
-            if (CustomTextureReplacer.GetLoadProgress() >= 1) yield break;
-            
-            while (CustomTextureReplacer.GetLoadProgress() < 1)
-            {
-                yield return CustomTextureReplacer.Initialize();
-                var loadProgress = (100 * CustomTextureReplacer.GetLoadProgress()).ToString("F0");
-                task.Status = $"Loading textures ({loadProgress}%)";
-            }
         }
 
         public struct LegacyConfigInfo
