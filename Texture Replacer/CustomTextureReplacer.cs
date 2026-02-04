@@ -23,7 +23,9 @@ namespace TextureReplacer
         private static string folderFilePath = Path.Combine(Path.GetDirectoryName(Paths.BepInExConfigPath), "TextureReplacer");
         private static string configFilePath = Path.Combine(folderFilePath, "ExampleTextureConfig.json");
 
-        internal static void Initialize()
+        private static int texturesLoaded;
+
+        internal static IEnumerator Initialize()
         {
             CraftData.PreparePrefabIDCache();
             if (!Directory.Exists(folderFilePath))
@@ -41,7 +43,7 @@ namespace TextureReplacer
                 textureConfigs.AddRange(SaveManager<ConfigInfo>.LoadJsons(folderFilePath));
             }
 
-            LoadAllTextures();
+            yield return LoadAllTextures();
         }
 
         private static void ConvertLegacyConfigs()
@@ -92,7 +94,7 @@ namespace TextureReplacer
             }
         }
 
-        private static void LoadAllTextures()
+        private static IEnumerator LoadAllTextures()
         {
             for (int i = 0; i < textureConfigs.Count; i++)
             {
@@ -134,7 +136,7 @@ namespace TextureReplacer
                     continue;
                 }
 
-                CoroutineHost.StartCoroutine(InitializeTexture(configData));
+                yield return InitializeTexture(configData);
             }
         }
 
@@ -169,6 +171,15 @@ namespace TextureReplacer
                     Main.logger.LogInfo($"Loading of config {configData.configName} complete");
                 }
             }
+
+            texturesLoaded++;
+        }
+
+        public static float GetLoadProgress()
+        {
+            if (textureConfigs.Count == 0) return 0;
+            
+            return (float)texturesLoaded / textureConfigs.Count;
         }
 
         private static void SaveExampleData()

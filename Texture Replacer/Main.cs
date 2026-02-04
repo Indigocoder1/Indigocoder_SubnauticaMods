@@ -1,10 +1,13 @@
-﻿using BepInEx;
+﻿using System;
+using System.Collections;
+using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Nautilus.Handlers;
 
 namespace TextureReplacer
 {
@@ -14,7 +17,7 @@ namespace TextureReplacer
     {
         private const string myGUID = "Indigocoder.TextureReplacer";
         private const string pluginName = "Texture Replacer";
-        private const string versionString = "1.2.1";
+        private const string versionString = "1.2.3";
 
         public static ManualLogSource logger;
         public static string AssetFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
@@ -30,12 +33,25 @@ namespace TextureReplacer
                 new ConfigDescription("Warning: When using many textures, there will be lots of logs\n(Errors will always log)"));
 
             harmony.PatchAll();
-
-            //LifepodTextureReplacer.Initialize();
-            CustomTextureReplacer.Initialize();
+            
             new TextureReplacerOptions();
+            WaitScreenHandler.RegisterAsyncLoadTask("Texture replacer", LoadConfigs, "Loading textures");
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
+        }
+
+        private IEnumerator LoadConfigs(WaitScreenHandler.WaitScreenTask task)
+        {
+            if (CustomTextureReplacer.textureConfigs.Count == 0) yield break;
+            
+            if (CustomTextureReplacer.GetLoadProgress() >= 1) yield break;
+            
+            while (CustomTextureReplacer.GetLoadProgress() < 1)
+            {
+                yield return CustomTextureReplacer.Initialize();
+                var loadProgress = (100 * CustomTextureReplacer.GetLoadProgress()).ToString("F0");
+                task.Status = $"Loading textures ({loadProgress}%)";
+            }
         }
 
         public struct LegacyConfigInfo
