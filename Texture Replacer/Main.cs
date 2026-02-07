@@ -17,7 +17,7 @@ namespace TextureReplacer
     {
         private const string myGUID = "Indigocoder.TextureReplacer";
         private const string pluginName = "Texture Replacer";
-        private const string versionString = "1.2.3";
+        private const string versionString = "1.2.4";
 
         public static ManualLogSource logger;
         public static string AssetFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
