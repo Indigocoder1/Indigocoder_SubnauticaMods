@@ -11,6 +11,7 @@ using System.Linq;
 using TextureReplacer.Saving;
 using Nautilus.Utility;
 using UnityStandardAssets.ImageEffects;
+using Nautilus.Handlers;
 
 namespace TextureReplacer
 {
@@ -25,7 +26,7 @@ namespace TextureReplacer
 
         private static int texturesLoaded;
 
-        internal static IEnumerator Initialize()
+        internal static IEnumerator Initialize(WaitScreenHandler.WaitScreenTask task)
         {
             CraftData.PreparePrefabIDCache();
             if (!Directory.Exists(folderFilePath))
@@ -43,7 +44,7 @@ namespace TextureReplacer
                 textureConfigs.AddRange(SaveManager<ConfigInfo>.LoadJsons(folderFilePath));
             }
 
-            yield return LoadAllTextures();
+            yield return LoadAllTextures(task);
         }
 
         private static void ConvertLegacyConfigs()
@@ -94,7 +95,7 @@ namespace TextureReplacer
             }
         }
 
-        private static IEnumerator LoadAllTextures()
+        private static IEnumerator LoadAllTextures(WaitScreenHandler.WaitScreenTask task)
         {
             for (int i = 0; i < textureConfigs.Count; i++)
             {
@@ -108,6 +109,7 @@ namespace TextureReplacer
                     if (Main.WriteLogs.Value)
                     {
                         Main.logger.LogInfo($"Skipping config {configData.configName} because it contains example data!");
+                        texturesLoaded++; // value increased to avoid an infinite loading screen
                     }
                     continue;
                 }
@@ -137,6 +139,10 @@ namespace TextureReplacer
                 }
 
                 yield return InitializeTexture(configData);
+
+                // updating the UI here avoids a busy wait
+                string loadProgress = (100f * GetLoadProgress()).ToString("F0");
+                task.Status = $"Loading textures ({loadProgress}%)";
             }
         }
 
