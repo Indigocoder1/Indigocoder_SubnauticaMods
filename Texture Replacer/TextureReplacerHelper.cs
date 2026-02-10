@@ -86,7 +86,7 @@ namespace TextureReplacer
                 Main.logger.LogInfo($"Loading config ({configInfo.configName}) | Hierarchy path = {configInfo?.rendererHierarchyPath}");
             }
 
-            if (configInfo.isVariation && Random.Range(0f, 1f) > configInfo.variationChance)
+            if (configInfo.isVariation && Random.Range(0f, 1f) < configInfo.variationChance)
             {
                 return;
             }
