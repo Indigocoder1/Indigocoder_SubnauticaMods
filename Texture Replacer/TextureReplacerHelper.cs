@@ -2,6 +2,8 @@
 using UnityEngine;
 using System.Collections;
 using System;
+using System.Globalization;
+using System.IO;
 using UnityEngine.UI;
 
 #region Class-Type Assignments
@@ -37,19 +39,12 @@ namespace TextureReplacer
                 TextureEdit edit = configInfo.textureEdits[i];
                 if (edit.editType == TextureEditType.Texture || edit.editType == TextureEditType.Sprite)
                 {
-                    edit.cachedTexture = ImageUtils.LoadTextureFromFile(Main.AssetFolderPath + $"/{edit.data}");
+                    edit.cachedTexture = ImageUtils.LoadTextureFromFile(Path.Combine(Main.AssetFolderPath, edit.data));
                 }
             }
 
             PrefabIdentifier prefabIdentifier = GetComponent<PrefabIdentifier>();
-            if(!configIsPrefab.ContainsKey(prefabIdentifier.ClassId))
-            {
-                configIsPrefab.Add(prefabIdentifier.ClassId, isPrefab);
-            }
-            else
-            {
-                configIsPrefab[prefabIdentifier.ClassId] = isPrefab;
-            }
+            configIsPrefab[prefabIdentifier.ClassId] = isPrefab;
 
             if (isPrefab)
             {
@@ -126,16 +121,15 @@ namespace TextureReplacer
                 {
                     case TextureEditType.Texture:
                         material.SetTexture(textureEdit.propertyName, textureEdit.cachedTexture);
-
                         break;
                     case TextureEditType.Color:
-                        material.SetColor(textureEdit.propertyName, ParseV4FromString(textureEdit.data, ','));
+                        material.SetColor(textureEdit.propertyName, ParseV4FromString(textureEdit.data));
                         break;
                     case TextureEditType.Float:
                         float value = 0;
                         try
                         {
-                            value = float.Parse(textureEdit.data);
+                            value = float.Parse(textureEdit.data, CultureInfo.InvariantCulture);
                         }
                         catch (Exception e)
                         {
@@ -145,7 +139,7 @@ namespace TextureReplacer
                         material.SetFloat(textureEdit.propertyName, value);
                         break;
                     case TextureEditType.Vector:
-                        material.SetVector(textureEdit.propertyName, ParseV4FromString(textureEdit.data, ',', 0));
+                        material.SetVector(textureEdit.propertyName, ParseV4FromString(textureEdit.data, 0));
                         break;
                     case TextureEditType.Keyword:
                         if (textureEdit.data.ToUpper() == "ENABLE")
@@ -200,21 +194,22 @@ namespace TextureReplacer
             return linkedConfigs;
         }
 
-        private Vector4 ParseV4FromString(string v4String, char separatorChar, int wFallbackValue = 1)
+        private Vector4 ParseV4FromString(string v4String, int wFallbackValue = 1)
         {
             try
             {
-                string[] vectorValues = v4String.Split(separatorChar);
+                var separator = CultureInfo.InvariantCulture.NumberFormat.NumberGroupSeparator;
+                string[] vectorValues = v4String.Split(separator[0]);
 
                 float x, y, z;
                 float w = wFallbackValue;
-                x = float.Parse(vectorValues[0]);
-                y = float.Parse(vectorValues[1]);
-                z = float.Parse(vectorValues[2]);
+                x = float.Parse(vectorValues[0], CultureInfo.InvariantCulture);
+                y = float.Parse(vectorValues[1], CultureInfo.InvariantCulture);
+                z = float.Parse(vectorValues[2], CultureInfo.InvariantCulture);
 
                 if (vectorValues.Length > 3)
                 {
-                    w = float.Parse(vectorValues[3]);
+                    w = float.Parse(vectorValues[3], CultureInfo.InvariantCulture);
                 }
 
                 return new Vector4(x, y, z, w);

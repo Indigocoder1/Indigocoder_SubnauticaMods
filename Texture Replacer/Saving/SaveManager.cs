@@ -2,6 +2,7 @@
 using System.IO;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using static TextureReplacer.CustomTextureReplacer;
@@ -18,7 +19,8 @@ namespace TextureReplacer.Saving
                 Directory.CreateDirectory(folderFilePath);
             }
 
-            var textureConfigJson = JsonConvert.SerializeObject(saveData, Formatting.Indented, new CustomEnumConverter());
+            var textureConfigJson = JsonConvert.SerializeObject(saveData, Formatting.Indented,
+                new CustomEnumConverter());
             File.WriteAllText(filePath, textureConfigJson);
             Main.logger.LogInfo($"Data saved to JSON at {filePath}");
         }

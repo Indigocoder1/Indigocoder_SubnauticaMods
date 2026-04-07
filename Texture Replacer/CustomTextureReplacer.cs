@@ -72,7 +72,7 @@ namespace TextureReplacer
                 string data = legacyConfig.fileName;
                 if (type == TextureEditType.Light)
                 {
-                    Texture2D tex = ImageUtils.LoadTextureFromFile(Main.AssetFolderPath + $"/{legacyConfig.fileName}");
+                    Texture2D tex = ImageUtils.LoadTextureFromFile(Path.Combine(AssetFolderPath, legacyConfig.fileName));
                     Color32 col = AverageColorFromTexture(tex);
                     data = $"{col.r / 255f},{col.g / 255f},{col.b / 255f},{col.a / 255f}";
                 }
@@ -97,6 +97,7 @@ namespace TextureReplacer
 
         private static IEnumerator LoadAllTextures(WaitScreenHandler.WaitScreenTask task)
         {
+            texturesLoaded = 0;
             for (int i = 0; i < textureConfigs.Count; i++)
             {
                 ConfigInfo configData = textureConfigs[i];
@@ -109,7 +110,7 @@ namespace TextureReplacer
                     if (Main.WriteLogs.Value)
                     {
                         Main.logger.LogInfo($"Skipping config {configData.configName} because it contains example data!");
-                        texturesLoaded++; // value increased to avoid an infinite loading screen
+                        texturesLoaded++; // Value increased to avoid an infinite loading screen
                     }
                     continue;
                 }
