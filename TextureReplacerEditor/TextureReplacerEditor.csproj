@@ -130,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main_Plugin.cs" />
+    <Compile Include="Miscellaneous\CultureInfoConverter.cs" />
     <Compile Include="Miscellaneous\TextureLoadSaveHandler.cs" />
     <Compile Include="Monobehaviors\ActiveColorPreview.cs" />
     <Compile Include="Monobehaviors\BlinkingHighlight.cs" />

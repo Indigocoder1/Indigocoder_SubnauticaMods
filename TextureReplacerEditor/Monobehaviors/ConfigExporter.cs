@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using TextureReplacerEditor.Miscellaneous;
 using TextureReplacerEditor.Monobehaviors.Items;
 using TextureReplacerEditor.Monobehaviors.Windows;
 using UnityEngine;
@@ -39,6 +40,7 @@ namespace TextureReplacerEditor.Monobehaviors
                     if (propertyEdit.newValue is not Texture2D) continue;
 
                     Texture2D tex = propertyEdit.newValue as Texture2D;
+                    tex.name = tex.name.Replace(".png", string.Empty);
                     string path = Path.Combine(Main_Plugin.TextureReplacerAssetsFolderPath, $"{tex.name}.png");
                     File.WriteAllBytes(path, tex.EncodeToPNG());
                     textureSavedToAssets = true;
@@ -52,7 +54,7 @@ namespace TextureReplacerEditor.Monobehaviors
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 string path = sfd.FileName;
-                string jsonData = JsonConvert.SerializeObject(configInfos, Formatting.Indented, new CustomEnumConverter());
+                string jsonData = JsonConvert.SerializeObject(configInfos, Formatting.Indented, new CustomEnumConverter(), new CultureInfoConverter());
                 File.WriteAllText(path, jsonData);
 
                 string message = $"Saved config to {path}";
