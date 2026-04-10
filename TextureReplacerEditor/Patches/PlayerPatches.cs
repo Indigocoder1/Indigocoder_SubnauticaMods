@@ -19,7 +19,7 @@ namespace TextureReplacerEditor.Patches
         [HarmonyPatch(nameof(Player.Update)), HarmonyPostfix]
         private static void Update_Postfix(Player __instance)
         {
-            if (!Input.GetMouseButtonDown(2)) return;
+            if (!GameInput.GetButtonDown(Main_Plugin.EditButton)) return;
 
             if (TextureReplacerEditorWindow.Instance && TextureReplacerEditorWindow.Instance.IsWindowActive)
             {

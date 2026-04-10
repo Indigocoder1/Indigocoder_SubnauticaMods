@@ -44,6 +44,9 @@
     <Reference Include="Assembly-CSharp_publicized">
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\publicized_assemblies\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.InputSystem">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica_Data\Managed\Unity.InputSystem.dll</HintPath>
+    </Reference>
     <Reference Include="BepInEx">
       <HintPath>D:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
@@ -130,7 +133,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main_Plugin.cs" />
-    <Compile Include="Miscellaneous\CultureInfoConverter.cs" />
     <Compile Include="Miscellaneous\TextureLoadSaveHandler.cs" />
     <Compile Include="Monobehaviors\ActiveColorPreview.cs" />
     <Compile Include="Monobehaviors\BlinkingHighlight.cs" />

@@ -1,6 +1,7 @@
 ﻿using IndigocoderLib;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using TextureReplacerEditor.Monobehaviors.Items;
 using TMPro;
 using UnityEngine;
@@ -172,7 +173,9 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
                 ShaderPropertyType.Texture => TextureEditType.Texture,
                 _ => TextureEditType.Texture
             };
-
+            
+            var prevCulture = CultureInfo.CurrentCulture;
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
             string data = editData.type switch
             {
                 ShaderPropertyType.Color => FormatColor(editData.newValue),
@@ -183,6 +186,8 @@ namespace TextureReplacerEditor.Monobehaviors.Windows
                 _ => "INVALID INPUT"
             };
 
+            CultureInfo.CurrentCulture = prevCulture;
+            
             return new(materialData.materialIndex, type, editData.propertyName, data);
         }
 

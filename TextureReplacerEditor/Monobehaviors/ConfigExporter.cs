@@ -54,7 +54,7 @@ namespace TextureReplacerEditor.Monobehaviors
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 string path = sfd.FileName;
-                string jsonData = JsonConvert.SerializeObject(configInfos, Formatting.Indented, new CustomEnumConverter(), new CultureInfoConverter());
+                string jsonData = JsonConvert.SerializeObject(configInfos, Formatting.Indented, new CustomEnumConverter());
                 File.WriteAllText(path, jsonData);
 
                 string message = $"Saved config to {path}";

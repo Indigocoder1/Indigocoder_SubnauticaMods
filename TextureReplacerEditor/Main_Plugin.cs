@@ -3,6 +3,7 @@ using BepInEx.Logging;
 using HarmonyLib;
 using System.IO;
 using System.Reflection;
+using Nautilus.Handlers;
 using UnityEngine;
 
 namespace TextureReplacerEditor
@@ -24,6 +25,7 @@ namespace TextureReplacerEditor
         public static string TextureReplacerAssetsFolderPath;
 
         internal static GameObject CurrentEditorWindowInstance;
+        internal static GameInput.Button EditButton;
 
         private void Awake()
         {
@@ -33,6 +35,11 @@ namespace TextureReplacerEditor
             TextureReplacerAssetsFolderPath = Path.Combine(new string[] { parentFolderName, "TextureReplacer", "Assets" });
 
             harmony.PatchAll();
+            
+            EditButton = EnumHandler.AddEntry<GameInput.Button>("Activate edit mode")
+                .CreateInput()
+                .WithBinding(GameInput.Device.Keyboard, GameInputHandler.Paths.Mouse.MiddleButton)
+                .WithCategory("PrototypeInputCategory");
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
         }
