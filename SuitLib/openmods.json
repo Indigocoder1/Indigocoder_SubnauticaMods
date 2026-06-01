@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 2,
+  "slug": "subnautica-suit-library",
+  "name": "Suit Library",
+  "supportedGameId": "subnautica",
+  "dependencies": {
+    "2.0.0": [
+      {
+        "modId": 30,
+        "fromRelease": "1.0.0-pre.49"
+      }
+    ]
+  },
+  "thumbnail": "SuitLibraryThumbnail.webp",
+  "install": {
+    "path": "BepInEx/plugins"
+  },
+  "releaseAssets": ["SuitLibrary_*.zip"],
+  "primaryAsset": "SuitLibrary_*.zip"
+}
