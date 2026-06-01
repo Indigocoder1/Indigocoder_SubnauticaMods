@@ -1,6 +1,7 @@
+# Suit Library
 This mod makes it easy for modders to add modded suits that have the correct models on the player. You can also recolor/retexture them easily as well. This can produce suits such as the one seen in the Warp Stabilization Suit mod (Disclaimer: I made that mod)
 
-Json Info
+## Json Info
 You can also create suits through Jsons. These suits will always be loaded when you are wearing the suit defined in the vanillaModel input.
 vanillaModel numbers:
 
