@@ -17,5 +17,5 @@
   },
   "releaseAssets": ["SuitLib_*.zip"],
   "primaryAsset": "SuitLib_*.zip",
-  "readme": "SuitLib/README.md"
+  "readme": "README.md"
 }
