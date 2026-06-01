@@ -16,5 +16,6 @@
     "path": "BepInEx/plugins"
   },
   "releaseAssets": ["SuitLib_*.zip"],
-  "primaryAsset": "SuitLib_*.zip"
+  "primaryAsset": "SuitLib_*.zip",
+  "readme": "SuitLib/README.md"
 }
