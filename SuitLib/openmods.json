@@ -15,6 +15,6 @@
   "install": {
     "path": "BepInEx/plugins"
   },
-  "releaseAssets": ["SuitLibrary_*.zip"],
-  "primaryAsset": "SuitLibrary_*.zip"
+  "releaseAssets": ["SuitLib_*.zip"],
+  "primaryAsset": "SuitLib_*.zip"
 }
