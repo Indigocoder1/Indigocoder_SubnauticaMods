@@ -27,7 +27,7 @@ namespace SuitLib
         private static readonly Harmony Harmony = new Harmony(myGUID);
         private static readonly string JsonFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Json Files");
         private static readonly string JsonTexturesFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Json Textures");
-        private static readonly ModInbox ModInbox = new("SuitLibrary", true);
+        private static readonly ModInbox ModInbox = new("SuitLibrary");
         
         internal static Eatable WaterPrefab;
 
