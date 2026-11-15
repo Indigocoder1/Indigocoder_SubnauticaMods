@@ -9,6 +9,7 @@ namespace GameObjectSpawner
         {
             OptionsPanelHandler.RegisterModOptions(this);
 
+            /*
             var spawnKeyOption = Plugin.spawnKey.ToModKeybindOption();
             spawnKeyOption.OnChanged += (s, e) => Plugin.spawnKey.Value = e.Value;
             AddItem(spawnKeyOption);
@@ -20,6 +21,7 @@ namespace GameObjectSpawner
             var spawnScaleOption = Plugin.spawnScaleMultiplier.ToModSliderOption(minValue: 0f, maxValue: 10f, step: 0.1f, floatFormat: "{0:F1}");
             spawnScaleOption.OnChanged += (s, e) => Plugin.spawnScaleMultiplier.Value = e.Value;
             AddItem(spawnScaleOption);
+            */
         }
     }
 }
