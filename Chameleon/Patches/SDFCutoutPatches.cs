@@ -9,6 +9,8 @@ namespace Chameleon.Patches
         [HarmonyPatch(nameof(SDFCutout.Start), MethodType.Enumerator), HarmonyPrefix]
         private static bool Start_Prefix(SDFCutout __instance)
         {
+            Main_Plugin.logger.LogInfo($"SDF type = {__instance.GetType()}");
+
             var objectInstance = (object)__instance;
             var fields = objectInstance.GetType().GetFields();
 

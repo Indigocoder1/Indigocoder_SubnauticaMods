@@ -7,7 +7,6 @@ using Chameleon.Monobehaviors.Cyclops;
 using Nautilus.Utility;
 using Chameleon.Interfaces;
 using Chameleon.Monobehaviors.Abstract;
-using Chameleon.Prefabs;
 using Nautilus.Handlers;
 
 namespace Chameleon.Craftables
@@ -18,10 +17,10 @@ namespace Chameleon.Craftables
 
         public static void Register()
         {
-            Texture2D sprite = Main_Plugin.AssetBundle.LoadAsset<Texture2D>("ChameleonIcon");
+            var sprite = Main_Plugin.AssetBundle.LoadAsset<Sprite>("ChameleonIcon");
 
             PrefabInfo prefabInfo = PrefabInfo.WithTechType("Chameleon", null, null, "English")
-                .WithIcon(new Atlas.Sprite(sprite));
+                .WithIcon(sprite);
 
             PrefabInfo = prefabInfo;
 

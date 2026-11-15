@@ -14,7 +14,7 @@ namespace WarpStabilizationSuit.Items
 
         public static void Patch()
         {
-            Atlas.Sprite sprite = ImageHelper.GetSpriteFromAssetsFolder("WarpStabilizationGloves.png", Main_Plugin.AssetsFolderPath);
+            Sprite sprite = ImageHelper.GetSpriteFromAssetsFolder("WarpStabilizationGloves.png", Main_Plugin.AssetsFolderPath);
 
             PrefabInfo prefabInfo = PrefabInfo.WithTechType("WarpStabilizationGloves", "Warp Stabilization Gloves", "Protects you from being displaced by teleportation technology. Works with the Warp Stabilization Suit")
                 .WithIcon(sprite)

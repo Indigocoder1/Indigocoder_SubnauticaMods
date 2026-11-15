@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using Nautilus.Json.Converters;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Nautilus.Json.Converters;
 
 namespace ImprovedGravTrap
 {
@@ -10,7 +10,7 @@ namespace ImprovedGravTrap
     {
         public static void SaveToJson(List<TechTypeList> saveData, string filePath, string folderFilePath = null)
         {
-            if(!string.IsNullOrEmpty(folderFilePath))
+            if (!string.IsNullOrEmpty(folderFilePath))
             {
                 if (!Directory.Exists(folderFilePath))
                 {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using Ingredient = CraftData.Ingredient;
 
 namespace CustomCraftGUI.Monobehaviors
 {
@@ -55,7 +55,7 @@ namespace CustomCraftGUI.Monobehaviors
 
             itemText.text = Language.main.Get(currentItem.customItemInfo.itemID);
 
-            Atlas.Sprite sprite = SpriteManager.Get(((ModifiedItem)currentItem).techType);
+            Sprite sprite = SpriteManager.Get(currentItem.techType);
             itemIcon.SetForegroundSprite(sprite);
 
             UpdateAllLists();
@@ -88,8 +88,10 @@ namespace CustomCraftGUI.Monobehaviors
 
             SetNewItemInfo();
 
-            ITechData techData = CraftData.Get(currentItemIcon.techType, true);
-            if (techData == null)
+            var ingredients = TechData.GetIngredients(currentItemIcon.techType);
+            var linkedItems = TechData.GetLinkedItems(currentItemIcon.techType);
+            var craftAmount = TechData.GetCraftAmount(currentItemIcon.techType);
+            if (ingredients == null)
             {
                 //No ingredients (Not meant to be crafted)
                 currentItem.SetUnlocks(new());
@@ -98,22 +100,22 @@ namespace CustomCraftGUI.Monobehaviors
                 return;
             }
 
-            SetIngredientsData(techData);
-            SetLinkedItemData(techData);
+            SetIngredientsData(ingredients);
+            SetLinkedItemData(linkedItems);
 
-            currentItem.customItemInfo.SetAmountCrafted(techData.craftAmount);
-            amountCraftedInputField.text = techData.craftAmount.ToString();
+            currentItem.customItemInfo.SetAmountCrafted(craftAmount);
+            amountCraftedInputField.text = craftAmount.ToString();
 
             TrySetCachedTechData();
 
-            amountCraftedInputField.text = techData.craftAmount.ToString();
+            amountCraftedInputField.text = craftAmount.ToString();
 
             UpdateAllLists();
         }
 
         private void SetNewItemInfo()
         {
-            Atlas.Sprite sprite = SpriteManager.Get(currentItemIcon.techType);
+            Sprite sprite = SpriteManager.Get(currentItemIcon.techType);
             currentItem.SetItemSprite(sprite);
             currentItem.SetTechType(currentItemIcon.techType);
             currentItem.SetNameText(Language.main.Get(currentItemIcon.techType));
@@ -143,32 +145,24 @@ namespace CustomCraftGUI.Monobehaviors
             {
                 foreach (var techType in tech.unlockTechTypes)
                 {
-                    unlocks.Add(new(techType));
+                    unlocks.Add(new Ingredient(techType, 1));
                 }
             }
 
             currentItem.SetUnlocks(unlocks);
         }
-        private void SetIngredientsData(ITechData techData)
+        private void SetIngredientsData(ReadOnlyCollection<Ingredient> itemIngredients)
         {
-            List<Ingredient> ingredients = new();
-
-            for (int i = 0; i < techData.ingredientCount; i++)
-            {
-                IIngredient ingredient = techData.GetIngredient(i);
-                ingredients.Add(new Ingredient(ingredient.techType, ingredient.amount));
-            }
-
-            currentItem.customItemInfo.SetIngredients(ingredients);
+            currentItem.customItemInfo.SetIngredients(itemIngredients.ToList());
         }
-        private void SetLinkedItemData(ITechData techData)
+        
+        private void SetLinkedItemData(ReadOnlyCollection<TechType> linkedItemTypes)
         {
             Dictionary<TechType, int> linkedItemsDictionary = new();
             List<Ingredient> linkedItems = new();
 
-            for (int i = 0; i < techData.linkedItemCount; i++)
+            foreach (var techType in linkedItemTypes)
             {
-                TechType techType = techData.GetLinkedItem(i);
                 if (linkedItemsDictionary.ContainsKey(techType))
                 {
                     linkedItemsDictionary[techType]++;

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Ingredient = CraftData.Ingredient;
 
 namespace CustomCraftGUI.Monobehaviors
 {

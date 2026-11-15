@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
-using VariableGravityCannon.Monos;
+using ImprovedGravTrap.Monos;
 
-namespace VariableGravityCannon.Patches
+namespace ImprovedGravTrap.Patches
 {
     [HarmonyPatch(typeof(RepulsionCannon))]
     internal static class RepulsionCannonPatch

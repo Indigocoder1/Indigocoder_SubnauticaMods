@@ -12,24 +12,73 @@ using UnityEngine;
 namespace CyclopsBeaconDeployer
 {
     [BepInPlugin(myGUID, pluginName, versionString)]
-    [BepInDependency("com.snmodding.nautilus", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency("com.snmodding.nautilus")]
     public class Main_Plugin : BaseUnityPlugin
     {
         private const string myGUID = "Indigocoder.CyclopsBeaconDeployer";
         private const string pluginName = "Cyclops Beacon Deployer";
-        private const string versionString = "1.1.3";
+        private const string versionString = "1.1.4";
 
         public static ConfigEntry<bool> WriteLogs;
 
         private static readonly Harmony harmony = new Harmony(myGUID);
         public static ManualLogSource logger;
-        public static EquipmentType DecoyPlaceholder { get; private set; }
 
-        public static string AssetFolderPath { get; private set; } = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
+        public static string AssetFolderPath { get; } = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets");
         public static AssetBundle assetBundle { get; private set; }
         public static GameObject nameInputFieldGO { get; private set; }
         public static GameObject decoyPrefab { get; private set; }
         public static GameObject beaconPrefab { get; private set; }
+
+        internal static JsonValue BeaconDecoyJsonEquipment
+        {
+            get
+            {
+                if (_beaconDecoyJsonEquipment == null)
+                {
+                    _beaconDecoyJsonEquipment = new JsonValue
+                    {
+                        {
+                            TechData.propertyTechType,
+                            new JsonValue((int)TechType.Beacon)
+                        },
+                        {
+                            TechData.propertyEquipmentType,
+                            new JsonValue((int)EquipmentType.DecoySlot)
+                        }
+                    };
+                }
+
+                return _beaconDecoyJsonEquipment;
+            }
+        }
+
+        private static JsonValue _beaconDecoyJsonEquipment;
+        
+        internal static JsonValue BeaconNormalJsonEquipment
+        {
+            get
+            {
+                if (_beaconNormalJsonEquipment == null)
+                {
+                    _beaconNormalJsonEquipment = new JsonValue
+                    {
+                        {
+                            TechData.propertyTechType,
+                            new JsonValue((int)TechType.Beacon)
+                        },
+                        {
+                            TechData.propertyEquipmentType,
+                            new JsonValue((int)EquipmentType.Hand)
+                        }
+                    };
+                }
+
+                return _beaconNormalJsonEquipment;
+            }
+        }
+
+        private static JsonValue _beaconNormalJsonEquipment;
 
         private IEnumerator Start()
         {
@@ -50,11 +99,8 @@ namespace CyclopsBeaconDeployer
             decoyPrefab = decoyTask.result.value;
 
             beaconPrefab = beaconTask.result.value;
-
-            EnumBuilder<EquipmentType> builder = EnumHandler.AddEntry<EquipmentType>("DecoyPlaceholder");
-            DecoyPlaceholder = builder.Value;
-
-            CraftData.equipmentTypes[TechType.Beacon] = EquipmentType.DecoySlot;
+            
+            TechData.entries[TechType.Beacon] = BeaconNormalJsonEquipment;
 
             new Deployer_ModOptions();
             BeaconDeployModule.Patch();

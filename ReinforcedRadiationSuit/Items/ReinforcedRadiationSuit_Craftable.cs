@@ -12,7 +12,7 @@ namespace ReinforcedRadiationSuit.Items
 
         public static void Patch()
         {
-            Atlas.Sprite sprite = ImageHelper.GetSpriteFromAssetsFolder("reinforcedRadiation_SuitIcon.png", Main_Plugin.AssetsFolderPath);
+            Sprite sprite = ImageHelper.GetSpriteFromAssetsFolder("reinforcedRadiation_SuitIcon.png", Main_Plugin.AssetsFolderPath);
 
             PrefabInfo prefabInfo = PrefabInfo.WithTechType("ReinforcedRadiationSuit", "Reinforced Radiation Suit", 
                 "Lead and-ruby-lined suit to protect against radiation and physical trauma")

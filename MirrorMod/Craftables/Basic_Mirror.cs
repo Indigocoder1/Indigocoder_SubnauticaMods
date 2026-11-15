@@ -1,57 +1,61 @@
-﻿using MirrorMod.Monobehaviors;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using MirrorMod.Monobehaviors;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Crafting;
+using Nautilus.Json.Converters;
 using Nautilus.Utility;
+using Newtonsoft.Json;
 using UnityEngine;
-using Ingredient = CraftData.Ingredient;
 
 namespace MirrorMod.Craftables
 {
     internal static class Basic_Mirror
     {
-        public static TechType techType;
-
-        public static void Patch(string classID, string name, Atlas.Sprite sprite, GameObject assetBundlePrefab)
+        public static void Patch(string classID, string name, Sprite sprite, GameObject assetBundlePrefab)
         {
             PrefabInfo prefabInfo = PrefabInfo.WithTechType(classID, name, "It's a Mirror")
                 .WithIcon(sprite);
 
-            techType = prefabInfo.TechType;
-
             var prefab = new CustomPrefab(prefabInfo);
 
-            RecipeData recipe = new RecipeData
+            IEnumerator GetGameObject(IOut<GameObject> prefabOut)
             {
-                craftAmount = 1,
-                Ingredients =
-                {
-                    new Ingredient(TechType.Titanium, 1),
-                    new Ingredient(TechType.Glass, 2),
-                },
-            };
-
-            prefab.SetGameObject(GetMirrorPrefab(classID, assetBundlePrefab));
+                yield return GetMirrorPrefab(prefabInfo, assetBundlePrefab, prefabOut);
+            }
+            
+            prefab.SetGameObject(GetGameObject);
             prefab.SetUnlock(TechType.PictureFrame);
 
-            prefab.SetRecipe(recipe)
-                .WithCraftingTime(6f);
+            prefab.SetRecipeFromJson(Path.Combine(Main_Plugin.RecipesFolderPath, $"{classID}.json"));
 
             prefab.SetPdaGroupCategory(TechGroup.Miscellaneous, TechCategory.Misc);
 
             prefab.Register();
         }
 
-        private static GameObject GetMirrorPrefab(string classID, GameObject mirrorPrefab)
+        private static RecipeData GetRecipeFromJson(string path)
         {
-            PrefabUtils.AddBasicComponents(mirrorPrefab, classID, techType, LargeWorldEntity.CellLevel.Near);
+            var content = File.ReadAllText(path);
+            return JsonConvert.DeserializeObject<RecipeData>(content, new CustomEnumConverter());
+        }
+        
+        private static IEnumerator GetMirrorPrefab(PrefabInfo prefabInfo, GameObject assetPrefab, IOut<GameObject> prefab)
+        {
+            yield return new WaitUntil(() => MaterialUtils.IsReady);
+            
+            var prefabInstance = UWE.Utils.InstantiateDeactivated(assetPrefab);
+            
+            PrefabUtils.AddBasicComponents(prefabInstance, prefabInfo.ClassID, prefabInfo.TechType, LargeWorldEntity.CellLevel.Near);
 
             float scale = 0.6f;
-            mirrorPrefab.transform.localScale = new Vector3(scale, scale, scale);
+            prefabInstance.transform.localScale = new Vector3(scale, scale, scale);
 
-            Transform mirrorCamera = mirrorPrefab.transform.Find("MirrorCamera");
+            Transform mirrorCamera = prefabInstance.transform.Find("MirrorCamera");
 
-            Transform outlineParent = mirrorPrefab.transform.Find("IgnoreOnOtherMirrors/MirrorOutline");
+            Transform outlineParent = prefabInstance.transform.Find("IgnoreOnOtherMirrors/MirrorOutline");
             if(outlineParent)
             {
                 MaterialUtils.ApplySNShaders(outlineParent.gameObject,
@@ -60,7 +64,7 @@ namespace MirrorMod.Craftables
                 );
             }
             
-            Transform renderPlane = mirrorPrefab.transform.Find("IgnoreOnOtherMirrors/RenderPlane");
+            Transform renderPlane = prefabInstance.transform.Find("IgnoreOnOtherMirrors/RenderPlane");
             if(renderPlane)
             {
                 MaterialUtils.ApplySNShaders(renderPlane.gameObject,
@@ -69,7 +73,7 @@ namespace MirrorMod.Craftables
                 );
             }
 
-            Transform handlesParent = mirrorPrefab.transform.Find("IgnoreOnOtherMirrors/Handles");
+            Transform handlesParent = prefabInstance.transform.Find("IgnoreOnOtherMirrors/Handles");
             if(handlesParent)
             {
                 MaterialUtils.ApplySNShaders(handlesParent.gameObject,
@@ -80,11 +84,11 @@ namespace MirrorMod.Craftables
 
             mirrorCamera.gameObject.EnsureComponent<CameraComponentCopier>();
 
-            GameObject model = mirrorPrefab.transform.Find("IgnoreOnOtherMirrors").gameObject;
+            GameObject model = prefabInstance.transform.Find("IgnoreOnOtherMirrors").gameObject;
 
             //Constructable
-            Constructable constructable = mirrorPrefab.EnsureComponent<Constructable>();
-            constructable.techType = techType;
+            Constructable constructable = prefabInstance.EnsureComponent<Constructable>();
+            constructable.techType = prefabInfo.TechType;
             constructable.model = model;
             constructable.allowedOnWall = true;
             constructable.allowedOnGround = false;
@@ -97,13 +101,13 @@ namespace MirrorMod.Craftables
             ConstructableFlags flags = ConstructableFlags.Wall | ConstructableFlags.Base | ConstructableFlags.Inside |
             ConstructableFlags.Submarine;
 
-            PrefabUtils.AddConstructable(mirrorPrefab, techType, flags, model);
+            PrefabUtils.AddConstructable(prefabInstance, prefabInfo.TechType, flags, model);
 
             //Constructable Bounds
-            ConstructableBounds constructableBounds = mirrorPrefab.EnsureComponent<ConstructableBounds>();
+            ConstructableBounds constructableBounds = prefabInstance.EnsureComponent<ConstructableBounds>();
             Bounds bounds = new Bounds();
             OrientedBounds oBounds = new OrientedBounds();
-            Renderer[] renderers = mirrorPrefab.GetComponentsInChildren<Renderer>();
+            Renderer[] renderers = prefabInstance.GetComponentsInChildren<Renderer>();
             int index = 0;
             foreach (Renderer renderer in renderers)
             {
@@ -122,7 +126,7 @@ namespace MirrorMod.Craftables
             oBounds.size = bounds.size;
             constructableBounds.bounds = oBounds;
 
-            return mirrorPrefab;
+            prefab.Set(prefabInstance);
         }
     }
 }

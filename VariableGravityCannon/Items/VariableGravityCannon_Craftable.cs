@@ -5,10 +5,10 @@ using Nautilus.Assets.Gadgets;
 using Nautilus.Crafting;
 using System.IO;
 using Nautilus.Extensions;
-using VariableGravityCannon.Monos;
+using ImprovedGravTrap.Monos;
 using UnityEngine;
 
-namespace VariableGravityCannon.Items
+namespace ImprovedGravTrap.Items
 {
     public static class VariableGravityCannon_Craftable
     {
@@ -16,7 +16,7 @@ namespace VariableGravityCannon.Items
 
         public static void Patch(RepulsionCannon repulsionCannonPrefab)
         {
-            Atlas.Sprite sprite = ImageHelper.GetSpriteFromAssetsFolder("variableGravityCannon.png", Main_Plugin.AssetsFolderPath);
+            Sprite sprite = ImageHelper.GetSpriteFromAssetsFolder("variableGravityCannon.png", Main_Plugin.AssetsFolderPath);
 
             PrefabInfo prefabInfo = PrefabInfo.WithTechType("VariableGravityCannon",
                 "Variable Gravity Cannon", "A propulsion and repulsion cannon in one small package!")

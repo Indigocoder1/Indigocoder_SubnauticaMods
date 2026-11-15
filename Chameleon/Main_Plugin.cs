@@ -25,7 +25,7 @@ namespace Chameleon
     {
         private const string myGUID = "Indigocoder.Chameleon";
         private const string pluginName = "Chameleon Sub";
-        private const string versionString = "1.0.1";
+        private const string versionString = "1.0.3";
 
         public static ManualLogSource logger;
 
@@ -69,7 +69,7 @@ namespace Chameleon
             LanguageHandler.RegisterLocalizationFolder();
 
             ChameleonPingType = EnumHandler.AddEntry<PingType>("ChameleonSub")
-            .WithIcon(new Atlas.Sprite(AssetBundle.LoadAsset<Sprite>("Ping_Chameleon")));
+            .WithIcon(AssetBundle.LoadAsset<Sprite>("Ping_Chameleon"));
 
             CreateEncyEntry();
             InitializeModOptions();

@@ -4,7 +4,6 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using UnityEngine;
-using Ingredient = CraftData.Ingredient;
 
 namespace CustomCraftGUI.Monobehaviors
 {

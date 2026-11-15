@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
-using VariableGravityCannon.Items;
+using ImprovedGravTrap.Items;
 using UnityEngine;
-using VariableGravityCannon.Monos;
+using ImprovedGravTrap.Monos;
 
-namespace VariableGravityCannon.Patches
+namespace ImprovedGravTrap.Patches
 {
     [HarmonyPatch(typeof(Player))]
     internal static class PlayerPatches

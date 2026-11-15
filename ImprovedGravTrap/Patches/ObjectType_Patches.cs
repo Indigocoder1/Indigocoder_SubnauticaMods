@@ -30,7 +30,7 @@ namespace ImprovedGravTrap.Patches
         [HarmonyPatch(typeof(Gravsphere), nameof(Gravsphere.IsValidTarget)), HarmonyPostfix]
         static void Gravsphere_IsValidTarget_Prefix(Gravsphere __instance, GameObject obj, ref bool __result)
         {
-            if(__instance.GetComponent<EnhancedGravSphere>() == null)
+            if (__instance.GetComponent<EnhancedGravSphere>() == null)
             {
                 return;
             }

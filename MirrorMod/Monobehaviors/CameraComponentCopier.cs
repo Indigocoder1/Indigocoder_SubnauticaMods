@@ -13,9 +13,6 @@ namespace MirrorMod.Monobehaviors
         {
             Camera mainCamera = Camera.main;
 
-            PostProcessingBehaviour behaviour = gameObject.AddComponent<PostProcessingBehaviour>().CopyComponent(mainCamera.GetComponent<PostProcessingBehaviour>());
-            behaviour.profile.screenSpaceReflection.enabled = false;
-
             gameObject.AddComponent<ColorCorrection>().CopyComponent(mainCamera.GetComponent<ColorCorrection>());
             gameObject.AddComponent<LensWater>().CopyComponent(mainCamera.GetComponent<LensWater>());
             gameObject.AddComponent<LensWaterController>().CopyComponent(mainCamera.GetComponent<LensWaterController>());

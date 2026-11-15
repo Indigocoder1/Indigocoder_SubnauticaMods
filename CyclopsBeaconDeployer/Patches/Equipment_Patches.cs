@@ -31,22 +31,12 @@ namespace CyclopsBeaconDeployer.Patches
                 if(pickupable.GetTechType() == TechType.CyclopsDecoy)
                 {
                     __result = true;
-                    /*
-                    if (hasModule)
-                    {
-                        __result = false;
-                    }
-                    else
-                    {
-                        __result = true;
-                    }
-                    */
                 }
             }
         }
 
         [HarmonyPatch(nameof(Equipment.GetItemSlot)), HarmonyPostfix]
-        [HarmonyPatch(new Type[] { typeof(Pickupable), typeof(string) }, new ArgumentType[] { ArgumentType.Normal, ArgumentType.Ref })]
+        [HarmonyPatch(new [] { typeof(Pickupable), typeof(string) }, new [] { ArgumentType.Normal, ArgumentType.Ref })]
         private static void GetItemSlot_Pickupable_Patch(Equipment __instance, Pickupable pickupable, ref string slot)
         {
             if(pickupable.GetTechType() != TechType.Beacon)
@@ -82,7 +72,7 @@ namespace CyclopsBeaconDeployer.Patches
         }
 
         [HarmonyPatch(nameof(Equipment.GetItemSlot)), HarmonyPostfix]
-        [HarmonyPatch(new Type[] { typeof(InventoryItem), typeof(string) }, new ArgumentType[] { ArgumentType.Normal, ArgumentType.Ref})]
+        [HarmonyPatch(new [] { typeof(InventoryItem), typeof(string) }, new ArgumentType[] { ArgumentType.Normal, ArgumentType.Ref})]
         private static void GetItemSlot_Patch(Equipment __instance, InventoryItem item, ref string slot)
         {
             if(item.techType != TechType.Beacon)
@@ -141,7 +131,7 @@ namespace CyclopsBeaconDeployer.Patches
                     nameInput.SetActive(true);
             }
 
-            CraftData.equipmentTypes[TechType.Beacon] = EquipmentType.DecoySlot;
+            TechData.entries[TechType.Beacon] = Main_Plugin.BeaconDecoyJsonEquipment;
             //CraftData.equipmentTypes[TechType.CyclopsDecoy] = Main_Plugin.DecoyPlaceholder;
         }
 
@@ -169,8 +159,7 @@ namespace CyclopsBeaconDeployer.Patches
                     nameInput.SetActive(false);
             }
 
-            CraftData.equipmentTypes[TechType.Beacon] = EquipmentType.Hand;
-            CraftData.equipmentTypes[TechType.CyclopsDecoy] = EquipmentType.DecoySlot;
+            TechData.entries[TechType.Beacon] = Main_Plugin.BeaconNormalJsonEquipment;
         }
 
         public static bool IsDecoyTube(Equipment equipment, out CyclopsDecoyLoadingTube decoyTube)

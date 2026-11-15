@@ -51,7 +51,7 @@ namespace TodoList.Patches
             return newInstructions.InstructionEnumeration();
         }
 
-        public static Atlas.Sprite TryGetTodoListSprite(Atlas.Sprite originalSprite, PDATab currentTab)
+        public static Sprite TryGetTodoListSprite(Sprite originalSprite, PDATab currentTab)
         {
             if (currentTab != Main_Plugin.todoTab) return originalSprite;
 

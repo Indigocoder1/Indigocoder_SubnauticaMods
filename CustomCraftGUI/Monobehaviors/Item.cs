@@ -18,7 +18,7 @@ namespace CustomCraftGUI.Monobehaviors
             nameText.text = text;
         }
 
-        public void SetItemSprite(Atlas.Sprite sprite)
+        public void SetItemSprite(Sprite sprite)
         {
             customItemInfo.SetItemSprite(sprite);
             icon.SetForegroundSprite(sprite);

@@ -98,7 +98,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Monobehaviors\ApplySNFont.cs" />
-    <Compile Include="Monobehaviors\AtlasHelper.cs" />
     <Compile Include="Monobehaviors\CustomCraftFormatter.cs" />
     <Compile Include="Monobehaviors\CustomItem.cs" />
     <Compile Include="Monobehaviors\CustomItemsManager.cs" />

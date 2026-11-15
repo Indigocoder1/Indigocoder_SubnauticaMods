@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace VariableGravityCannon.Monos
+namespace ImprovedGravTrap.Monos
 {
     internal class VariableGravityCannon_Mono : MonoBehaviour
     {
@@ -47,7 +47,7 @@ namespace VariableGravityCannon.Monos
             if (IngameMenu.main.selected) return;
 
             string subscript = $"Power: {Mathf.Floor(energyMixin.GetBatteryChargeValue() * 100)}%\n" +
-                $"{Language.main.GetFormat<string, string>("HandReticleAddButtonFormat", "Toggle Cannon Mode", uGUI.FormatButton(GameInput.Button.Deconstruct))}";
+                $"{Language.main.GetFormat<string, string>("HandReticleAddButtonFormat", "Toggle Cannon Mode", GameInput.FormatButton(GameInput.Button.Deconstruct))}";
             HandReticle.main.textUseSubscript = subscript;
         }
 

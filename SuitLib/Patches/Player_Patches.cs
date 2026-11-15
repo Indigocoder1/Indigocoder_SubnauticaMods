@@ -1,412 +1,391 @@
 ﻿using HarmonyLib;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using UnityEngine;
-using static SuitLib.ModdedSuitsManager;
+using SuitLib.API;
 
-namespace SuitLib.Patches
+namespace SuitLib.Patches;
+
+internal struct SuitTextureInfo()
 {
-    [HarmonyPatch(typeof(Player))]
-    internal static class Player_Patches
+    public GameObject suitBodyObject;
+    public GameObject suitGlovesObject;
+    
+    private Dictionary<string, Texture> suitTextures = new();
+    private Dictionary<string, Texture> gloveTextures = new();
+    private bool glovesUseBodyIndex1;
+
+    public SuitTextureInfo(bool glovesUseBodyIndex1) : this()
     {
-        private static Dictionary<string, Texture> diveSuitTextures = new Dictionary<string, Texture>();
-        private static Dictionary<string, Texture> radiationSuitTextures = new Dictionary<string, Texture>();
-        private static Dictionary<string, Texture> reinforcedSuitTextures = new Dictionary<string, Texture>();
-        private static Dictionary<string, Texture> filtrationSuitTextures = new Dictionary<string, Texture>();
+        this.glovesUseBodyIndex1 = glovesUseBodyIndex1;
+    }
 
-        private static Dictionary<string, Texture> diveGlovesTextures = new Dictionary<string, Texture>();
-        private static Dictionary<string, Texture> radiationGlovesTextures = new Dictionary<string, Texture>();
-        private static Dictionary<string, Texture> reinforcedGlovesTextures = new Dictionary<string, Texture>();
-        private static Dictionary<string, Texture> filtrationGlovesTextures = new Dictionary<string, Texture>();
+    public void AddBodyTexture(string textureName)
+    {
+        var suitTex = suitBodyObject.GetComponent<Renderer>().material.GetTexture(textureName);
+        suitTextures.Add(textureName, suitTex);
+    }
+    
+    public void AddGlovesTexture(string textureName)
+    {
+        var obj = glovesUseBodyIndex1 ? suitBodyObject : suitGlovesObject;
+        var materialIndex = glovesUseBodyIndex1 ? 1 : 0;
+        
+        var glovesTex = obj.GetComponent<Renderer>().materials[materialIndex].GetTexture(textureName);
+        gloveTextures.Add(textureName, glovesTex);
+    }
 
-        private static GameObject diveSuitBodyGO;
-        private static GameObject diveSuitGlovesGO;
-
-        private static GameObject radiationSuitGO;
-        private static GameObject radiationGlovesGO;
-
-        private static GameObject reinforcedSuitGO;
-        private static GameObject reinforcedGlovesGO;
-
-        private static GameObject filtrationSuitGO;
-        private static Equipment playerEquipment;
-
-        [HarmonyPatch(nameof(Player.Start)), HarmonyPrefix]
-        private static void Start()
+    public void ResetBodyTextures()
+    {
+        foreach (var key in suitTextures.Keys)
         {
-            playerEquipment = Inventory.main.equipment;
-            diveSuitTextures.Clear();
-            radiationSuitTextures.Clear();
-            reinforcedSuitTextures.Clear();
-            filtrationSuitTextures.Clear();
-
-            diveGlovesTextures.Clear();
-            radiationGlovesTextures.Clear();
-            reinforcedGlovesTextures.Clear();
-            filtrationGlovesTextures.Clear();
-
-            InitializeModelGOs();
-            InitializeVanillaTextures();
+            var tex = (Texture2D)suitTextures[key];
+            suitBodyObject.GetComponent<Renderer>().material.SetTexture(key, tex);
         }
+    }
 
-        private static void InitializeVanillaTextures()
+    public void ResetGloveTextures()
+    {
+        foreach (var key in gloveTextures.Keys)
         {
-            HashSet<string> suitTextureNamesHash = new HashSet<string>();
-            for (int suitsIndex = 0; suitsIndex < ModdedSuitsManager.moddedSuitsList.Count; suitsIndex++)
+            var tex = (Texture2D)gloveTextures[key];
+            if (suitGlovesObject)
             {
-                ModdedSuit suit = ModdedSuitsManager.moddedSuitsList[suitsIndex];
-                List<string> keys = new List<string>(suit.suitReplacementTexturePropertyPairs.Keys);
-                foreach (string key in keys)
-                {
-                    suitTextureNamesHash.Add(key);
-                }
+                suitGlovesObject.GetComponent<Renderer>().material.SetTexture(key, tex);
             }
 
-            HashSet<string> gloveTextureNamesHash = new HashSet<string>();
-            for (int glovesIndex = 0; glovesIndex < ModdedSuitsManager.moddedGlovesList.Count; glovesIndex++)
+            if (glovesUseBodyIndex1)
             {
-                ModdedGloves gloves = ModdedSuitsManager.moddedGlovesList[glovesIndex];
-                List<string> keys = new List<string>(gloves.replacementTexturePropertyPairs.Keys);
-                foreach (string key in keys)
-                {
-                    gloveTextureNamesHash.Add(key);
-                }
+                suitBodyObject.GetComponent<Renderer>().materials[1].SetTexture(key, tex);
             }
-
-            for (int suitTexIndex = 0; suitTexIndex < suitTextureNamesHash.Count; suitTexIndex++)
-            {
-                string texName = suitTextureNamesHash.ElementAt(suitTexIndex);
-
-                Texture diveSuitTex = diveSuitBodyGO.GetComponent<Renderer>().material.GetTexture(texName);
-                diveSuitTextures.Add(texName, diveSuitTex);
-
-                Texture radiationSuitTex = radiationSuitGO.GetComponent<Renderer>().material.GetTexture(texName);
-                radiationSuitTextures.Add(texName, radiationSuitTex);
-
-                Texture reinforcedSuitTex = reinforcedSuitGO.GetComponent<Renderer>().material.GetTexture(texName);
-                reinforcedSuitTextures.Add(texName, reinforcedSuitTex);
-
-                Texture filtrationSuitTex = filtrationSuitGO.GetComponent<Renderer>().material.GetTexture(texName);
-                filtrationSuitTextures.Add(texName, filtrationSuitTex);
-            }
-
-            for (int glovesTexIndex = 0; glovesTexIndex < gloveTextureNamesHash.Count; glovesTexIndex++)
-            {
-                string texName = gloveTextureNamesHash.ElementAt(glovesTexIndex);
-
-                Texture diveGlovesTex = diveSuitGlovesGO.GetComponent<Renderer>().material.GetTexture(texName);
-                diveGlovesTextures.Add(texName, diveGlovesTex);
-
-                Texture radiationGlovesTex = radiationGlovesGO.GetComponent<Renderer>().material.GetTexture(texName);
-                radiationGlovesTextures.Add(texName, radiationGlovesTex);
-
-                Texture reinforcedGlovesTex = reinforcedGlovesGO.GetComponent<Renderer>().material.GetTexture(texName);
-                reinforcedGlovesTextures.Add(texName, reinforcedGlovesTex);
-            }
-        }
-
-        private static void InitializeModelGOs()
-        {
-            Transform geo = Player.main.transform.Find("body/player_view/male_geo");
-
-            Transform diveSuit = geo.Find("diveSuit");
-            diveSuitBodyGO = diveSuit.Find("diveSuit_body_geo").gameObject;
-            diveSuitGlovesGO = diveSuit.Find("diveSuit_hands_geo").gameObject;
-
-            Transform radiationSuit = geo.Find("radiationSuit");
-            radiationSuitGO = radiationSuit.Find("radiationSuit_body_geo").gameObject;
-            radiationGlovesGO = radiationSuit.Find("radiationSuit_gloves_geo").gameObject;
-
-            Transform reinforcedSuit = geo.Find("reinforcedSuit");
-            reinforcedSuitGO = reinforcedSuit.Find("reinforced_suit_01_body_geo").gameObject;
-            reinforcedGlovesGO = reinforcedSuit.Find("reinforced_suit_01_glove_geo").gameObject;
-
-            filtrationSuitGO = geo.Find("stillSuit/still_suit_01_body_geo").gameObject;
-        }
-
-        [HarmonyPatch(nameof(Player.EquipmentChanged)), HarmonyPostfix]
-        private static void EquipmentChanged_Patch()
-        {
-            TechType typeInBodySlot = playerEquipment.GetTechTypeInSlot("Body");
-            TechType typeInGlovesSlot = playerEquipment.GetTechTypeInSlot("Gloves");
-
-            bool wearingModdedSuit =
-                (typeInBodySlot != TechType.None) &&
-                (typeInBodySlot != TechType.RadiationSuit) &&
-                (typeInBodySlot != TechType.ReinforcedDiveSuit) &&
-                (typeInBodySlot != TechType.WaterFiltrationSuit);
-
-            bool wearingModdedGloves =
-                (typeInGlovesSlot != TechType.None) &&
-                (typeInGlovesSlot != TechType.RadiationGloves) &&
-                (typeInGlovesSlot != TechType.ReinforcedGloves);
-
-            bool wearingAnySuit = typeInBodySlot != TechType.None;
-            bool wearingAnyGloves = typeInGlovesSlot != TechType.None;
-
-            SetGOsActive(typeInBodySlot, typeInGlovesSlot, wearingAnySuit, wearingAnyGloves);
-
-            SetGloveTextures(typeInGlovesSlot, wearingModdedGloves);
-            SetSuitTextures(typeInBodySlot, wearingModdedSuit);
-        }
-
-        [HarmonyPatch(nameof(Player.HasReinforcedSuit)), HarmonyPostfix]
-        private static void HasReinforcedSuit_Patch(ref bool __result)
-        {
-            foreach (ModdedSuit suit in moddedSuitsList)
-            {
-                if (!WearingItem(suit.itemTechType, "Body"))
-                {
-                    continue;
-                }
-
-                if ((suit.modifications & Modifications.Reinforced) != 0)
-                {
-                    __result = true;
-                }
-            }
-        }
-
-        [HarmonyPatch(nameof(Player.HasReinforcedGloves)), HarmonyPostfix]
-        private static void HasReinforcedGloves_Patch(ref bool __result)
-        {
-            foreach (ModdedGloves gloves in moddedGlovesList)
-            {
-                Debug.Log($"Wearing gloves {gloves.itemTechType} = {WearingItem(gloves.itemTechType, "Gloves")}");
-                if (!WearingItem(gloves.itemTechType, "Gloves"))
-                {
-                    continue;
-                }
-
-                Debug.Log($"Gloves reinforced = {(gloves.modifications & Modifications.Reinforced) != 0}");
-                if ((gloves.modifications & Modifications.Reinforced) != 0)
-                {
-                    __result = true;
-                }
-            }
-        }
-
-        [HarmonyPatch(nameof(Player.UpdateReinforcedSuit)), HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> UpdateReinforcedSuit_Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            CodeMatch suitMatch = new CodeMatch(i => i.opcode == OpCodes.Ldc_R4 && ((float)i.operand == 15f));
-            CodeMatch glovesMatch = new CodeMatch(i => i.opcode == OpCodes.Ldc_R4 && ((float)i.operand == 6f));
-
-            var newInstructions = new CodeMatcher(instructions)
-                .MatchForward(false, suitMatch)
-                .SetInstruction(Transpilers.EmitDelegate<Func<float>>(GetSuitTemp))
-                .MatchForward(false, glovesMatch)
-                .SetInstruction(Transpilers.EmitDelegate<Func<float>>(GetGlovesTemp));
-                
-
-            return newInstructions.InstructionEnumeration();
-        }
-
-        public static float GetSuitTemp()
-        {
-            TechType typeInBodySlot = playerEquipment.GetTechTypeInSlot("Body");
-            ModdedSuit suitInSlot = moddedSuitsList.FirstOrDefault(_ => _.itemTechType == typeInBodySlot);
-            if(suitInSlot == null)
-            {
-                return 15f;
-            }
-            return suitInSlot.tempValue;
-        }
-
-        public static float GetGlovesTemp()
-        {
-            TechType typeInGlovesSlot = playerEquipment.GetTechTypeInSlot("Gloves");
-            ModdedGloves glovesInSlot = moddedGlovesList.FirstOrDefault(_ => _.itemTechType == typeInGlovesSlot);
-            if(glovesInSlot == null)
-            {
-                return 6f;
-            }
-            return glovesInSlot.tempValue;
-        }
-
-        private static void SetGOsActive(TechType typeInBodySlot, TechType typeInGlovesSlot, bool wearingAnySuit, bool wearingAnyGloves)
-        {
-            if (wearingAnySuit)
-            {
-                foreach (ModdedSuit suit in ModdedSuitsManager.moddedSuitsList)
-                {
-                    if (suit.itemTechType != typeInBodySlot)
-                    {
-                        continue;
-                    }
-
-                    GameObject model = GetModel(suit.vanillaModel, true);
-                    model.SetActive(true);
-                    diveSuitBodyGO.SetActive(false);
-                }
-            }
-            else
-            {
-                diveSuitBodyGO.SetActive(true);
-            }
-
-            if (wearingAnyGloves)
-            {
-                foreach (ModdedGloves gloves in ModdedSuitsManager.moddedGlovesList)
-                {
-                    if (gloves.itemTechType != typeInGlovesSlot)
-                    {
-                        continue;
-                    }
-
-                    GameObject model = GetModel(gloves.vanillaModel, false);
-                    model.SetActive(true);
-                    diveSuitGlovesGO.SetActive(false);
-                }
-            }
-            else
-            {
-                diveSuitGlovesGO.SetActive(true);
-            }
-        }
-
-        private static void SetSuitTextures(TechType typeInSuitSlot, bool wearingModdedSuit)
-        {
-            moddedSuitsList.ForEach(_ =>
-            {
-                if(_.jsonSuit)
-                {
-                    wearingModdedSuit = true;
-                }
-            });
-
-            if (wearingModdedSuit)
-            {
-                foreach (ModdedSuit suit in moddedSuitsList)
-                {
-                    if (!WearingItem(suit.itemTechType, "Body"))
-                    {
-                        continue;
-                    }
-
-                    GameObject model = GetModel(suit.vanillaModel, true);
-                    if (!model) continue;
-
-                    Renderer modelRenderer = model.GetComponent<Renderer>();
-                    
-                    foreach (string key in suit.suitReplacementTexturePropertyPairs.Keys)
-                    {
-                        Texture2D moddedTex = suit.suitReplacementTexturePropertyPairs[key];
-                        modelRenderer.materials[0].SetTexture(key, moddedTex);
-                    }
-
-                    foreach (string key in suit.armsReplacementTexturePropertyPairs.Keys)
-                    {
-                        Texture2D armsTex = suit.armsReplacementTexturePropertyPairs[key];
-                        modelRenderer.materials[1].SetTexture(key, armsTex);
-                    }
-                }
-            }
-            else
-            {
-                foreach (string key in diveSuitTextures.Keys)
-                {
-                    Texture2D tex = (Texture2D)diveSuitTextures[key];
-                    diveSuitBodyGO.GetComponent<Renderer>().material.SetTexture(key, tex);
-                }
-
-                foreach (string key in radiationSuitTextures.Keys)
-                {
-                    Texture2D tex = (Texture2D)radiationSuitTextures[key];
-                    Renderer rend = radiationSuitGO.GetComponent<Renderer>();
-                    rend.materials[0].SetTexture(key, tex);
-                }
-
-                foreach (string key in reinforcedSuitTextures.Keys)
-                {
-                    Texture2D tex = (Texture2D)reinforcedSuitTextures[key];
-                    Renderer rend = reinforcedSuitGO.GetComponent<Renderer>();
-                    rend.materials[0].SetTexture(key, tex);
-                }
-
-                foreach (string key in filtrationSuitTextures.Keys)
-                {
-                    Texture2D tex = (Texture2D)filtrationSuitTextures[key];
-                    Renderer rend = filtrationSuitGO.GetComponent<Renderer>();
-                    rend.materials[0].SetTexture(key, tex);
-                }
-            }
-        }
-
-        private static void SetGloveTextures(TechType typeInGlovesSlot, bool wearingModdedGloves)
-        {
-            moddedGlovesList.ForEach(_ =>
-            {
-                if (_.jsonGloves)
-                {
-                    wearingModdedGloves = true;
-                }
-            });
-
-            if (wearingModdedGloves)
-            {
-                foreach (ModdedGloves gloves in ModdedSuitsManager.moddedGlovesList)
-                {
-                    if (!WearingItem(gloves.itemTechType, "Gloves"))
-                    {
-                        continue;
-                    }
-
-                    Renderer glovesModelRenderer = GetModel(gloves.vanillaModel, false).GetComponent<Renderer>();
-
-                    foreach (string key in gloves.replacementTexturePropertyPairs.Keys)
-                    {
-                        Texture2D moddedTex = gloves.replacementTexturePropertyPairs[key];
-                        glovesModelRenderer.material.SetTexture(key, moddedTex);
-                    }
-                }
-            }
-            else
-            {
-                foreach (string key in diveGlovesTextures.Keys)
-                {
-                    Texture2D tex = (Texture2D)diveGlovesTextures[key];
-                    diveSuitGlovesGO.GetComponent<Renderer>().material.SetTexture(key, tex);
-                }
-
-                foreach (string key in radiationGlovesTextures.Keys)
-                {
-                    Texture2D tex = (Texture2D)radiationGlovesTextures[key];
-                    radiationGlovesGO.GetComponent<Renderer>().material.SetTexture(key, tex);
-                    radiationSuitGO.GetComponent<Renderer>().materials[1].SetTexture(key, tex);
-                }
-
-                foreach (string key in reinforcedGlovesTextures.Keys)
-                {
-                    Texture2D tex = (Texture2D)reinforcedGlovesTextures[key];
-                    reinforcedGlovesGO.GetComponent<Renderer>().material.SetTexture(key, tex);
-                    reinforcedSuitGO.GetComponent<Renderer>().materials[1].SetTexture(key, tex);
-                }
-            }
-        }
-
-        private static GameObject GetModel(VanillaModel type, bool isSuit)
-        {
-            switch (type)
-            {
-                case VanillaModel.Dive:
-                    return isSuit ? diveSuitBodyGO : diveSuitGlovesGO;
-                case VanillaModel.Radiation:
-                    return isSuit ? radiationSuitGO : radiationGlovesGO;
-                case VanillaModel.Reinforced:
-                    return isSuit ? reinforcedSuitGO : reinforcedGlovesGO;
-                case VanillaModel.WaterFiltration:
-                    return isSuit ? filtrationSuitGO : null;
-                default:
-                    return null;
-            }
-        }
-
-        public static bool WearingItem(TechType item, string slot)
-        {
-            return item == playerEquipment.GetTechTypeInSlot(slot);
         }
     }
 }
+
+[HarmonyPatch(typeof(Player))]
+internal static class Player_Patches
+{
+    private static SuitTextureInfo _diveSuitInfo;
+    private static SuitTextureInfo _radiationSuitInfo;
+    private static SuitTextureInfo _reinforcedSuitInfo;
+
+    private static SuitTextureInfo _filtrationSuitInfo;
+    private static Equipment _playerEquipment;
+
+    [HarmonyPatch(nameof(Player.Start)), HarmonyPrefix]
+    private static void Start()
+    {
+        _playerEquipment = Inventory.main.equipment;
+        _diveSuitInfo = new SuitTextureInfo();
+        _radiationSuitInfo = new SuitTextureInfo();
+        _reinforcedSuitInfo = new SuitTextureInfo();
+        _filtrationSuitInfo = new SuitTextureInfo(true);
+
+        InitializeModelGOs();
+        InitializeVanillaTextures();
+    }
+
+    private static void InitializeModelGOs()
+    {
+        var geoRoot = Player.main.transform.Find("body/player_view/male_geo");
+
+        var diveSuit = geoRoot.Find("diveSuit");
+        _diveSuitInfo.suitBodyObject = diveSuit.Find("diveSuit_body_geo").gameObject;
+        _diveSuitInfo.suitGlovesObject = diveSuit.Find("diveSuit_hands_geo").gameObject;
+
+        var radiationSuit = geoRoot.Find("radiationSuit");
+        _radiationSuitInfo.suitBodyObject = radiationSuit.Find("radiationSuit_body_geo").gameObject;
+        _radiationSuitInfo.suitGlovesObject = radiationSuit.Find("radiationSuit_gloves_geo").gameObject;
+
+        var reinforcedSuit = geoRoot.Find("reinforcedSuit");
+        _reinforcedSuitInfo.suitBodyObject = reinforcedSuit.Find("reinforced_suit_01_body_geo").gameObject;
+        _reinforcedSuitInfo.suitGlovesObject = reinforcedSuit.Find("reinforced_suit_01_glove_geo").gameObject;
+
+        _filtrationSuitInfo.suitBodyObject = geoRoot.Find("stillSuit/still_suit_01_body_geo").gameObject;
+    }
+
+    private static void InitializeVanillaTextures()
+    {
+        var suitTextureNamesToCache = new HashSet<string>();
+        var armsTextureNamesToCache = new HashSet<string>();
+        foreach (var suit in ModdedSuitsManager.ModdedSuitsList)
+        {
+            var keys = suit.suitReplacementTexturePropertyPairs.Keys.ToList();
+            foreach (string key in keys)
+            {
+                suitTextureNamesToCache.Add(key);
+            }
+
+            var armsKeys = suit.armsReplacementTexturePropertyPairs.Keys.ToList();
+            foreach (var key in armsKeys)
+            {
+                armsTextureNamesToCache.Add(key);
+            }
+        }
+
+        var gloveTextureNamesToCache = new HashSet<string>();
+        foreach (var gloves in ModdedSuitsManager.ModdedGlovesList)
+        {
+            var textureNames = gloves.replacementTexturePropertyPairs.Keys.ToList();
+            foreach (string name in textureNames)
+            {
+                gloveTextureNamesToCache.Add(name);
+            }
+        }
+
+        foreach (var textureName in suitTextureNamesToCache)
+        {
+            _diveSuitInfo.AddBodyTexture(textureName);
+            _radiationSuitInfo.AddBodyTexture(textureName);
+            _reinforcedSuitInfo.AddBodyTexture(textureName);
+            _filtrationSuitInfo.AddBodyTexture(textureName);
+        }
+
+        foreach (var textureName in gloveTextureNamesToCache)
+        {
+            _diveSuitInfo.AddGlovesTexture(textureName);
+            _radiationSuitInfo.AddGlovesTexture(textureName);
+            _reinforcedSuitInfo.AddGlovesTexture(textureName);
+        }
+
+        foreach (var textureName in armsTextureNamesToCache)
+        {
+            _filtrationSuitInfo.AddGlovesTexture(textureName);
+        }
+    }
+
+    [HarmonyPatch(nameof(Player.EquipmentChanged)), HarmonyPostfix]
+    private static void EquipmentChanged_Patch()
+    {
+        var typeInBodySlot = _playerEquipment.GetTechTypeInSlot("Body");
+        var typeInGlovesSlot = _playerEquipment.GetTechTypeInSlot("Gloves");
+
+        var wearingModdedSuit =
+            (typeInBodySlot != TechType.None) &&
+            (typeInBodySlot != TechType.RadiationSuit) &&
+            (typeInBodySlot != TechType.ReinforcedDiveSuit) &&
+            (typeInBodySlot != TechType.WaterFiltrationSuit);
+
+        var wearingModdedGloves =
+            (typeInGlovesSlot != TechType.None) &&
+            (typeInGlovesSlot != TechType.RadiationGloves) &&
+            (typeInGlovesSlot != TechType.ReinforcedGloves);
+
+        var wearingAnySuit = typeInBodySlot != TechType.None;
+        var wearingAnyGloves = typeInGlovesSlot != TechType.None;
+
+        SetGOsActive(typeInBodySlot, typeInGlovesSlot, wearingAnySuit, wearingAnyGloves);
+        ModdedSuitsManager.OnSuitEquippedChanged(typeInBodySlot);
+        ModdedSuitsManager.OnGlovesEquippedChanged(typeInGlovesSlot);
+
+        SetGloveTextures(typeInGlovesSlot, wearingModdedGloves);
+        SetSuitTextures(typeInBodySlot, wearingModdedSuit);
+    }
+
+    [HarmonyPatch(nameof(Player.HasReinforcedSuit)), HarmonyPostfix]
+    private static void HasReinforcedSuit_Patch(ref bool __result)
+    {
+        foreach (ModdedSuit suit in ModdedSuitsManager.ModdedSuitsList)
+        {
+            if (!WearingItem(suit.itemTechType, "Body"))
+            {
+                continue;
+            }
+
+            if ((suit.modifications & ModdedSuitsManager.Modifications.Reinforced) != 0)
+            {
+                __result = true;
+            }
+        }
+    }
+
+    [HarmonyPatch(nameof(Player.HasReinforcedGloves)), HarmonyPostfix]
+    private static void HasReinforcedGloves_Patch(ref bool __result)
+    {
+        foreach (var gloves in ModdedSuitsManager.ModdedGlovesList)
+        {
+            if (!WearingItem(gloves.itemTechType, "Gloves"))
+            {
+                continue;
+            }
+
+            if ((gloves.modifications & ModdedSuitsManager.Modifications.Reinforced) != 0)
+            {
+                __result = true;
+            }
+        }
+    }
+
+    [HarmonyPatch(nameof(Player.UpdateReinforcedSuit)), HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> UpdateReinforcedSuit_Transpiler(
+        IEnumerable<CodeInstruction> instructions)
+    {
+        CodeMatch suitMatch = new CodeMatch(i => i.opcode == OpCodes.Ldc_R4 && ((float)i.operand == 15f));
+        CodeMatch glovesMatch = new CodeMatch(i => i.opcode == OpCodes.Ldc_R4 && ((float)i.operand == 6f));
+
+        var newInstructions = new CodeMatcher(instructions)
+            .MatchForward(false, suitMatch)
+            .SetInstruction(Transpilers.EmitDelegate(GetSuitTemp))
+            .MatchForward(false, glovesMatch)
+            .SetInstruction(Transpilers.EmitDelegate(GetGlovesTemp));
+
+
+        return newInstructions.InstructionEnumeration();
+    }
+
+    private static float GetSuitTemp()
+    {
+        var typeInBodySlot = _playerEquipment.GetTechTypeInSlot("Body");
+        var suitInSlot = ModdedSuitsManager.ModdedSuitsList.FirstOrDefault(suit => suit.itemTechType == typeInBodySlot);
+        if (suitInSlot == null)
+        {
+            return 15f;
+        }
+
+        return suitInSlot.tempValue;
+    }
+
+    private static float GetGlovesTemp()
+    {
+        var typeInGlovesSlot = _playerEquipment.GetTechTypeInSlot("Gloves");
+        var glovesInSlot = ModdedSuitsManager.ModdedGlovesList.FirstOrDefault(gloves => gloves.itemTechType == typeInGlovesSlot);
+        if (glovesInSlot == null)
+        {
+            return 6f;
+        }
+
+        return glovesInSlot.tempValue;
+    }
+
+    private static void SetGOsActive(TechType typeInBodySlot, TechType typeInGlovesSlot, bool wearingAnySuit,
+        bool wearingAnyGloves)
+    {
+        _diveSuitInfo.suitBodyObject.SetActive(!wearingAnySuit);
+        _diveSuitInfo.suitBodyObject.SetActive(!wearingAnyGloves);
+        if (wearingAnySuit)
+        {
+            foreach (var suit in ModdedSuitsManager.ModdedSuitsList)
+            {
+                if (suit.itemTechType != typeInBodySlot) continue;
+
+                var model = GetModel(suit.vanillaModel, true);
+                model.SetActive(true);
+            }
+        }
+
+        if (!wearingAnyGloves) return;
+        
+        foreach (var gloves in ModdedSuitsManager.ModdedGlovesList)
+        {
+            if (gloves.itemTechType != typeInGlovesSlot) continue;
+
+            var model = GetModel(gloves.vanillaModel, false);
+            model.SetActive(true);
+        }
+    }
+
+    private static void SetSuitTextures(TechType typeInSuitSlot, bool wearingModdedSuit)
+    {
+        foreach (var suit in ModdedSuitsManager.ModdedSuitsList)
+        {
+            if (!suit.jsonSuit) continue;
+
+            wearingModdedSuit = true;
+        }
+
+        if (!wearingModdedSuit)
+        {
+            ResetBodyTextures();
+            return;
+        }
+
+        foreach (var suit in ModdedSuitsManager.ModdedSuitsList)
+        {
+            if (!WearingItem(suit.itemTechType, "Body")) continue;
+
+            var model = GetModel(suit.vanillaModel, true);
+            var modelRenderer = model.GetComponent<Renderer>();
+
+            foreach (var key in suit.suitReplacementTexturePropertyPairs.Keys)
+            {
+                var moddedTex = suit.suitReplacementTexturePropertyPairs[key];
+                modelRenderer.materials[0].SetTexture(key, moddedTex);
+            }
+
+            foreach (var key in suit.armsReplacementTexturePropertyPairs.Keys)
+            {
+                var armsTex = suit.armsReplacementTexturePropertyPairs[key];
+                modelRenderer.materials[1].SetTexture(key, armsTex);
+            }
+        }
+    }
+
+    private static void ResetBodyTextures()
+    {
+        _diveSuitInfo.ResetBodyTextures();
+        _radiationSuitInfo.ResetBodyTextures();
+        _reinforcedSuitInfo.ResetBodyTextures();
+        _filtrationSuitInfo.ResetBodyTextures();
+
+        // For the filtration suit, resetting the gloves resets the arm textures
+        _filtrationSuitInfo.ResetGloveTextures();
+    }
+
+    private static void SetGloveTextures(TechType typeInGlovesSlot, bool wearingModdedGloves)
+    {
+        foreach (var suit in ModdedSuitsManager.ModdedSuitsList)
+        {
+            if (!suit.jsonSuit) continue;
+            
+            wearingModdedGloves = true;
+        }
+
+        if (!wearingModdedGloves)
+        {
+            _diveSuitInfo.ResetGloveTextures();
+            _radiationSuitInfo.ResetGloveTextures();
+            _reinforcedSuitInfo.ResetGloveTextures();
+            return;
+        }
+
+        foreach (var gloves in ModdedSuitsManager.ModdedGlovesList)
+        {
+            if (!WearingItem(gloves.itemTechType, "Gloves")) continue;
+
+            var glovesModelRenderer = GetModel(gloves.vanillaModel, false).GetComponent<Renderer>();
+
+            foreach (var key in gloves.replacementTexturePropertyPairs.Keys)
+            {
+                var moddedTex = gloves.replacementTexturePropertyPairs[key];
+                glovesModelRenderer.material.SetTexture(key, moddedTex);
+            }
+        }
+    }
+
+    private static GameObject GetModel(ModdedSuitsManager.VanillaModel type, bool isSuit)
+    {
+        return type switch
+        {
+            ModdedSuitsManager.VanillaModel.Dive => isSuit
+                ? _diveSuitInfo.suitBodyObject
+                : _diveSuitInfo.suitGlovesObject,
+            ModdedSuitsManager.VanillaModel.Radiation => isSuit
+                ? _radiationSuitInfo.suitBodyObject
+                : _radiationSuitInfo.suitGlovesObject,
+            ModdedSuitsManager.VanillaModel.Reinforced => isSuit
+                ? _reinforcedSuitInfo.suitBodyObject
+                : _reinforcedSuitInfo.suitGlovesObject,
+            ModdedSuitsManager.VanillaModel.WaterFiltration => isSuit
+                ? _filtrationSuitInfo.suitBodyObject
+                : _filtrationSuitInfo.suitGlovesObject,
+            _ => null
+        };
+    }
+
+    public static bool WearingItem(TechType item, string slot)
+    {
+        return item == _playerEquipment.GetTechTypeInSlot(slot);
+    }
+}
+

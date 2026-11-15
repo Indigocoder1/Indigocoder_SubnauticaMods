@@ -20,7 +20,7 @@ namespace UpgradedJumpJetModule
             Main_Plugin.logger.LogInfo("Registering module");
 
             string spriteFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets") + "/upgradedJumpJets.png";
-            Atlas.Sprite sprite = ImageUtils.LoadSpriteFromFile(spriteFilePath);
+            Sprite sprite = ImageUtils.LoadSpriteFromFile(spriteFilePath);
 
             var prefabInfo = PrefabInfo.WithTechType("UpgradedJumpJetModule", "Upgraded Prawn jump jet module", "With this upgrade module you can jump even more! Effects do not stack")
                 .WithIcon(sprite);
@@ -31,12 +31,12 @@ namespace UpgradedJumpJetModule
             RecipeData recipe = new RecipeData()
             {
                 craftAmount = 1,
-                Ingredients = new List<CraftData.Ingredient>()
+                Ingredients = new List<Ingredient>()
                 {
-                    new CraftData.Ingredient(TechType.ExosuitJetUpgradeModule),
-                    new CraftData.Ingredient(TechType.Sulphur, 2),
-                    new CraftData.Ingredient(TechType.Kyanite, 1),
-                    new CraftData.Ingredient(TechType.Titanium, 2),
+                    new Ingredient(TechType.ExosuitJetUpgradeModule, 1),
+                    new Ingredient(TechType.Sulphur, 2),
+                    new Ingredient(TechType.Kyanite, 1),
+                    new Ingredient(TechType.Titanium, 2),
                 }
             };
 

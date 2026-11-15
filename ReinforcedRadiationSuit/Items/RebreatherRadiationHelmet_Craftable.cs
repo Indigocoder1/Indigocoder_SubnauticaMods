@@ -12,7 +12,7 @@ namespace ReinforcedRadiationSuit.Items
 
         public static void Patch()
         {
-            Atlas.Sprite sprite = ImageHelper.GetSpriteFromAssetsFolder("reinforcedRadiation_HelmetIcon.png", Main_Plugin.AssetsFolderPath);
+            Sprite sprite = ImageHelper.GetSpriteFromAssetsFolder("reinforcedRadiation_HelmetIcon.png", Main_Plugin.AssetsFolderPath);
 
             PrefabInfo prefabInfo = PrefabInfo.WithTechType("RebreatherRadiationHelmet", "Rebreather Radiation Helmet",
                 "Lead lined helmet to protect against radiation with CO₂ filters to enhance diving time at deep depths")

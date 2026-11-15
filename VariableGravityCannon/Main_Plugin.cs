@@ -10,9 +10,9 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
-using VariableGravityCannon.Items;
+using ImprovedGravTrap.Items;
 
-namespace VariableGravityCannon
+namespace ImprovedGravTrap
 {
     [BepInPlugin(myGUID, pluginName, versionString)]
     [BepInDependency("com.snmodding.nautilus")]
@@ -20,7 +20,7 @@ namespace VariableGravityCannon
     {
         private const string myGUID = "Indigocoder.VariableGravityCannon";
         private const string pluginName = "Variable Gravity Cannon";
-        private const string versionString = "1.0.0";
+        private const string versionString = "1.0.1";
 
         public static ManualLogSource logger;
 
@@ -71,7 +71,7 @@ namespace VariableGravityCannon
             PropulsionModeFireEnergy = Config.Bind("VariableGravityCannon", "Propulsion mode fire energy draw", 4f,
                 new ConfigDescription("How much energy the cannon uses when firing in the propulsion mode", new AcceptableValueRange<float>(0, 25f)));
             PropulsionModePerSecondEnergy = Config.Bind("VariableGravityCannon", "Repulsion mode constant energy draw", 0.7f,
-                new ConfigDescription("How much energy the cannon uses per second while holding an item in propuslion mode", 
+                new ConfigDescription("How much energy the cannon uses per second while holding an item in propulsion mode", 
                 new AcceptableValueRange<float>(0, 2f)));
         }
 

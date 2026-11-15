@@ -1,0 +1,12 @@
+{
+  "Id": "StasisRifleFix",
+  "DisplayName": "Stasis Rifle Fix",
+  "Author": "Indigocoder",
+  "Version": "1.0.0",
+  "Enable": true,
+  "AssemblyName": "StasisRifleFix.dll",
+  "VersionDependencies": {
+    "SMLHelper": "2.15.0"
+  },
+  "Game": "Subnautica"
+}

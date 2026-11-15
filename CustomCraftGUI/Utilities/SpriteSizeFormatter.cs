@@ -4,7 +4,7 @@ namespace CustomCraftGUI.Utilities
 {
     internal static class SpriteSizeFormatter
     {
-        public static Vector2 GetSpriteShrinkScalar(Atlas.Sprite sprite)
+        public static Vector2 GetSpriteShrinkScalar(Sprite sprite)
         {
             Vector2 textureSize = new Vector2(sprite.texture.width, sprite.texture.height);
             float sizeRatio = textureSize.x / textureSize.y;

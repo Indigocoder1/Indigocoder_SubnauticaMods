@@ -12,7 +12,7 @@ namespace ReinforcedRadiationSuit.Items
 
         public static void Patch()
         {
-            Atlas.Sprite sprite = ImageHelper.GetSpriteFromAssetsFolder("reinforcedRadiation_GlovesIcon.png", Main_Plugin.AssetsFolderPath);
+            Sprite sprite = ImageHelper.GetSpriteFromAssetsFolder("reinforcedRadiation_GlovesIcon.png", Main_Plugin.AssetsFolderPath);
 
             PrefabInfo prefabInfo = PrefabInfo.WithTechType("ReinforcedRadiationGloves", "Reinforced Radiation Gloves",
                 "Lead and-ruby-lined gloves to protect against radiation and physical trauma")

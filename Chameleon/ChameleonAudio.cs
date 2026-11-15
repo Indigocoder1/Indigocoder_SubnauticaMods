@@ -41,7 +41,7 @@ namespace Chameleon
         public static void AddSubVoiceLine(AudioClip clip, string soundPath)
         {
             var sound = AudioUtils.CreateSound(clip, kStreamSoundModes);
-            CustomSoundHandler.RegisterCustomSound(soundPath, sound, AudioUtils.BusPaths.VoiceOvers);
+            CustomSoundHandler.RegisterCustomSound(soundPath, sound, AudioUtils.BusPaths.VoiceOvers);  
         }
     }
 }

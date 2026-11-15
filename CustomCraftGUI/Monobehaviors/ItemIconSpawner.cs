@@ -23,7 +23,7 @@ namespace CustomCraftGUI.Monobehaviors
 
             foreach (TechType techType in Enum.GetValues(typeof(TechType)))
             {
-                Atlas.Sprite atlasSprite = SpriteManager.Get(techType);
+                Sprite atlasSprite = SpriteManager.Get(techType);
                 if (atlasSprite == SpriteManager.defaultSprite) continue;
 
                 GameObject newIconPrefab = Instantiate(iconPrefab, iconsParent);

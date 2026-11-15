@@ -1,11 +1,5 @@
-﻿using Nautilus.Crafting;
-using Nautilus.Handlers;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using static CraftData;
-using UnityEngine;
-using UWE;
 using System.IO;
 using System.Reflection;
 

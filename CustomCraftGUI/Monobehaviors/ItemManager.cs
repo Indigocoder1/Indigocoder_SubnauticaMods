@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using Ingredient = CraftData.Ingredient;
 using UnityEngine.UI;
 using System;
 

@@ -19,7 +19,7 @@ namespace TodoList
     {
         private const string myGUID = "Indigocoder.TodoList";
         private const string pluginName = "Todo List";
-        private const string versionString = "1.1.2";
+        private const string versionString = "1.1.3";
 
         public static ManualLogSource logger;
 
@@ -27,7 +27,7 @@ namespace TodoList
         public static AssetBundle AssetBundle = AssetBundle.LoadFromFile(Path.Combine(AssetsFolderPath, "todolist"));
         public static TodoListSaveData SaveData { get; } = SaveDataHandler.RegisterSaveDataCache<TodoListSaveData>();
 
-        public static Atlas.Sprite TodoListTabSprite;
+        public static Sprite TodoListTabSprite;
         public static GameObject NewItemPrefab;
 
         public static ConfigEntry<bool> CreateHintTodoItems;
@@ -71,8 +71,7 @@ namespace TodoList
 
         private void CachePrefabs()
         {
-            TodoListTabSprite = new Atlas.Sprite(AssetBundle.LoadAsset<Texture2D>("todoListTabImage"));
-            TodoListTabSprite.size = new Vector2(220, 220);
+            TodoListTabSprite = AssetBundle.LoadAsset<Sprite>("todoListTabImage");
             NewItemPrefab = AssetBundle.LoadAsset<GameObject>("ChecklistItem");
         }
 

@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
-using VariableGravityCannon.Items;
-using VariableGravityCannon.Monos;
+using ImprovedGravTrap.Items;
+using ImprovedGravTrap.Monos;
 
-namespace VariableGravityCannon.Patches
+namespace ImprovedGravTrap.Patches
 {
     [HarmonyPatch(typeof(Inventory))]
     internal static class InventoryPatches

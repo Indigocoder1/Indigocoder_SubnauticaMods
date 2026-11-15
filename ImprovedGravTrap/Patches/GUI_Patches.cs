@@ -1,8 +1,7 @@
 ﻿using HarmonyLib;
 using ImprovedGravTrap.Monobehaviours;
-using UnityEngine;
 using System.Text;
-using static VFXParticlesPool;
+using UnityEngine;
 
 namespace ImprovedGravTrap.Patches
 {
@@ -13,8 +12,7 @@ namespace ImprovedGravTrap.Patches
         {
             public static string GetAdvanceKey()
             {
-                GameInput.Device device = GameInput.GetPrimaryDevice();
-                return GameInput.GetBinding(device, GameInput.Button.Deconstruct, GameInput.BindingSet.Primary);
+                return GameInput.GetBinding(GameInput.PrimaryDevice, GameInput.Button.Deconstruct, GameInput.BindingSet.Primary);
             }
 
             public static int GetListChangeDelta()
@@ -55,12 +53,12 @@ namespace ImprovedGravTrap.Patches
 
             //Storage opening
             StorageContainer container = obj.GetComponentInChildren<StorageContainer>();
-            
+
             if (!IngameMenu.main.selected && GameInput.GetButtonDown(GameInput.Button.AltTool))
             {
                 PDA pda = Player.main.GetPDA();
 
-                if(!container.GetOpen())
+                if (!container.GetOpen())
                 {
                     //Remove player equipment UI
                     pda.ui.OnClosePDA();
@@ -95,24 +93,19 @@ namespace ImprovedGravTrap.Patches
                     pda.ui.OnPDAOpened();
                 }
             }
-        } 
+        }
 
         [HarmonyPatch(typeof(TooltipFactory), nameof(TooltipFactory.ItemActions))]
         [HarmonyPostfix]
-        private static void ItemActions_Postfix(StringBuilder sb, InventoryItem item) 
+        private static void ItemActions_Postfix(StringBuilder sb, InventoryItem item)
         {
             if (!item.techType.IsEnhancedGravTrap())
                 return;
-
-            string button = TypeListSwitcher.GetAdvanceKey();
-            TooltipFactory.WriteAction(sb, button, "Switch object's type"); //Display advance type prompt in inventory
-
-            GameInput.Device device = GameInput.GetPrimaryDevice();
-            string altToolKey = GameInput.GetBinding(device, GameInput.Button.AltTool, GameInput.BindingSet.Primary);
-
+            
+            TooltipFactory.WriteAction(sb, GameInput.FormatButton(GameInput.Button.Deconstruct), "Switch object's type"); //Display advance type prompt in inventory
+            
             StorageContainer container = item.item.GetComponentInChildren<StorageContainer>();
-
-            TooltipFactory.WriteAction(sb, altToolKey, container.open ? "Close Storage" : "Open Storage");
+            TooltipFactory.WriteAction(sb, GameInput.FormatButton(GameInput.Button.AltTool), container.open ? "Close Storage" : "Open Storage");
         }
         #endregion
 
@@ -120,6 +113,8 @@ namespace ImprovedGravTrap.Patches
         [HarmonyPostfix]
         static void Pickupable_OnHandHover_Postfix(Pickupable __instance)
         {
+            if (__instance == null) return;
+
             if (!__instance.GetTechType().IsEnhancedGravTrap())
                 return;
 

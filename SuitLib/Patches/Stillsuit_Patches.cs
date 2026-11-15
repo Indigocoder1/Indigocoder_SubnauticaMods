@@ -1,100 +1,86 @@
 ﻿using HarmonyLib;
-using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Reflection.Emit;
+using SuitLib.API;
 
-namespace SuitLib.Patches
+namespace SuitLib.Patches;
+
+[HarmonyPatch(typeof(Stillsuit))]
+internal static class Stillsuit_Patches
 {
-    [HarmonyPatch(typeof(Stillsuit))]
-    internal static class Stillsuit_Patches
+    [HarmonyPatch("IEquippable.UpdateEquipped"), HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> WaterCaptured_Transpiler(IEnumerable<CodeInstruction> instructions)
     {
-        [HarmonyPatch("IEquippable.UpdateEquipped"), HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> WaterCaptured_Transpiler(IEnumerable<CodeInstruction> instructions)
+        CodeMatch deltaReductionMatch = new CodeMatch(i => i.opcode == OpCodes.Ldc_R4 && ((float)i.operand == 1800f));
+        CodeMatch deltaMultiplier = new CodeMatch(i => i.opcode == OpCodes.Ldc_R4 && ((float)i.operand == 100));
+
+        var newInstructions = new CodeMatcher(instructions)
+            .MatchForward(false, deltaReductionMatch)
+            .SetInstruction(Transpilers.EmitDelegate(GetDeltaTimeReduction))
+            .MatchForward(false, deltaMultiplier)
+            .SetInstruction(Transpilers.EmitDelegate(GetDeltaMultiplier));
+
+        return newInstructions.InstructionEnumeration();
+    }
+
+    private static float GetDeltaTimeReduction()
+    {
+        // I need a better name for this xd
+        const float vanillaValue = 1800;
+        float moddedValue = 0;
+        int itemsWorn = 0;
+
+        foreach (ModdedSuit suit in ModdedSuitsManager.ModdedSuitsList)
         {
-            CodeMatch deltaReductionMatch = new CodeMatch(i => i.opcode == OpCodes.Ldc_R4 && ((float)i.operand == 1800f));
-            CodeMatch deltaMultiplier = new CodeMatch(i => i.opcode == OpCodes.Ldc_R4 && ((float)i.operand == 100));
+            if(!Player_Patches.WearingItem(suit.itemTechType, "Body") || suit.stillsuitValues == null) continue;
 
-            var newInstructions = new CodeMatcher(instructions)
-                .MatchForward(false, deltaReductionMatch)
-                .SetInstruction(Transpilers.EmitDelegate<Func<float>>(GetDeltaTimeReduction))
-                .MatchForward(false, deltaMultiplier)
-                .SetInstruction(Transpilers.EmitDelegate<Func<float>>(GetDeltaMultiplier));
-
-            return newInstructions.InstructionEnumeration();
+            moddedValue += suit.stillsuitValues.stillsuitDeltaTimeReduction;
+            itemsWorn++;
         }
 
-        public static float GetDeltaTimeReduction()
+        foreach (ModdedGloves gloves in ModdedSuitsManager.ModdedGlovesList)
         {
-            //I need a better name for this xd
-            float vanillaValue = 1800;
-            float moddedValue = 0;
-            int itemsWorn = 0;
+            if (!Player_Patches.WearingItem(gloves.itemTechType, "Gloves") || gloves.stillsuitValues == null) continue;
 
-            foreach (ModdedSuit suit in ModdedSuitsManager.moddedSuitsList)
-            {
-                if(!Player_Patches.WearingItem(suit.itemTechType, "Body") || suit.stillsuitValues == null)
-                {
-                    continue;
-                }
-
-                moddedValue += suit.stillsuitValues.stillsuitDeltaTimeReduction;
-                itemsWorn++;
-            }
-
-            foreach (ModdedGloves gloves in ModdedSuitsManager.moddedGlovesList)
-            {
-                if (!Player_Patches.WearingItem(gloves.itemTechType, "Gloves") || gloves.stillsuitValues == null)
-                {
-                    continue;
-                }
-
-                moddedValue += gloves.stillsuitValues.stillsuitDeltaTimeReduction;
-                itemsWorn++;
-            }
-
-            if(itemsWorn != 0)
-            {
-                moddedValue = moddedValue / itemsWorn;
-            }
-
-            return moddedValue != 0 ? moddedValue : vanillaValue;
+            moddedValue += gloves.stillsuitValues.stillsuitDeltaTimeReduction;
+            itemsWorn++;
         }
 
-        public static float GetDeltaMultiplier()
+        if(itemsWorn != 0)
         {
-            float vanillaValue = 100;
-            float moddedValue = 0;
-            int itemsWorn = 0;
-
-            foreach (ModdedSuit suit in ModdedSuitsManager.moddedSuitsList)
-            {
-                if (!Player_Patches.WearingItem(suit.itemTechType, "Body") || suit.stillsuitValues == null)
-                {
-                    continue;
-                }
-
-                moddedValue += suit.stillsuitValues.stillsuitDeltaTimeReduction;
-                itemsWorn++;
-            }
-
-            foreach (ModdedGloves gloves in ModdedSuitsManager.moddedGlovesList)
-            {
-                if (!Player_Patches.WearingItem(gloves.itemTechType, "Gloves") || gloves.stillsuitValues == null)
-                {
-                    continue;
-                }
-
-                moddedValue += gloves.stillsuitValues.stillsuitDeltaTimeReduction;
-                itemsWorn++;
-            }
-
-            if (itemsWorn != 0)
-            {
-                moddedValue = moddedValue / itemsWorn;
-            }
-
-            return moddedValue != 0 ? moddedValue : vanillaValue;
+            moddedValue /= itemsWorn;
         }
+
+        return moddedValue != 0 ? moddedValue : vanillaValue;
+    }
+
+    private static float GetDeltaMultiplier()
+    {
+        const float vanillaValue = 100;
+        float moddedValue = 0;
+        int itemsWorn = 0;
+
+        foreach (var suit in ModdedSuitsManager.ModdedSuitsList)
+        {
+            if (!Player_Patches.WearingItem(suit.itemTechType, "Body") || suit.stillsuitValues == null) continue;
+
+            moddedValue += suit.stillsuitValues.stillsuitDeltaTimeReduction;
+            itemsWorn++;
+        }
+
+        foreach (var gloves in ModdedSuitsManager.ModdedGlovesList)
+        {
+            if (!Player_Patches.WearingItem(gloves.itemTechType, "Gloves") || gloves.stillsuitValues == null) continue;
+
+            moddedValue += gloves.stillsuitValues.stillsuitDeltaTimeReduction;
+            itemsWorn++;
+        }
+
+        if (itemsWorn != 0)
+        {
+            moddedValue /= itemsWorn;
+        }
+
+        return moddedValue != 0 ? moddedValue : vanillaValue;
     }
 }

@@ -1,9 +1,6 @@
 ﻿using HarmonyLib;
 using ImprovedGravTrap.Monobehaviours;
-using Nautilus.Utility;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
@@ -48,7 +45,7 @@ namespace ImprovedGravTrap.Patches
                 .MatchForward(false, listMatch, callvirtMatch)
                 .Advance(1)
                 .InsertAndAdvance(new CodeInstruction(OpCodes.Ldarg_0))
-                .SetInstruction(Transpilers.EmitDelegate(GetAllowedIterations));   
+                .SetInstruction(Transpilers.EmitDelegate(GetAllowedIterations));
 
             return newInstructions.InstructionEnumeration();
         }
@@ -56,7 +53,7 @@ namespace ImprovedGravTrap.Patches
         public static int GetAllowedIterations(List<Rigidbody> rbs, Gravsphere gravsphere)
         {
             int maxAmount = 12;
-            if(gravsphere.GetComponent<EnhancedGravSphere>())
+            if (gravsphere.GetComponent<EnhancedGravSphere>())
             {
                 maxAmount = Main_Plugin.EnhancedMaxObjects.Value;
             }
@@ -117,7 +114,7 @@ namespace ImprovedGravTrap.Patches
         private static void TriggerEnterPostfix(Gravsphere __instance, Collider collider)
         {
             //Buffer stuff (Fixes dropping of quartz)
-            if(!__instance.TryGetComponent(out EnhancedGravSphere enhancedGravSphere))
+            if (!__instance.TryGetComponent(out EnhancedGravSphere enhancedGravSphere))
             {
                 return;
             }

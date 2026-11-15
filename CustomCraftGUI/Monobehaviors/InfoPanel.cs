@@ -2,6 +2,7 @@
 using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using TMPro;
@@ -75,28 +76,28 @@ namespace CustomCraftGUI.Monobehaviors
             ClearItemsLists();
             currentIcon = icon;
 
-            Atlas.Sprite sprite = SpriteManager.Get(icon.techType);
+            Sprite sprite = SpriteManager.Get(icon.techType);
 
             itemNameText.text = Language.main.Get(icon.itemName);
             itemIcon.SetForegroundSprite(sprite);
             itemIcon.foreground.transform.localScale = SpriteSizeFormatter.GetSpriteShrinkScalar(sprite);
 
-            ModifiedItemsManager.SetCurrentIcon(currentIcon);
+            ModifiedItemsManager?.SetCurrentIcon(currentIcon);
 
-            ITechData techData = CraftData.Get(icon.techType, true);
-            if (techData == null) return;
+            var ingredients = TechData.GetIngredients(icon.techType);
+            var linkedItems = TechData.GetLinkedItems(icon.techType);
+            if (ingredients == null) return;
 
-            SpawnItemIngredients(techData);
-            SpawnLinkedItems(techData);
+            SpawnItemIngredients(ingredients);
+            SpawnLinkedItems(linkedItems);
 
             TryCollapseLinkedItems();
         }
 
-        private void SpawnItemIngredients(ITechData techData)
+        private void SpawnItemIngredients(ReadOnlyCollection<Ingredient> ingredients)
         {
-            for (int i = 0; i < techData.ingredientCount; i++)
+            foreach (var ingredient in ingredients)
             {
-                IIngredient ingredient = techData.GetIngredient(i);
                 IngredientItem ingredientItem = Instantiate(ingredientItemPrefab, ingredientsPrefabParent).GetComponent<IngredientItem>();
                 var item = ingredientItem.GetComponent<IngredientItem>();
                 item.SetInfo(SpriteManager.Get(ingredient.techType), ingredient.techType, ingredient.amount);
@@ -104,11 +105,12 @@ namespace CustomCraftGUI.Monobehaviors
             }
         }
 
-        private void SpawnLinkedItems(ITechData techData)
+        private void SpawnLinkedItems(ReadOnlyCollection<TechType> items)
         {
-            for (int i = 0; i < techData.linkedItemCount; i++)
+            if (items == null) return;
+            
+            foreach (var techType in items)
             {
-                TechType techType = techData.GetLinkedItem(i);
                 IngredientItem ingredientItem = Instantiate(ingredientItemPrefab, linkedItemsPrefabsParent).GetComponent<IngredientItem>();
                 var linkedItem = ingredientItem.GetComponent<IngredientItem>();
                 linkedItem.SetInfo(SpriteManager.Get(techType), techType, 1);

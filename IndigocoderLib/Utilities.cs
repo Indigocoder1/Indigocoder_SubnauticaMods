@@ -48,6 +48,8 @@ namespace IndigocoderLib
 
         public static string GetNameWithCloneRemoved(string name)
         {
+            if (!name.Contains("(Clone)")) return name;
+
             string cloneString = "(Clone)";
             int nameLength = name.Length - cloneString.Length;
             return name.Substring(0, nameLength);

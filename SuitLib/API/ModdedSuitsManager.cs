@@ -1,77 +1,89 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
-namespace SuitLib
+namespace SuitLib.API;
+
+public static class ModdedSuitsManager
 {
-    public static class ModdedSuitsManager
+    public static event Action<TechType> onSuitEquippedChanged;
+    public static event Action<TechType> onGlovesEquippedChanged;
+    
+    internal static readonly List<ModdedSuit> ModdedSuitsList = new();
+    internal static readonly List<ModdedGloves> ModdedGlovesList = new();
+
+    public static void AddModdedSuit(ModdedSuit moddedSuit)
     {
-        internal static List<ModdedSuit> moddedSuitsList = new List<ModdedSuit>();
-        internal static List<ModdedGloves> moddedGlovesList = new List<ModdedGloves>();
+        ModdedSuitsList.Add(moddedSuit);
+    }
 
-        public static void AddModdedSuit(ModdedSuit moddedSuit)
+    public static void AddModdedSuits(List<ModdedSuit> moddedSuit)
+    {
+        ModdedSuitsList.AddRange(moddedSuit);
+    }
+
+    public static void AddModdedGloves(ModdedGloves moddedGloves)
+    {
+        ModdedGlovesList.Add(moddedGloves);
+    }
+
+    public static void AddModdedGloves(List<ModdedGloves> moddedGloves)
+    {
+        ModdedGlovesList.AddRange(moddedGloves);
+    }
+
+    public enum VanillaModel
+    {
+        None,
+        Dive,
+        Radiation,
+        Reinforced,
+        WaterFiltration
+    }
+
+    [Flags]
+    public enum Modifications
+    {
+        None,
+        Reinforced,
+        Filtration
+    }
+
+    public class StillsuitValues
+    {
+        public readonly float stillsuitDeltaTimeReduction;
+        public float stillsuitWaterIncreaseMultiplier;
+
+        public StillsuitValues(float stillsuitDeltaTimeReduction, float stillsuitWaterIncreaseMultiplier)
         {
-            moddedSuitsList.Add(moddedSuit);
+            this.stillsuitDeltaTimeReduction = stillsuitDeltaTimeReduction;
+            this.stillsuitWaterIncreaseMultiplier = stillsuitWaterIncreaseMultiplier;
         }
+    }
 
-        public static void AddModdedSuits(List<ModdedSuit> moddedSuit)
-        {
-            moddedSuitsList.AddRange(moddedSuit);
-        }
+    public static Dictionary<VanillaModel, TechType> suitModelTechTypes = new()
+    {
+        { VanillaModel.None, TechType.None },
+        { VanillaModel.Dive, TechType.None },
+        { VanillaModel.Radiation, TechType.RadiationSuit },
+        { VanillaModel.Reinforced, TechType.ReinforcedDiveSuit },
+        { VanillaModel.WaterFiltration, TechType.WaterFiltrationSuit},
+    };
 
-        public static void AddModdedGloves(ModdedGloves moddedGloves)
-        {
-            moddedGlovesList.Add(moddedGloves);
-        }
+    public static Dictionary<VanillaModel, TechType> gloveModelTechTypes = new()
+    {
+        { VanillaModel.None, TechType.None },
+        { VanillaModel.Dive, TechType.None },
+        { VanillaModel.Radiation, TechType.RadiationGloves },
+        { VanillaModel.Reinforced, TechType.ReinforcedGloves }
+    };
 
-        public static void AddModdedGloves(List<ModdedGloves> moddedGloves)
-        {
-            moddedGlovesList.AddRange(moddedGloves);
-        }
-
-        public enum VanillaModel
-        {
-            None,
-            Dive,
-            Radiation,
-            Reinforced,
-            WaterFiltration
-        }
-
-        public enum Modifications
-        {
-            None,
-            Reinforced,
-            Filtration
-        }
-
-        public class StillsuitValues
-        {
-            public float stillsuitDeltaTimeReduction;
-            public float stillsuitWaterIncreaseMultiplier;
-
-            public StillsuitValues(float stillsuitDeltaTimeReduction, float stillsuitWaterIncreaseMultiplier)
-            {
-                this.stillsuitDeltaTimeReduction = stillsuitDeltaTimeReduction;
-                this.stillsuitWaterIncreaseMultiplier = stillsuitWaterIncreaseMultiplier;
-            }
-        }
-
-        public static Dictionary<VanillaModel, TechType> suitModelTechTypes = new Dictionary<VanillaModel, TechType>
-        {
-            { VanillaModel.None, TechType.None },
-            { VanillaModel.Dive, TechType.None },
-            { VanillaModel.Radiation, TechType.RadiationSuit },
-            { VanillaModel.Reinforced, TechType.ReinforcedDiveSuit },
-            { VanillaModel.WaterFiltration, TechType.WaterFiltrationSuit},
-        };
-
-        public static Dictionary<VanillaModel, TechType> gloveModelTechTypes = new Dictionary<VanillaModel, TechType>
-        {
-            { VanillaModel.None, TechType.None },
-            { VanillaModel.Dive, TechType.None },
-            { VanillaModel.Radiation, TechType.RadiationGloves },
-            { VanillaModel.Reinforced, TechType.ReinforcedGloves }
-        };
+    internal static void OnSuitEquippedChanged(TechType techType)
+    {
+        onSuitEquippedChanged?.Invoke(techType);
+    }
+    
+    internal static void OnGlovesEquippedChanged(TechType techType)
+    {
+        onGlovesEquippedChanged?.Invoke(techType);
     }
 }

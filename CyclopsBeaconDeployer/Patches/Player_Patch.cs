@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using IndigocoderLib;
 
 namespace CyclopsBeaconDeployer.Patches
 {

@@ -24,7 +24,7 @@ namespace ImprovedGravTrap.Monobehaviours
             Pickupable component = obj.GetComponent<Pickupable>();
             List<TechType> allowedTypes = Main_Plugin.AllowedTypes[techTypeListIndex].techTypes;
 
-            if(techType == TechType.EscapePod || techType == TechType.Player)
+            if (techType == TechType.EscapePod || techType == TechType.Player)
             {
                 return false;
             }
@@ -45,8 +45,8 @@ namespace ImprovedGravTrap.Monobehaviours
 
         public TechType GetObjectTechType(GameObject obj)
         {
-			if (obj.GetComponentInParent<SinkingGroundChunk>() || obj.name.Contains("TreaderShale"))
-				return TechType.ShaleChunk;
+            if (obj.GetComponentInParent<SinkingGroundChunk>() || obj.name.Contains("TreaderShale"))
+                return TechType.ShaleChunk;
 
             if (obj.TryGetComponent<GasPod>(out var gasPod))
                 return gasPod.detonated ? TechType.None : TechType.GasPod;
@@ -75,23 +75,23 @@ namespace ImprovedGravTrap.Monobehaviours
 
                     obj.transform.Find("models").localPosition = Vector3.zero;
                 }
-				else if (obj.GetComponent<Pickupable>()?.GetTechType() == TechType.JeweledDiskPiece)
-				{
-					var rb = obj.GetComponent<Rigidbody>();
-					rb.mass = 1f;
-					rb.useGravity = false;
+                else if (obj.GetComponent<Pickupable>()?.GetTechType() == TechType.JeweledDiskPiece)
+                {
+                    var rb = obj.GetComponent<Rigidbody>();
+                    rb.mass = 1f;
+                    rb.useGravity = false;
 
-					obj.EnsureComponent<WorldForces>();
-				}
+                    obj.EnsureComponent<WorldForces>();
+                }
 
             }
-			if (GetComponent<EnhancedGravSphere>() && obj.TryGetComponent<GasPod>(out var gasPod))
-			{
-				gasPod.grabbedByPropCannon = added;
+            if (GetComponent<EnhancedGravSphere>() && obj.TryGetComponent<GasPod>(out var gasPod))
+            {
+                gasPod.grabbedByPropCannon = added;
 
-				if (!added)
-					gasPod.PrepareDetonationTime();
-			}
+                if (!added)
+                    gasPod.PrepareDetonationTime();
+            }
         }
     }
 }

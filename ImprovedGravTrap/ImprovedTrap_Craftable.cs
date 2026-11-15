@@ -1,12 +1,9 @@
-﻿using Nautilus.Assets.PrefabTemplates;
+﻿using IndigocoderLib;
 using Nautilus.Assets;
-using Nautilus.Crafting;
-using Ingredient = CraftData.Ingredient;
 using Nautilus.Assets.Gadgets;
+using Nautilus.Assets.PrefabTemplates;
+using Nautilus.Crafting;
 using UnityEngine;
-using IndigocoderLib;
-using Nautilus.Utility;
-using Nautilus.Extensions;
 
 namespace ImprovedGravTrap
 {
@@ -16,7 +13,7 @@ namespace ImprovedGravTrap
 
         public static void Patch()
         {
-            Atlas.Sprite sprite = ImageHelper.GetSpriteFromAssetsFolder("EnhancedGravTrap.png");
+            Sprite sprite = ImageHelper.GetSpriteFromAssetsFolder("EnhancedGravTrap.png");
 
             PrefabInfo prefabInfo = PrefabInfo.WithTechType("EnhancedGravSphere", "Enhanced Grav Trap", "It's a better grav trap!")
                 .WithIcon(sprite)
@@ -38,6 +35,7 @@ namespace ImprovedGravTrap
                     rend.material.SetColor("_SpecColor", color);
                 }
                 EnhancedGravSphere enhanced = gameObject.EnsureComponent<EnhancedGravSphere>();
+                gameObject.GetComponent<LiveMixin>().invincible = true;
 
                 PingInstance ping = gameObject.EnsureComponent<PingInstance>();
                 ping.SetType(Main_Plugin.GravTrapBeaconType.Value);
@@ -53,7 +51,7 @@ namespace ImprovedGravTrap
                     StorageContainer storageContainer = coi.gameObject.EnsureComponent<StorageContainer>();
                     storageContainer.prefabRoot = gameObject;
                     storageContainer.storageRoot = coi;
-                    
+
                     storageContainer.width = Main_Plugin.GravTrapStorageWidth.Value;
                     storageContainer.height = Main_Plugin.GravTrapStorageHeight.Value;
                     storageContainer.storageLabel = "Grav trap";

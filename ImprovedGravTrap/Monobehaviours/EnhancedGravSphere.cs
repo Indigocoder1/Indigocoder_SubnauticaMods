@@ -23,7 +23,7 @@ namespace ImprovedGravTrap
         private bool targetStorageHasSpace;
         private string targetStorageName;
 
-        private void Start() 
+        private void Start()
         {
             pickupable = GetComponent<Pickupable>();
             pingInstance = GetComponent<PingInstance>();
@@ -187,8 +187,7 @@ namespace ImprovedGravTrap
             GravTrapObjectsType objectsType = gravSphere.GetComponent<GravTrapObjectsType>();
 
             string primaryString =
-                $"{Language.main.GetFormat("HandReticleAddButtonFormat", "Deploy gravtrap", uGUI.FormatButton(GameInput.Button.RightHand))}"; 
-
+                $"{Language.main.GetFormat("HandReticleAddButtonFormat", "Deploy gravtrap", GameInput.FormatButton(GameInput.Button.RightHand))}";
             string gravtrapactivate =
                     storageContainer.container.IsFull() ? "Cannot activate; storage is full" :
                     !gravSphere.trigger.enabled && !resetTriggers ? "Activate gravtrap" :
@@ -200,11 +199,12 @@ namespace ImprovedGravTrap
                 storageText = targetStorageHasSpace ? $"Deposit storage ({targetStorageName})" : "Target storage full";
             }
 
+            //LanguageCache.GetButtonFormat()
             string secondaryString =
-                $"{Language.main.GetFormat("HandReticleAddButtonFormat", gravtrapactivate, uGUI.FormatButton(GameInput.Button.LeftHand))}\n" +
-                $"{Language.main.GetFormat("HandReticleAddButtonFormat", storageText, uGUI.FormatButton(GameInput.Button.AltTool))} | " +
+                $"{Language.main.GetFormat("HandReticleAddButtonFormat", gravtrapactivate, GameInput.FormatButton(GameInput.Button.LeftHand))}\n" +
+                $"{Language.main.GetFormat("HandReticleAddButtonFormat", storageText, GameInput.FormatButton(GameInput.Button.AltTool))} | " +
                 $"{Language.main.GetFormat("HandReticleAddButtonFormat", $"Advance mode ({objectsType.GetCurrentListName()})",
-                uGUI.FormatButton(GameInput.Button.Deconstruct))}";
+                    GameInput.FormatButton(GameInput.Button.Deconstruct))}";
 
             if (!storageContainer.GetOpen() && !IngameMenu.main.selected)
             {
@@ -244,7 +244,7 @@ namespace ImprovedGravTrap
             Vector3 camForward = mainCamTransform.forward;
             if (!Physics.Raycast(mainCamTransform.position + (camForward * 0.15f), camForward, out var raycastHit, 100f)) return;
 
-            if(raycastHit.collider == null) return;
+            if (raycastHit.collider == null) return;
 
             GameObject target = raycastHit.collider.gameObject;
 
@@ -275,14 +275,14 @@ namespace ImprovedGravTrap
             }).ToList();
 
             ItemsContainer targetContainer = (from container in storageContainers
-                where !container.container.IsFull()
-                select container.container).FirstOrDefault();
+                                              where !container.container.IsFull()
+                                              select container.container).FirstOrDefault();
 
-            if(storageContainers.Any())
+            if (storageContainers.Any())
             {
                 targetingStorage = true;
 
-                if(targetContainer != null && !targetContainer.IsFull())
+                if (targetContainer != null && !targetContainer.IsFull())
                 {
                     targetStorageHasSpace = true;
                 }
@@ -295,7 +295,7 @@ namespace ImprovedGravTrap
 
                         var container = exosuit.storageContainer.container;
                         targetingStorage = true;
-                        if(!container.IsFull())
+                        if (!container.IsFull())
                         {
                             targetStorageHasSpace = true;
                             targetContainer = container;
@@ -348,7 +348,7 @@ namespace ImprovedGravTrap
                 foreach (InventoryItem inventoryItem in new List<InventoryItem>(itemGroup.items))
                 {
                     TechType techType = inventoryItem.item.overrideTechUsed ? inventoryItem.item.overrideTechType : inventoryItem.item.GetTechType();
-                    if(targetContainer.IsTechTypeAllowed(techType) && ((IItemsContainer)targetContainer).AddItem(inventoryItem))
+                    if (targetContainer.IsTechTypeAllowed(techType) && ((IItemsContainer)targetContainer).AddItem(inventoryItem))
                     {
                         ErrorMessage.AddMessage($"Moved {inventoryItem.item.GetTechName()} to {targetStorageName}");
                         continue;
@@ -365,7 +365,7 @@ namespace ImprovedGravTrap
                         return true;
                     }).Select(container => container.container).FirstOrDefault();
 
-                    if(newContainer != null)
+                    if (newContainer != null)
                     {
                         targetContainer = newContainer;
                     }

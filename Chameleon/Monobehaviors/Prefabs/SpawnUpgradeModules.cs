@@ -17,7 +17,7 @@ namespace Chameleon.Monobehaviors.Prefabs
 
             foreach (Transform slot in moduleSlots)
             {
-                GameObject clone = GameObject.Instantiate(upgradeModuleModel, slot, false);
+                GameObject clone = Instantiate(upgradeModuleModel, slot, false);
                 clone.transform.localPosition = new Vector3(-0.41f, -0.69f, -2.69f);
                 clone.transform.localEulerAngles = Vector3.zero;
                 clone.transform.localScale = Vector3.one * 2.7f;

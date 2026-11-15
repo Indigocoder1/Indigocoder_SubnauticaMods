@@ -3,7 +3,7 @@ using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
 using Nautilus.Crafting;
-using Ingredient = CraftData.Ingredient;
+using UnityEngine;
 
 namespace CyclopsBeaconDeployer.Items
 {
@@ -13,7 +13,7 @@ namespace CyclopsBeaconDeployer.Items
 
         public static void Patch()
         {
-            Atlas.Sprite sprite = ImageHelper.GetSpriteFromAssetsFolder("DeployableBeaconModule.png");
+            Sprite sprite = ImageHelper.GetSpriteFromAssetsFolder("DeployableBeaconModule.png");
 
             PrefabInfo prefabInfo = PrefabInfo.WithTechType("DeployableBeaconModule", "Deployable Beacon Module", "Allows beacons to be deployed " +
                 "from the cyclops decoy tube")

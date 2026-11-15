@@ -12,7 +12,7 @@ namespace CustomCraftGUI.Monobehaviors
         public TechType techType { get; private set; }
         public InfoPanel infoPanel { get; private set; }
 
-        public void SetInfo(Atlas.Sprite icon, TechType techType, int amount)
+        public void SetInfo(Sprite icon, TechType techType, int amount)
         {
             iconImage.SetForegroundSprite(icon);
             iconImage.foreground.transform.localScale = Vector3.one * 0.3f * SpriteSizeFormatter.GetSpriteShrinkScalar(icon);
