@@ -70,9 +70,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\CacheHoldManager.cs" />
-    <Compile Include="API\JsonGloves.cs" />
-    <Compile Include="API\JsonLoader.cs" />
-    <Compile Include="API\JsonSuit.cs" />
+    <Compile Include="API\JSON\JsonGloves.cs" />
+    <Compile Include="API\JSON\JsonLoader.cs" />
+    <Compile Include="API\JSON\JsonSuit.cs" />
     <Compile Include="API\ModdedGloves.cs" />
     <Compile Include="API\ModdedSuitsManager.cs" />
     <Compile Include="API\ModdedSuit.cs" />

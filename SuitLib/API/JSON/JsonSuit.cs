@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using static SuitLib.API.ModdedSuitsManager;
 
-namespace SuitLib.API;
+namespace SuitLib.API.JSON;
 
 internal class JsonSuit
 {

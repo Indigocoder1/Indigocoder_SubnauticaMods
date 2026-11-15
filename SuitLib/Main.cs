@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Nautilus.Utility.ModMessages;
+using SuitLib.API.JSON;
 using SuitLib.TextureManagement;
 using UnityEngine;
 
