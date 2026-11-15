@@ -1,10 +1,13 @@
-﻿using SuitLib.API;
+﻿using System;
+using SuitLib.API;
 using UnityEngine.SceneManagement;
 
 namespace SuitLib.TextureManagement;
 
 public static class SceneLoadManager
 {
+    internal static event Action OnReturnToMainMenu;
+    
     private static bool _hasLoadedInitialMainMenu;
     
     public static void OnSceneLoaded(Scene scene, LoadSceneMode loadMode)
@@ -18,5 +21,6 @@ public static class SceneLoadManager
         }
 
         CacheHoldManager.ClearAllHolds();
+        OnReturnToMainMenu?.Invoke();
     }
 }

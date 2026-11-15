@@ -15,6 +15,7 @@ internal static class PlayerTextureManager
     private static SuitTextureInfo _filtrationSuitInfo;
 
     private static Coroutine _textureHoldCoroutine;
+    private static bool _sceneEventRegistered;
     
     #region Initialization
 
@@ -26,12 +27,30 @@ internal static class PlayerTextureManager
             Main.logger.LogError("Attempting to initialize texture cache when Player.main is null! Doing nothing.");
             return;
         }
+
+        if (!_sceneEventRegistered)
+        {
+            SceneLoadManager.OnReturnToMainMenu += () =>
+            {
+                _textureHoldCoroutine = null;
+            };
+            _sceneEventRegistered = true;
+        }
         
         _diveSuitInfo = new SuitTextureInfo();
         _radiationSuitInfo = new SuitTextureInfo();
         _reinforcedSuitInfo = new SuitTextureInfo();
         _filtrationSuitInfo = new SuitTextureInfo(true);
         InitializeModelGOs();
+
+        if (_textureHoldCoroutine != null)
+        {
+            const string warningMessage =
+                "Attempting to initialize texture cache while it's already being initialized. " +
+                "If you meant to reset/force the initialization, use " + $"{nameof(TextureCacheManager)}.{nameof(TextureCacheManager.ForceTextureCacheReset)}";
+            Main.logger.LogWarning(warningMessage);
+            return;
+        }
         
         _textureHoldCoroutine = UWE.CoroutineHost.StartCoroutine(SetupTexturesAfterHolds());
     }
@@ -39,7 +58,7 @@ internal static class PlayerTextureManager
     private static IEnumerator SetupTexturesAfterHolds()
     {
         yield return CacheHoldManager.WaitForHoldsAsync();
-
+        
         InitializeVanillaTextures();
     }
 
