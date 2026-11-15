@@ -76,6 +76,7 @@
     <Compile Include="API\ModdedSuitsManager.cs" />
     <Compile Include="API\ModdedSuit.cs" />
     <Compile Include="API\PrefabComponentAssigner.cs" />
+    <Compile Include="API\TextureCacheManager.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Patches\Player_Patches.cs" />
     <Compile Include="Patches\Stillsuit_Patches.cs" />
