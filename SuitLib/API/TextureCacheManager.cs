@@ -1,4 +1,4 @@
-﻿using SuitLib.Patches;
+﻿using SuitLib.TextureManagement;
 
 namespace SuitLib.API;
 
@@ -13,6 +13,6 @@ public static class TextureCacheManager
     /// </summary>
     public static void ResetVanillaTextureCache()
     {
-        Player_Patches.InitializeAllSuitInfos();
+        PlayerTextureManager.InitializeAllSuitInfos();
     }
 }
