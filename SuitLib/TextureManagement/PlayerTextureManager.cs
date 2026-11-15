@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using SuitLib.API;
 using SuitLib.Patches;
@@ -15,11 +16,12 @@ internal static class PlayerTextureManager
 
     #region Initialization
 
-    internal static void InitializeAllSuitInfos()
+    internal static void InitializeAllSuitInfosAsync()
     {
         if (Player.main == null)
         {
-            Main.logger.LogError("Attempting to initialize suit infos when Player.main is null!");
+            // This error state should only happen when called via the API, which exposes this method as the "Texture cache"
+            Main.logger.LogError("Attempting to initialize texture cache when Player.main is null! Doing nothing.");
             return;
         }
         
@@ -27,8 +29,15 @@ internal static class PlayerTextureManager
         _radiationSuitInfo = new SuitTextureInfo();
         _reinforcedSuitInfo = new SuitTextureInfo();
         _filtrationSuitInfo = new SuitTextureInfo(true);
-
         InitializeModelGOs();
+        
+        UWE.CoroutineHost.StartCoroutine(SetupTexturesAfterHolds());
+    }
+
+    private static IEnumerator SetupTexturesAfterHolds()
+    {
+        yield return CacheHoldManager.WaitForHoldsAsync();
+
         InitializeVanillaTextures();
     }
 
@@ -51,7 +60,7 @@ internal static class PlayerTextureManager
         _filtrationSuitInfo.suitBodyObject = geoRoot.Find("stillSuit/still_suit_01_body_geo").gameObject;
     }
 
-    private static void InitializeVanillaTextures()
+    internal static void InitializeVanillaTextures()
     {
         // Use hash sets to get built-in ignoring of duplicates
         var suitTextureNamesToCache = new HashSet<string>();

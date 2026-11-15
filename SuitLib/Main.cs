@@ -7,6 +7,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Nautilus.Utility.ModMessages;
+using SuitLib.TextureManagement;
 using UnityEngine;
 
 namespace SuitLib
@@ -20,21 +22,29 @@ namespace SuitLib
         private const string versionString = "1.1.8";
 
         public static ManualLogSource logger;
-        private static readonly Harmony harmony = new Harmony(myGUID);
-        private static string jsonFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Json Files");
-        internal static string jsonTexturesFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Json Textures");
-        internal static Eatable waterPefab;
+        private static readonly Harmony Harmony = new Harmony(myGUID);
+        private static readonly string JsonFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Json Files");
+        private static readonly string JsonTexturesFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Json Textures");
+        private static readonly ModInbox ModInbox = new("SuitLibrary", true);
+        
+        internal static Eatable WaterPrefab;
 
         private IEnumerator Start()
         {
             logger = Logger;
             
-            harmony.PatchAll();
+            Harmony.PatchAll();
 
+            ModInbox.AddMessageReader(new BasicModMessageReader("RequestCacheHold", CacheHoldManager.OnHoldRequested));
+            ModInbox.AddMessageReader(new BasicModMessageReader("FreeCacheHold", CacheHoldManager.OnHoldFreed));
+            
+            ModMessageSystem.RegisterInbox(ModInbox);
+            ModInbox.ReadAnyHeldMessages();
+            
             CoroutineTask<GameObject> stillsuitTask = CraftData.GetPrefabForTechTypeAsync(TechType.WaterFiltrationSuit);
             yield return stillsuitTask;
-            waterPefab = stillsuitTask.result.value.GetComponent<Stillsuit>().waterPrefab;
-
+            WaterPrefab = stillsuitTask.result.value.GetComponent<Stillsuit>().waterPrefab;
+            
             LoadJsons();
 
             Logger.LogInfo($"{pluginName} {versionString} Loaded.");
@@ -42,8 +52,8 @@ namespace SuitLib
 
         private void LoadJsons()
         {
-            if (!Directory.Exists(jsonFolder)) Directory.CreateDirectory(jsonFolder);
-            if (!Directory.Exists(jsonTexturesFolder)) Directory.CreateDirectory(jsonTexturesFolder);
+            if (!Directory.Exists(JsonFolder)) Directory.CreateDirectory(JsonFolder);
+            if (!Directory.Exists(JsonTexturesFolder)) Directory.CreateDirectory(JsonTexturesFolder);
 
             AddModdedSuits();
             logger.LogInfo("Finished loading suit Jsons");
@@ -54,7 +64,7 @@ namespace SuitLib
 
         private void AddModdedSuits()
         {
-            List<JsonSuit> suits = JsonLoader<JsonSuit>.LoadJsons(jsonFolder);
+            List<JsonSuit> suits = JsonLoader<JsonSuit>.LoadJsons(JsonFolder);
 
             foreach (JsonSuit suit in suits)
             {
@@ -77,12 +87,12 @@ namespace SuitLib
                         break;
                     }
 
-                    string path = Path.Combine(jsonTexturesFolder, suit.suitFileNamePairs[suitKey]);
+                    string path = Path.Combine(JsonTexturesFolder, suit.suitFileNamePairs[suitKey]);
                     suitKVPs.Add(suitKey, ImageUtils.LoadTextureFromFile(path));
                 }
                 foreach (var armsKey in suit.armFileNamePairs.Keys)
                 {
-                    string path = Path.Combine(jsonTexturesFolder, suit.armFileNamePairs[armsKey]);
+                    string path = Path.Combine(JsonTexturesFolder, suit.armFileNamePairs[armsKey]);
                     armKVPs.Add(armsKey, ImageUtils.LoadTextureFromFile(path));
                 }
 
@@ -100,7 +110,7 @@ namespace SuitLib
 
         private void AddModdedGloves()
         {
-            List<JsonGloves> gloves = JsonLoader<JsonGloves>.LoadJsons(jsonFolder);
+            List<JsonGloves> gloves = JsonLoader<JsonGloves>.LoadJsons(JsonFolder);
 
             foreach (JsonGloves item in gloves)
             {
@@ -122,7 +132,7 @@ namespace SuitLib
                         break;
                     }
 
-                    string path = Path.Combine(jsonTexturesFolder, item.gloveTexturePairs[glovesKey]);
+                    string path = Path.Combine(JsonTexturesFolder, item.gloveTexturePairs[glovesKey]);
                     armKVPs.Add(glovesKey, ImageUtils.LoadTextureFromFile(path));
                 }
 

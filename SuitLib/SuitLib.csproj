@@ -69,6 +69,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\CacheHoldManager.cs" />
     <Compile Include="API\JsonGloves.cs" />
     <Compile Include="API\JsonLoader.cs" />
     <Compile Include="API\JsonSuit.cs" />

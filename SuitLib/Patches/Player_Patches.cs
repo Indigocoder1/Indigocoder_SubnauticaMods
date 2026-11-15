@@ -15,7 +15,7 @@ internal static class Player_Patches
     [HarmonyPatch(nameof(Player.Start)), HarmonyPrefix]
     private static void Start()
     {
-        PlayerTextureManager.InitializeAllSuitInfos();
+        PlayerTextureManager.InitializeAllSuitInfosAsync();
     }
 
     [HarmonyPatch(nameof(Player.EquipmentChanged)), HarmonyPostfix]

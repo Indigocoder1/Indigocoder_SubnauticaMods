@@ -8,7 +8,7 @@ public static class PrefabComponentAssigner
     public static void EnsureStillsuitConfigured(ref GameObject prefab)
     {
         Stillsuit suit = prefab.EnsureComponent<Stillsuit>();
-        suit.waterPrefab = Main.waterPefab;
+        suit.waterPrefab = Main.WaterPrefab;
     }
 
     [Obsolete("This method is not implemented as of now. It will be added once the Deathrun API is released")]
