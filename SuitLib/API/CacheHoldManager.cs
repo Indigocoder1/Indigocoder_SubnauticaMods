@@ -74,7 +74,7 @@ public static class CacheHoldManager
     #region API
     
     /// <summary>
-    /// The passed task will be run before caching the suits' vanilla textures
+    /// Suit library will run the passed task before caching the suits' vanilla textures
     /// </summary>
     /// <remarks>
     /// Holds must be registered before the cache initialization and will be reset after exiting to the main menu
