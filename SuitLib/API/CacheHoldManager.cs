@@ -62,6 +62,8 @@ public static class CacheHoldManager
         {
             yield return null;
         }
+
+        ClearAllHolds();
     }
 
     internal static void ClearAllHolds()
@@ -77,7 +79,8 @@ public static class CacheHoldManager
     /// Suit library will run the passed task before caching the suits' vanilla textures
     /// </summary>
     /// <remarks>
-    /// Holds must be registered before the cache initialization and will be reset after exiting to the main menu
+    /// Holds must be registered before the cache initialization. They will also be reset after exiting to the main menu
+    /// and after the cache is initialized
     /// </remarks>
     /// <param name="waitTask">The task to wait for</param>
     public static void RegisterCacheHold(Func<IEnumerator> waitTask)
@@ -89,7 +92,8 @@ public static class CacheHoldManager
     /// Suit library will wait for the passed function to return true before caching the suits' vanilla textures 
     /// </summary>
     /// <remarks>
-    /// Holds must be registered before the cache initialization and will be reset after exiting to the main menu
+    /// Holds must be registered before the cache initialization. They will also be reset after exiting to the main menu
+    /// and after the cache is initialized
     /// </remarks>
     /// <param name="waitTask">The task to wait for</param>
     public static void RegisterCacheHold(Func<bool> waitTask)
@@ -102,7 +106,8 @@ public static class CacheHoldManager
     /// owner before caching the suits' vanilla textures 
     /// </summary>
     /// <remarks>
-    /// Holds must be registered before the cache initialization and will be reset after exiting to the main menu
+    /// Holds must be registered before the cache initialization. They will also be reset after exiting to the main menu
+    /// and after the cache is initialized
     /// </remarks>
     /// <param name="owner">The owner of the cache hold. Must also be passed into <see cref="FreeCacheHold"/> to free the hold</param>
     public static void RegisterCacheHold(object owner)
