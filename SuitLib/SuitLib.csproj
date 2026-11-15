@@ -83,6 +83,7 @@
     <Compile Include="Patches\Stillsuit_Patches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextureManagement\PlayerTextureManager.cs" />
+    <Compile Include="TextureManagement\SceneLoadManager.cs" />
     <Compile Include="TextureManagement\SuitTextureInfo.cs" />
   </ItemGroup>
   <ItemGroup>

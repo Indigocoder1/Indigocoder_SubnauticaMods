@@ -11,6 +11,7 @@ using Nautilus.Utility.ModMessages;
 using SuitLib.API.JSON;
 using SuitLib.TextureManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace SuitLib
 {
@@ -38,6 +39,7 @@ namespace SuitLib
 
             ModInbox.AddMessageReader(new BasicModMessageReader("RequestCacheHold", CacheHoldManager.OnHoldRequested));
             ModInbox.AddMessageReader(new BasicModMessageReader("FreeCacheHold", CacheHoldManager.OnHoldFreed));
+            SceneManager.sceneLoaded += SceneLoadManager.OnSceneLoaded;
             
             ModMessageSystem.RegisterInbox(ModInbox);
             ModInbox.ReadAnyHeldMessages();
