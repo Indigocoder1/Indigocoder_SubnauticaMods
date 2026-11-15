@@ -1,0 +1,12 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  	<PropertyGroup>
+		<CommonDir>YOUR_STEAMAPPS_PATH_HERE\common</CommonDir>
+		<AssetsDir>..\PrototypeSubAssets</AssetsDir>
+	</PropertyGroup>
+
+  <PropertyGroup>
+		<GameDir>$(CommonDir)\Subnautica</GameDir>
+		<ModFolder>$(GameDir)\BepInEx\plugins</ModFolder>
+		<ReferencesFolder>$(AssetsDir)\Assets\References</ReferencesFolder>
+	</PropertyGroup>
+</Project>
