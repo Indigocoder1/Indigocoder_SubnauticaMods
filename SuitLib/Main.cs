@@ -39,6 +39,10 @@ namespace SuitLib
 
             ModInbox.AddMessageReader(new BasicModMessageReader("RequestCacheHold", CacheHoldManager.OnHoldRequested));
             ModInbox.AddMessageReader(new BasicModMessageReader("FreeCacheHold", CacheHoldManager.OnHoldFreed));
+            ModInbox.AddMessageReader(new BasicModMessageReader("RequestCacheReset", _ => TextureCacheManager.RequestTextureCacheReset()));
+            ModInbox.AddMessageReader(new BasicModMessageReader("ForceCacheReset", _ => TextureCacheManager.ForceTextureCacheReset()));
+            
+            
             SceneManager.sceneLoaded += SceneLoadManager.OnSceneLoaded;
             
             ModMessageSystem.RegisterInbox(ModInbox);
