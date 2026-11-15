@@ -12,9 +12,9 @@ internal struct SuitTextureInfo()
     public GameObject suitBodyObject;
     public GameObject suitGlovesObject;
     
-    private Dictionary<string, Texture> suitTextures = new();
-    private Dictionary<string, Texture> gloveTextures = new();
-    private bool glovesUseBodyIndex1;
+    private readonly Dictionary<string, Texture> vanillaSuitTextures = new();
+    private readonly Dictionary<string, Texture> vanillaGloveTextures = new();
+    private readonly bool glovesUseBodyIndex1;
 
     public SuitTextureInfo(bool glovesUseBodyIndex1) : this()
     {
@@ -24,7 +24,7 @@ internal struct SuitTextureInfo()
     public void AddBodyTexture(string textureName)
     {
         var suitTex = suitBodyObject.GetComponent<Renderer>().material.GetTexture(textureName);
-        suitTextures.Add(textureName, suitTex);
+        vanillaSuitTextures.Add(textureName, suitTex);
     }
     
     public void AddGlovesTexture(string textureName)
@@ -33,32 +33,32 @@ internal struct SuitTextureInfo()
         var materialIndex = glovesUseBodyIndex1 ? 1 : 0;
         
         var glovesTex = obj.GetComponent<Renderer>().materials[materialIndex].GetTexture(textureName);
-        gloveTextures.Add(textureName, glovesTex);
+        vanillaGloveTextures.Add(textureName, glovesTex);
     }
 
     public void ResetBodyTextures()
     {
-        foreach (var key in suitTextures.Keys)
+        foreach (var key in vanillaSuitTextures.Keys)
         {
-            var tex = (Texture2D)suitTextures[key];
-            suitBodyObject.GetComponent<Renderer>().material.SetTexture(key, tex);
+            var bodyTex = (Texture2D)vanillaSuitTextures[key];
+            suitBodyObject.GetComponent<Renderer>().material.SetTexture(key, bodyTex);
+        }
+
+        foreach (var key in vanillaGloveTextures.Keys)
+        {
+            var armsTex = (Texture2D)vanillaGloveTextures[key];
+            suitBodyObject.GetComponent<Renderer>().materials[1].SetTexture(key, armsTex);
         }
     }
 
     public void ResetGloveTextures()
     {
-        foreach (var key in gloveTextures.Keys)
+        if (suitGlovesObject == null) return;
+        
+        foreach (var key in vanillaGloveTextures.Keys)
         {
-            var tex = (Texture2D)gloveTextures[key];
-            if (suitGlovesObject)
-            {
-                suitGlovesObject.GetComponent<Renderer>().material.SetTexture(key, tex);
-            }
-
-            if (glovesUseBodyIndex1)
-            {
-                suitBodyObject.GetComponent<Renderer>().materials[1].SetTexture(key, tex);
-            }
+            var tex = (Texture2D)vanillaGloveTextures[key];
+            suitGlovesObject.GetComponent<Renderer>().material.SetTexture(key, tex);
         }
     }
 }
@@ -77,6 +77,17 @@ internal static class Player_Patches
     private static void Start()
     {
         _playerEquipment = Inventory.main.equipment;
+        InitializeAllSuitInfos();
+    }
+
+    internal static void InitializeAllSuitInfos()
+    {
+        if (Player.main == null)
+        {
+            Main.logger.LogError("Attempting to initialize suit infos when Player.main is null!");
+            return;
+        }
+        
         _diveSuitInfo = new SuitTextureInfo();
         _radiationSuitInfo = new SuitTextureInfo();
         _reinforcedSuitInfo = new SuitTextureInfo();
@@ -262,7 +273,7 @@ internal static class Player_Patches
         bool wearingAnyGloves)
     {
         _diveSuitInfo.suitBodyObject.SetActive(!wearingAnySuit);
-        _diveSuitInfo.suitBodyObject.SetActive(!wearingAnyGloves);
+        _diveSuitInfo.suitGlovesObject.SetActive(!wearingAnyGloves);
         if (wearingAnySuit)
         {
             foreach (var suit in ModdedSuitsManager.ModdedSuitsList)
@@ -327,9 +338,6 @@ internal static class Player_Patches
         _radiationSuitInfo.ResetBodyTextures();
         _reinforcedSuitInfo.ResetBodyTextures();
         _filtrationSuitInfo.ResetBodyTextures();
-
-        // For the filtration suit, resetting the gloves resets the arm textures
-        _filtrationSuitInfo.ResetGloveTextures();
     }
 
     private static void SetGloveTextures(TechType typeInGlovesSlot, bool wearingModdedGloves)
