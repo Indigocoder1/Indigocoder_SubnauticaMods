@@ -60,6 +60,7 @@ internal static class PlayerTextureManager
         yield return CacheHoldManager.WaitForHoldsAsync();
         
         InitializeVanillaTextures();
+        _textureHoldCoroutine = null;
     }
 
     internal static void CancelAsyncTextureSetup()
