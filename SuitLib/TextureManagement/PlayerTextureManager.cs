@@ -14,6 +14,8 @@ internal static class PlayerTextureManager
     private static SuitTextureInfo _reinforcedSuitInfo;
     private static SuitTextureInfo _filtrationSuitInfo;
 
+    private static Coroutine _textureHoldCoroutine;
+    
     #region Initialization
 
     internal static void InitializeAllSuitInfosAsync()
@@ -31,7 +33,7 @@ internal static class PlayerTextureManager
         _filtrationSuitInfo = new SuitTextureInfo(true);
         InitializeModelGOs();
         
-        UWE.CoroutineHost.StartCoroutine(SetupTexturesAfterHolds());
+        _textureHoldCoroutine = UWE.CoroutineHost.StartCoroutine(SetupTexturesAfterHolds());
     }
 
     private static IEnumerator SetupTexturesAfterHolds()
@@ -39,6 +41,13 @@ internal static class PlayerTextureManager
         yield return CacheHoldManager.WaitForHoldsAsync();
 
         InitializeVanillaTextures();
+    }
+
+    internal static void CancelAsyncTextureSetup()
+    {
+        if (_textureHoldCoroutine == null) return;
+
+        UWE.CoroutineHost.StopCoroutine(_textureHoldCoroutine);
     }
 
     private static void InitializeModelGOs()

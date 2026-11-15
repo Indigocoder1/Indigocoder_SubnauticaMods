@@ -28,10 +28,12 @@ public static class TextureCacheManager
     /// </summary>
     /// <remarks>
     /// Cache holds will NOT be respected when calling this method.
-    /// All previous holds will be canceled, so async holds may be only partially run. Use caution when using this method
+    /// All previous holds will be canceled, so async holds may be only partially completed. Use caution when using this method
     /// </remarks>
     public static void ForceTextureCacheReset()
     {
+        CacheHoldManager.ClearAllHolds();
+        PlayerTextureManager.CancelAsyncTextureSetup();
         PlayerTextureManager.InitializeVanillaTextures();
     }
 }

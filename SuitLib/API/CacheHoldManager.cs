@@ -9,6 +9,8 @@ public static class CacheHoldManager
     private static readonly List<Func<IEnumerator>> AsyncWaitTasks = new();
     private static readonly List<Func<bool>> SynchronousWaitTasks = new();
     private static readonly HashSet<object> GenericWaitTasks = new();
+
+    #region Mod Message System
     
     internal static void OnHoldRequested(object[] input)
     {
@@ -38,6 +40,8 @@ public static class CacheHoldManager
 
         FreeCacheHold(input[0]);
     }
+    
+    #endregion
 
     internal static IEnumerator WaitForHoldsAsync()
     {
@@ -60,6 +64,15 @@ public static class CacheHoldManager
         }
     }
 
+    internal static void ClearAllHolds()
+    {
+        AsyncWaitTasks.Clear();
+        SynchronousWaitTasks.Clear();
+        GenericWaitTasks.Clear();
+    }
+
+    #region API
+    
     /// <summary>
     /// The passed task will be run before caching the suits' vanilla textures
     /// </summary>
@@ -106,4 +119,6 @@ public static class CacheHoldManager
     {
         GenericWaitTasks.Remove(owner);
     }
+    
+    #endregion
 }
