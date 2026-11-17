@@ -40,7 +40,7 @@ internal static class PlayerTextureManager
         _diveSuitInfo = new SuitTextureInfo(ModdedSuitsManager.VanillaModel.Dive);
         _radiationSuitInfo = new SuitTextureInfo(ModdedSuitsManager.VanillaModel.Radiation);
         _reinforcedSuitInfo = new SuitTextureInfo(ModdedSuitsManager.VanillaModel.Reinforced);
-        _filtrationSuitInfo = new SuitTextureInfo(ModdedSuitsManager.VanillaModel.WaterFiltration, true);
+        _filtrationSuitInfo = new SuitTextureInfo(ModdedSuitsManager.VanillaModel.WaterFiltration);
         InitializeModelGOs();
 
         if (_textureHoldCoroutine != null)
@@ -112,7 +112,10 @@ internal static class PlayerTextureManager
             {
                 if (!armsTextureNamesToCache.Add(key)) continue;
                 
-                _filtrationSuitInfo.AddGlovesTexture(key);
+                _diveSuitInfo.AddArmsTexture(key);
+                _radiationSuitInfo.AddArmsTexture(key);
+                _reinforcedSuitInfo.AddArmsTexture(key);
+                _filtrationSuitInfo.AddArmsTexture(key);
             }
         }
 
@@ -127,6 +130,7 @@ internal static class PlayerTextureManager
                 _diveSuitInfo.AddGlovesTexture(name);
                 _radiationSuitInfo.AddGlovesTexture(name);
                 _reinforcedSuitInfo.AddGlovesTexture(name);
+                // No point adding the filtration suit textures since it doesn't have gloves
             }
         }
     }
@@ -188,13 +192,19 @@ internal static class PlayerTextureManager
             foreach (var key in suit.suitReplacementTexturePropertyPairs.Keys)
             {
                 var moddedTex = suit.suitReplacementTexturePropertyPairs[key];
-                modelRenderer.materials[0].SetTexture(key, moddedTex);
+                foreach (var index in MaterialIndexManager.ModelBodyTexIndices[suit.vanillaModel])
+                {
+                    modelRenderer.materials[index].SetTexture(key, moddedTex);
+                }
             }
 
             foreach (var key in suit.armsReplacementTexturePropertyPairs.Keys)
             {
                 var armsTex = suit.armsReplacementTexturePropertyPairs[key];
-                modelRenderer.materials[1].SetTexture(key, armsTex);
+                foreach (var index in MaterialIndexManager.ModelArmTexIndices[suit.vanillaModel])
+                {
+                    modelRenderer.materials[index].SetTexture(key, armsTex);
+                }
             }
         }
     }

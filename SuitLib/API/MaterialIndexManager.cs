@@ -24,9 +24,16 @@ public static class MaterialIndexManager
     {
         { ModdedSuitsManager.VanillaModel.Dive, [0] },
         { ModdedSuitsManager.VanillaModel.Radiation, [0] },
-        { ModdedSuitsManager.VanillaModel.Reinforced, [0] },
+        { ModdedSuitsManager.VanillaModel.Reinforced, [0] }
+        // The water filtration suit doesn't have gloves
     };
 
+    /// <summary>
+    /// Sets the indices on the body model to track as the "body" textures. Intended to be used for
+    /// mods that add custom player models with different material layouts as the base game
+    /// </summary>
+    /// <param name="model"></param>
+    /// <param name="newIndices"></param>
     public static void SetBodyTextureIndexRemap(ModdedSuitsManager.VanillaModel model, int[] newIndices)
     {
         ModelBodyTexIndices[model] = newIndices;

@@ -42,7 +42,6 @@ internal class Main : BaseUnityPlugin
         ModInbox.AddMessageReader(new BasicModMessageReader("RequestCacheReset", _ => TextureCacheManager.RequestTextureCacheReset()));
         ModInbox.AddMessageReader(new BasicModMessageReader("ForceCacheReset", _ => TextureCacheManager.ForceTextureCacheReset()));
         
-        
         SceneManager.sceneLoaded += SceneLoadManager.OnSceneLoaded;
         
         ModMessageSystem.RegisterInbox(ModInbox);
