@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SuitLib.API;
 using UnityEngine;
 
 namespace SuitLib.TextureManagement;
@@ -7,44 +8,53 @@ internal struct SuitTextureInfo()
 {
     public GameObject suitBodyObject;
     public GameObject suitGlovesObject;
-    
+
+    private readonly ModdedSuitsManager.VanillaModel suitModel;
     private readonly Dictionary<string, Texture> vanillaSuitTextures = new();
     private readonly Dictionary<string, Texture> vanillaGloveTextures = new();
-    private readonly bool glovesUseBodyIndex1;
+    private readonly bool glovesUseBodyModel;
 
-    public SuitTextureInfo(bool glovesUseBodyIndex1) : this()
+    public SuitTextureInfo(ModdedSuitsManager.VanillaModel suitModel, bool glovesUseBodyModel = false) : this()
     {
-        this.glovesUseBodyIndex1 = glovesUseBodyIndex1;
+        this.suitModel = suitModel;
+        this.glovesUseBodyModel = glovesUseBodyModel;
     }
 
     public void AddBodyTexture(string textureName)
     {
-        var suitTex = suitBodyObject.GetComponent<Renderer>().material.GetTexture(textureName);
+        var firstIndex = MaterialIndexManager.ModelBodyTexIndices[suitModel][0];
+        var suitTex = suitBodyObject.GetComponent<Renderer>().materials[firstIndex].GetTexture(textureName);
         vanillaSuitTextures.Add(textureName, suitTex);
     }
     
     public void AddGlovesTexture(string textureName)
     {
-        var obj = glovesUseBodyIndex1 ? suitBodyObject : suitGlovesObject;
-        var materialIndex = glovesUseBodyIndex1 ? 1 : 0;
+        var materialIndex = MaterialIndexManager.ModelArmTexIndices[suitModel][0];
         
-        var glovesTex = obj.GetComponent<Renderer>().materials[materialIndex].GetTexture(textureName);
+        var glovesTex = suitBodyObject.GetComponent<Renderer>().materials[materialIndex].GetTexture(textureName);
         vanillaGloveTextures.Add(textureName, glovesTex);
     }
 
     public void ResetBodyTextures()
     {
+        var bodyRend = suitBodyObject.GetComponent<Renderer>();
         foreach (var key in vanillaSuitTextures.Keys)
         {
             var bodyTex = (Texture2D)vanillaSuitTextures[key];
-            suitBodyObject.GetComponent<Renderer>().material.SetTexture(key, bodyTex);
+            foreach (var index in MaterialIndexManager.ModelBodyTexIndices[suitModel])
+            {
+                bodyRend.materials[index].SetTexture(key, bodyTex);
+            }
         }
 
         // The arm textures are stored in the gloves texture, not the body one
         foreach (var key in vanillaGloveTextures.Keys)
         {
             var armsTex = (Texture2D)vanillaGloveTextures[key];
-            suitBodyObject.GetComponent<Renderer>().materials[1].SetTexture(key, armsTex);
+            foreach (var index in MaterialIndexManager.ModelArmTexIndices[suitModel])
+            {
+                bodyRend.materials[index].SetTexture(key, armsTex);
+            }
         }
     }
 
@@ -52,10 +62,14 @@ internal struct SuitTextureInfo()
     {
         if (suitGlovesObject == null) return;
         
+        var rend = suitGlovesObject.GetComponent<Renderer>();
         foreach (var key in vanillaGloveTextures.Keys)
         {
             var tex = (Texture2D)vanillaGloveTextures[key];
-            suitGlovesObject.GetComponent<Renderer>().material.SetTexture(key, tex);
+            foreach (var index in MaterialIndexManager.ModelGloveTexIndices[suitModel])
+            {
+                rend.materials[index].SetTexture(key, tex);
+            }
         }
     }
 }

@@ -37,10 +37,10 @@ internal static class PlayerTextureManager
             _sceneEventRegistered = true;
         }
         
-        _diveSuitInfo = new SuitTextureInfo();
-        _radiationSuitInfo = new SuitTextureInfo();
-        _reinforcedSuitInfo = new SuitTextureInfo();
-        _filtrationSuitInfo = new SuitTextureInfo(true);
+        _diveSuitInfo = new SuitTextureInfo(ModdedSuitsManager.VanillaModel.Dive);
+        _radiationSuitInfo = new SuitTextureInfo(ModdedSuitsManager.VanillaModel.Radiation);
+        _reinforcedSuitInfo = new SuitTextureInfo(ModdedSuitsManager.VanillaModel.Reinforced);
+        _filtrationSuitInfo = new SuitTextureInfo(ModdedSuitsManager.VanillaModel.WaterFiltration, true);
         InitializeModelGOs();
 
         if (_textureHoldCoroutine != null)

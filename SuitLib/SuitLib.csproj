@@ -63,6 +63,7 @@
     <Compile Include="API\JSON\JsonGloves.cs" />
     <Compile Include="API\JSON\JsonLoader.cs" />
     <Compile Include="API\JSON\JsonSuit.cs" />
+    <Compile Include="API\MaterialIndexManager.cs" />
     <Compile Include="API\ModdedGloves.cs" />
     <Compile Include="API\ModdedSuitsManager.cs" />
     <Compile Include="API\ModdedSuit.cs" />
