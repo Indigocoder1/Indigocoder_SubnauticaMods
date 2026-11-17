@@ -4,7 +4,7 @@
   "name": "Suit Library",
   "supportedGameId": "subnautica",
   "dependencies": {
-    "2.0.0": [
+    "2.1.0": [
       {
         "modId": 30,
         "fromRelease": "1.0.0-pre.49"

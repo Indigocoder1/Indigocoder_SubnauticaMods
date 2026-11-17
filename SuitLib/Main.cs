@@ -21,7 +21,7 @@ internal class Main : BaseUnityPlugin
 {
     private const string Guid = "Indigocoder.SuitLib";
     private const string PluginName = "SuitLib";
-    private const string VersionString = "2.0.0";
+    private const string VersionString = "2.1.0";
 
     public static ManualLogSource logger;
     private static readonly Harmony Harmony = new(Guid);
